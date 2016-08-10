@@ -1,0 +1,199 @@
+
+\begin{example}{interconnection of hybrid systems $\HS_1$ (bouncing ball) and $\HS_2$ (moving platform)}
+\label{ex:interconnection1}
+Consider a bouncing ball ($\HS_1$) bouncing on a platform ($\HS_2$) at some initial height and converging to the ground at zero height. This is an interconnection problem because the current states of each system affect the behavior of the other system. In this interconnection, the bouncing ball will contact the platform, bounce back up, and cause a jump in height of the platform so that it gets closer to the ground. After some time, both the ball and the platform will converge to the ground. In order to model this system, the output of the bouncing ball becomes the input of the moving platform, and vice versa. For the simulation of the described system with regular data where $\HS_1$ is given by
+
+\begin{eqnarray}
+f_1(\xi, u_1,v_1):=\left[
+ \begin{array}{c}
+   \xi_2 \\
+ -\gamma - b\xi_2 +v_{11}
+ \end{array}
+\right],
+   C_1 : = \defset{(\xi,u_1)}{\xi_1 \geq u_1, u_1 \geq 0}\\
+g_1(\xi, u_1, v_1):=\left[ \begin{array}{c}
+ \xi_1+\alpha_1\xi_2^2 \\
+e_1|\xi_2| + v_{12}
+\end{array}
+\right]\ ,
+    D_1: =\defset{(\xi,u_1)}{\xi_1 =u_1, u_1 \geq 0},
+y_1 = h_1(\xi) : =\xi_1
+\end{eqnarray}
+where $\gamma, b, \alpha_1 >0, e_1 \in [0,1)$, $\xi = [\xi_1 , \xi_2]^\top$ is the state, $y_1 \in \Re$ is the output, $u_1 \in \Re$ and $v_1 = [v_{11} , v_{12}]^\top \in \Re^{2}$ are the inputs, and the hybrid system $\HS_2$ is given by
+
+\begin{eqnarray}
+f_2(\eta,u_2,v_2):=\left[
+ \begin{array}{c}
+   \eta_2 \\
+ -\eta_1-2\eta_2 +v_{12}
+ \end{array}
+\right],
+   C_2 : = \defset{(\eta,u_2)}{\eta_1 \leq u_2, \eta_1 \geq 0}\\
+g_2(\eta,u_2,v_2):=\left[ \begin{array}{c}
+ \eta_1-\alpha_2|\eta_2| \\
+-e_2|\eta_2| + v_{22}
+\end{array}
+\right]\ ,
+    D_2: =\defset{(\eta,u_2)}{\eta_1 = u_2, \eta_1 \geq 0},
+y_2 = h_2(\eta) : = \eta_1
+\end{eqnarray}
+where $\alpha_2 >0, e_2 \in [0,1)$, $\eta = [\eta_1 , \eta_2]^\top \in \Re^{2}$ is the state,
+$y_2 \in \Re$ is the output, and $u_2 \in \Re$ and $v_2 = [v_{21} , v_{22}]^\top \in \Re^{2}$
+are the inputs.
+
+Therefore, the interconnection may be defined by the input assignment
+\begin{equation}
+u_1 = y_2,   \hspace{5mm}     u_2 = y_1.
+\end{equation}
+
+The signals $v_1$  and $v_2$ are included as external inputs in the model in order to simulate the effects of environmental perturbations, such as a wind gust, on the system.
+
+The MATLAB scripts in each of the function blocks of the implementation above are given as follows. The constants for
+the interconnected system are $\gamma = 0.8$, $b=0.1$, and $\alpha_1, \alpha_2=0.1$.
+
+\begin{figure}[ht!]
+  \begin{center}
+    {\includegraphics[width=.6\textwidth]{figures/Simulink/InterconnectionMdl.eps}}
+   \caption{MATLAB/Simulink implementation of interconnected hybrid systems $\HS_1$ and
+$\HS_2$}
+\label{fig:interconnection-1}
+  \end{center}
+\end{figure}
+
+\begin{figure}[ht!]
+  \begin{center}
+  \psfrag{flows [t]}[c]{flows [$t$]}
+  \psfrag{jumps [j]}[c]{jumps [$j$]}
+  \psfrag{xi1, eta1}[c]{$\xi_1, \eta_1$}
+  \psfrag{xi2, eta2}[c]{$\xi_2, \eta_2$}
+    {\includegraphics[width=.8\textwidth]{figures/Examples/InterconnectionH1H2.eps}}
+   \caption{Solution of Example~\ref{ex:interconnection1}: height and velocity}
+\label{fig:interconnection-2}
+  \end{center}
+\end{figure}
+
+%\begin{figure}[ht]
+%  \begin{center}
+%  \psfrag{flows [t]}[c]{flows [$t$]}
+%  \psfrag{jumps [j]}[c]{jumps [$j$]}
+%  \psfrag{xi1}[c]{$\xi_1$}
+%    {\includegraphics[width=.8\textwidth]{figures/Examples/InterconnectionH1.eps}}
+%   \caption{Solution of Example~\ref{ex:interconnection1} for system $\HS_1$: height}
+%\label{fig:interconnection-3}
+%  \end{center}
+%\end{figure}
+%
+%\begin{figure}[ht]
+%  \begin{center}
+%  \psfrag{flows [t]}[c]{flows [$t$]}
+%  \psfrag{jumps [j]}[c]{jumps [$j$]}
+%  \psfrag{xi2}[c]{$\xi_2$}
+%    {\includegraphics[width=.8\textwidth]{figures/Examples/InterconnectionH1velocity.eps}}
+%   \caption{Solution of Example~\ref{ex:interconnection1} for system $\HS_1$: velocity}
+%\label{fig:interconnection-4}
+%  \end{center}
+%\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \psfrag{flows [t]}[c]{flows [$t$]}
+  \psfrag{jumps [j]}[c]{jumps [$j$]}
+  \psfrag{xi1}[c]{$\xi_1$}
+  \psfrag{xi2}[c]{$\xi_2$}
+\subfigure[Height]{
+    \includegraphics[width=.45\textwidth]{figures/Examples/InterconnectionH1.eps}
+\label{fig:interconnection-3}}
+\qquad
+\subfigure[Velocity]{
+    \includegraphics[width=.45\textwidth]{figures/Examples/InterconnectionH1velocity.eps}
+\label{fig:interconnection-4}}
+\caption{Solution of Example \ref{ex:interconnection1} for system $\HS_1$}
+\end{figure}
+
+%\begin{figure}[ht]
+%  \begin{center}
+%  \psfrag{flows [t]}[c]{flows [$t$]}
+%  \psfrag{jumps [j]}[c]{jumps [$j$]}
+%  \psfrag{eta1}[c]{$\eta_1$}
+%    {\includegraphics[width=.8\textwidth]{figures/Examples/InterconnectionH2.eps}}
+%   \caption{Solution of Example~\ref{ex:interconnection1} for system $\HS_2$: height}
+%\label{fig:interconnection-5}
+%  \end{center}
+%\end{figure}
+%
+%\begin{figure}[ht]
+%  \begin{center}
+%  \psfrag{flows [t]}[c]{flows [$t$]}
+%  \psfrag{jumps [j]}[c]{jumps [$j$]}
+%  \psfrag{eta2}[c]{$\eta_2$}
+%    {\includegraphics[width=.8\textwidth]{figures/Examples/InterconnectionH2velocity.eps}}
+%   \caption{Solution of Example~\ref{ex:interconnection1} for system $\HS_2$: velocity}
+%\label{fig:interconnection-6}
+%  \end{center}
+%\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \psfrag{flows [t]}[c]{flows [$t$]}
+  \psfrag{jumps [j]}[c]{jumps [$j$]}
+  \psfrag{eta1}[c]{$\eta_1$}
+  \psfrag{eta2}[c]{$\eta_2$}
+\subfigure[Height]{
+    \includegraphics[width=.45\textwidth]{figures/Examples/InterconnectionH2.eps}
+\label{fig:interconnection-5}}
+\qquad
+\subfigure[Velocity]{
+    \includegraphics[width=.45\textwidth]{figures/Examples/InterconnectionH2velocity.eps}
+\label{fig:interconnection-6}}
+\caption{Solution of Example~\ref{ex:interconnection1} for system $\HS_2$}
+\end{figure}
+
+For hybrid system $\HS_1$:
+
+%\scriptsize
+\input{Matlab2tex_1_6/f.tex}\label{scr:f}
+%\normalsize
+
+%\scriptsize
+\input{Matlab2tex_1_6/C.tex}\label{scr:C}
+%\normalsize
+
+%\scriptsize
+\input{Matlab2tex_1_6/g.tex}\label{scr:g}
+%\normalsize
+
+%\scriptsize
+\input{Matlab2tex_1_6/D.tex}\label{scr:D}
+%\normalsize
+
+For hybrid system $\HS_2$:
+
+%\scriptsize
+\input{Matlab2tex_1_6/f2.tex}\label{scr:f2}
+%\normalsize
+
+%\scriptsize
+\input{Matlab2tex_1_6/C2.tex}\label{scr:C2}
+%\normalsize
+
+%\scriptsize
+\input{Matlab2tex_1_6/g2.tex}\label{scr:g2}
+%\normalsize
+
+%\scriptsize
+\input{Matlab2tex_1_6/D2.tex}\label{scr:D2}
+%\normalsize
+
+A solution to the interconnection of hybrid systems $\HS_1$ and
+$\HS_2$ with $T=18, J=20$, $rule =1$, is depicted in Figure~\ref{fig:interconnection-2}.
+Both the projection onto $t$ and $j$ are shown. A solution to the hybrid system $\HS_1$ is
+depicted in Figure~\ref{fig:interconnection-3} (height) and Figure~\ref{fig:interconnection-4}
+(velocity). A solution to the hybrid system $\HS_2$ is depicted in
+Figure~\ref{fig:interconnection-5} (height) and Figure~\ref{fig:interconnection-6} (velocity).
+
+These simulations reflect the expected behavior of the interconnected hybrid systems. %Note that in order to implement these systems without premature stopping of the simulation, $\xi_1$ in $g_1$ and $\eta_1$ in $g_2$ can be changed to $u_1$ and $u_2$, respectively so that $\xi_1^+=u_1$ and $\eta_1^+=u_2$.
+
+For MATLAB/Simulink files of this example, see Examples/Example\_\ref{ex:interconnection1}.
+
+\end{example}
+

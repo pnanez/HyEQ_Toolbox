@@ -1,0 +1,28 @@
+% This file was automatically created from the m-file 
+% "m2tex.m" written by USL. 
+% The fontencoding in this file is UTF-8. 
+%  
+% You will need to include the following two packages in 
+% your LaTeX-Main-File. 
+%  
+% \usepackage{color} 
+% \usepackage{fancyvrb} 
+%  
+% It is advised to use the following option for Inputenc 
+% \usepackage[utf8]{inputenc} 
+%  
+  
+% definition of matlab colors: 
+\definecolor{mblue}{rgb}{0,0,1} 
+\definecolor{mgreen}{rgb}{0.13333,0.5451,0.13333} 
+\definecolor{mred}{rgb}{0.62745,0.12549,0.94118} 
+\definecolor{mgrey}{rgb}{0.5,0.5,0.5} 
+\definecolor{mdarkgrey}{rgb}{0.25,0.25,0.25} 
+  
+\DefineShortVerb[fontfamily=courier,fontseries=m]{\$} 
+\DefineShortVerb[fontfamily=courier,fontseries=b]{\#} 
+  
+\noindent               \hspace*{-1.6em}{\scriptsize 1}$  $\color{mgreen}$% initial conditions$\color{black}$$\\ \hspace*{-1.6em}{\scriptsize 2}$  x1_0 = 1;$\\ \hspace*{-1.6em}{\scriptsize 3}$  x2_0 = 0;$\\ \hspace*{-1.6em}{\scriptsize 4}$  x0 = [x1_0;x2_0];$\\ \hspace*{-1.6em}{\scriptsize 5}$  $\color{mgreen}$% simulation horizon$\color{black}$$\\ \hspace*{-1.6em}{\scriptsize 6}$  TSPAN=[0,10];$\\ \hspace*{-1.6em}{\scriptsize 7}$  JSPAN = [0,20];$\\ \hspace*{-1.6em}{\scriptsize 8}$  $\color{mgreen}$% rule for jumps$\color{black}$$\\ \hspace*{-1.6em}{\scriptsize 9}$  $\color{mgreen}$% rule = 1 -> priority for jumps$\color{black}$$\\ \hspace*{-2em}{\scriptsize 10}$  $\color{mgreen}$% rule = 2 -> priority for flows$\color{black}$$\\ \hspace*{-2em}{\scriptsize 11}$  rule = 1;$\\ \hspace*{-2em}{\scriptsize 12}$  options = odeset($\color{mred}$'RelTol'$\color{black}$,1e-6,$\color{mred}$'MaxStep'$\color{black}$,.1);$\\ \hspace*{-2em}{\scriptsize 13}$  $\color{mgreen}$% simulate$\color{black}$$\\ \hspace*{-2em}{\scriptsize 14}$  [t,j,x] = HyEQsolver(@f,@g,@C,@D,x0,TSPAN,JSPAN,rule,options);$\\ 
+  
+\UndefineShortVerb{\$} 
+\UndefineShortVerb{\#}

@@ -1,0 +1,21 @@
+<productinfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.mathworks.com/namespace/info/v1/info.xsd">
+<?xml-stylesheet type="text/xsl" href="http://www.mathworks.com/namespace/info/v1/info.xsd"?>
+
+<matlabrelease>R2011a</matlabrelease>
+<name>HyEQ_Toolbox_V203</name>
+<type>toolbox</type>
+<icon>$toolbox/matlab/general/matlabicon.gif</icon>
+<help_location>helpFiles/</help_location>
+<help_contents_icon>$toolbox/matlab/icons/bookicon.gif</help_contents_icon>
+
+<list>
+
+<listitem>
+<label>Help</label>
+<callback>helpwin HyEQ_Toolbox_V2_03/</callback>
+<icon>$toolbox/matlab/general/bookicon.gif</icon>
+</listitem>
+
+</list>
+
+</productinfo>

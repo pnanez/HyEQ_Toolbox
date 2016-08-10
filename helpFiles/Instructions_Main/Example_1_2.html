@@ -1,0 +1,583 @@
+<?xml version="1.0" encoding="iso-8859-1" ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">  
+<!--http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd-->  
+<html xmlns="http://www.w3.org/1999/xhtml"  
+> 
+<head><title></title> 
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /> 
+<meta name="generator" content="TeX4ht (http://www.tug.org/tex4ht/)" /> 
+<meta name="originator" content="TeX4ht (http://www.tug.org/tex4ht/)" /> 
+<!-- xhtml,html --> 
+<meta name="src" content="Example_1_2.tex" /> 
+<meta name="date" content="2016-04-08 01:37:00" /> 
+<link rel="stylesheet" type="text/css" href="Example_1_2.css" /> 
+</head><body 
+>
+   <h3 class="sectionHead"><span class="titlemark">1   </span> <a 
+ id="x1-10001"></a>Examples</h3>
+<!--l. 1--><p class="noindent" >The example below shows how to use the HyEQ solver to simulate a bouncing ball.
+</p>
+   <div class="newtheorem">
+<!--l. 3--><p class="noindent" ><span class="head">
+<span 
+class="cmbx-10">Example</span><span 
+class="cmbx-10">&#x00A0;1.2</span> </span>(bouncing ball with Lite HyEQ Solver) <a 
+ id="x1-10012"></a>Consider the hybrid system model for the bouncing
+ball with data given in Example&#x00A0;1.1.
+</p><!--l. 6--><p class="indent" >   For this example, we consider the ball to be bouncing on a floor at zero height. The constants for the bouncing
+ball system are <span 
+class="cmmi-10">&#x03B3; </span>= 9<span 
+class="cmmi-10">.</span>81 and <span 
+class="cmmi-10">&#x03BB; </span>= 0<span 
+class="cmmi-10">.</span>8. The following procedure is used to simulate this example in the Lite HyEQ
+Solver: </p>
+     <ul class="itemize1">
+     <li class="itemize">Inside the MATLAB script <span 
+class="cmtt-10">run.m</span>, initial conditions, simulation horizons, a rule for jumps, ode solver
+     options, and a step size coefficient are defined. The function <span 
+class="cmtt-10">HyEQsolver.m </span>is called in order to run
+     the simulation, and a script for plotting solutions is included.
+     </li>
+     <li class="itemize">Then the MATLAB functions <span 
+class="cmtt-10">f.m, C.m, g.m, D.m </span>are edited according to the data given above.
+     </li>
+     <li class="itemize">Finally, the simulation is run by clicking the run button in <span 
+class="cmtt-10">run.m </span>or by calling <span 
+class="cmtt-10">run.m </span>in the MATLAB
+     command window.</li></ul>
+<!--l. 14--><p class="indent" >   Example code for each of the MATLAB files <span 
+class="cmtt-10">run.m, f.m, C.m, g.m, </span>and <span 
+class="cmtt-10">D.m </span>is given below.<br 
+class="newline" />
+</p><!--l. 25--><p class="noindent" ><span 
+class="cmr-7">1</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">function</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;run</span></span><br 
+class="newline" /><span 
+class="cmr-7">2</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;initial</span><span 
+class="pcrr7t-">&#x00A0;conditions</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">3</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;x1_0</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;1;</span></span><br 
+class="newline" /><span 
+class="cmr-7">4</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;x2_0</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;0;</span></span><br 
+class="newline" /><span 
+class="cmr-7">5</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;x0</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;[x1_0;x2_0];</span></span><br 
+class="newline" /><span 
+class="cmr-7">6</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;simulation</span><span 
+class="pcrr7t-">&#x00A0;horizon</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">7</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;TSPAN=[0</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">10];</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">8</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;JSPAN</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;[0</span><span 
+class="pcrr7t-">&#x00A0;20];</span></span><br 
+class="newline" /><span 
+class="cmr-7">9</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;rule</span><span 
+class="pcrr7t-">&#x00A0;for</span><span 
+class="pcrr7t-">&#x00A0;jumps</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">10</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;rule</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;1</span><span 
+class="pcrr7t-">&#x00A0;-&#x003E;</span><span 
+class="pcrr7t-">&#x00A0;priority</span><span 
+class="pcrr7t-">&#x00A0;for</span><span 
+class="pcrr7t-">&#x00A0;jumps</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">11</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;rule</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;2</span><span 
+class="pcrr7t-">&#x00A0;-&#x003E;</span><span 
+class="pcrr7t-">&#x00A0;priority</span><span 
+class="pcrr7t-">&#x00A0;for</span><span 
+class="pcrr7t-">&#x00A0;flows</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">12</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;rule</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;1;</span></span><br 
+class="newline" /><span 
+class="cmr-7">13</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;options</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;odeset(</span></span><span class="verb"><span 
+class="pcrr7t-">'RelTol'</span></span><span class="verb"><span 
+class="pcrr7t-">,1e-6,</span></span><span class="verb"><span 
+class="pcrr7t-">'MaxStep'</span></span><span class="verb"><span 
+class="pcrr7t-">,.1);</span></span><br 
+class="newline" /><span 
+class="cmr-7">14</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;simulate</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">15</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;[t,j,x]</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;HyEQsolver(@f,@g,@C,@D,x0,TSPAN,JSPAN,rule,options);</span></span><br 
+class="newline" /><span 
+class="cmr-7">16</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;plot</span><span 
+class="pcrr7t-">&#x00A0;solution</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">17</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;figure(1)</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;position</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">18</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;clf</span></span><br 
+class="newline" /><span 
+class="cmr-7">19</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;subplot(2,1,1),plotflows(t,j,x(:,1))</span></span><br 
+class="newline" /><span 
+class="cmr-7">20</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;grid</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">on</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">21</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;ylabel(</span></span><span class="verb"><span 
+class="pcrr7t-">'x1'</span></span><span class="verb"><span 
+class="pcrr7t-">)</span></span><br 
+class="newline" /><span 
+class="cmr-7">22</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;subplot(2,1,2),plotjumps(t,j,x(:,1))</span></span><br 
+class="newline" /><span 
+class="cmr-7">23</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;grid</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">on</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">24</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;ylabel(</span></span><span class="verb"><span 
+class="pcrr7t-">'x1'</span></span><span class="verb"><span 
+class="pcrr7t-">)</span></span><br 
+class="newline" /><span 
+class="cmr-7">25</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;figure(2)</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;velocity</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">26</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;clf</span></span><br 
+class="newline" /><span 
+class="cmr-7">27</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;subplot(2,1,1),plotflows(t,j,x(:,2))</span></span><br 
+class="newline" /><span 
+class="cmr-7">28</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;grid</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">on</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">29</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;ylabel(</span></span><span class="verb"><span 
+class="pcrr7t-">'x2'</span></span><span class="verb"><span 
+class="pcrr7t-">)</span></span><br 
+class="newline" /><span 
+class="cmr-7">30</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;subplot(2,1,2),plotjumps(t,j,x(:,2))</span></span><br 
+class="newline" /><span 
+class="cmr-7">31</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;grid</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">on</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">32</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;ylabel(</span></span><span class="verb"><span 
+class="pcrr7t-">'x2'</span></span><span class="verb"><span 
+class="pcrr7t-">)</span></span><br 
+class="newline" /><span 
+class="cmr-7">33</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;plot</span><span 
+class="pcrr7t-">&#x00A0;hybrid</span><span 
+class="pcrr7t-">&#x00A0;arc</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">34</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;figure(3)</span></span><br 
+class="newline" /><span 
+class="cmr-7">35</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;plotHybridArc(t,j,x)</span></span><br 
+class="newline" /><span 
+class="cmr-7">36</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;xlabel(</span></span><span class="verb"><span 
+class="pcrr7t-">'j'</span></span><span class="verb"><span 
+class="pcrr7t-">)</span></span><br 
+class="newline" /><span 
+class="cmr-7">37</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;ylabel(</span></span><span class="verb"><span 
+class="pcrr7t-">'t'</span></span><span class="verb"><span 
+class="pcrr7t-">)</span></span><br 
+class="newline" /><span 
+class="cmr-7">38</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;zlabel(</span></span><span class="verb"><span 
+class="pcrr7t-">'x1'</span></span><span class="verb"><span 
+class="pcrr7t-">)</span></span><br 
+class="newline" /><span 
+class="cmr-7">39</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;grid</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">on</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">40</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;view(37.5,30)</span></span><br 
+class="newline" />
+</p><!--l. 25--><p class="noindent" ><span 
+class="cmr-7">1</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">function</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;xdot</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;f(x)</span></span><br 
+class="newline" /><span 
+class="cmr-7">2</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;state</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">3</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;x1</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;x(1);</span></span><br 
+class="newline" /><span 
+class="cmr-7">4</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;x2</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;x(2);</span></span><br 
+class="newline" /><span 
+class="cmr-7">5</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;differential</span><span 
+class="pcrr7t-">&#x00A0;equations</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">6</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;xdot</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;[x2</span><span 
+class="pcrr7t-">&#x00A0;;</span><span 
+class="pcrr7t-">&#x00A0;-9.81];</span></span><br 
+class="newline" /><span 
+class="cmr-7">7</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">end</span></span><span class="verb"></span><br 
+class="newline" />
+</p><!--l. 25--><p class="noindent" ><span 
+class="cmr-7">1</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">function</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;[value</span><span 
+class="pcrr7t-">&#x00A0;discrete]</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;C(x)</span></span><br 
+class="newline" /><span 
+class="cmr-7">2</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;x1</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;x(1);</span></span><br 
+class="newline" /><span 
+class="cmr-7">3</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">if</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;x1</span><span 
+class="pcrr7t-">&#x00A0;&#x003E;=</span><span 
+class="pcrr7t-">&#x00A0;0</span></span><br 
+class="newline" /><span 
+class="cmr-7">4</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;value</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;1;</span></span><br 
+class="newline" /><span 
+class="cmr-7">5</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">else</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">6</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;value</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;0;</span></span><br 
+class="newline" /><span 
+class="cmr-7">7</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">end</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">8</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">end</span></span><span class="verb"></span><br 
+class="newline" />
+</p><!--l. 25--><p class="noindent" ><span 
+class="cmr-7">1</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">function</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;xplus</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;g(x)</span></span><br 
+class="newline" /><span 
+class="cmr-7">2</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;state</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">3</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;x1</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;x(1);</span></span><br 
+class="newline" /><span 
+class="cmr-7">4</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;x2</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;x(2);</span></span><br 
+class="newline" /><span 
+class="cmr-7">5</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;xplus</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;[-x1</span><span 
+class="pcrr7t-">&#x00A0;;</span><span 
+class="pcrr7t-">&#x00A0;-0.8&#x22C6;x2];</span></span><br 
+class="newline" /><span 
+class="cmr-7">6</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">end</span></span><span class="verb"></span><br 
+class="newline" />
+</p><!--l. 25--><p class="noindent" ><span 
+class="cmr-7">1</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">function</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;inside</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;D(x)</span></span><br 
+class="newline" /><span 
+class="cmr-7">2</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;x1</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;x(1);</span></span><br 
+class="newline" /><span 
+class="cmr-7">3</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;x2</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;x(2);</span></span><br 
+class="newline" /><span 
+class="cmr-7">4</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">if</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;(x1</span><span 
+class="pcrr7t-">&#x00A0;&#x003C;=</span><span 
+class="pcrr7t-">&#x00A0;0</span><span 
+class="pcrr7t-">&#x00A0;&amp;&amp;</span><span 
+class="pcrr7t-">&#x00A0;x2</span><span 
+class="pcrr7t-">&#x00A0;&#x003C;=</span><span 
+class="pcrr7t-">&#x00A0;0)</span></span><br 
+class="newline" /><span 
+class="cmr-7">5</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;inside</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;1;</span></span><br 
+class="newline" /><span 
+class="cmr-7">6</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">else</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">7</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;inside</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;0;</span></span><br 
+class="newline" /><span 
+class="cmr-7">8</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">end</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">9</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">end</span></span><span class="verb"></span><br 
+class="newline" />
+</p>
+                                                                                         
+                                                                                         
+   <hr class="figure" /><div class="figure" 
+><a 
+ id="x1-10041"></a> <a 
+ id="x1-1002r1"></a> <img 
+src="Example_1_20x.png" alt="PIC" class="graphics" width="211.38832pt" height="158.92044pt"  /><!--tex4ht:graphics  
+name="Example_1_20x.png" src="figures/Examples/FlowsAndJumps1lite.eps"  
+-->
+                                       <span 
+class="cmr-8">(a) Height</span>
+<a 
+ id="x1-1003r2"></a> <img 
+src="Example_1_21x.png" alt="PIC" class="graphics" width="211.38832pt" height="158.92044pt"  /><!--tex4ht:graphics  
+name="Example_1_21x.png" src="figures/Examples/FlowsAndJumps2lite.eps"  
+-->
+                   <span 
+class="cmr-8">(b) Velocity</span>
+<br /> <div class="caption" 
+><span class="id">Figure&#x00A0;1: </span><span  
+class="content">Solution of Example <a 
+href="#x1-10012">1.2<!--tex4ht:ref: ex:bblite --></a></span></div><!--tex4ht:label?: x1-10041 -->
+   </div><hr class="endfigure" />
+   <hr class="figure" /><div class="figure" 
+><a 
+ id="x1-10052"></a>
+<div class="center" 
+>
+<!--l. 53--><p class="noindent" >
+                                                                                         
+                                                                                         
+</p><!--l. 57--><p class="noindent" ><img 
+src="Example_1_22x.png" alt="PIC" class="graphics" width="375.80544pt" height="282.53006pt"  /><!--tex4ht:graphics  
+name="Example_1_22x.png" src="figures/Examples/HybridArclite.eps"  
+-->
+<br /> </p><div class="caption" 
+><span class="id">Figure&#x00A0;2: </span><span  
+class="content">Hybrid arc corresponding to a solution of Example&#x00A0;<a 
+href="#x1-10012">1.2<!--tex4ht:ref: ex:bblite --></a>: height</span></div><!--tex4ht:label?: x1-10052 -->
+</div>
+   </div><hr class="endfigure" />
+<!--l. 63--><p class="indent" >   A solution to the bouncing ball system from <span 
+class="cmmi-10">x</span>(0<span 
+class="cmmi-10">,</span>0) = [1<span 
+class="cmmi-10">,</span>0]<sup><span 
+class="cmsy-7">&#x22A4;</span></sup> and with <span 
+class="cmmi-10">TSPAN </span>= [0  10]<span 
+class="cmmi-10">,JSPAN </span>= [0  20],
+<span 
+class="cmmi-10">rule </span>= 1, is depicted in Figure&#x00A0;<a 
+href="#x1-1002r1">1(a)<!--tex4ht:ref: fig:lite-1 --></a> (height) and Figure&#x00A0;<a 
+href="#x1-1003r2">1(b)<!--tex4ht:ref: fig:lite-2 --></a> (velocity). Both the projection onto <span 
+class="cmmi-10">t </span>and <span 
+class="cmmi-10">j </span>are shown.
+Figure&#x00A0;<a 
+href="#x1-10052">2<!--tex4ht:ref: fig:lite-3 --></a> depicts the corresponding hybrid arc for the position state.
+</p><!--l. 65--><p class="indent" >   For MATLAB files of this example, see Examples/Example_<a 
+href="#x1-10012">1.2<!--tex4ht:ref: ex:bblite --></a>.
+                                                                                         _ 
+</p>
+   </div>
+    
+</body></html> 
+
+                                                                                         
+
+

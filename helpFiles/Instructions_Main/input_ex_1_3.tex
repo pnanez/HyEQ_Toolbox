@@ -1,0 +1,117 @@
+The examples below illustrate the use of the Simulink implementation above.
+
+\begin{example}{bouncing ball with input}
+\label{ex:bbinput} For the simulation of the bouncing ball system  with a constant input and regular data given by
+
+\begin{eqnarray}
+f(x,u):=\left[
+ \begin{array}{c}
+   x_{2} \\
+ -\gamma
+ \end{array}
+\right],
+   C : = \defset{ (x,u) \in \Re^{2}\times\Re}{x_{1} \geq u} \\
+g(x,u):=\left[ \begin{array}{c}
+ u \\
+- \lambda x_{2}
+\end{array}
+\right]\ ,
+    D: = \defset{ (x,u) \in \Re^{2}\times\Re}{x_{1} \leq u \ , \
+  x_{2} \leq 0}
+\end{eqnarray}
+where $\gamma >0$ is the gravity constant, $u$ is the input constant,
+and $\lambda \in [0,1)$ is the restitution coefficient.
+The MATLAB scripts in each of the function blocks of the implementation above are given as follows.
+An input was chosen to be $u(t,j) = 0.2$ for all $(t,j)$. The constants for the bouncing ball
+system are $\gamma = 9.81$ and $\lambda=0.8$.
+
+\bigskip
+
+\noindent The following procedure is used to simulate this example with {\tt HyEQsimulator.mdl}:
+\begin{itemize}
+\item {\tt HyEQsimulator.mdl} is opened in MATLAB/Simulink.
+\item The {\em Embedded MATLAB function blocks} {\em f, C, g, D} are edited by double-clicking on the block and editing the script. In each embedded function block, parameters must be added as inputs and defined as parameters by selecting {\tt Tools>Edit Data/Ports}, and setting the scope to {\tt Parameter}. For this example, {\em gamma} and {\em lambda} are defined in this way.
+\item The initialization script {\tt initialization.m} is edited by opening the file and editing the script. The flow time and jump horizons, $T$ and $J$ are defined as well as the initial conditions for the state vector, $x_0$, and input vector, $u_0$, and a rule for jumps, $rule$.
+\item The postprocessing script {\tt postprocessing.m} is edited by opening the file and editing the script. Flows and jumps may be plotted by calling the functions {\em plotflows} and {\em plotjumps}, respectively. The hybrid arc may be plotted by calling the function {\em plotHybridArc}.
+\item The simulation stop time and other simulation parameters are set to the values defined in {\tt initialization.m} by selecting {\tt Simulation>Configuration Parameters>Solver} and inputting $T$, $RelTol$, $MaxStep$, etc..
+\item The masked integrator system is double-clicked and the simulation horizons and initial conditions are set as desired.
+\item The block labeled {\em Double Click to Initialize} is double-clicked to initialize variables.
+\item The simulation is run by clicking the run button or selecting {\tt Simulation>Start}.
+\item The block labeled {\em Double Click to Plot Solutions} is double-clicked to plot the desired solutions.
+\end{itemize}
+
+%\begin{figure}[ht]
+%  \begin{center}
+%  \psfrag{flows [t]}[c]{flows [$t$]}
+%  \psfrag{jumps [j]}[c]{jumps [$j$]}
+%  \psfrag{x1}[c]{$x_1$}
+%    {\includegraphics[width=.8\textwidth]{figures/Examples/FlowsAndJumps1.eps}}
+%   \caption{Solution of Example~\ref{ex:bbinput}: height}
+%\label{fig:input-1}
+%  \end{center}
+%\end{figure}
+%
+%\begin{figure}[ht]
+%  \begin{center}
+%  \psfrag{flows [t]}[c]{flows [$t$]}
+%  \psfrag{jumps [j]}[c]{jumps [$j$]}
+%  \psfrag{x2}[c]{$x_2$}
+%    {\includegraphics[width=.8\textwidth]{figures/Examples/FlowsAndJumps2.eps}}
+%   \caption{Solution of Example~\ref{ex:bbinput}: velocity}
+%\label{fig:input-2}
+%  \end{center}
+%\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \psfrag{flows [t]}[c]{flows [$t$]}
+  \psfrag{jumps [j]}[c]{jumps [$j$]}
+  \psfrag{x1}[c]{$x_1$}
+  \psfrag{x2}[c]{$x_2$}
+\subfigure[Height]{
+    \includegraphics[width=.45\textwidth]{figures/Examples/FlowsAndJumps1.eps}
+\label{fig:input-1}}
+\qquad
+\subfigure[Velocity]{
+    \includegraphics[width=.45\textwidth]{figures/Examples/FlowsAndJumps2.eps}
+\label{fig:input-2}}
+\caption{Solution of Example~\ref{ex:bbinput}}
+\end{figure}
+
+\begin{figure}[ht]
+  \begin{center}
+  \psfrag{t}[c]{$t$}
+  \psfrag{j}[c]{$j$}
+  \psfrag{x1}[c]{$x_1$}
+    {\includegraphics[width=.8\textwidth]{figures/Examples/HybridArc1.eps}}
+   \caption{Hybrid arc corresponding to a solution of Example~\ref{ex:bbinput}: height}
+\label{fig:input-3}
+  \end{center}
+\end{figure}
+
+%\scriptsize
+\input{Matlab2tex_1_3/f.tex}\label{scr:f}
+%\normalsize
+
+%\scriptsize
+\input{Matlab2tex_1_3/C.tex}\label{scr:C}
+%\normalsize
+
+%\scriptsize
+\input{Matlab2tex_1_3/g.tex}\label{scr:g}
+%\normalsize
+
+%\scriptsize
+\input{Matlab2tex_1_3/D.tex}\label{scr:D}
+%\normalsize
+
+A solution to the bouncing ball system from $x(0,0)=[1,0]^\top$ and with $T=10, J=20$, $rule =1$, is
+depicted in Figure~\ref{fig:input-1} (height) and Figure~\ref{fig:input-2} (velocity).  Both the projection
+onto $t$ and $j$ are shown. Figure~\ref{fig:input-3} depicts the corresponding hybrid arc for the position state.
+
+These simulations reflect the expected behavior of the bouncing ball model. Note the only
+difference between this example and the example of a bouncing ball without a constant input is that, in this example, the ball bounces on a platform at a height of the chosen input value $0.2$ rather than the ground at a value of $0$.
+
+For MATLAB/Simulink files of this example, see Examples/Example\_\ref{ex:bbinput}.
+
+\end{example}

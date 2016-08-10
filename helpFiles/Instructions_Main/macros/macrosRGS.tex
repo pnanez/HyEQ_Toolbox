@@ -1,0 +1,312 @@
+% List of macros that are not in macrosbook.tex and come from rgsMacros.sty 
+%% function for plant flow dynamics
+\newcommand{\fp}{f_p}
+%% function for controller flow dynamics
+\newcommand{\fc}{f_c}
+%% function for noise
+\newcommand{\fe}{m}
+%% function for controller jump dynamics
+\newcommand{\gc}{G_c}
+%% function for controller jump dynamics - continuout part
+\newcommand{\gccont}{G^c_c}
+%% function for controller jump dynamics - discrete part
+\newcommand{\gcdisc}{G^d_c}
+%% plant state
+\newcommand{\xp}{x}
+%%
+\newcommand{\xpdot}{\dot{x}}
+%%
+\newcommand{\xpplus}{\xp^+}
+%% controller state
+\newcommand{\xc}{x_c}
+%%
+\newcommand{\xcdot}{\dot{x}_c}
+%%
+\newcommand{\xcplus}{x^+_c}
+%%
+\newcommand{\xccont}{\xi}
+%%
+\newcommand{\xccontdot}{\dot{\xccont}}
+%%
+\newcommand{\xccontplus}{\xccont^+}
+%%
+\newcommand{\xcdisc}{q}
+%%
+\newcommand{\xcdiscdot}{\dot{\xcdisc}}
+%%
+\newcommand{\xcdiscplus}{\xcdisc^+}
+%% controller output
+\newcommand{\kc}{\kappa}
+%% filter state
+\newcommand{\xf}{x_f}
+%%
+\newcommand{\xfdot}{\dot{x}_f}
+%%
+\newcommand{\xfplus}{\xf^+}
+%% filter state sensor
+\newcommand{\xs}{x_{s}}
+%%
+\newcommand{\xsdot}{\dot{x}_{s}}
+%%
+\newcommand{\xsplus}{\xs^+}
+%% filter state actuator
+\newcommand{\xa}{x_{a}}
+%%
+\newcommand{\xadot}{\dot{x}_{a}}
+%%
+\newcommand{\xaplus}{\xa^+}
+%% filter state input
+\newcommand{\xu}{x_{u}}
+%%
+\newcommand{\xudot}{\dot{x}_{u}}
+%%
+\newcommand{\xuplus}{\xu^+}
+%% filter constant
+\newcommand{\epsf}{\varepsilon_f}
+%% filter sensor/actuator constant
+\newcommand{\epsd}{\varepsilon_d}
+%% filter control smoothing
+\newcommand{\epsu}{\varepsilon_u}
+%% plant state domain
+\newcommand{\xpdomain}{\reals^{n_p}}
+%% controller state domain
+\newcommand{\xcdomain}{\reals^{n_c}}
+%% filter state domain
+\newcommand{\xfdomain}{\reals^{n_f}}
+%% filter sensor state domain
+\newcommand{\xsdomain}{\reals^{n_s}}
+%% filter actuator state domain
+\newcommand{\xadomain}{\reals^{n_a}}
+%% time state domain
+\newcommand{\timerdomain}{\reals}
+%% continuous state of controller  domain
+\newcommand{\xccontdomain}{\reals^{n_c-1}}
+%% discrete state of controller  domain
+\newcommand{\xcdiscdomain}{Q}
+%% sol domain
+\newcommand{\soldomain}{\reals^{n}}
+%% solcl domain
+\newcommand{\solcldomain}{\xpdomain\times\xcdomain}
+%% input domain
+\newcommand{\udomain}{\reals^{m}}
+%% controller shorthand notation
+\newcommand{\HScdata}{(\O,\fc,\Cc,\gc,\Dc,\kc)}
+%% closed-loop system 
+\newcommand{\HScl}{\HS_{cl}}      
+%% closed-loop system with filtered measurement noise
+\newcommand{\HSfcl}{\HS^{\epsf}_{cl}}      
+%% closed-loop system with sensor and actuator dynamics
+\newcommand{\HSpcl}{\HS^{\epsd}_{cl}}      
+%% closed-loop system with control smoothing
+\newcommand{\HSucl}{\HS^{\epsu}_{cl}}      
+%% closed-loop system with sample and hold
+\newcommand{\HSclSH}{\HS_{cl}^{S/H}}      
+%% hybrid controller
+\newcommand{\HSc}{\HS_{c}}      
+%% hybrid system with measurement noise
+%\newcommand{\HSe}{\HS^e}      
+%% end markers
+\newcommand{\myendbox}{\null \hfill $\Box$}
+\newcommand{\myendtriangle}{\null \hfill $\triangle$}
+%% end marker for assumptions
+%\newcommand{\endassume}{\myendbox}
+%% end marker for examples
+%\newcommand{\endex}{\myendtriangle}
+%% controller flow set
+\newcommand{\Cc}{C_c}
+%% controller jump set
+\newcommand{\Dc}{D_c}
+%% matrix
+%\newcommand{\matt}[1]{\begin{bmatrix}#1\end{bmatrix}} 
+%% big delimiters
+\newcommand{\bigpar}[1]{\left(#1\right)}
+\newcommand{\bigbracket}[1]{\left[#1\right]}
+%\newcommand{\bigbrace}[1]{\left\{#1\right\}}
+\newcommand{\bigbar}[1]{\left| #1\right|}
+%% big set
+\newcommand{\bigset}[2]{\bigbrace{#1\ \left| \ #2 \right.}}
+%% timer variable
+\newcommand{\timer}{\tau}
+%% timer variable dot
+\newcommand{\timerdot}{\dot{\tau}}
+%% timer variable plus
+\newcommand{\timerplus}{\timer^+}
+%% timer parameter
+\newcommand{\timerpar}{\ol{\tau}}
+%% timer state for sampler
+\newcommand{\timers}{\tau_s}
+%%
+\newcommand{\timersdot}{\dot{\tau}_s}
+%%
+\newcommand{\timersplus}{\timers^+}
+%% timer constant for sampler
+\newcommand{\timerscons}{T_s}
+%% timer state for holder
+\newcommand{\timerc}{\tau_c}
+%%
+\newcommand{\timercdot}{\dot{\tau}_c}
+%%
+\newcommand{\timercplus}{\timerc^+}
+%% timer constant for holder
+\newcommand{\timerccons}{T_c}
+%% state for sampler
+\newcommand{\zs}{z_s}
+%%
+\newcommand{\zsdot}{\dot{z}_s}
+%%
+\newcommand{\zsplus}{\zs^+}
+%% state for holder
+\newcommand{\zc}{z_c}
+%%
+\newcommand{\zcdot}{\dot{z}_c}
+%%
+\newcommand{\zcplus}{\zc^+}
+%% state for memory for computations
+\newcommand{\zm}{z_m}
+%%
+\newcommand{\zmdot}{\dot{z}_m}
+%%
+\newcommand{\zmplus}{\zm^+}
+%% domain for sampler timer 
+\newcommand{\timersdomain}{\reals}
+%% domain for sampler state 
+\newcommand{\zsdomain}{\xpdomain}
+%% domain for holder timer 
+\newcommand{\timercdomain}{\reals}
+%% domain for holder state 
+\newcommand{\zcdomain}{\xcdomain}
+%% domain for the memory state
+\newcommand{\zmdomain}{\xpdomain}
+%% \non
+\newcommand{\non}{\nonumber}
+%% \classKinfnty
+\newcommand{\classKinfty}{{\mathcal{K}}_{\infty}}
+%% donut
+\newcommand{\donutthree}{\Omega_{\A}(0,\Delta_s)}
+%% \R
+\newcommand{\R}{{\mathcal{R}}}
+%%
+\newcommand{\M}{{\mathcal{M}}}
+%%
+\newcommand{\realsgeq}{{\reals_{\geq 0}}}
+%%
+\newcommand{\nats}{\mathbb{N}}      
+%%
+\renewcommand{\K}{K}
+%%
+\newcommand{\X}{{\mathcal{X}}}
+%%
+\newcommand{\mattarraytwo}[1]{\begin{array}{ll}#1\end{array}} 
+%%
+\newcommand{\mattarrayone}[1]{\begin{array}{l}#1\end{array}} 
+%%
+%\newcommand{\BAn}[1]{{\mathcal B}_{\A_{#1}}} 
+%%
+\newcommand{\Qcatch}{Q_j^c}
+\newcommand{\Qthrow}{Q_j^t}
+%%
+\newcommand{\B}{{\mathcal B}} 
+% special commands
+\newcommand{\Au}{\A_{u}} 
+\newcommand{\Ar}{\A_{r}} 
+\newcommand{\Aur}{\A_{ur}} 
+\newcommand{\Aru}{\A_{ru}} 
+\newcommand{\HSr}{\HS_r} 
+%%
+\newcommand{\zdot}{\dot{z}}     
+%%
+\newcommand{\omegaset}{\Omega_{\HS}}
+%%
+%\newcommand{\non}{\nonumber}
+%%
+\newcommand{\eqn}[1]{\begin{eqnarray}#1\end{eqnarray}} 
+%%
+\newcommand{\J}{{\mathcal{J}}}
+%%
+\newcommand{\ReNone}{{\mathbb{R}^{n}}}
+\newcommand{\ReNtwo}{{\mathbb{R}^{n_c}}}
+\newcommand{\ReMone}{{\mathbb{R}^{m}}}
+\newcommand{\ReMtwo}{{\mathbb{R}^{m_c}}}
+%%
+\newcommand{\HSgensystem}{\HSdata} 
+\newcommand{\HSsimsystem}{\HS_s=(O,F_s,C_s,G_s,D_s)} 
+\newcommand{\HSs}{\HS_s} 
+%%
+\newcommand{\graph}{\mbox{gph }}
+%% 
+\newcommand{\HScontdata}{(O,f,C,\emptyset,\emptyset)}
+%% 
+\newcommand{\HSdiscdata}{(O,\emptyset,\emptyset,g,D)}
+%%
+\newcommand{\HSsystemnO}{\HS=(f,C,g,D,\reals^n)}   
+%%
+\newcommand{\RH}{\R_{\HS}}
+%
+\newcommand{\Ball}{\ball}
+%
+%\newcommand{\ox}{\bar{x}}      
+\newcommand{\oz}{\bar{z}}
+\newcommand{\ot}{\bar{t}}      
+\newcommand{\oj}{\bar{j}}      
+%%
+\newcommand{\co}{\mathop{\rm co}}     
+\newcommand{\cco}{\overline{\mathop{\rm co}}}
+%%
+\newcommand{\classKLL}{\KLL}
+%%
+\newcommand{\xdot}{\dot{x}}
+%%
+\newcommand{\ve}{\varepsilon}  
+\newcommand{\ydot}{\dot{y}}   
+%\newcommand{\zdot}{\dot{z}}   
+\newcommand{\I}{\mathcal{I}}  
+\newcommand{\varphidot}{\dot{\varphi}}   
+\newcommand{\psidot}{\dot{\psi}}   
+\newcommand{\HSsystem}{\HS=(O,f,C,g,D)}   
+%%
+\newcommand{\tausdot}{\dot{\tau}_s}
+\newcommand{\taucdot}{\dot{\tau}_c}
+\newcommand{\zthdot}{\dot{\widetilde{z}}_h}
+% %\newcommand{\zsdot}{\dot{z}_s}
+% %\newcommand{\zhdot}{\dot{z}_h}
+% %\newcommand{\zmdot}{\dot{z}_m}
+\newcommand{\tausplus}{{\tau}_s^+}
+\newcommand{\taucplus}{{\tau}_c^+}
+\newcommand{\zthplus}{{\widetilde{z}}_h^+}
+% %\newcommand{\zsplus}{{z}_s^+}
+% %\newcommand{\zhplus}{{z}_h^+}
+% %\newcommand{\zmplus}{{z}_m^+}
+\newcommand{\taus}{{\tau}_s}
+\newcommand{\tauc}{{\tau}_c}
+\newcommand{\zth}{{\widetilde{z}}_h}
+\newcommand{\eone}{\zth - \zh}
+\newcommand{\etwo}{\zs - x}
+\newcommand{\ethree}{x-\zm}
+\newcommand{\donut}{\Omega_{\A}(\delta_s,\Delta_s)}
+\newcommand{\donuttwo}{\Omega_{\A}(0,\delta_s)}
+% %\newcommand{\donutthree}{\Omega_{\A}(0,\Delta_s)}
+\newcommand{\donutfour}{\Omega_{\A}(0,\Delta_s')}
+\newcommand{\donutfive}{\Omega_{\A}(0,\delta_s')}
+%%
+\newcommand{\C}{\mathcal K}
+%%
+\newcommand{\inftynorm}[1]{\left|#1\right|_{\infty}} 
+%%
+\newcommand{\Mfull}{(\M+\eps\ball)\cap \C}
+\newcommand{\Mfullone}{(\M+\eps_1\ball)\cap \C}
+\newcommand{\Mepsone}{\M+\eps_1\ball}
+\newcommand{\Meps}{\M+\eps\ball}
+%%
+\newcommand{\BAt}{{\mathcal B}_{\tilde{\A}}} 
+\newcommand{\BAn}[1]{{\mathcal B}_{\A_{#1}}} 
+% \newcommand{\Au}{\A_{u}} 
+% \newcommand{\Ar}{\A_{r}} 
+% \newcommand{\Aur}{\A_{ur}} 
+% \newcommand{\Aru}{\A_{ru}} 
+% \newcommand{\Qcatch}{Q_j^c}
+% \newcommand{\Qthrow}{Q_j^t}
+\newcommand{\cball}{\ol{\mathbb{B}}}      
+\newcommand{\dist}{{\rm dist}}
+\newcommand{\reach}{\mathop{\rm reach}\nolimits}
+
+

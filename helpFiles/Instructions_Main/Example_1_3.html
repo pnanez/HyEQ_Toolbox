@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="iso-8859-1" ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">  
+<!--http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd-->  
+<html xmlns="http://www.w3.org/1999/xhtml"  
+> 
+<head><title></title> 
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /> 
+<meta name="generator" content="TeX4ht (http://www.tug.org/tex4ht/)" /> 
+<meta name="originator" content="TeX4ht (http://www.tug.org/tex4ht/)" /> 
+<!-- xhtml,html --> 
+<meta name="src" content="Example_1_3.tex" /> 
+<meta name="date" content="2016-04-08 01:37:00" /> 
+<link rel="stylesheet" type="text/css" href="Example_1_3.css" /> 
+</head><body 
+>
+   <h3 class="sectionHead"><span class="titlemark">1   </span> <a 
+ id="x1-10001"></a>Examples</h3>
+<!--l. 1--><p class="noindent" >The examples below illustrate the use of the Simulink implementation above.
+</p>
+   <div class="newtheorem">
+<!--l. 3--><p class="noindent" ><span class="head">
+<span 
+class="cmbx-10">Example</span><span 
+class="cmbx-10">&#x00A0;1.3</span> </span>(bouncing ball with input) <a 
+ id="x1-10013"></a>For the simulation of the bouncing ball system with a constant
+input and regular data given by
+</p>
+   <div class="eqnarray">
+   <center class="math-display" >
+<img 
+src="Example_1_30x.png" alt="                  [     ]
+         f (x,u) :=   x2   ,C := {(x,u) &#x2208; &#x211D;2 &#x00D7; &#x211D; | x &#x2265; u}                 (1)
+                    - &#x03B3;                        1
+        [   u   ]      {        2                   }
+g(x,u) :=   - &#x03BB;x2   ,D  :=  (x,u) &#x2208; &#x211D; &#x00D7; &#x211D; | x1 &#x2264; u , x2 &#x2264; 0                (2)
+" class="math-display"  /></center>
+</div>where <span 
+class="cmmi-10">&#x03B3; &#x003E; </span>0 is the gravity constant, <span 
+class="cmmi-10">u </span>is the input constant, and <span 
+class="cmmi-10">&#x03BB; </span><span 
+class="cmsy-10">&#x2208; </span>[0<span 
+class="cmmi-10">,</span>1) is the restitution coefficient. The
+MATLAB scripts in each of the function blocks of the implementation above are given as follows. An input was
+chosen to be <span 
+class="cmmi-10">u</span>(<span 
+class="cmmi-10">t,j</span>) = 0<span 
+class="cmmi-10">.</span>2 for all (<span 
+class="cmmi-10">t,j</span>). The constants for the bouncing ball system are <span 
+class="cmmi-10">&#x03B3; </span>= 9<span 
+class="cmmi-10">.</span>81 and
+<span 
+class="cmmi-10">&#x03BB; </span>= 0<span 
+class="cmmi-10">.</span>8.
+<!--l. 30--><p class="noindent" >The following procedure is used to simulate this example with <span 
+class="cmtt-10">HyEQsimulator.mdl</span>: </p>
+     <ul class="itemize1">
+     <li class="itemize"><span 
+class="cmtt-10">HyEQsimulator.mdl </span>is opened in MATLAB/Simulink.
+     </li>
+     <li class="itemize">The <span 
+class="cmti-10">Embedded MATLAB function blocks f, C, g, D </span>are edited by double-clicking on the block and
+     editing the script. In each embedded function block, parameters must be added as inputs and defined
+     as parameters by selecting <span 
+class="cmtt-10">Tools&#x003E;Edit Data/Ports</span>, and setting the scope to <span 
+class="cmtt-10">Parameter</span>. For this
+     example, <span 
+class="cmti-10">gamma </span>and <span 
+class="cmti-10">lambda </span>are defined in this way.
+     </li>
+     <li class="itemize">The initialization script <span 
+class="cmtt-10">initialization.m </span>is edited by opening the file and editing the script. The
+     flow time and jump horizons, <span 
+class="cmmi-10">T </span>and <span 
+class="cmmi-10">J </span>are defined as well as the initial conditions for the state vector,
+     <span 
+class="cmmi-10">x</span><sub><span 
+class="cmr-7">0</span></sub>, and input vector, <span 
+class="cmmi-10">u</span><sub><span 
+class="cmr-7">0</span></sub>, and a rule for jumps, <span 
+class="cmmi-10">rule</span>.
+     </li>
+     <li class="itemize">The postprocessing script <span 
+class="cmtt-10">postprocessing.m </span>is edited by opening the file and editing the script. Flows
+     and jumps may be plotted by calling the functions <span 
+class="cmti-10">plotflows </span>and <span 
+class="cmti-10">plotjumps</span>, respectively. The hybrid
+     arc may be plotted by calling the function <span 
+class="cmti-10">plotHybridArc</span>.
+                                                                                         
+                                                                                         
+     </li>
+     <li class="itemize">The  simulation  stop  time  and  other  simulation  parameters  are  set  to  the  values  defined  in
+     <span 
+class="cmtt-10">initialization.m </span>by selecting <span 
+class="cmtt-10">Simulation&#x003E;Configuration Parameters&#x003E;Solver </span>and inputting <span 
+class="cmmi-10">T</span>,
+     <span 
+class="cmmi-10">RelTol</span>, <span 
+class="cmmi-10">MaxStep</span>, etc..
+     </li>
+     <li class="itemize">The masked integrator system is double-clicked and the simulation horizons and initial conditions are
+     set as desired.
+     </li>
+     <li class="itemize">The block labeled <span 
+class="cmti-10">Double Click to Initialize </span>is double-clicked to initialize variables.
+     </li>
+     <li class="itemize">The simulation is run by clicking the run button or selecting <span 
+class="cmtt-10">Simulation&#x003E;Start</span>.
+     </li>
+     <li class="itemize">The block labeled <span 
+class="cmti-10">Double Click to Plot Solutions </span>is double-clicked to plot the desired solutions.</li></ul>
+   <hr class="figure" /><div class="figure" 
+><a 
+ id="x1-10051"></a> <a 
+ id="x1-1003r1"></a> <img 
+src="Example_1_31x.png" alt="PIC" class="graphics" width="211.38832pt" height="158.92044pt"  /><!--tex4ht:graphics  
+name="Example_1_31x.png" src="figures/Examples/FlowsAndJumps1.eps"  
+-->
+                                       <span 
+class="cmr-8">(a) Height</span>
+<a 
+ id="x1-1004r2"></a> <img 
+src="Example_1_32x.png" alt="PIC" class="graphics" width="211.38832pt" height="158.92044pt"  /><!--tex4ht:graphics  
+name="Example_1_32x.png" src="figures/Examples/FlowsAndJumps2.eps"  
+-->
+                   <span 
+class="cmr-8">(b) Velocity</span>
+<br /> <div class="caption" 
+><span class="id">Figure&#x00A0;1: </span><span  
+class="content">Solution of Example&#x00A0;<a 
+href="#x1-10013">1.3<!--tex4ht:ref: ex:bbinput --></a></span></div><!--tex4ht:label?: x1-10051 -->
+   </div><hr class="endfigure" />
+   <hr class="figure" /><div class="figure" 
+><a 
+ id="x1-10062"></a>
+                                                                                         
+                                                                                         
+<div class="center" 
+>
+<!--l. 82--><p class="noindent" >
+</p><!--l. 86--><p class="noindent" ><img 
+src="Example_1_33x.png" alt="PIC" class="graphics" width="375.80544pt" height="282.53006pt"  /><!--tex4ht:graphics  
+name="Example_1_33x.png" src="figures/Examples/HybridArc1.eps"  
+-->
+<br /> </p><div class="caption" 
+><span class="id">Figure&#x00A0;2: </span><span  
+class="content">Hybrid arc corresponding to a solution of Example&#x00A0;<a 
+href="#x1-10013">1.3<!--tex4ht:ref: ex:bbinput --></a>: height</span></div><!--tex4ht:label?: x1-10062 -->
+</div>
+   </div><hr class="endfigure" />
+<!--l. 25--><p class="noindent" ><span 
+class="cmr-7">1</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">function</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;xdot</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;f(x,</span><span 
+class="pcrr7t-">&#x00A0;u,</span><span 
+class="pcrr7t-">&#x00A0;gamma)</span></span><br 
+class="newline" /><span 
+class="cmr-7">2</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;state</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">3</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;x1</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;x(1);</span></span><br 
+class="newline" /><span 
+class="cmr-7">4</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;x2</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;x(2);</span></span><br 
+class="newline" /><span 
+class="cmr-7">5</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;flow</span><span 
+class="pcrr7t-">&#x00A0;map:</span><span 
+class="pcrr7t-">&#x00A0;xdot=f(x,u);</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">6</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;xdot</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;[x(2);</span><span 
+class="pcrr7t-">&#x00A0;gamma];</span></span><br 
+class="newline" />
+</p><!--l. 25--><p class="noindent" ><span 
+class="cmr-7">1</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">function</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;v</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;C(x,</span><span 
+class="pcrr7t-">&#x00A0;u)</span></span><br 
+class="newline" /><span 
+class="cmr-7">2</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;flow</span><span 
+class="pcrr7t-">&#x00A0;set</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">3</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">if</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;(x(1)</span><span 
+class="pcrr7t-">&#x00A0;&#x003E;=</span><span 
+class="pcrr7t-">&#x00A0;u(1))</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;flow</span><span 
+class="pcrr7t-">&#x00A0;condition</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">4</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;v</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;1;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;report</span><span 
+class="pcrr7t-">&#x00A0;flow</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">5</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">else</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">6</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;v</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;0;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;do</span><span 
+class="pcrr7t-">&#x00A0;not</span><span 
+class="pcrr7t-">&#x00A0;report</span><span 
+class="pcrr7t-">&#x00A0;flow</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">7</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">end</span></span><span class="verb"></span><br 
+class="newline" />
+</p><!--l. 25--><p class="noindent" ><span 
+class="cmr-7">1</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">function</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;xplus</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;g(x,</span><span 
+class="pcrr7t-">&#x00A0;u,</span><span 
+class="pcrr7t-">&#x00A0;lambda)</span></span><br 
+class="newline" /><span 
+class="cmr-7">2</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;jump</span><span 
+class="pcrr7t-">&#x00A0;map</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">3</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;xplus</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;[u(1);</span><span 
+class="pcrr7t-">&#x00A0;-lambda&#x22C6;x(2)];</span></span><br 
+class="newline" />
+</p><!--l. 25--><p class="noindent" ><span 
+class="cmr-7">1</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">function</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;v</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;D(x,</span><span 
+class="pcrr7t-">&#x00A0;u)</span></span><br 
+class="newline" /><span 
+class="cmr-7">2</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;jump</span><span 
+class="pcrr7t-">&#x00A0;set</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">3</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">if</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;(x(1)</span><span 
+class="pcrr7t-">&#x00A0;&#x003C;=</span><span 
+class="pcrr7t-">&#x00A0;u(1))</span><span 
+class="pcrr7t-">&#x00A0;&amp;&amp;</span><span 
+class="pcrr7t-">&#x00A0;(x(2)</span><span 
+class="pcrr7t-">&#x00A0;&#x003C;=</span><span 
+class="pcrr7t-">&#x00A0;0)</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;jump</span><span 
+class="pcrr7t-">&#x00A0;condition</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">4</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;v</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;1;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;report</span><span 
+class="pcrr7t-">&#x00A0;jump</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">5</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">else</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">6</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;v</span><span 
+class="pcrr7t-">&#x00A0;=</span><span 
+class="pcrr7t-">&#x00A0;0;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;do</span><span 
+class="pcrr7t-">&#x00A0;not</span><span 
+class="pcrr7t-">&#x00A0;report</span><span 
+class="pcrr7t-">&#x00A0;jump</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">7</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">end</span></span><span class="verb"></span><br 
+class="newline" />
+</p><!--l. 108--><p class="indent" >   A solution to the bouncing ball system from <span 
+class="cmmi-10">x</span>(0<span 
+class="cmmi-10">,</span>0) = [1<span 
+class="cmmi-10">,</span>0]<sup><span 
+class="cmsy-7">&#x22A4;</span></sup> and with <span 
+class="cmmi-10">T </span>= 10<span 
+class="cmmi-10">,J </span>= 20, <span 
+class="cmmi-10">rule </span>= 1, is depicted in
+Figure&#x00A0;<a 
+href="#x1-1003r1">1(a)<!--tex4ht:ref: fig:input-1 --></a> (height) and Figure&#x00A0;<a 
+href="#x1-1004r2">1(b)<!--tex4ht:ref: fig:input-2 --></a> (velocity). Both the projection onto <span 
+class="cmmi-10">t </span>and <span 
+class="cmmi-10">j </span>are shown. Figure&#x00A0;<a 
+href="#x1-10062">2<!--tex4ht:ref: fig:input-3 --></a> depicts the
+corresponding hybrid arc for the position state.
+</p><!--l. 112--><p class="indent" >   These simulations reflect the expected behavior of the bouncing ball model. Note the only difference between this
+example and the example of a bouncing ball without a constant input is that, in this example, the ball
+bounces on a platform at a height of the chosen input value 0<span 
+class="cmmi-10">.</span>2 rather than the ground at a value of
+0.
+</p><!--l. 115--><p class="indent" >   For MATLAB/Simulink files of this example, see Examples/Example_<a 
+href="#x1-10013">1.3<!--tex4ht:ref: ex:bbinput --></a>.
+                                                                                         _ 
+</p>
+   </div>
+    
+</body></html> 
+
+                                                                                         
+
+

@@ -1,0 +1,1272 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Example Template V001: [TITLE]</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-08-29"><meta name="DC.source" content="Template_to_publish.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h1>Example Template V001: [TITLE]</h1><!--introduction--><p>This template would help you to create html script to share your examples.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Biological example: synchronization of two fireflies [DESCRIPTION]</a></li><li><a href="#2">[EXTERNAL FIGURES]</a></li><li><a href="#4">Define initial conditions</a></li><li><a href="#5">Set simulation horizon</a></li><li><a href="#6">Set rule for jumps and ODE solver options</a></li><li><a href="#7">Simulate using the HyEQSolver script</a></li><li><a href="#8">plot solution</a></li></ul><h2>Called Functions</h2><ul><li><a href="#C_ex1_2">C_ex1_2 </a></li><li><a href="#D_ex1_2">D_ex1_2 </a></li><li><a href="#f_ex1_2">f_ex1_2 </a></li><li><a href="#g_ex1_2">g_ex1_2 </a></li><li><a href="#initialization_ex1_7">initialization_ex1_7 </a></li><li><a href="#HyEQsolver">HyEQsolver </a></li><li><a href="#plotHybridArc">plotHybridArc </a></li><li><a href="#plotflows">plotflows </a></li><li><a href="#plotjumps">plotjumps </a></li></ul></div><h2>Biological example: synchronization of two fireflies [DESCRIPTION]<a name="1"></a></h2><p>Consider a biological example of the synchronization of two fireflies flashing. The fireflies can be modeled mathematically as periodic oscillators which tend to synchronize their flashing until they are flashing in phase with each other. A state value of <img src="Template_to_publish_eq06226.png" alt="$\tau_i=1$"> corresponds to a flash, and after each flash, the firefly automatically resets its internal timer (periodic cycle) to <img src="Template_to_publish_eq38750.png" alt="$\pi=0$">.  The synchronization of the fireflies can be modeled as an interconnection of two hybrid systems because every time one firefly flashes, the other firefly notices and jumps ahead in its internal timer <img src="Template_to_publish_eq89224.png" alt="$\tau$"> by <img src="Template_to_publish_eq64923.png" alt="$(1+\varepsilon) \epsilon$">, where <img src="Template_to_publish_eq55349.png" alt="$\varepsilon$"> is a biologically determined coefficient. This happens until eventually both fireflies synchronize their internal timers and are flashing simultaneously.</p><h2>[EXTERNAL FIGURES]<a name="2"></a></h2><p><img vspace="5" hspace="5" src="fireflies.png" alt=""> </p><p>The only event that affects the flashing of a firefly is the flashing of the other firefly. The interconnection diagram can be seen in the previous figure</p><h2>Define initial conditions<a name="4"></a></h2><pre class="codeinput">initialization_ex1_7
+
+sim(<span class="string">'Example1_7'</span>)
+
+open_system(<span class="string">'Example1_7/Firefly 1/flow map f'</span>,<span class="string">'OpenFcn'</span>)
+
+x1_0 = 1;
+x2_0 = 0;
+x0   = [x1_0; x2_0];
+</pre><h2>Set simulation horizon<a name="5"></a></h2><pre class="codeinput">TSPAN = [0 10];
+JSPAN = [0 20];
+</pre><h2>Set rule for jumps and ODE solver options<a name="6"></a></h2><p>rule = 1 -&gt; priority for jumps</p><p>rule = 2 -&gt; priority for flows</p><p>set the maximum step length. At each run of the integrator the option 'MaxStep' is set to (time length of last integration)*maxStepCoefficient.  Default value = 0.1</p><pre class="codeinput">rule               = 1;
+
+options            = odeset(<span class="string">'RelTol'</span>,1e-6,<span class="string">'MaxStep'</span>,.1);
+
+maxStepCoefficient = 0.1;
+</pre><h2>Simulate using the HyEQSolver script<a name="7"></a></h2><p>Given the matlab functions that models the flow map, jump map, flow set and jump set (f_ex1_2, g_ex1_2, C_ex1_2, and D_ex1_2 respectively)</p><pre class="codeinput">[t j x] = HyEQsolver( @f_ex1_2,@g_ex1_2,@C_ex1_2,@D_ex1_2,<span class="keyword">...</span>
+    x0,TSPAN,JSPAN,rule,options);
+</pre><pre class="codeoutput">Completed: 100%
+Done
+</pre><h2>plot solution<a name="8"></a></h2><pre class="codeinput">figure(1) <span class="comment">% position</span>
+clf
+subplot(2,1,1),plotflows(t,j,x(:,1))
+grid <span class="string">on</span>
+ylabel(<span class="string">'x1'</span>)
+
+subplot(2,1,2),plotjumps(t,j,x(:,1))
+grid <span class="string">on</span>
+ylabel(<span class="string">'x1'</span>)
+
+figure(2) <span class="comment">% velocity</span>
+clf
+subplot(2,1,1),plotflows(t,j,x(:,2))
+grid <span class="string">on</span>
+ylabel(<span class="string">'x2'</span>)
+
+subplot(2,1,2),plotjumps(t,j,x(:,2))
+grid <span class="string">on</span>
+ylabel(<span class="string">'x2'</span>)
+
+<span class="comment">% plot hybrid arc</span>
+
+plotHybridArc(t,j,x)
+xlabel(<span class="string">'j'</span>)
+ylabel(<span class="string">'t'</span>)
+zlabel(<span class="string">'x1'</span>)
+</pre><img vspace="5" hspace="5" src="Template_to_publish_01.png" alt=""> <img vspace="5" hspace="5" src="Template_to_publish_02.png" alt=""> <img vspace="5" hspace="5" src="Template_to_publish_03.png" alt=""> <p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+##### SOURCE BEGIN #####
+%% Example Template V001: [TITLE]
+% This template would help you to create html script to share your examples. 
+
+
+
+%% Biological example: synchronization of two fireflies [DESCRIPTION]
+% Consider a biological example of the synchronization of two fireflies
+% flashing. The fireflies can be modeled mathematically as periodic
+% oscillators which tend to synchronize their flashing until they are
+% flashing in phase with each other. A state value of $\tau_i=1$
+% corresponds to a flash, and after each flash, the firefly automatically
+% resets its internal timer (periodic cycle) to $\pi=0$.  The
+% synchronization of the fireflies can be modeled as an interconnection of
+% two hybrid systems because every time one firefly flashes, the other
+% firefly notices and jumps ahead in its internal timer $\tau$ by
+% $(1+\varepsilon) \epsilon$, where $\varepsilon$ is a biologically determined
+% coefficient. This happens until eventually both fireflies synchronize
+% their internal timers and are flashing simultaneously.
+%% [EXTERNAL FIGURES]
+% 
+% <<fireflies.png>>
+% 
+
+%%
+% The only event that affects the flashing of a firefly is the flashing of
+% the other firefly. The interconnection diagram can be seen in the
+% previous figure
+
+
+%% Define initial conditions
+initialization_ex1_7
+
+sim('Example1_7')
+
+open_system('Example1_7/Firefly 1/flow map f','OpenFcn')
+
+x1_0 = 1;
+x2_0 = 0;
+x0   = [x1_0; x2_0];
+
+%% Set simulation horizon
+TSPAN = [0 10];
+JSPAN = [0 20];
+
+%% Set rule for jumps and ODE solver options
+%
+% rule = 1 -> priority for jumps
+%
+% rule = 2 -> priority for flows
+%
+% set the maximum step length. At each run of the
+% integrator the option 'MaxStep' is set to 
+% (time length of last integration)*maxStepCoefficient.
+%  Default value = 0.1
+
+rule               = 1;
+
+options            = odeset('RelTol',1e-6,'MaxStep',.1);
+
+maxStepCoefficient = 0.1;  
+
+%% Simulate using the HyEQSolver script
+% Given the matlab functions that models the flow map, jump map, 
+% flow set and jump set (f_ex1_2, g_ex1_2, C_ex1_2, and D_ex1_2
+% respectively)
+
+[t j x] = HyEQsolver( @f_ex1_2,@g_ex1_2,@C_ex1_2,@D_ex1_2,...
+    x0,TSPAN,JSPAN,rule,options);
+
+%% plot solution
+
+figure(1) % position
+clf
+subplot(2,1,1),plotflows(t,j,x(:,1))
+grid on
+ylabel('x1')
+
+subplot(2,1,2),plotjumps(t,j,x(:,1))
+grid on
+ylabel('x1')
+
+figure(2) % velocity
+clf
+subplot(2,1,1),plotflows(t,j,x(:,2))
+grid on
+ylabel('x2')
+
+subplot(2,1,2),plotjumps(t,j,x(:,2))
+grid on
+ylabel('x2')
+
+% plot hybrid arc
+
+plotHybridArc(t,j,x)
+xlabel('j')
+ylabel('t')
+zlabel('x1')
+
+##### SOURCE END #####
+--></body></html>
+<a name="C_ex1_2"></a>
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>C_ex1_2</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-08-29"><meta name="DC.source" content="C_ex1_2.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="keyword">function</span> [value discrete] = C(x)
+<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">% Matlab M-file                Author: Torstein Ingebrigtsen B&#65533;&#65533;</span>
+<span class="comment">%</span>
+<span class="comment">% Description: Flow set</span>
+<span class="comment">% Return C if outside of D, and 1 if inside C</span>
+<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+x1 = x(1);
+
+<span class="keyword">if</span> x1 &gt;= 0
+    value = 1;
+<span class="keyword">else</span>
+    value = 0;
+<span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+\n
+--></body></html>
+<a name="D_ex1_2"></a>
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>D_ex1_2</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-08-29"><meta name="DC.source" content="D_ex1_2.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="keyword">function</span> inside = D(x)
+<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">% Matlab M-file                Author: Torstein Ingebrigtsen B&#65533;&#65533;</span>
+<span class="comment">%</span>
+<span class="comment">% Description: Jump set</span>
+<span class="comment">% Return 0 if outside of D, and 1 if inside D</span>
+<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+x1 = x(1);
+x2 = x(2);
+<span class="keyword">if</span> (x1 &lt;= 0 &amp;&amp; x2 &lt;= 0)
+    inside = 1;
+<span class="keyword">else</span>
+    inside = 0;
+<span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+\n
+--></body></html>
+<a name="f_ex1_2"></a>
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>f_ex1_2</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-08-29"><meta name="DC.source" content="f_ex1_2.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="keyword">function</span> xdot = f(x)
+<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">% Matlab M-file                Author: Torstein Ingebrigtsen B??</span>
+<span class="comment">%</span>
+<span class="comment">% Project: Simulation of a hybrid system (bouncing ball)</span>
+<span class="comment">%</span>
+<span class="comment">% Description: Flow map</span>
+<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+
+<span class="comment">% state</span>
+x1 = x(1);
+x2 = x(2);
+
+<span class="comment">% differential equations</span>
+gamma = -9.81;
+xdot = [x2 ; gamma];
+<span class="keyword">end</span>
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+\n
+--></body></html>
+<a name="g_ex1_2"></a>
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>g_ex1_2</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-08-29"><meta name="DC.source" content="g_ex1_2.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="keyword">function</span> xplus = g(x)
+<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">% Matlab M-file               Author: Torstein Ingebrigtsen B??</span>
+<span class="comment">%</span>
+<span class="comment">% Project: Simulation of a hybrid system (bouncing ball)</span>
+<span class="comment">%</span>
+<span class="comment">% Description: Jump map</span>
+<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+
+<span class="comment">% state</span>
+x1 = x(1);
+x2 = x(2);
+lambda = 0.8;
+xplus = [-x1 ; -lambda*x2];
+<span class="keyword">end</span>
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+\n
+--></body></html>
+<a name="initialization_ex1_7"></a>
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>initialization_ex1_7</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-08-29"><meta name="DC.source" content="initialization_ex1_7.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">% Matlab M-file       Project: HyEQ Toolbox  @ Hybrid Dynamics and Control</span>
+<span class="comment">% Lab, http://www.u.arizona.edu/~sricardo/index.php?n=Main.Software</span>
+<span class="comment">%</span>
+<span class="comment">% Filename: initialization.m</span>
+<span class="comment">%</span>
+<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+
+<span class="comment">%initialization for the synchronization of fireflies example</span>
+
+<span class="comment">% clear all</span>
+
+<span class="comment">% initial conditions</span>
+x1_0 = [.5];
+x2_0 = [0];
+
+<span class="comment">%biological coefficient for jump in periodic cycle</span>
+e = 0.3;
+
+<span class="comment">% simulation horizon</span>
+T = 15;
+J = 15;
+
+<span class="comment">% rule for jumps</span>
+<span class="comment">% rule = 1 -&gt; priority for jumps</span>
+<span class="comment">% rule = 2 -&gt; priority for flows</span>
+<span class="comment">% rule = 3 -&gt; no priority, random selection when simultaneous conditions</span>
+rule = 1;
+
+<span class="comment">%solver tolerances</span>
+RelTol = 1e-8;
+MaxStep = .005;
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+\n
+--></body></html>
+<a name="HyEQsolver"></a>
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>HyEQsolver</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-08-29"><meta name="DC.source" content="HyEQsolver.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">% Matlab M-file       Project: HyEQ Toolbox  @ Hybrid Dynamics and Control</span>
+<span class="comment">% Lab, http://www.u.arizona.edu/~sricardo/index.php?n=Main.Software</span>
+<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="keyword">function</span> [t j x] = HyEQsolver(f,g,C,D,x0,TSPAN,JSPAN,rule,options)
+<span class="comment">% HyEQsolver solves hybrid equations</span>
+<span class="comment">%   [t j x] = HyEQsolver(f,g,C,D,x0,TSPAN,JSPAN) computes solutions to the</span>
+<span class="comment">%   hybrid equations</span>
+<span class="comment">%</span>
+<span class="comment">%   \dot{x} = f(x)  x \in C</span>
+<span class="comment">%   x^+ = g(x)  x \in D</span>
+<span class="comment">%</span>
+<span class="comment">%   where x is the state, f is the flow map, g is the jump map, C is the</span>
+<span class="comment">%   flow set, and D is the jump set. It outputs the state trajectory (t,j)</span>
+<span class="comment">%   -&gt; x(t,j), where t is the flow time parameter and j is the jump</span>
+<span class="comment">%   parameter.</span>
+<span class="comment">%</span>
+<span class="comment">%   x0 defines the initial condition for the state.</span>
+<span class="comment">%</span>
+<span class="comment">%   TSPAN = [TSTART TFINAL] is the time interval. JSPAN = [JSTART JSTOP] is</span>
+<span class="comment">%       the interval for discrete jumps. The algorithm stop when the first stop</span>
+<span class="comment">%       condition is reached.</span>
+<span class="comment">%</span>
+<span class="comment">%   rule for jumps</span>
+<span class="comment">%       rule = 1 (default) -&gt; priority for jumps</span>
+<span class="comment">%       rule = 2 -&gt; priority for flows</span>
+<span class="comment">%</span>
+<span class="comment">%   options - options for the solver see odeset f.ex.</span>
+<span class="comment">%       options = odeset('RelTol',1e-6);</span>
+
+<span class="keyword">if</span> ~exist(<span class="string">'rule'</span>,<span class="string">'var'</span>)
+    rule = 1;
+<span class="keyword">end</span>
+
+<span class="keyword">if</span> ~exist(<span class="string">'options'</span>,<span class="string">'var'</span>)
+    options = odeset();
+<span class="keyword">end</span>
+
+<span class="comment">% simulation horizon</span>
+tstart = TSPAN(1);
+tfinal = TSPAN(end);
+
+<span class="comment">% simulate</span>
+options = odeset(options,<span class="string">'Events'</span>,@(t,x) zeroevents(x,C,D,rule));
+tout = tstart;
+xout = x0.';
+jout = JSPAN(1);
+j = jout(end);
+
+<span class="comment">% Jump if jump is prioritized:</span>
+<span class="keyword">if</span> rule == 1
+    <span class="keyword">while</span> (j&lt;JSPAN(end))
+        <span class="comment">% Check if value it is possible to jump current position</span>
+        insideD = D(xout(end,:).');
+        <span class="keyword">if</span> insideD == 1
+            [j tout jout xout] = jump(g,j,tout,jout,xout);
+        <span class="keyword">else</span>
+            <span class="keyword">break</span>;
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+fprintf(<span class="string">'Completed: %3.0f%%'</span>,0);
+<span class="keyword">while</span> (j &lt; JSPAN(end) &amp;&amp; tout(end) &lt; TSPAN(end))
+    <span class="comment">% Check if it is possible to flow from current position</span>
+    insideC = C(xout(end,:).');
+    <span class="keyword">if</span> insideC == 1
+        [t,x] = ode45(@(t,x) f(x),[tout(end) tfinal],xout(end,:).', options);
+        nt = length(t);
+        tout = [tout; t];
+        xout = [xout; x];
+        jout = [jout; j*ones(1,nt)'];
+    <span class="keyword">end</span>
+
+    <span class="comment">%Check if it is possible to jump</span>
+    insideD = D(xout(end,:).');
+    <span class="keyword">if</span> insideD == 0
+        <span class="keyword">break</span>;
+    <span class="keyword">else</span>
+        <span class="keyword">if</span> rule == 1
+            <span class="keyword">while</span> (j&lt;JSPAN(end))
+                <span class="comment">% Check if it is possible to jump from current position</span>
+                insideD = D(xout(end,:).');
+                <span class="keyword">if</span> insideD == 1
+                    [j tout jout xout] = jump(g,j,tout,jout,xout);
+                <span class="keyword">else</span>
+                    <span class="keyword">break</span>;
+                <span class="keyword">end</span>
+            <span class="keyword">end</span>
+        <span class="keyword">else</span>
+            [j tout jout xout] = jump(g,j,tout,jout,xout);
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+    fprintf(<span class="string">'\b\b\b\b%3.0f%%'</span>,max(100*j/JSPAN(end),100*tout(end)/TSPAN(end)));
+<span class="keyword">end</span>
+t = tout;
+x = xout;
+j = jout;
+fprintf(<span class="string">'\nDone\n'</span>);
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> [value,isterminal,direction] = zeroevents(x,C,D,rule )
+isterminal = 1;
+direction = -1;
+insideC = C(x);
+<span class="keyword">if</span> insideC == 0
+    <span class="comment">% Outside of C</span>
+    value = 0;
+<span class="keyword">elseif</span> (rule == 1)
+    <span class="comment">% If priority for jump, stop if inside D</span>
+    insideD = D(x);
+    <span class="keyword">if</span> insideD == 1
+        <span class="comment">% Inside D, inside C</span>
+        value = 0;
+    <span class="keyword">else</span>
+        <span class="comment">% outside D, inside C</span>
+        value = 1;
+    <span class="keyword">end</span>
+<span class="keyword">else</span>
+    <span class="comment">% If inside C and not priority for jump or priority of jump and outside</span>
+    <span class="comment">% of D</span>
+    value = 1;
+<span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> [j tout jout xout] = jump(g,j,tout,jout,xout)
+<span class="comment">% Jump</span>
+j = j+1;
+y = g(xout(end,:).');
+<span class="comment">% Save results</span>
+tout = [tout; tout(end)];
+xout = [xout; y.'];
+jout = [jout; j];
+<span class="keyword">end</span>
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+\n
+--></body></html>
+<a name="plotHybridArc"></a>
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>plotHybridArc</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-08-29"><meta name="DC.source" content="plotHybridArc.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="keyword">function</span> plotHybridArc(t,j,x)
+<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">% Matlab M-file       Project: HyEQ Toolbox  @ Hybrid Dynamics and Control</span>
+<span class="comment">% Lab, http://www.u.arizona.edu/~sricardo/index.php?n=Main.Software</span>
+<span class="comment">%</span>
+<span class="comment">% Filename: plotHybridArc.m</span>
+<span class="comment">%</span>
+<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+
+<span class="comment">% max (t,j) in simulation</span>
+T = t(length(t));
+J = j(length(j));
+
+<span class="comment">% variables</span>
+Xarc = cell(J+1,1);
+Tarc = cell(J+1,1);
+Jarc = cell(J+1,1);
+i = 1;
+k = 1;
+<span class="keyword">while</span> i &lt;= length(j),
+   jcurrent = j(i);
+   l = 0;
+   clear <span class="string">xk</span> <span class="string">tk</span> <span class="string">jk</span>;
+   <span class="keyword">if</span> (jcurrent &lt; J)
+      <span class="keyword">while</span> (j(i+l) == jcurrent)
+        xk(l+1) = x(i+l);
+	tk(l+1) = t(i+l);
+	jk(l+1) = j(i+l);
+        l = l+1;
+      <span class="keyword">end</span>
+   <span class="keyword">else</span>
+      <span class="keyword">for</span> l=0:length(j)-i,
+        xk(l+1) = x(i+l);
+	tk(l+1) = t(i+l);
+	jk(l+1) = j(i+l);
+      <span class="keyword">end</span>
+      l = length(j)-i+1;
+   <span class="keyword">end</span>
+   Xarc(jcurrent+1) = {xk};
+   Tarc(jcurrent+1) = {tk};
+   Jarc(jcurrent+1) = {jk};
+   jcurrent;
+   i = i+l;
+<span class="keyword">end</span>
+
+gca = figure();
+clf;
+<span class="comment">%for i = 1:jnew(jSize),</span>
+<span class="keyword">for</span> i = 1:J+1,
+   xith = cell2mat(Xarc(i));
+   tith = cell2mat(Tarc(i));
+   tmax = tith(length(tith));
+   jith = cell2mat(Jarc(i));
+   jmax = jith(length(jith));
+   plot3(jith,tith,xith,<span class="string">'b--'</span>,<span class="string">'LineWidth'</span>,1)
+   hold <span class="string">on</span>;
+   plot3(jith,tith,zeros(1,length(tith)),<span class="string">'r'</span>,<span class="string">'LineWidth'</span>,1)
+<span class="keyword">end</span>
+
+axis <span class="string">equal</span>
+grid <span class="string">on</span>
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+\n
+--></body></html>
+<a name="plotflows"></a>
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>plotflows</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-08-29"><meta name="DC.source" content="plotflows.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="keyword">function</span> plotflows(t,j,x)
+<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">% Matlab M-file       Project: HyEQ Toolbox  @ Hybrid Dynamics and Control</span>
+<span class="comment">% Lab, http://www.u.arizona.edu/~sricardo/index.php?n=Main.Software</span>
+<span class="comment">%</span>
+<span class="comment">% Filename: plotflows.m</span>
+<span class="comment">%</span>
+<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+
+<span class="comment">% max (t,j) in simulation</span>
+T = t(length(t));
+J = j(length(j));
+
+<span class="comment">% variables</span>
+Xarc = cell(J+1,1);
+Tarc = cell(J+1,1);
+Jarc = cell(J+1,1);
+i = 1;
+k = 1;
+<span class="keyword">while</span> i &lt;= length(j),
+   jcurrent = j(i);
+   l = 0;
+   clear <span class="string">xk</span> <span class="string">tk</span> <span class="string">jk</span>;
+   <span class="keyword">if</span> (jcurrent &lt; J)
+      <span class="keyword">while</span> (j(i+l) == jcurrent)
+        xk(l+1) = x(i+l);
+	tk(l+1) = t(i+l);
+	jk(l+1) = j(i+l);
+        l = l+1;
+      <span class="keyword">end</span>
+   <span class="keyword">else</span>
+      <span class="keyword">for</span> l=0:length(j)-i,
+        xk(l+1) = x(i+l);
+	tk(l+1) = t(i+l);
+	jk(l+1) = j(i+l);
+      <span class="keyword">end</span>
+      l = length(j)-i+1;
+   <span class="keyword">end</span>
+   Xarc(jcurrent+1) = {xk};
+   Tarc(jcurrent+1) = {tk};
+   Jarc(jcurrent+1) = {jk};
+   jcurrent;
+   i = i+l;
+<span class="keyword">end</span>
+
+hold <span class="string">on</span>
+
+xith = cell2mat(Xarc(1));
+tith = cell2mat(Tarc(1));
+xprev = xith(length(xith));
+tprev = tith(length(tith));
+<span class="keyword">for</span> i = 1:J+1,
+   xith = cell2mat(Xarc(i));
+   tith = cell2mat(Tarc(i));
+   tmax = tith(length(tith));
+   jith = cell2mat(Jarc(i));
+   jmax = jith(length(jith));
+   <span class="keyword">if</span>(length(jith)==1)
+       plot(tith,xith,<span class="string">'b*'</span>)
+   <span class="keyword">else</span>
+       aa=length(tith);
+       tith = tith(2:aa);
+       aa=length(xith);
+       xith = xith(2:aa);
+       plot(tith,xith,<span class="string">'b'</span>)
+   <span class="keyword">end</span>
+   hold <span class="string">on</span>
+   <span class="keyword">if</span> (i&gt;=2) &amp; (i&lt;=J+1)
+       xpost = xith(1);
+       tpost = tith(1);
+       pPrev = [tprev, xprev];
+       pPost = [tpost, xpost];
+       plot([tprev tprev],[xprev xpost],<span class="string">'r--'</span>);
+       xprev = xith(length(xith));
+       tprev = tith(length(tith));
+   <span class="keyword">end</span>
+   hold <span class="string">on</span>
+<span class="keyword">end</span>
+
+xlabel(<span class="string">'flows [t]'</span>)
+set(gca,<span class="string">'Box'</span>,<span class="string">'on'</span>)
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+\n
+--></body></html>
+<a name="plotjumps"></a>
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>plotjumps</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-08-29"><meta name="DC.source" content="plotjumps.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="keyword">function</span> plotjumps(t,j,x)
+<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">% Matlab M-file       Project: HyEQ Toolbox  @ Hybrid Dynamics and Control</span>
+<span class="comment">% Lab, http://www.u.arizona.edu/~sricardo/index.php?n=Main.Software</span>
+<span class="comment">%</span>
+<span class="comment">% Filename: plotjumps.m</span>
+<span class="comment">%</span>
+<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+
+<span class="comment">% max (t,j) in simulation</span>
+T = t(length(t));
+J = j(length(j));
+
+<span class="comment">% variables</span>
+Xarc = cell(J+1,1);
+Tarc = cell(J+1,1);
+Jarc = cell(J+1,1);
+i = 1;
+k = 1;
+<span class="keyword">while</span> i &lt;= length(j),
+   jcurrent = j(i);
+   l = 0;
+   clear <span class="string">xk</span> <span class="string">tk</span> <span class="string">jk</span>;
+   <span class="keyword">if</span> (jcurrent &lt; J)
+      <span class="keyword">while</span> (j(i+l) == jcurrent)
+        xk(l+1) = x(i+l);
+	tk(l+1) = t(i+l);
+	jk(l+1) = j(i+l);
+        l = l+1;
+      <span class="keyword">end</span>
+   <span class="keyword">else</span>
+      <span class="keyword">for</span> l=0:length(j)-i,
+        xk(l+1) = x(i+l);
+	tk(l+1) = t(i+l);
+	jk(l+1) = j(i+l);
+      <span class="keyword">end</span>
+      l = length(j)-i+1;
+   <span class="keyword">end</span>
+   Xarc(jcurrent+1) = {xk};
+   Tarc(jcurrent+1) = {tk};
+   Jarc(jcurrent+1) = {jk};
+   jcurrent;
+   i = i+l;
+<span class="keyword">end</span>
+
+hold <span class="string">on</span>
+
+<span class="keyword">for</span> i = 1:J+1,
+   xith = cell2mat(Xarc(i));
+   tith = cell2mat(Tarc(i));
+   tmax = tith(length(tith));
+   jith = cell2mat(Jarc(i));
+   jmax = jith(length(jith));
+   xprev = xith(1);
+   jprev = jith(1);
+   xpost = xith(length(xith));
+   jpost = jith(length(jith));
+   pPrev = [jprev, xprev];
+   pPost = [jpost, xpost];
+   plot(jprev,xprev,<span class="string">'r*'</span>);
+   hold <span class="string">on</span>
+   plot(jpost,xpost,<span class="string">'r*'</span>);
+   plot(jprev*ones(1,length(tith)),xith,<span class="string">'b--'</span>);
+<span class="keyword">end</span>
+
+set(gca,<span class="string">'XTick'</span>,linspace(0,J,J+1))
+set(gca,<span class="string">'Box'</span>,<span class="string">'on'</span>)
+grid <span class="string">on</span>
+xlabel(<span class="string">'jumps [j]'</span>)
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+\n
+--></body></html>

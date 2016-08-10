@@ -1,0 +1,28 @@
+% This file was automatically created from the m-file 
+% "m2tex.m" written by USL. 
+% The fontencoding in this file is UTF-8. 
+%  
+% You will need to include the following two packages in 
+% your LaTeX-Main-File. 
+%  
+% \usepackage{color} 
+% \usepackage{fancyvrb} 
+%  
+% It is advised to use the following option for Inputenc 
+% \usepackage[utf8]{inputenc} 
+%  
+  
+% definition of matlab colors: 
+\definecolor{mblue}{rgb}{0,0,1} 
+\definecolor{mgreen}{rgb}{0.13333,0.5451,0.13333} 
+\definecolor{mred}{rgb}{0.62745,0.12549,0.94118} 
+\definecolor{mgrey}{rgb}{0.5,0.5,0.5} 
+\definecolor{mdarkgrey}{rgb}{0.25,0.25,0.25} 
+  
+\DefineShortVerb[fontfamily=courier,fontseries=m]{\$} 
+\DefineShortVerb[fontfamily=courier,fontseries=b]{\#} 
+  
+\noindent                                         \hspace*{-1.6em}{\scriptsize 1}$  $\color{mblue}$function$\color{black}$ run$\\ \hspace*{-1.6em}{\scriptsize 2}$  $\color{mgreen}$% initial conditions$\color{black}$$\\ \hspace*{-1.6em}{\scriptsize 3}$  x1_0 = 1;$\\ \hspace*{-1.6em}{\scriptsize 4}$  x2_0 = 0;$\\ \hspace*{-1.6em}{\scriptsize 5}$  x0 = [x1_0;x2_0];$\\ \hspace*{-1.6em}{\scriptsize 6}$  $\color{mgreen}$% simulation horizon$\color{black}$$\\ \hspace*{-1.6em}{\scriptsize 7}$  TSPAN=[0 $\color{mred}$10];$\color{black}$$\\ \hspace*{-1.6em}{\scriptsize 8}$  JSPAN = [0 20];$\\ \hspace*{-1.6em}{\scriptsize 9}$  $\color{mgreen}$% rule for jumps$\color{black}$$\\ \hspace*{-2em}{\scriptsize 10}$  $\color{mgreen}$% rule = 1 -> priority for jumps$\color{black}$$\\ \hspace*{-2em}{\scriptsize 11}$  $\color{mgreen}$% rule = 2 -> priority for flows$\color{black}$$\\ \hspace*{-2em}{\scriptsize 12}$  rule = 1;$\\ \hspace*{-2em}{\scriptsize 13}$  options = odeset($\color{mred}$'RelTol'$\color{black}$,1e-6,$\color{mred}$'MaxStep'$\color{black}$,.1);$\\ \hspace*{-2em}{\scriptsize 14}$  $\color{mgreen}$% simulate$\color{black}$$\\ \hspace*{-2em}{\scriptsize 15}$  [t,j,x] = HyEQsolver(@f,@g,@C,@D,x0,TSPAN,JSPAN,rule,options);$\\ \hspace*{-2em}{\scriptsize 16}$  $\color{mgreen}$% plot solution$\color{black}$$\\ \hspace*{-2em}{\scriptsize 17}$  figure(1) $\color{mgreen}$% position$\color{black}$$\\ \hspace*{-2em}{\scriptsize 18}$  clf$\\ \hspace*{-2em}{\scriptsize 19}$  subplot(2,1,1),plotflows(t,j,x(:,1))$\\ \hspace*{-2em}{\scriptsize 20}$  grid $\color{mred}$on$\color{black}$$\\ \hspace*{-2em}{\scriptsize 21}$  ylabel($\color{mred}$'x1'$\color{black}$)$\\ \hspace*{-2em}{\scriptsize 22}$  subplot(2,1,2),plotjumps(t,j,x(:,1))$\\ \hspace*{-2em}{\scriptsize 23}$  grid $\color{mred}$on$\color{black}$$\\ \hspace*{-2em}{\scriptsize 24}$  ylabel($\color{mred}$'x1'$\color{black}$)$\\ \hspace*{-2em}{\scriptsize 25}$  figure(2) $\color{mgreen}$% velocity$\color{black}$$\\ \hspace*{-2em}{\scriptsize 26}$  clf$\\ \hspace*{-2em}{\scriptsize 27}$  subplot(2,1,1),plotflows(t,j,x(:,2))$\\ \hspace*{-2em}{\scriptsize 28}$  grid $\color{mred}$on$\color{black}$$\\ \hspace*{-2em}{\scriptsize 29}$  ylabel($\color{mred}$'x2'$\color{black}$)$\\ \hspace*{-2em}{\scriptsize 30}$  subplot(2,1,2),plotjumps(t,j,x(:,2))$\\ \hspace*{-2em}{\scriptsize 31}$  grid $\color{mred}$on$\color{black}$$\\ \hspace*{-2em}{\scriptsize 32}$  ylabel($\color{mred}$'x2'$\color{black}$)$\\ \hspace*{-2em}{\scriptsize 33}$  $\color{mgreen}$% plot hybrid arc$\color{black}$$\\ \hspace*{-2em}{\scriptsize 34}$  figure(3)$\\ \hspace*{-2em}{\scriptsize 35}$  plotHybridArc(t,j,x)$\\ \hspace*{-2em}{\scriptsize 36}$  xlabel($\color{mred}$'j'$\color{black}$)$\\ \hspace*{-2em}{\scriptsize 37}$  ylabel($\color{mred}$'t'$\color{black}$)$\\ \hspace*{-2em}{\scriptsize 38}$  zlabel($\color{mred}$'x1'$\color{black}$)$\\ \hspace*{-2em}{\scriptsize 39}$  grid $\color{mred}$on$\color{black}$$\\ \hspace*{-2em}{\scriptsize 40}$  view(37.5,30)$\\ 
+  
+\UndefineShortVerb{\$} 
+\UndefineShortVerb{\#}

@@ -1,0 +1,185 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>run_HyEQsolver_Help</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-04-03"><meta name="DC.source" content="run_HyEQsolver_Help.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Example: Bouncing ball with Lite HyEQ Solver</a></li><li><a href="#2">Define initial conditions</a></li><li><a href="#3">Set simulation horizon</a></li><li><a href="#4">Set rule for jumps and ODE solver options</a></li><li><a href="#5">Simulate using the HyEQSolver script</a></li><li><a href="#6">plot solution</a></li></ul></div><h2>Example: Bouncing ball with Lite HyEQ Solver<a name="1"></a></h2><p>Consider the hybrid system model for the bouncing ball with data given in Example 1.2. For this example, we consider the ball to be bouncing on a floor at zero height. The constants for the bouncing ball system are <img src="run_HyEQsolver_Help_eq44653.png" alt="$\gamma=9.81$"> and <img src="run_HyEQsolver_Help_eq32229.png" alt="$\lambda=0.8$">. The following procedure is used to simulate this example in the Lite HyEQ Solver:</p><div><ul><li>Inside the MATLAB script run_ex1_2.m, initial conditions, simulation horizons, a rule for jumps, ode solver options, and a step size coefficient are defined. The function HyEQsolver.m is called in order to run the simulation, and a script for plotting solutions is included.</li><li>Then the MATLAB functions f_ex1_2.m, C_ex1_2.m, g_ex1_2.m, D_ex1_2.m are edited according to the data given below.</li><li>Finally, the simulation is run by clicking the run button in run_ex1_2.m or by calling run_ex1_2.m in the MATLAB command window.</li></ul></div><p>For further information, type in the command window:</p><pre class="codeinput">helpview([<span class="string">'Example_1_2.html'</span>]);
+</pre><h2>Define initial conditions<a name="2"></a></h2><pre class="codeinput">x1_0 = 1;
+x2_0 = 0;
+x0   = [x1_0; x2_0];
+</pre><h2>Set simulation horizon<a name="3"></a></h2><pre class="codeinput">TSPAN = [0 10];
+JSPAN = [0 20];
+</pre><h2>Set rule for jumps and ODE solver options<a name="4"></a></h2><p>rule = 1 -&gt; priority for jumps</p><p>rule = 2 -&gt; priority for flows</p><p>set the maximum step length. At each run of the integrator the option 'MaxStep' is set to (time length of last integration)*maxStepCoefficient.  Default value = 0.1</p><pre class="codeinput">rule               = 1;
+
+options            = odeset(<span class="string">'RelTol'</span>,1e-6,<span class="string">'MaxStep'</span>,.1);
+
+maxStepCoefficient = 0.1;
+</pre><h2>Simulate using the HyEQSolver script<a name="5"></a></h2><p>Given the matlab functions that models the flow map, jump map, flow set and jump set (f_ex1_2, g_ex1_2, C_ex1_2, and D_ex1_2 respectively)</p><pre class="codeinput">[t j x] = HyEQsolver( @f_ex1_2,@g_ex1_2,@C_ex1_2,@D_ex1_2,<span class="keyword">...</span>
+    x0,TSPAN,JSPAN,rule,options);
+</pre><pre class="codeoutput">Completed:  40%
+Done
+</pre><h2>plot solution<a name="6"></a></h2><pre class="codeinput">figure(1) <span class="comment">% position</span>
+clf
+subplot(2,1,1),plotflows(t,j,x(:,1))
+grid <span class="string">on</span>
+ylabel(<span class="string">'x1'</span>)
+
+subplot(2,1,2),plotjumps(t,j,x(:,1))
+grid <span class="string">on</span>
+ylabel(<span class="string">'x1'</span>)
+
+figure(2) <span class="comment">% velocity</span>
+clf
+subplot(2,1,1),plotflows(t,j,x(:,2))
+grid <span class="string">on</span>
+ylabel(<span class="string">'x2'</span>)
+
+subplot(2,1,2),plotjumps(t,j,x(:,2))
+grid <span class="string">on</span>
+ylabel(<span class="string">'x2'</span>)
+
+<span class="comment">% plot hybrid arc</span>
+
+plotHybridArc(t,j,x)
+xlabel(<span class="string">'j'</span>)
+ylabel(<span class="string">'t'</span>)
+zlabel(<span class="string">'x1'</span>)
+</pre><img vspace="5" hspace="5" src="run_HyEQsolver_Help_01.png" alt=""> <img vspace="5" hspace="5" src="run_HyEQsolver_Help_02.png" alt=""> <img vspace="5" hspace="5" src="run_HyEQsolver_Help_03.png" alt=""> <p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+##### SOURCE BEGIN #####
+%% Example: Bouncing ball with Lite HyEQ Solver
+% Consider the hybrid system model for the bouncing ball with data given in Example 1.2.
+% For this example, we consider the ball to be bouncing on a floor at zero height. The constants for the bouncing ball system are $\gamma=9.81$ and $\lambda=0.8$.
+% The following procedure is used to simulate this example in the Lite HyEQ Solver:
+%
+% * Inside the MATLAB script run_ex1_2.m, initial conditions, simulation horizons, a rule for jumps, ode solver options, and a step size coefficient are defined. The function HyEQsolver.m is called in order to run the simulation, and a script for plotting solutions is included.
+% * Then the MATLAB functions f_ex1_2.m, C_ex1_2.m, g_ex1_2.m, D_ex1_2.m are edited according to the data given below.
+% * Finally, the simulation is run by clicking the run button in run_ex1_2.m or by calling run_ex1_2.m in the MATLAB command window.
+%
+% For further information, type in the command window:
+helpview(['Example_1_2.html']);
+
+%% Define initial conditions
+x1_0 = 1;
+x2_0 = 0;
+x0   = [x1_0; x2_0];
+
+%% Set simulation horizon
+TSPAN = [0 10];
+JSPAN = [0 20];
+
+%% Set rule for jumps and ODE solver options
+%
+% rule = 1 -> priority for jumps
+%
+% rule = 2 -> priority for flows
+%
+% set the maximum step length. At each run of the
+% integrator the option 'MaxStep' is set to 
+% (time length of last integration)*maxStepCoefficient.
+%  Default value = 0.1
+
+rule               = 1;
+
+options            = odeset('RelTol',1e-6,'MaxStep',.1);
+
+maxStepCoefficient = 0.1;  
+
+%% Simulate using the HyEQSolver script
+% Given the matlab functions that models the flow map, jump map, 
+% flow set and jump set (f_ex1_2, g_ex1_2, C_ex1_2, and D_ex1_2
+% respectively)
+
+[t j x] = HyEQsolver( @f_ex1_2,@g_ex1_2,@C_ex1_2,@D_ex1_2,...
+    x0,TSPAN,JSPAN,rule,options);
+
+%% plot solution
+
+figure(1) % position
+clf
+subplot(2,1,1),plotflows(t,j,x(:,1))
+grid on
+ylabel('x1')
+
+subplot(2,1,2),plotjumps(t,j,x(:,1))
+grid on
+ylabel('x1')
+
+figure(2) % velocity
+clf
+subplot(2,1,1),plotflows(t,j,x(:,2))
+grid on
+ylabel('x2')
+
+subplot(2,1,2),plotjumps(t,j,x(:,2))
+grid on
+ylabel('x2')
+
+% plot hybrid arc
+
+plotHybridArc(t,j,x)
+xlabel('j')
+ylabel('t')
+zlabel('x1')
+
+##### SOURCE END #####
+--></body></html>
