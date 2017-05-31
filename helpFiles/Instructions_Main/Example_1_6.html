@@ -10,17 +10,17 @@
 <meta name="originator" content="TeX4ht (http://www.tug.org/tex4ht/)" /> 
 <!-- xhtml,html --> 
 <meta name="src" content="Example_1_6.tex" /> 
-<meta name="date" content="2016-04-08 01:39:00" /> 
+<meta name="date" content="2017-05-11 11:49:00" /> 
 <link rel="stylesheet" type="text/css" href="Example_1_6.css" /> 
 </head><body 
 >
    <h3 class="sectionHead"><span class="titlemark">1   </span> <a 
  id="x1-10001"></a>Examples</h3>
-<!--l. 39--><p class="noindent" >The examples below illustrate the use of the Simulink implementation above.
+<!--l. 51--><p class="noindent" >The examples below illustrate the use of the Simulink implementation above.
 </p>
    <div class="newtheorem">
 <!--l. 2--><p class="noindent" ><span class="head">
-<span 
+ <span 
 class="cmbx-10">Example</span><span 
 class="cmbx-10">&#x00A0;1.6</span> </span>(interconnection of hybrid systems <span 
 class="cmsy-10"><img 
@@ -29,7 +29,7 @@ class="cmr-7">1</span></sub> (bouncing ball) and <span
 class="cmsy-10"><img 
 src="cmsy10-48.png" alt="H" class="10x-x-48" /></span><sub><span 
 class="cmr-7">2</span></sub> (moving platform)) <a 
- id="x1-10016"></a>Consider
+ id="x1-10011"></a>Consider
 a bouncing ball (<span 
 class="cmsy-10"><img 
 src="cmsy10-48.png" alt="H" class="10x-x-48" /></span><sub><span 
@@ -203,7 +203,7 @@ name="Example_1_64x.png" src="figures/Examples/InterconnectionH1H2.eps"
 <br /> </p><div class="caption" 
 ><span class="id">Figure&#x00A0;2: </span><span  
 class="content">Solution of Example&#x00A0;<a 
-href="#x1-10016">1.6<!--tex4ht:ref: ex:interconnection1 --></a>: height and velocity</span></div><!--tex4ht:label?: x1-10062 -->
+href="#x1-10011">1.6<!--tex4ht:ref: ex:interconnection1 --></a>: height and velocity</span></div><!--tex4ht:label?: x1-10062 -->
 </div>
    </div><hr class="endfigure" />
    <hr class="figure" /><div class="figure" 
@@ -227,7 +227,7 @@ class="cmr-8">(b) Velocity</span>
 <br /> <div class="caption" 
 ><span class="id">Figure&#x00A0;3: </span><span  
 class="content">Solution of Example <a 
-href="#x1-10016">1.6<!--tex4ht:ref: ex:interconnection1 --></a> for system <span 
+href="#x1-10011">1.6<!--tex4ht:ref: ex:interconnection1 --></a> for system <span 
 class="cmsy-10"><img 
 src="cmsy10-48.png" alt="H" class="10x-x-48" /></span><sub><span 
 class="cmr-7">1</span></sub></span></div><!--tex4ht:label?: x1-10093 -->
@@ -251,21 +251,23 @@ class="cmr-8">(b) Velocity</span>
 <br /> <div class="caption" 
 ><span class="id">Figure&#x00A0;4: </span><span  
 class="content">Solution of Example&#x00A0;<a 
-href="#x1-10016">1.6<!--tex4ht:ref: ex:interconnection1 --></a> for system <span 
+href="#x1-10011">1.6<!--tex4ht:ref: ex:interconnection1 --></a> for system <span 
 class="cmsy-10"><img 
 src="cmsy10-48.png" alt="H" class="10x-x-48" /></span><sub><span 
 class="cmr-7">2</span></sub></span></div><!--tex4ht:label?: x1-10124 -->
    </div><hr class="endfigure" />
                                                                                          
                                                                                          
-<!--l. 151--><p class="indent" >   For hybrid system <span 
+     <ul class="itemize1">
+     <li class="itemize">For hybrid system <span 
 class="cmsy-10"><img 
 src="cmsy10-48.png" alt="H" class="10x-x-48" /></span><sub><span 
 class="cmr-7">1</span></sub>:
-</p><!--l. 25--><p class="noindent" ><span 
+     <!--l. 155--><p class="noindent" >Flow map
+     </p><!--l. 25--><p class="noindent" ><span 
 class="cmr-7">1</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">function</span></span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;xdot</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
@@ -274,129 +276,337 @@ class="pcrr7t-">&#x00A0;u)</span></span><br
 class="newline" /><span 
 class="cmr-7">2</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <br 
+class="newline" /><span 
+class="cmr-7">3</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrb7t-">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">4</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Matlab</span><span 
+class="pcrr7t-">&#x00A0;Function</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;Author:</span><span 
+class="pcrr7t-">&#x00A0;Ricardo</span><span 
+class="pcrr7t-">&#x00A0;Sanfelice</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">5</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">6</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Project:</span><span 
+class="pcrr7t-">&#x00A0;Simulation</span><span 
+class="pcrr7t-">&#x00A0;of</span><span 
+class="pcrr7t-">&#x00A0;a</span><span 
+class="pcrr7t-">&#x00A0;hybrid</span><span 
+class="pcrr7t-">&#x00A0;system</span><span 
+class="pcrr7t-">&#x00A0;(interconnection)</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">7</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">8</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Name:</span><span 
+class="pcrr7t-">&#x00A0;f.m</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">9</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">10</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Description:</span><span 
+class="pcrr7t-">&#x00A0;Flow</span><span 
+class="pcrr7t-">&#x00A0;map</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">11</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">12</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Version:</span><span 
+class="pcrr7t-">&#x00A0;1.0</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">13</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Required</span><span 
+class="pcrr7t-">&#x00A0;files:</span><span 
+class="pcrr7t-">&#x00A0;-</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">14</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrb7t-">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">15</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <br 
+class="newline" /><span 
+class="cmr-7">16</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">%</span><span 
 class="pcrr7t-">&#x00A0;state</span></span><span class="verb"></span><br 
 class="newline" /><span 
-class="cmr-7">3</span><span class="verb"><span 
+class="cmr-7">17</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;xi1</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;x(1);</span></span><br 
 class="newline" /><span 
-class="cmr-7">4</span><span class="verb"><span 
+class="cmr-7">18</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;xi2</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;x(2);</span></span><br 
 class="newline" /><span 
-class="cmr-7">5</span><span class="verb"><span 
+class="cmr-7">19</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <br 
+class="newline" /><span 
+class="cmr-7">20</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">%input</span></span><span class="verb"></span><br 
 class="newline" /><span 
-class="cmr-7">6</span><span class="verb"><span 
+class="cmr-7">21</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;y2</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;u(1);</span></span><br 
 class="newline" /><span 
-class="cmr-7">7</span><span class="verb"><span 
+class="cmr-7">22</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;v11</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;u(2);</span></span><br 
 class="newline" /><span 
-class="cmr-7">8</span><span class="verb"><span 
+class="cmr-7">23</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;v12</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;u(3);</span></span><br 
 class="newline" /><span 
-class="cmr-7">9</span><span class="verb"><span 
+class="cmr-7">24</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <br 
+class="newline" /><span 
+class="cmr-7">25</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">%</span><span 
 class="pcrr7t-">&#x00A0;flow</span><span 
 class="pcrr7t-">&#x00A0;map</span></span><span class="verb"></span><br 
 class="newline" /><span 
-class="cmr-7">10</span><span class="verb"><span 
+class="cmr-7">26</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">%xdot=f(x,u);</span></span><span class="verb"></span><br 
 class="newline" /><span 
-class="cmr-7">11</span><span class="verb"><span 
+class="cmr-7">27</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;xi1dot</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;xi2;</span></span><br 
 class="newline" /><span 
-class="cmr-7">12</span><span class="verb"><span 
+class="cmr-7">28</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;xi2dot</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;-0.8-0.1&#x22C6;xi2+v11;</span></span><br 
 class="newline" /><span 
-class="cmr-7">13</span><span class="verb"><span 
+class="cmr-7">29</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <br 
+class="newline" /><span 
+class="cmr-7">30</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;xdot</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;[xi1dot;xi2dot];</span></span><br 
 class="newline" />
-</p><!--l. 25--><p class="noindent" ><span 
+     </p><!--l. 160--><p class="noindent" >Flow set
+     </p><!--l. 25--><p class="noindent" ><span 
 class="cmr-7">1</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">function</span></span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;v</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;C(x,</span><span 
-class="pcrr7t-">&#x00A0;u)</span></span><br 
+class="pcrr7t-">&#x00A0;u)</span><span 
+class="pcrr7t-">&#x00A0;</span></span><br 
 class="newline" /><span 
 class="cmr-7">2</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <br 
+class="newline" /><span 
+class="cmr-7">3</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrb7t-">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">4</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Matlab</span><span 
+class="pcrr7t-">&#x00A0;Function</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;Author:</span><span 
+class="pcrr7t-">&#x00A0;Ricardo</span><span 
+class="pcrr7t-">&#x00A0;Sanfelice</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">5</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">6</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Project:</span><span 
+class="pcrr7t-">&#x00A0;Simulation</span><span 
+class="pcrr7t-">&#x00A0;of</span><span 
+class="pcrr7t-">&#x00A0;a</span><span 
+class="pcrr7t-">&#x00A0;hybrid</span><span 
+class="pcrr7t-">&#x00A0;system</span><span 
+class="pcrr7t-">&#x00A0;(interconnection)</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">7</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">8</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Name:</span><span 
+class="pcrr7t-">&#x00A0;C.m</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">9</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">10</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Description:</span><span 
+class="pcrr7t-">&#x00A0;Flow</span><span 
+class="pcrr7t-">&#x00A0;set</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">11</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">12</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Version:</span><span 
+class="pcrr7t-">&#x00A0;1.0</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">13</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Required</span><span 
+class="pcrr7t-">&#x00A0;files:</span><span 
+class="pcrr7t-">&#x00A0;-</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">14</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrb7t-">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">15</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <br 
+class="newline" /><span 
+class="cmr-7">16</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">%</span><span 
 class="pcrr7t-">&#x00A0;state</span></span><span class="verb"></span><br 
 class="newline" /><span 
-class="cmr-7">3</span><span class="verb"><span 
+class="cmr-7">17</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;xi1</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;x(1);</span></span><br 
 class="newline" /><span 
-class="cmr-7">4</span><span class="verb"><span 
+class="cmr-7">18</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;xi2</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;x(2);</span></span><br 
 class="newline" /><span 
-class="cmr-7">5</span><span class="verb"><span 
+class="cmr-7">19</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <br 
+class="newline" /><span 
+class="cmr-7">20</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">%input</span></span><span class="verb"></span><br 
 class="newline" /><span 
-class="cmr-7">6</span><span class="verb"><span 
+class="cmr-7">21</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;y2</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;u(1);</span></span><br 
 class="newline" /><span 
-class="cmr-7">7</span><span class="verb"><span 
+class="cmr-7">22</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;v11</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;u(2);</span></span><br 
 class="newline" /><span 
-class="cmr-7">8</span><span class="verb"><span 
+class="cmr-7">23</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;v12</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;u(3);</span></span><br 
 class="newline" /><span 
-class="cmr-7">9</span><span class="verb"><span 
+class="cmr-7">24</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <br 
+class="newline" /><span 
+class="cmr-7">25</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">if</span></span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;(xi1</span><span 
 class="pcrr7t-">&#x00A0;&#x003E;=</span><span 
@@ -407,7 +617,7 @@ class="pcrr7t-">%</span><span
 class="pcrr7t-">&#x00A0;flow</span><span 
 class="pcrr7t-">&#x00A0;condition</span></span><span class="verb"></span><br 
 class="newline" /><span 
-class="cmr-7">10</span><span class="verb"><span 
+class="cmr-7">26</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;</span><span 
@@ -422,12 +632,12 @@ class="pcrr7t-">%</span><span
 class="pcrr7t-">&#x00A0;report</span><span 
 class="pcrr7t-">&#x00A0;flow</span></span><span class="verb"></span><br 
 class="newline" /><span 
-class="cmr-7">11</span><span class="verb"><span 
+class="cmr-7">27</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">else</span></span><span class="verb"></span><br 
 class="newline" /><span 
-class="cmr-7">12</span><span class="verb"><span 
+class="cmr-7">28</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;</span><span 
@@ -445,15 +655,16 @@ class="pcrr7t-">&#x00A0;not</span><span
 class="pcrr7t-">&#x00A0;report</span><span 
 class="pcrr7t-">&#x00A0;flow</span></span><span class="verb"></span><br 
 class="newline" /><span 
-class="cmr-7">13</span><span class="verb"><span 
+class="cmr-7">29</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">end</span></span><span class="verb"></span><br 
 class="newline" />
-</p><!--l. 25--><p class="noindent" ><span 
+     </p><!--l. 165--><p class="noindent" >Jump map
+     </p><!--l. 25--><p class="noindent" ><span 
 class="cmr-7">1</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">function</span></span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;xplus</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
@@ -462,126 +673,325 @@ class="pcrr7t-">&#x00A0;u)</span></span><br
 class="newline" /><span 
 class="cmr-7">2</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <br 
+class="newline" /><span 
+class="cmr-7">3</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrb7t-">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">4</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Matlab</span><span 
+class="pcrr7t-">&#x00A0;Function</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;Author:</span><span 
+class="pcrr7t-">&#x00A0;Ricardo</span><span 
+class="pcrr7t-">&#x00A0;Sanfelice</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">5</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">6</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Project:</span><span 
+class="pcrr7t-">&#x00A0;Simulation</span><span 
+class="pcrr7t-">&#x00A0;of</span><span 
+class="pcrr7t-">&#x00A0;a</span><span 
+class="pcrr7t-">&#x00A0;hybrid</span><span 
+class="pcrr7t-">&#x00A0;system</span><span 
+class="pcrr7t-">&#x00A0;(interconnection)</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">7</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">8</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Name:</span><span 
+class="pcrr7t-">&#x00A0;g.m</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">9</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">10</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Description:</span><span 
+class="pcrr7t-">&#x00A0;Jump</span><span 
+class="pcrr7t-">&#x00A0;map</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">11</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">12</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Version:</span><span 
+class="pcrr7t-">&#x00A0;1.0</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">13</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Required</span><span 
+class="pcrr7t-">&#x00A0;files:</span><span 
+class="pcrr7t-">&#x00A0;-</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">14</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrb7t-">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">15</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <br 
+class="newline" /><span 
+class="cmr-7">16</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">%</span><span 
 class="pcrr7t-">&#x00A0;state</span></span><span class="verb"></span><br 
 class="newline" /><span 
-class="cmr-7">3</span><span class="verb"><span 
+class="cmr-7">17</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;xi1</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;x(1);</span></span><br 
 class="newline" /><span 
-class="cmr-7">4</span><span class="verb"><span 
+class="cmr-7">18</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;xi2</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;x(2);</span></span><br 
 class="newline" /><span 
-class="cmr-7">5</span><span class="verb"><span 
+class="cmr-7">19</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <br 
+class="newline" /><span 
+class="cmr-7">20</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">%input</span></span><span class="verb"></span><br 
 class="newline" /><span 
-class="cmr-7">6</span><span class="verb"><span 
+class="cmr-7">21</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;y2</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;u(1);</span></span><br 
 class="newline" /><span 
-class="cmr-7">7</span><span class="verb"><span 
+class="cmr-7">22</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;v11</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;u(2);</span></span><br 
 class="newline" /><span 
-class="cmr-7">8</span><span class="verb"><span 
+class="cmr-7">23</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;v12</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;u(3);</span></span><br 
 class="newline" /><span 
-class="cmr-7">9</span><span class="verb"><span 
+class="cmr-7">24</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
-class="pcrr7t-">%jump</span><span 
-class="pcrr7t-">&#x00A0;map</span></span><span class="verb"></span><br 
+class="pcrr7t-">&#x00A0;</span></span> <br 
 class="newline" /><span 
-class="cmr-7">10</span><span class="verb"><span 
+class="cmr-7">25</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;xi1plus=y2+0.1&#x22C6;xi2^2;</span></span><br 
 class="newline" /><span 
-class="cmr-7">11</span><span class="verb"><span 
+class="cmr-7">26</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;xi2plus=0.8&#x22C6;abs(xi2)+v12;</span></span><br 
 class="newline" /><span 
-class="cmr-7">12</span><span class="verb"><span 
+class="cmr-7">27</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <br 
+class="newline" /><span 
+class="cmr-7">28</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;xplus</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;[xi1plus;xi2plus];</span></span><br 
 class="newline" />
-</p><!--l. 25--><p class="noindent" ><span 
+     </p><!--l. 170--><p class="noindent" >Jump set
+     </p><!--l. 25--><p class="noindent" ><span 
 class="cmr-7">1</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">function</span></span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;v</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;D(x,</span><span 
-class="pcrr7t-">&#x00A0;u)</span></span><br 
+class="pcrr7t-">&#x00A0;u)</span><span 
+class="pcrr7t-">&#x00A0;</span></span><br 
 class="newline" /><span 
 class="cmr-7">2</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <br 
+class="newline" /><span 
+class="cmr-7">3</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrb7t-">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">4</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Matlab</span><span 
+class="pcrr7t-">&#x00A0;Function</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;Author:</span><span 
+class="pcrr7t-">&#x00A0;Ricardo</span><span 
+class="pcrr7t-">&#x00A0;Sanfelice</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">5</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">6</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Project:</span><span 
+class="pcrr7t-">&#x00A0;Simulation</span><span 
+class="pcrr7t-">&#x00A0;of</span><span 
+class="pcrr7t-">&#x00A0;a</span><span 
+class="pcrr7t-">&#x00A0;hybrid</span><span 
+class="pcrr7t-">&#x00A0;system</span><span 
+class="pcrr7t-">&#x00A0;(interconnection)</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">7</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">8</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Name:</span><span 
+class="pcrr7t-">&#x00A0;D.m</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">9</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">10</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Description:</span><span 
+class="pcrr7t-">&#x00A0;Jump</span><span 
+class="pcrr7t-">&#x00A0;set</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">11</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">12</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Version:</span><span 
+class="pcrr7t-">&#x00A0;1.0</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">13</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Required</span><span 
+class="pcrr7t-">&#x00A0;files:</span><span 
+class="pcrr7t-">&#x00A0;-</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">14</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrb7t-">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">15</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <br 
+class="newline" /><span 
+class="cmr-7">16</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">%</span><span 
 class="pcrr7t-">&#x00A0;state</span></span><span class="verb"></span><br 
 class="newline" /><span 
-class="cmr-7">3</span><span class="verb"><span 
+class="cmr-7">17</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;xi1</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;x(1);</span></span><br 
 class="newline" /><span 
-class="cmr-7">4</span><span class="verb"><span 
+class="cmr-7">18</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;xi2</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;x(2);</span></span><br 
 class="newline" /><span 
-class="cmr-7">5</span><span class="verb"><span 
+class="cmr-7">19</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <br 
+class="newline" /><span 
+class="cmr-7">20</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">%input</span></span><span class="verb"></span><br 
 class="newline" /><span 
-class="cmr-7">6</span><span class="verb"><span 
+class="cmr-7">21</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;y2</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;u(1);</span></span><br 
 class="newline" /><span 
-class="cmr-7">7</span><span class="verb"><span 
+class="cmr-7">22</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;v11</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;u(2);</span></span><br 
 class="newline" /><span 
-class="cmr-7">8</span><span class="verb"><span 
+class="cmr-7">23</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;v12</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;u(3);</span></span><br 
 class="newline" /><span 
-class="cmr-7">9</span><span class="verb"><span 
+class="cmr-7">24</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
-class="pcrr7t-">%</span><span 
-class="pcrr7t-">&#x00A0;jump</span><span 
-class="pcrr7t-">&#x00A0;set</span></span><span class="verb"></span><br 
+class="pcrr7t-">&#x00A0;</span></span> <br 
 class="newline" /><span 
-class="cmr-7">10</span><span class="verb"><span 
+class="cmr-7">25</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <br 
+class="newline" /><span 
+class="cmr-7">26</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">if</span></span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;(xi1</span><span 
 class="pcrr7t-">&#x00A0;&#x003C;=</span><span 
@@ -591,7 +1001,7 @@ class="pcrr7t-">%</span><span
 class="pcrr7t-">&#x00A0;jump</span><span 
 class="pcrr7t-">&#x00A0;condition</span></span><span class="verb"></span><br 
 class="newline" /><span 
-class="cmr-7">11</span><span class="verb"><span 
+class="cmr-7">27</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;</span><span 
@@ -606,12 +1016,12 @@ class="pcrr7t-">%</span><span
 class="pcrr7t-">&#x00A0;report</span><span 
 class="pcrr7t-">&#x00A0;jump</span></span><span class="verb"></span><br 
 class="newline" /><span 
-class="cmr-7">12</span><span class="verb"><span 
+class="cmr-7">28</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">else</span></span><span class="verb"></span><br 
 class="newline" /><span 
-class="cmr-7">13</span><span class="verb"><span 
+class="cmr-7">29</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;</span><span 
@@ -629,19 +1039,21 @@ class="pcrr7t-">&#x00A0;not</span><span
 class="pcrr7t-">&#x00A0;report</span><span 
 class="pcrr7t-">&#x00A0;jump</span></span><span class="verb"></span><br 
 class="newline" /><span 
-class="cmr-7">14</span><span class="verb"><span 
+class="cmr-7">30</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">end</span></span><span class="verb"></span><br 
 class="newline" />
-</p><!--l. 169--><p class="indent" >   For hybrid system <span 
+     </p></li>
+     <li class="itemize">For hybrid system <span 
 class="cmsy-10"><img 
 src="cmsy10-48.png" alt="H" class="10x-x-48" /></span><sub><span 
 class="cmr-7">2</span></sub>:
-</p><!--l. 25--><p class="noindent" ><span 
+     <!--l. 177--><p class="noindent" >Flow map
+     </p><!--l. 25--><p class="noindent" ><span 
 class="cmr-7">1</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">function</span></span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;xdot</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
@@ -650,131 +1062,336 @@ class="pcrr7t-">&#x00A0;u)</span></span><br
 class="newline" /><span 
 class="cmr-7">2</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <br 
+class="newline" /><span 
+class="cmr-7">3</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrb7t-">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">4</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Matlab</span><span 
+class="pcrr7t-">&#x00A0;Function</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;Author:</span><span 
+class="pcrr7t-">&#x00A0;Ricardo</span><span 
+class="pcrr7t-">&#x00A0;Sanfelice</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">5</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">6</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Project:</span><span 
+class="pcrr7t-">&#x00A0;Simulation</span><span 
+class="pcrr7t-">&#x00A0;of</span><span 
+class="pcrr7t-">&#x00A0;a</span><span 
+class="pcrr7t-">&#x00A0;hybrid</span><span 
+class="pcrr7t-">&#x00A0;system</span><span 
+class="pcrr7t-">&#x00A0;(interconnection)</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">7</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">8</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Name:</span><span 
+class="pcrr7t-">&#x00A0;f.m</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">9</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">10</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Description:</span><span 
+class="pcrr7t-">&#x00A0;Flow</span><span 
+class="pcrr7t-">&#x00A0;map</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">11</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">12</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Version:</span><span 
+class="pcrr7t-">&#x00A0;1.0</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">13</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Required</span><span 
+class="pcrr7t-">&#x00A0;files:</span><span 
+class="pcrr7t-">&#x00A0;-</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">14</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrb7t-">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">15</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <br 
+class="newline" /><span 
+class="cmr-7">16</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <br 
+class="newline" /><span 
+class="cmr-7">17</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">%</span><span 
 class="pcrr7t-">&#x00A0;state</span></span><span class="verb"></span><br 
 class="newline" /><span 
-class="cmr-7">3</span><span class="verb"><span 
+class="cmr-7">18</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;eta1</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;x(1);</span></span><br 
 class="newline" /><span 
-class="cmr-7">4</span><span class="verb"><span 
+class="cmr-7">19</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;eta2</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;x(2);</span></span><br 
 class="newline" /><span 
-class="cmr-7">5</span><span class="verb"><span 
+class="cmr-7">20</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <br 
+class="newline" /><span 
+class="cmr-7">21</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">%input</span></span><span class="verb"></span><br 
 class="newline" /><span 
-class="cmr-7">6</span><span class="verb"><span 
+class="cmr-7">22</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;y1</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;u(1);</span></span><br 
 class="newline" /><span 
-class="cmr-7">7</span><span class="verb"><span 
+class="cmr-7">23</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;v21</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;u(2);</span></span><br 
 class="newline" /><span 
-class="cmr-7">8</span><span class="verb"><span 
+class="cmr-7">24</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;v22</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;u(3);</span></span><br 
 class="newline" /><span 
-class="cmr-7">9</span><span class="verb"><span 
+class="cmr-7">25</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <br 
+class="newline" /><span 
+class="cmr-7">26</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">%</span><span 
 class="pcrr7t-">&#x00A0;flow</span><span 
 class="pcrr7t-">&#x00A0;map</span></span><span class="verb"></span><br 
 class="newline" /><span 
-class="cmr-7">10</span><span class="verb"><span 
+class="cmr-7">27</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;eta1dot</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;eta2;</span></span><br 
 class="newline" /><span 
-class="cmr-7">11</span><span class="verb"><span 
+class="cmr-7">28</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;eta2dot</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;-eta1-2&#x22C6;eta2+v21;</span></span><br 
 class="newline" /><span 
-class="cmr-7">12</span><span class="verb"><span 
+class="cmr-7">29</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <br 
+class="newline" /><span 
+class="cmr-7">30</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;xdot</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;[eta1dot;eta2dot];</span></span><br 
 class="newline" />
-</p><!--l. 25--><p class="noindent" ><span 
+     </p><!--l. 182--><p class="noindent" >Flow set
+     </p><!--l. 25--><p class="noindent" ><span 
 class="cmr-7">1</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">function</span></span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;v</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;C(x,</span><span 
-class="pcrr7t-">&#x00A0;u)</span></span><br 
+class="pcrr7t-">&#x00A0;u)</span><span 
+class="pcrr7t-">&#x00A0;</span></span><br 
 class="newline" /><span 
 class="cmr-7">2</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <br 
+class="newline" /><span 
+class="cmr-7">3</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrb7t-">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">4</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Matlab</span><span 
+class="pcrr7t-">&#x00A0;Function</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;Author:</span><span 
+class="pcrr7t-">&#x00A0;Ricardo</span><span 
+class="pcrr7t-">&#x00A0;Sanfelice</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">5</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">6</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Project:</span><span 
+class="pcrr7t-">&#x00A0;Simulation</span><span 
+class="pcrr7t-">&#x00A0;of</span><span 
+class="pcrr7t-">&#x00A0;a</span><span 
+class="pcrr7t-">&#x00A0;hybrid</span><span 
+class="pcrr7t-">&#x00A0;system</span><span 
+class="pcrr7t-">&#x00A0;(interconnection)</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">7</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">8</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Name:</span><span 
+class="pcrr7t-">&#x00A0;C.m</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">9</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">10</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Description:</span><span 
+class="pcrr7t-">&#x00A0;Flow</span><span 
+class="pcrr7t-">&#x00A0;set</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">11</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">12</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Version:</span><span 
+class="pcrr7t-">&#x00A0;1.0</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">13</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Required</span><span 
+class="pcrr7t-">&#x00A0;files:</span><span 
+class="pcrr7t-">&#x00A0;-</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">14</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrb7t-">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">15</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <br 
+class="newline" /><span 
+class="cmr-7">16</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">%</span><span 
 class="pcrr7t-">&#x00A0;state</span></span><span class="verb"></span><br 
 class="newline" /><span 
-class="cmr-7">3</span><span class="verb"><span 
+class="cmr-7">17</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;eta1</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;x(1);</span></span><br 
 class="newline" /><span 
-class="cmr-7">4</span><span class="verb"><span 
+class="cmr-7">18</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;eta2</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;x(2);</span></span><br 
 class="newline" /><span 
-class="cmr-7">5</span><span class="verb"><span 
+class="cmr-7">19</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <br 
+class="newline" /><span 
+class="cmr-7">20</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">%input</span></span><span class="verb"></span><br 
 class="newline" /><span 
-class="cmr-7">6</span><span class="verb"><span 
+class="cmr-7">21</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;y1</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;u(1);</span></span><br 
 class="newline" /><span 
-class="cmr-7">7</span><span class="verb"><span 
+class="cmr-7">22</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;v21</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;u(2);</span></span><br 
 class="newline" /><span 
-class="cmr-7">8</span><span class="verb"><span 
+class="cmr-7">23</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;v22</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;u(3);</span></span><br 
 class="newline" /><span 
-class="cmr-7">9</span><span class="verb"><span 
+class="cmr-7">24</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
-class="pcrr7t-">%</span><span 
-class="pcrr7t-">&#x00A0;flow</span><span 
-class="pcrr7t-">&#x00A0;set</span></span><span class="verb"></span><br 
+class="pcrr7t-">&#x00A0;</span></span> <br 
 class="newline" /><span 
-class="cmr-7">10</span><span class="verb"><span 
+class="cmr-7">25</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">if</span></span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;(eta1</span><span 
 class="pcrr7t-">&#x00A0;&#x003C;=</span><span 
@@ -785,7 +1402,7 @@ class="pcrr7t-">%</span><span
 class="pcrr7t-">&#x00A0;flow</span><span 
 class="pcrr7t-">&#x00A0;condition</span></span><span class="verb"></span><br 
 class="newline" /><span 
-class="cmr-7">11</span><span class="verb"><span 
+class="cmr-7">26</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;</span><span 
@@ -800,12 +1417,12 @@ class="pcrr7t-">%</span><span
 class="pcrr7t-">&#x00A0;report</span><span 
 class="pcrr7t-">&#x00A0;flow</span></span><span class="verb"></span><br 
 class="newline" /><span 
-class="cmr-7">12</span><span class="verb"><span 
+class="cmr-7">27</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">else</span></span><span class="verb"></span><br 
 class="newline" /><span 
-class="cmr-7">13</span><span class="verb"><span 
+class="cmr-7">28</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;</span><span 
@@ -823,15 +1440,16 @@ class="pcrr7t-">&#x00A0;not</span><span
 class="pcrr7t-">&#x00A0;report</span><span 
 class="pcrr7t-">&#x00A0;flow</span></span><span class="verb"></span><br 
 class="newline" /><span 
-class="cmr-7">14</span><span class="verb"><span 
+class="cmr-7">29</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">end</span></span><span class="verb"></span><br 
 class="newline" />
-</p><!--l. 25--><p class="noindent" ><span 
+     </p><!--l. 187--><p class="noindent" >Jump map
+     </p><!--l. 25--><p class="noindent" ><span 
 class="cmr-7">1</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">function</span></span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;xplus</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
@@ -840,131 +1458,336 @@ class="pcrr7t-">&#x00A0;u)</span></span><br
 class="newline" /><span 
 class="cmr-7">2</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <br 
+class="newline" /><span 
+class="cmr-7">3</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrb7t-">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">4</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Matlab</span><span 
+class="pcrr7t-">&#x00A0;Function</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;Author:</span><span 
+class="pcrr7t-">&#x00A0;Ricardo</span><span 
+class="pcrr7t-">&#x00A0;Sanfelice</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">5</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">6</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Project:</span><span 
+class="pcrr7t-">&#x00A0;Simulation</span><span 
+class="pcrr7t-">&#x00A0;of</span><span 
+class="pcrr7t-">&#x00A0;a</span><span 
+class="pcrr7t-">&#x00A0;hybrid</span><span 
+class="pcrr7t-">&#x00A0;system</span><span 
+class="pcrr7t-">&#x00A0;(interconnection)</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">7</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">8</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Name:</span><span 
+class="pcrr7t-">&#x00A0;g.m</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">9</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">10</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Description:</span><span 
+class="pcrr7t-">&#x00A0;Jump</span><span 
+class="pcrr7t-">&#x00A0;map</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">11</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">12</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Version:</span><span 
+class="pcrr7t-">&#x00A0;1.0</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">13</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Required</span><span 
+class="pcrr7t-">&#x00A0;files:</span><span 
+class="pcrr7t-">&#x00A0;-</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">14</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrb7t-">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">15</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <br 
+class="newline" /><span 
+class="cmr-7">16</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">%</span><span 
 class="pcrr7t-">&#x00A0;state</span></span><span class="verb"></span><br 
 class="newline" /><span 
-class="cmr-7">3</span><span class="verb"><span 
+class="cmr-7">17</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;eta1</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;x(1);</span></span><br 
 class="newline" /><span 
-class="cmr-7">4</span><span class="verb"><span 
+class="cmr-7">18</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;eta2</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;x(2);</span></span><br 
 class="newline" /><span 
-class="cmr-7">5</span><span class="verb"><span 
+class="cmr-7">19</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <br 
+class="newline" /><span 
+class="cmr-7">20</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">%input</span></span><span class="verb"></span><br 
 class="newline" /><span 
-class="cmr-7">6</span><span class="verb"><span 
+class="cmr-7">21</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;y1</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;u(1);</span></span><br 
 class="newline" /><span 
-class="cmr-7">7</span><span class="verb"><span 
+class="cmr-7">22</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;v21</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;u(2);</span></span><br 
 class="newline" /><span 
-class="cmr-7">8</span><span class="verb"><span 
+class="cmr-7">23</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;v22</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;u(3);</span></span><br 
 class="newline" /><span 
-class="cmr-7">9</span><span class="verb"><span 
+class="cmr-7">24</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <br 
+class="newline" /><span 
+class="cmr-7">25</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">%</span><span 
 class="pcrr7t-">&#x00A0;jump</span><span 
 class="pcrr7t-">&#x00A0;map</span></span><span class="verb"></span><br 
 class="newline" /><span 
-class="cmr-7">10</span><span class="verb"><span 
+class="cmr-7">26</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;eta1plus</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;y1-0.1&#x22C6;abs(eta2);</span></span><br 
 class="newline" /><span 
-class="cmr-7">11</span><span class="verb"><span 
+class="cmr-7">27</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;eta2plus</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;-0.8&#x22C6;abs(eta2)+v22;</span></span><br 
 class="newline" /><span 
-class="cmr-7">12</span><span class="verb"><span 
+class="cmr-7">28</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <br 
+class="newline" /><span 
+class="cmr-7">29</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;xplus</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;[eta1plus;eta2plus];</span></span><br 
 class="newline" />
-</p><!--l. 25--><p class="noindent" ><span 
+     </p><!--l. 192--><p class="noindent" >Jump set
+     </p><!--l. 25--><p class="noindent" ><span 
 class="cmr-7">1</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">function</span></span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;v</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;D(x,</span><span 
-class="pcrr7t-">&#x00A0;u)</span></span><br 
+class="pcrr7t-">&#x00A0;u)</span><span 
+class="pcrr7t-">&#x00A0;</span></span><br 
 class="newline" /><span 
 class="cmr-7">2</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <br 
+class="newline" /><span 
+class="cmr-7">3</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrb7t-">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">4</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Matlab</span><span 
+class="pcrr7t-">&#x00A0;Function</span><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;Author:</span><span 
+class="pcrr7t-">&#x00A0;Ricardo</span><span 
+class="pcrr7t-">&#x00A0;Sanfelice</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">5</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">6</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Project:</span><span 
+class="pcrr7t-">&#x00A0;Simulation</span><span 
+class="pcrr7t-">&#x00A0;of</span><span 
+class="pcrr7t-">&#x00A0;a</span><span 
+class="pcrr7t-">&#x00A0;hybrid</span><span 
+class="pcrr7t-">&#x00A0;system</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">7</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">8</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Name:</span><span 
+class="pcrr7t-">&#x00A0;D.m</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">9</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">10</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Description:</span><span 
+class="pcrr7t-">&#x00A0;Jump</span><span 
+class="pcrr7t-">&#x00A0;set</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">11</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">12</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Version:</span><span 
+class="pcrr7t-">&#x00A0;1.0</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">13</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrr7t-">%</span><span 
+class="pcrr7t-">&#x00A0;Required</span><span 
+class="pcrr7t-">&#x00A0;files:</span><span 
+class="pcrr7t-">&#x00A0;-</span><span 
+class="pcrr7t-">&#x00A0;</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">14</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
+class="pcrb7t-">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span></span><span class="verb"></span><br 
+class="newline" /><span 
+class="cmr-7">15</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <br 
+class="newline" /><span 
+class="cmr-7">16</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">%</span><span 
 class="pcrr7t-">&#x00A0;state</span></span><span class="verb"></span><br 
 class="newline" /><span 
-class="cmr-7">3</span><span class="verb"><span 
+class="cmr-7">17</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;eta1</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;x(1);</span></span><br 
 class="newline" /><span 
-class="cmr-7">4</span><span class="verb"><span 
+class="cmr-7">18</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;eta2</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;x(2);</span></span><br 
 class="newline" /><span 
-class="cmr-7">5</span><span class="verb"><span 
+class="cmr-7">19</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <br 
+class="newline" /><span 
+class="cmr-7">20</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">%input</span></span><span class="verb"></span><br 
 class="newline" /><span 
-class="cmr-7">6</span><span class="verb"><span 
+class="cmr-7">21</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;y1</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;u(1);</span></span><br 
 class="newline" /><span 
-class="cmr-7">7</span><span class="verb"><span 
+class="cmr-7">22</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;v21</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;u(2);</span></span><br 
 class="newline" /><span 
-class="cmr-7">8</span><span class="verb"><span 
+class="cmr-7">23</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;v22</span><span 
 class="pcrr7t-">&#x00A0;=</span><span 
 class="pcrr7t-">&#x00A0;u(3);</span></span><br 
 class="newline" /><span 
-class="cmr-7">9</span><span class="verb"><span 
+class="cmr-7">24</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
-class="pcrr7t-">%</span><span 
-class="pcrr7t-">&#x00A0;jump</span><span 
-class="pcrr7t-">&#x00A0;set</span></span><span class="verb"></span><br 
+class="pcrr7t-">&#x00A0;</span></span> <br 
 class="newline" /><span 
-class="cmr-7">10</span><span class="verb"><span 
+class="cmr-7">25</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <br 
+class="newline" /><span 
+class="cmr-7">26</span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">if</span></span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;(eta1</span><span 
 class="pcrr7t-">&#x00A0;&#x003E;=</span><span 
@@ -974,7 +1797,7 @@ class="pcrr7t-">%</span><span
 class="pcrr7t-">&#x00A0;jump</span><span 
 class="pcrr7t-">&#x00A0;condition</span></span><span class="verb"></span><br 
 class="newline" /><span 
-class="cmr-7">11</span><span class="verb"><span 
+class="cmr-7">27</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;</span><span 
@@ -989,12 +1812,12 @@ class="pcrr7t-">%</span><span
 class="pcrr7t-">&#x00A0;report</span><span 
 class="pcrr7t-">&#x00A0;jump</span></span><span class="verb"></span><br 
 class="newline" /><span 
-class="cmr-7">12</span><span class="verb"><span 
+class="cmr-7">28</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">else</span></span><span class="verb"></span><br 
 class="newline" /><span 
-class="cmr-7">13</span><span class="verb"><span 
+class="cmr-7">29</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;</span><span 
 class="pcrr7t-">&#x00A0;</span><span 
@@ -1012,12 +1835,14 @@ class="pcrr7t-">&#x00A0;not</span><span
 class="pcrr7t-">&#x00A0;report</span><span 
 class="pcrr7t-">&#x00A0;jump</span></span><span class="verb"></span><br 
 class="newline" /><span 
-class="cmr-7">14</span><span class="verb"><span 
+class="cmr-7">30</span><span class="verb"><span 
 class="pcrr7t-">&#x00A0;</span><span 
-class="pcrr7t-">&#x00A0;</span></span><span class="verb"><span 
+class="pcrr7t-">&#x00A0;</span></span> <span class="verb"><span 
 class="pcrr7t-">end</span></span><span class="verb"></span><br 
 class="newline" />
-</p><!--l. 187--><p class="indent" >   A solution to the interconnection of hybrid systems <span 
+</p>
+     </li></ul>
+<!--l. 199--><p class="indent" >   A solution to the interconnection of hybrid systems <span 
 class="cmsy-10"><img 
 src="cmsy10-48.png" alt="H" class="10x-x-48" /></span><sub><span 
 class="cmr-7">1</span></sub> and <span 
@@ -1043,9 +1868,11 @@ class="cmr-7">2</span></sub> is depicted in Figure&#x00A0;<a
 href="#x1-1010r1">4(a)<!--tex4ht:ref: fig:interconnection-5 --></a> (height) and
 Figure&#x00A0;<a 
 href="#x1-1011r2">4(b)<!--tex4ht:ref: fig:interconnection-6 --></a> (velocity).
-</p><!--l. 194--><p class="indent" >   These simulations reflect the expected behavior of the interconnected hybrid systems.
-</p><!--l. 196--><p class="indent" >   For MATLAB/Simulink files of this example, see Examples/Example_<a 
-href="#x1-10016">1.6<!--tex4ht:ref: ex:interconnection1 --></a>.
+</p><!--l. 206--><p class="indent" >   These simulations reflect the expected behavior of the interconnected hybrid systems.
+</p><!--l. 208--><p class="indent" >   For MATLAB/Simulink files of this example, see Examples/Example_<a 
+href="#x1-10011">1.6<!--tex4ht:ref: ex:interconnection1 --></a>.
+                                                                                         
+                                                                                         
                                                                                          _ 
 </p>
    </div>

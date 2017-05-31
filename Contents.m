@@ -1,5 +1,5 @@
-% HyEQ_Toolbox_V203
-% Version 2 (03) 10-Apr-2016
+% HyEQ_Toolbox_V204
+% Version 2 (04) 17-May-2017
 %
 %    hyeqsolver      -  solves hybrid equations.
 %    plotharc        -    Hybrid arc plot (n states).
@@ -11,4 +11,4 @@
 %    tbclean         -    Removes HyEQ_Toolbox_V202.
 
 % Generated at 23-Apr-2014 18:10:04 by MAKEINSTALL
-% Modified at 10-Apr-2016 13:18:35 by MAKEINSTALL
+% Modified at 17-May-2017 11:18:43 by MAKEINSTALL

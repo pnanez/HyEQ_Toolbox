@@ -1,8 +1,6 @@
 \documentclass{article}
 \newcounter{chapter}
-\newcounter{nntheorem}
 \include{macros/headEx}
-\newcommand{\chapter}[2]{{\LARGE \center \bf #1 \\ \vspace{0.5in} }}
 \input{macros/macrosbook}
 \input{macros/macrosRGS}
 
@@ -26,14 +24,27 @@
 \usepackage{fancyvrb} 
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% VERSION CONTROL COMMAND
+%%% For Conference, Change to "true"
+%%% For Report, Change to "false"
+\usepackage{ifthen}
+\newboolean{StandAloneExample}
+\setboolean{StandAloneExample}{true}
+%\newcommand{\NotSAE}[1]{\ifthenelse{\boolean{StandAloneExample}}{}{{\color{red}#1}}}
+%\newcommand{\IfSAE}[2]{\ifthenelse{\boolean{StandAloneExample}}{#1}{{\color{blue}#2}}}   
+\newcommand{\NotSAE}[1]{\ifthenelse{\boolean{StandAloneExample}}{}{#1}}
+\newcommand{\IfSAE}[2]{\ifthenelse{\boolean{StandAloneExample}}{#1}{#2}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%      
+
 %%%%%%%%%%%%%%%%%%
 
 \begin{document}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\setcounter{chapter}{1} % Initial counter in examples environment
-\setcounter{nntheorem}{2} % Second counter in examples environment
-\setcounter{section}{0} % Section counter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\
+\renewcommand{\thenexample}{\arabic{section}.\arabic{chapter}}
+\setcounter{section}{0} % Section counter (1 previous)
+\setcounter{chapter}{3} % Second counter in examples environment (exact)
 
 \section{Examples}
 \input{input_ex_1_3}

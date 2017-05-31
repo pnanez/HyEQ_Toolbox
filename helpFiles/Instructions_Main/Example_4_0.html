@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="iso-8859-1" ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">  
+<!--http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd-->  
+<html xmlns="http://www.w3.org/1999/xhtml"  
+> 
+<head><title></title> 
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /> 
+<meta name="generator" content="TeX4ht (http://www.tug.org/tex4ht/)" /> 
+<meta name="originator" content="TeX4ht (http://www.tug.org/tex4ht/)" /> 
+<!-- xhtml,html --> 
+<meta name="src" content="Example_4_0.tex" /> 
+<meta name="date" content="2017-05-11 11:39:00" /> 
+<link rel="stylesheet" type="text/css" href="Example_4_0.css" /> 
+</head><body 
+>
+   <h3 class="sectionHead"><span class="titlemark">5   </span> <a 
+ id="x1-10005"></a>Examples</h3>
+<!--l. 51--><p class="noindent" >The examples below illustrate the use of the Simulink implementation above.
+</p>
+   <div class="newtheorem">
+<!--l. 1--><p class="noindent" ><span class="head">
+ <span 
+class="cmbx-10">Example</span><span 
+class="cmbx-10">&#x00A0;5.7</span> </span>(Linear time-invariant plant) <a 
+ id="x1-10011"></a>
+</p><!--l. 4--><p class="indent" >   Following the model of a physical component  </p><div class="subequations"><a 
+ id="x1-10020"></a>
+<table 
+class="align">
+                    <tr><td 
+class="align-odd"><span 
+class="cmmi-10">&#x1E8B;</span></td>                      <td 
+class="align-even"> = <span 
+class="cmmi-10">f</span>(<span 
+class="cmmi-10">x,u</span>)<span 
+class="cmmi-10">,</span></td>                      <td 
+class="align-odd"><span 
+class="cmmi-10">C</span></td>                     <td 
+class="align-even"> := <span 
+class="cmsy-10">{</span><span 
+class="cmmi-10">x</span><span 
+class="cmmi-10">&#x00A0;</span><span 
+class="cmsy-10">|</span><span 
+class="cmmi-10">&#x00A0;x </span><span 
+class="cmsy-10">&#x2208; </span><span 
+class="msbm-10">&#x211D;</span><sup><span 
+class="cmmi-7">n</span></sup><span 
+class="cmsy-10">}</span><span 
+class="cmmi-10">,</span></td>                                                                                <td 
+class="align-label"><a 
+ id="x1-1003r1"></a>(1a)
+                    </td></tr><tr><td 
+class="align-odd"><span 
+class="cmmi-10">x</span><sup><span 
+class="cmr-7">+</span></sup></td>                    <td 
+class="align-even"> = <span 
+class="cmmi-10">g</span>(<span 
+class="cmmi-10">x</span>) = <span 
+class="cmsy-10">&#x2205;</span><span 
+class="cmmi-10">,</span></td>                    <td 
+class="align-odd"><span 
+class="cmmi-10">D</span></td>                    <td 
+class="align-even"> := <span 
+class="cmsy-10">&#x2205;</span><span 
+class="cmmi-10">,</span></td>                                                                                           <td 
+class="align-label"><a 
+ id="x1-1004r2"></a>(1b)
+                    </td></tr><tr><td 
+class="align-odd"><span 
+class="cmmi-10">y</span></td>                      <td 
+class="align-even"> = <span 
+class="cmmi-10">h</span>(<span 
+class="cmmi-10">x,u</span>)</td>                                            <td 
+class="align-odd"></td>                                    <td 
+class="align-even"></td>                    <td 
+class="align-label"><a 
+ id="x1-1005r3"></a>(1c)                                                             </td></tr></table>
+</div>
+<!--l. 20--><p class="indent" >   a linear time-invariant model of the physical component is defined by
+</p>
+   <center class="math-display" >
+<img 
+src="Example_4_00x.png" alt="f(x,u) = f (x,u) = A x + B u,    h(x,u) = h(x,u) = M x+ N  u
+         P         P     P                        P      P  " class="math-display"  /></center> where
+<span 
+class="cmmi-10">A</span><sub><span 
+class="cmmi-7">P</span></sub>, <span 
+class="cmmi-10">B</span><sub><span 
+class="cmmi-7">P</span></sub>, <span 
+class="cmmi-10">M</span><sub><span 
+class="cmmi-7">P</span></sub>, and <span 
+class="cmmi-10">N</span><sub><span 
+class="cmmi-7">P</span></sub> are matrices of appropriate dimensions. State and input constraints can directly be
+embedded into the set <span 
+class="cmmi-10">C</span><span 
+class="cmmi-7">P</span>. For example, the constraint that <span 
+class="cmmi-10">x </span>has all of its components nonnegative and that <span 
+class="cmmi-10">u </span>has
+its components with norm less or equal than one is captured by <div class="eqnarray">
+                                                                                         
+                                                                                         
+   <center class="math-display" >
+<img 
+src="Example_4_01x.png" alt="CP   =  {(x,u) &#x2208; &#x211D;nP &#x00D7; &#x211D;mP | xi &#x2265; 0 &#x2200;i &#x2208; {1,2,...,nP }}
+            &#x2229;{(x,u) &#x2208; &#x211D;nP &#x00D7; &#x211D;mP | |u| &#x2264; 1 &#x2200;i &#x2208; {1,2,...,m }}
+                                   i                  P
+" class="math-display"  /></center>
+</div>For example, the evolution of the temperature of a room with a heater can be modeled by a linear-time invariant
+system with state <span 
+class="cmmi-10">x </span>denoting the temperature of the room and with input <span 
+class="cmmi-10">u </span>= (<span 
+class="cmmi-10">u</span><sub><span 
+class="cmr-7">1</span></sub><span 
+class="cmmi-10">,u</span><sub><span 
+class="cmr-7">2</span></sub>), where <span 
+class="cmmi-10">u</span><sub><span 
+class="cmr-7">1</span></sub> denotes whether
+the heater is turned on (<span 
+class="cmmi-10">u</span><sub><span 
+class="cmr-7">1</span></sub> = 1) or turned off (<span 
+class="cmmi-10">u</span><sub><span 
+class="cmr-7">1</span></sub> = 0) while <span 
+class="cmmi-10">u</span><sub><span 
+class="cmr-7">2</span></sub> denotes the temperature outside the room. The
+evolution of the temperature is given by <div class="eqnarray">
+   <center class="math-display" >
+<img 
+src="Example_4_02x.png" alt="                   [  ]
+            [     ] u1                      {            2            }
+x&#x02D9; =   - x + z&#x0394;  1  u2     when (x,u) &#x2208; CP = (x,u) &#x2208; &#x211D; &#x00D7; &#x211D; | u1 &#x2208; {0,1}        (2)
+" class="math-display"  /><a 
+ id="x1-1007r2"></a></center>
+</div>where <span 
+class="cmmi-10">z</span><sub><span 
+class="cmr-7">&#x0394;</span></sub> is a constant representing the heater capacity.                                                                  _ 
+   </div>
+    
+</body></html> 
+
+                                                                                         
+
+

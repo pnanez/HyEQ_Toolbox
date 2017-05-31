@@ -1,0 +1,29 @@
+\BOOKMARK [1][-]{section.1.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.1.2}{Installation}{}% 2
+\BOOKMARK [1][-]{section.1.3}{ Lite HyEQ Simulator: A stand-alone MATLAB code for simulation of hybrid systems without inputs}{}% 3
+\BOOKMARK [2][-]{subsection.1.3.1}{Solver Function}{section.1.3}% 4
+\BOOKMARK [3][-]{subsubsection.1.3.1.1}{Events Detection}{subsection.1.3.1}% 5
+\BOOKMARK [3][-]{subsubsection.1.3.1.2}{Jump Map}{subsection.1.3.1}% 6
+\BOOKMARK [3][-]{subsubsection.1.3.1.3}{Function Wrapper}{subsection.1.3.1}% 7
+\BOOKMARK [2][-]{subsection.1.3.2}{Software Requirements}{section.1.3}% 8
+\BOOKMARK [2][-]{subsection.1.3.3}{Configuration of Solver}{section.1.3}% 9
+\BOOKMARK [2][-]{subsection.1.3.4}{Initialization}{section.1.3}% 10
+\BOOKMARK [2][-]{subsection.1.3.5}{Postprocessing and Plotting solutions}{section.1.3}% 11
+\BOOKMARK [1][-]{section.1.4}{HyEQ Simulator: A Simulink implementation for simulation of single and interconnected hybrid systems with or without inputs}{}% 12
+\BOOKMARK [2][-]{subsection.1.4.1}{Specialized library for simulation of Cyber-Physical Systems}{section.1.4}% 13
+\BOOKMARK [3][-]{subsubsection.1.4.1.1}{Models of physical components}{subsection.1.4.1}% 14
+\BOOKMARK [3][-]{subsubsection.1.4.1.2}{Models of cyber components}{subsection.1.4.1}% 15
+\BOOKMARK [2][-]{subsection.1.4.2}{The Integrator System}{section.1.4}% 16
+\BOOKMARK [3][-]{subsubsection.1.4.2.1}{CT Dynamics}{subsection.1.4.2}% 17
+\BOOKMARK [3][-]{subsubsection.1.4.2.2}{Jump Logic}{subsection.1.4.2}% 18
+\BOOKMARK [3][-]{subsubsection.1.4.2.3}{Update Logic}{subsection.1.4.2}% 19
+\BOOKMARK [3][-]{subsubsection.1.4.2.4}{Stop Logic}{subsection.1.4.2}% 20
+\BOOKMARK [2][-]{subsection.1.4.3}{Software Requirements}{section.1.4}% 21
+\BOOKMARK [3][-]{subsubsection.1.4.3.1}{Configuration of HyEQ Simulator with embedded functions for Windows}{subsection.1.4.3}% 22
+\BOOKMARK [3][-]{subsubsection.1.4.3.2}{Configuration of HyEQ Simulator with embedded functions for Mac/Linux}{subsection.1.4.3}% 23
+\BOOKMARK [2][-]{subsection.1.4.4}{Configuration of Integration Scheme}{section.1.4}% 24
+\BOOKMARK [2][-]{subsection.1.4.5}{Initialization}{section.1.4}% 25
+\BOOKMARK [2][-]{subsection.1.4.6}{Postprocessing and Plotting solutions}{section.1.4}% 26
+\BOOKMARK [1][-]{section.1.5}{Examples}{}% 27
+\BOOKMARK [1][-]{section.1.6}{Further Reading}{}% 28
+\BOOKMARK [1][-]{section.1.7}{Acknowledgments}{}% 29

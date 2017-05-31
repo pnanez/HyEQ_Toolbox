@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding="utf-8"?>
 <toc version="2.0">
 
-    <tocitem target="Instructions_Main/HyEQ_Toolbox_v203.html">My Toolbox
-        <tocitem target="Instructions_Main/HyEQ_Toolbox_v203.html" image="HelpIcon.FUNCTION">Functions
+    <tocitem target="Instructions_Main/HyEQ_Toolbox_v204.html">My Toolbox
+        <tocitem target="Instructions_Main/HyEQ_Toolbox_v204.html" image="HelpIcon.FUNCTION">Functions
             <tocitem target="Matlab_Publish/Html/html_plotHarc/plotHarc_help.html">plotHarc()</tocitem>
             <tocitem target="Matlab_Publish/Html/html_HyEQSolver/run_HyEQsolver_Help.html">HyEQSolver()</tocitem>
         </tocitem>
@@ -13,7 +13,11 @@
             <tocitem target="Instructions_Main/Example_1_5.html">Vehicle following a track with boundaries</tocitem>
             <tocitem target="Instructions_Main/Example_1_6.html">Interconnection of hybrid systems: bouncing ball and moving platform</tocitem>
             <tocitem target="Instructions_Main/Example_1_7.html">Biological example: synchronization of two fireflies</tocitem>
-            <tocitem target="Instructions_Main/Example_1_8.html">A simple mathematical example to show different type of simulation results</tocitem>                    
+            <tocitem target="Instructions_Main/Example_1_8.html">A simple mathematical example to show different type of simulation results</tocitem>
+            <tocitem target="Instructions_Main/Example_4_0.html">A simple mathematical model of a physical component</tocitem>
+            <tocitem target="Instructions_Main/Example_4_1.html">Implementation of a Finite State Machine (FSM)</tocitem>
+            <tocitem target="Instructions_Main/Example_4_2.html">Estimation over a network</tocitem>
+            <tocitem target="Instructions_Main/Example_4_3.html">Sample-and-hold Feedbac Control</tocitem>
         </tocitem>
     </tocitem>
 </toc>

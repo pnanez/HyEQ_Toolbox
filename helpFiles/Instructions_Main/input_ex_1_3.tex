@@ -27,9 +27,9 @@ system are $\gamma = 9.81$ and $\lambda=0.8$.
 
 \bigskip
 
-\noindent The following procedure is used to simulate this example with {\tt HyEQsimulator.mdl}:
+\noindent The following procedure is used to simulate this example using the model in the file {\tt Example\_1\_2a.slx}:
 \begin{itemize}
-\item {\tt HyEQsimulator.mdl} is opened in MATLAB/Simulink.
+\item {\tt Example\_1\_2a.slx} is opened in MATLAB/Simulink.
 \item The {\em Embedded MATLAB function blocks} {\em f, C, g, D} are edited by double-clicking on the block and editing the script. In each embedded function block, parameters must be added as inputs and defined as parameters by selecting {\tt Tools>Edit Data/Ports}, and setting the scope to {\tt Parameter}. For this example, {\em gamma} and {\em lambda} are defined in this way.
 \item The initialization script {\tt initialization.m} is edited by opening the file and editing the script. The flow time and jump horizons, $T$ and $J$ are defined as well as the initial conditions for the state vector, $x_0$, and input vector, $u_0$, and a rule for jumps, $rule$.
 \item The postprocessing script {\tt postprocessing.m} is edited by opening the file and editing the script. Flows and jumps may be plotted by calling the functions {\em plotflows} and {\em plotjumps}, respectively. The hybrid arc may be plotted by calling the function {\em plotHybridArc}.
@@ -89,20 +89,24 @@ system are $\gamma = 9.81$ and $\lambda=0.8$.
   \end{center}
 \end{figure}
 
+Flow map
 %\scriptsize
-\input{Matlab2tex_1_3/f.tex}\label{scr:f}
+\input{Matlab2tex_1_2/f.tex}\label{scr:f}
 %\normalsize
 
+Flow set
 %\scriptsize
-\input{Matlab2tex_1_3/C.tex}\label{scr:C}
+\input{Matlab2tex_1_2/C.tex}\label{scr:C}
 %\normalsize
 
+Jump map
 %\scriptsize
-\input{Matlab2tex_1_3/g.tex}\label{scr:g}
+\input{Matlab2tex_1_2/g.tex}\label{scr:g}
 %\normalsize
 
+Jump set
 %\scriptsize
-\input{Matlab2tex_1_3/D.tex}\label{scr:D}
+\input{Matlab2tex_1_2/D.tex}\label{scr:D}
 %\normalsize
 
 A solution to the bouncing ball system from $x(0,0)=[1,0]^\top$ and with $T=10, J=20$, $rule =1$, is
@@ -112,6 +116,6 @@ onto $t$ and $j$ are shown. Figure~\ref{fig:input-3} depicts the corresponding h
 These simulations reflect the expected behavior of the bouncing ball model. Note the only
 difference between this example and the example of a bouncing ball without a constant input is that, in this example, the ball bounces on a platform at a height of the chosen input value $0.2$ rather than the ground at a value of $0$.
 
-For MATLAB/Simulink files of this example, see Examples/Example\_\ref{ex:bbinput}.
+For MATLAB/Simulink files of this example, see Examples/Example\_1.2a.
 
 \end{example}

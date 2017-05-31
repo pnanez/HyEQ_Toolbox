@@ -1,7 +1,8 @@
 
 \begin{example}{biological example: synchronization of two fireflies}
 \label{ex:fireflies}
-Consider a biological example of the synchronization of two fireflies flashing. The fireflies can be modeled mathematically as periodic oscillators which tend to synchronize their flashing until they are flashing in phase with each other. A state value of $\tau_i=1$ corresponds to a flash, and after each flash, the firefly automatically resets its internal timer (periodic cycle) to $\tau_i=0$.  The synchronization of the fireflies can be modeled as an interconnection of two hybrid systems because every time one firefly flashes, the other firefly notices and jumps ahead in its internal timer $\tau$ by $(1+\varepsilon)\tau$, where $\varepsilon$ is a biologically determined coefficient. This happens until eventually both fireflies synchronize their internal timers and are flashing simultaneously.  \begin{figure}[ht!]
+Consider a biological example of the synchronization of two fireflies flashing. The fireflies can be modeled mathematically as periodic oscillators which tend to synchronize their flashing until they are flashing in phase with each other. A state value of $\tau_i=1$ corresponds to a flash, and after each flash, the firefly automatically resets its internal timer (periodic cycle) to $\tau_i=0$.  The synchronization of the fireflies can be modeled as an interconnection of two hybrid systems because every time one firefly flashes, the other firefly notices and jumps ahead in its internal timer $\tau$ by $(1+\varepsilon)\tau$, where $\varepsilon$ is a biologically determined coefficient. This happens until eventually both fireflies synchronize their internal timers and are flashing simultaneously.  
+\begin{figure}[ht!]
   \begin{center}
     {\includegraphics[width=.45\textwidth]{figures/Simulink/fireflies.eps}}
    \caption{Interconnection Diagram for Example~\ref{ex:fireflies}}
@@ -61,18 +62,22 @@ The interconnection diagram for this example is simpler than in the previous exa
 
 For hybrid system $\HS_i$, $i = 1,2$:
 
+Flow map
 %\scriptsize
 \input{Matlab2tex_1_7/f.tex}\label{scr:f}
 %\normalsize
 
+Flow set
 %\scriptsize
 \input{Matlab2tex_1_7/C.tex}\label{scr:C}
 %\normalsize
 
+Jump map
 %\scriptsize
 \input{Matlab2tex_1_7/g.tex}\label{scr:g}
 %\normalsize
 
+Jump set
 %\scriptsize
 \input{Matlab2tex_1_7/D.tex}\label{scr:D}
 %\normalsize
@@ -82,7 +87,7 @@ $\HS_2$ with $T=15, J=15$, $rule =1$, $\varepsilon=0.3$ is depicted in Figure~\r
 
 These simulations reflect the expected behavior of the interconnected hybrid systems. The fireflies initially flash out of phase with one another and then synchronize to flash in the same phase.
 
-For MATLAB/Simulink files of this example, see Examples/Example\_\ref{ex:fireflies}.
+For MATLAB/Simulink files of this example, see \IfSAE{Examples/Example\_\ref{ex:fireflies}}{Examples/Example\_1.7}.
 
 \end{example}
 

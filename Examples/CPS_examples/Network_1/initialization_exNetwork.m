@@ -35,6 +35,7 @@ j0 = 0;
 y0 = [0;j0;tau0];             
 
 
+% initial conditions (Estimator)
 zhat0 = [0;1/2;0;0;0];
 
 

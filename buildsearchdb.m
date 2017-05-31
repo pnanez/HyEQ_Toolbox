@@ -4,7 +4,11 @@ function buildsearchdb(TBfullpath)
 %%
 disp('Updating the simulink library browser.')
 disp('-----------------------------------')
-lb = LibraryBrowser.StandaloneBrowser;
+if (verLessThan('matlab', '8.4'))  % R2014b
+    lb = LibraryBrowser.StandaloneBrowser;
+else   
+    lb = LibraryBrowser.LibraryBrowser2;
+end
 lb.refreshLibraryBrowser;
 disp('Update completed')
 if (~verLessThan('matlab', '8.4'))  % R2014b
@@ -29,6 +33,6 @@ builddocsearchdb(htmlFolder)
 disp('See under "Help, Documentation, Supplemental Software" for more informaton.')
 disp('-----------------------------------')
 disp('For documentation of the HyEQ toolbox, type')
-disp(['web ' ,'HyEQ_Toolbox_v203.html'])
+disp(['web ' ,'HyEQ_Toolbox_v204.html'])
 disp('-----------------------------------')
 

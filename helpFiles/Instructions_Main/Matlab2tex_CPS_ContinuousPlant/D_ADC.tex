@@ -1,0 +1,28 @@
+% This file was automatically created from the m-file 
+% "m2tex.m" written by USL. 
+% The fontencoding in this file is UTF-8. 
+%  
+% You will need to include the following two packages in 
+% your LaTeX-Main-File. 
+%  
+% \usepackage{color} 
+% \usepackage{fancyvrb} 
+%  
+% It is advised to use the following option for Inputenc 
+% \usepackage[utf8]{inputenc} 
+%  
+  
+% definition of matlab colors: 
+\definecolor{mblue}{rgb}{0,0,1} 
+\definecolor{mgreen}{rgb}{0.13333,0.5451,0.13333} 
+\definecolor{mred}{rgb}{0.62745,0.12549,0.94118} 
+\definecolor{mgrey}{rgb}{0.5,0.5,0.5} 
+\definecolor{mdarkgrey}{rgb}{0.25,0.25,0.25} 
+  
+\DefineShortVerb[fontfamily=courier,fontseries=m]{\$} 
+\DefineShortVerb[fontfamily=courier,fontseries=b]{\#} 
+  
+\noindent                                   \hspace*{-1.6em}{\scriptsize 1}$  $\color{mblue}$function$\color{black}$ v  = D(x, vs, Ts) $\\ \hspace*{-1.6em}{\scriptsize 2}$  $\color{mgreen}$%--------------------------------------------------------------------------$\color{black}$$\\ \hspace*{-1.6em}{\scriptsize 3}$  $\color{mgreen}$% Matlab M-file Project: HyEQ Toolbox @  Hybrid Systems Laboratory (HSL), $\color{black}$$\\ \hspace*{-1.6em}{\scriptsize 4}$  $\color{mgreen}$% https://hybrid.soe.ucsc.edu/software$\color{black}$$\\ \hspace*{-1.6em}{\scriptsize 5}$  $\color{mgreen}$% http://hybridsimulator.wordpress.com/$\color{black}$$\\ \hspace*{-1.6em}{\scriptsize 6}$  $\color{mgreen}$%--------------------------------------------------------------------------$\color{black}$$\\ \hspace*{-1.6em}{\scriptsize 7}$  $\color{mgreen}$% Project: Simulation of a hybrid system Analog-to-Digital converter (ADC) $\color{black}$$\\ \hspace*{-1.6em}{\scriptsize 8}$  $\color{mgreen}$% Description: Jump set$\color{black}$$\\ \hspace*{-1.6em}{\scriptsize 9}$  $\color{mgreen}$%--------------------------------------------------------------------------$\color{black}$$\\ \hspace*{-2em}{\scriptsize 10}$  $\color{mgreen}$%--------------------------------------------------------------------------$\color{black}$$\\ \hspace*{-2em}{\scriptsize 11}$  $\color{mgreen}$%   See also HYEQSOLVER, PLOTARC, PLOTARC3, PLOTFLOWS, PLOTHARC,$\color{black}$$\\ \hspace*{-2em}{\scriptsize 12}$  $\color{mgreen}$%   PLOTHARCCOLOR, PLOTHARCCOLOR3D, PLOTHYBRIDARC, PLOTJUMPS.$\color{black}$$\\ \hspace*{-2em}{\scriptsize 13}$  $\color{mgreen}$%   Copyright @ Hybrid Systems Laboratory (HSL),$\color{black}$$\\ \hspace*{-2em}{\scriptsize 14}$  $\color{mgreen}$%   Revision: 0.0.0.3 Date: 05/20/2015 3:42:00$\color{black}$$\\ \hspace*{-2em}{\scriptsize 15}$  $\color{mgreen}$%$\color{black}$$\\ \hspace*{-2em}{\scriptsize 16}$  $\color{mgreen}$% Check on jump conditions$\color{black}$$\\ \hspace*{-2em}{\scriptsize 17}$  $\color{mgreen}$% % E.g.,$\color{black}$$\\ \hspace*{-2em}{\scriptsize 18}$  $\color{mgreen}$% if (x(1) <= u(1)) && (x(2) <= 0)  % jump condition$\color{black}$$\\ \hspace*{-2em}{\scriptsize 19}$  $\color{mgreen}$%     v = 1;  % report jump$\color{black}$$\\ \hspace*{-2em}{\scriptsize 20}$  $\color{mgreen}$% else$\color{black}$$\\ \hspace*{-2em}{\scriptsize 21}$  $\color{mgreen}$%     v = 0;   % do not report jump$\color{black}$$\\ \hspace*{-2em}{\scriptsize 22}$  $\color{mgreen}$% end$\color{black}$$\\ \hspace*{-2em}{\scriptsize 23}$  $\\ \hspace*{-2em}{\scriptsize 24}$  n = length(vs); $\color{mgreen}$% measured input size$\color{black}$$\\ \hspace*{-2em}{\scriptsize 25}$  $\\ \hspace*{-2em}{\scriptsize 26}$  tau_s = x(end); $\color{mgreen}$% timer state$\color{black}$$\\ \hspace*{-2em}{\scriptsize 27}$  $\\ \hspace*{-2em}{\scriptsize 28}$  $\color{mblue}$if$\color{black}$ tau_s>=0 && tau_s<= Ts$\\ \hspace*{-2em}{\scriptsize 29}$      v = 0; $\color{mgreen}$% do not report jump$\color{black}$$\\ \hspace*{-2em}{\scriptsize 30}$  $\color{mblue}$elseif$\color{black}$ tau_s> Ts$\\ \hspace*{-2em}{\scriptsize 31}$      v = 1; $\color{mgreen}$% report jump$\color{black}$$\\ \hspace*{-2em}{\scriptsize 32}$  $\color{mblue}$else$\color{black}$$\\ \hspace*{-2em}{\scriptsize 33}$      v = 0;$\\ \hspace*{-2em}{\scriptsize 34}$  $\color{mblue}$end$\color{black}$$\\ 
+  
+\UndefineShortVerb{\$} 
+\UndefineShortVerb{\#}

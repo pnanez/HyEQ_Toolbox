@@ -148,41 +148,53 @@ $\HS_2$}
 \caption{Solution of Example~\ref{ex:interconnection1} for system $\HS_2$}
 \end{figure}
 
-For hybrid system $\HS_1$:
 
+\begin{itemize}
+\item For hybrid system $\HS_1$:
+
+Flow map
 %\scriptsize
 \input{Matlab2tex_1_6/f.tex}\label{scr:f}
 %\normalsize
 
+Flow set
 %\scriptsize
 \input{Matlab2tex_1_6/C.tex}\label{scr:C}
 %\normalsize
 
+Jump map
 %\scriptsize
 \input{Matlab2tex_1_6/g.tex}\label{scr:g}
 %\normalsize
 
+Jump set
 %\scriptsize
 \input{Matlab2tex_1_6/D.tex}\label{scr:D}
 %\normalsize
 
-For hybrid system $\HS_2$:
+\item For hybrid system $\HS_2$:
 
+Flow map
 %\scriptsize
 \input{Matlab2tex_1_6/f2.tex}\label{scr:f2}
 %\normalsize
 
+Flow set
 %\scriptsize
 \input{Matlab2tex_1_6/C2.tex}\label{scr:C2}
 %\normalsize
 
+Jump map
 %\scriptsize
 \input{Matlab2tex_1_6/g2.tex}\label{scr:g2}
 %\normalsize
 
+Jump set
 %\scriptsize
 \input{Matlab2tex_1_6/D2.tex}\label{scr:D2}
 %\normalsize
+
+\end{itemize}
 
 A solution to the interconnection of hybrid systems $\HS_1$ and
 $\HS_2$ with $T=18, J=20$, $rule =1$, is depicted in Figure~\ref{fig:interconnection-2}.
@@ -193,7 +205,7 @@ Figure~\ref{fig:interconnection-5} (height) and Figure~\ref{fig:interconnection-
 
 These simulations reflect the expected behavior of the interconnected hybrid systems. %Note that in order to implement these systems without premature stopping of the simulation, $\xi_1$ in $g_1$ and $\eta_1$ in $g_2$ can be changed to $u_1$ and $u_2$, respectively so that $\xi_1^+=u_1$ and $\eta_1^+=u_2$.
 
-For MATLAB/Simulink files of this example, see Examples/Example\_\ref{ex:interconnection1}.
+For MATLAB/Simulink files of this example, see \IfSAE{Examples/Example\_\ref{ex:interconnection1}}{Examples/Example\_1.6}.
 
 \end{example}
 

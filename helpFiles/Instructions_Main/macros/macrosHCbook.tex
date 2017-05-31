@@ -1,0 +1,152 @@
+%%% MACROS FOR HCBOOK
+
+%% plant's state
+%\newcommand{\xp}{z}
+%%
+%\newcommand{\xpdot}{\dot{\xp}}
+%%
+\newcommand{\xpddot}{\ddot{\xp}}
+%% plant's input
+\newcommand{\up}{u}
+%% plant's output
+\newcommand{\yp}{y}
+%% plant's right-hand side
+%\newcommand{\fp}{F_P}
+\newcommand{\gp}{G_P}
+\newcommand{\Cp}{C_P}
+\newcommand{\Dp}{D_P}
+%% plant's output function
+\newcommand{\hp}{h}
+\newcommand{\upSpace}{{\cal U}}
+
+
+%% controller's state
+%\newcommand{\xc}{\eta}
+%%
+%\newcommand{\xcdot}{\dot{\xc}}
+%%
+\newcommand{\xcddot}{\ddot{\xc}}
+%% controller's input
+\newcommand{\uc}{v}
+%% controller's output
+\newcommand{\yc}{\zeta}
+%% controller's right-hand side
+%\newcommand{\fc}{F_C}
+%\newcommand{\gc}{G_C}
+%% controller's output function
+\newcommand{\hc}{\kappa}
+%\newcommand{\Cc}{C_C}
+%\newcommand{\Dc}{D_C}
+
+
+%% interface's state
+\newcommand{\xn}{\lambda}
+%%
+\newcommand{\xndot}{\dot{\xn}}
+%%
+\newcommand{\xnddot}{\ddot{\xn}}
+%% controller's input
+\newcommand{\un}{w}
+%% controller's output
+\newcommand{\yn}{\psi}
+%% controller's right-hand side
+\newcommand{\fn}{F_I}
+\newcommand{\gn}{G_I}
+%% controller's output function
+\newcommand{\hn}{\varphi}
+\newcommand{\Cn}{C_I}
+\newcommand{\Dn}{D_I}
+
+%% logic state
+\newcommand{\xlogic}{q}
+\newcommand{\xlogicdot}{\dot{\xlogic}}
+\newcommand{\xlogicSpace}{Q}
+\newcommand{\xcSpace}{\Upsilon}
+\newcommand{\ucSpace}{{\cal V}}
+
+%% timer state
+\newcommand{\xtimer}{\tau}
+\newcommand{\xtimerdot}{\dot{\xtimer}}
+\newcommand{\xtimerp}{\tau^*}
+\newcommand{\xtimerSpace}{[0,\xtimerp]}
+
+%% memory state
+\newcommand{\xmem}{\ell}
+\newcommand{\xmemdot}{\dot{\xmem}}
+
+%% memory state
+\newcommand{\x}{x}
+%\newcommand{\xdot}{\dot{\x}}
+%\newcommand{\X}{{\cal X}}
+
+% cco
+%\newcommand{\cco}{\overline{\mathop{\rm co}}}
+
+% LTL
+\newcommand{\True}{{\tt True}\xspace}
+\newcommand{\False}{{\tt False}\xspace}
+\newcommand{\fa}{\mathfrak{f}_1}
+\newcommand{\fb}{\mathfrak{f}_2}
+\newcommand{\p}{\mathfrak{a}}
+\newcommand{\pa}{\mathfrak{a}_1}
+\newcommand{\pb}{\mathfrak{a}_2}
+
+%%% Highlight modifications
+\def\startmodif{\color{blue}}
+\def\stopmodif{\color{black}\normalcolor}
+
+
+
+%%% Comments
+%\newcommand{\rafal}[1]{{\noindent \color{red} \tt \small #1}}
+%\newcommand{\andy}[1]{{\noindent \color{green} \tt \small #1}}
+%\newcommand{\ricardo}[1]{{\noindent \color{blue} \tt \small #1}}
+%\def\startmodif{\color{red}}
+%\def\stopmodif{\color{black}\normalcolor}
+%
+%\def\startmodifa{\color{green}}
+%\def\stopmodifa{\color{black}\normalcolor}
+%
+%\def\startmodifaa{\color{black}}
+%\def\stopmodifaa{\color{black}\normalcolor}
+%
+%\def\startmodifr{\color{blue}}
+%\def\stopmodifr{\color{black}\normalcolor}
+%
+%\def\startmodifra{\color{black}}
+%\def\stopmodifra{\color{black}\normalcolor}
+
+
+
+%\newcommand{\Sphere}{\mathbb{S}}
+
+%\newcommand{\T}{\mathcal{T}}
+
+%\newcommand{\realsgeq}{{\reals_{\geq 0}}}
+%\newcommand{\nats}{\mathbb{N}}
+\newcommand{\SSS}{E}
+%\newcommand{\non}{\nonumber}
+\def\ba{\begin{array}}
+\def\ea{\end{array}}
+%\newcommand{\eqn}[1]{\begin{eqnarray}#1\end{eqnarray}} 
+\newcommand{\Ir}{{\cal I}(r)}
+\newcommand{\Irzero}{{\cal I}(0)}
+\def\uflow{u_c} %v_c
+\def\uflowTwo{\tilde{u}_c} %v_c
+\def\uflowmap{u_c} % v_c
+\def\uflowset{u_c} % v_c
+
+\def\ujump{u_d} % u_d
+\def\ujumpTwo{\tilde{u}_d} % u_d
+\def\ujumpmap{u_d} % u_d
+\def\ujumpset{u_d} % u_d
+
+\def\yflow{y_c}
+\def\yflowmap{y}
+\def\yflowset{y}
+
+\def\yjump{y_d}
+\def\yjumpmap{y}
+\def\yjumpset{y}
+\def\restcoefficentBall{e_c}
+%OLD

@@ -1,0 +1,1063 @@
+%%% REMOVE %%%% begin
+\documentclass{article}
+\include{macros/head}
+\newcounter{chapter}
+\setcounter{chapter}{1}
+\newcommand{\chapter}[1]{{\LARGE \center \bf #1 \\ \vspace{0.5in} }}
+\input{macros/macrosbook}
+\input{macros/macrosRGS}
+\input{macros/macrosHCbook}                                          
+%%% RICARDO ADDITIONS
+\usepackage{color}
+\newtheorem{helptheorem}{Theorem}[section]
+
+\newtheorem{helplemma}[helptheorem]{Lemma}
+
+\newtheorem{helpcorollary}[helptheorem]{Corollary}
+
+\newtheorem{helpexample}[helptheorem]{Example}
+
+\newtheorem{helpproposition}[helptheorem]{Proposition}
+
+\newtheorem{helpremark}[helptheorem]{Remark}
+
+\newtheorem{helpdefinition}[helptheorem]{Definition}
+
+\newtheorem{helpassumption}[helptheorem]{Assumption}
+
+\newtheorem{helpstassumption}[helptheorem]{Standing Assumption}
+
+\newcommand{\HyEQfolder}{\mbox{{\ttfamily{ HyEQ\_Toolbox\_V2\_04\ }}}}
+\newcommand{\HyEQversion}{\mbox{v2.04}}
+
+\newcommand{\ricardo}[1]{{\color{blue} #1}}
+\newcommand{\pn}[1]{{\color{red} #1}}
+
+\usepackage[left=1in,top=1in,right=1in,bottom=1in,nohead]{geometry}
+%\usepackage{subfigure}
+\usepackage{psfrag}
+\usepackage{url}
+\geometry{letterpaper}
+\usepackage{fancyvrb} 
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{framed}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% VERSION CONTROL COMMAND
+%%% For Conference, Change to "true"
+%%% For Report, Change to "false"
+\usepackage{ifthen}
+\newboolean{StandAloneExample}
+\setboolean{StandAloneExample}{false}
+%\newcommand{\NotSAE}[1]{\ifthenelse{\boolean{StandAloneExample}}{}{{\color{red}#1}}}
+%\newcommand{\IfSAE}[2]{\ifthenelse{\boolean{StandAloneExample}}{#1}{{\color{blue}#2}}}   
+\newcommand{\NotSAE}[1]{\ifthenelse{\boolean{StandAloneExample}}{}{#1}}
+\newcommand{\IfSAE}[2]{\ifthenelse{\boolean{StandAloneExample}}{#1}{#2}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%      
+
+
+
+
+%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\chapter{Hybrid Equations (HyEQ) Toolbox \HyEQversion\\
+{\it A Toolbox for Simulating Hybrid Systems in MATLAB/Simulink$^{{\footnotesize\textregistered}}$}
+}
+\label{app:simulations}
+
+\vspace{-0.4in}
+
+\begin{minipage}[t]{1.05\textwidth}
+\begin{minipage}[t]{0.3\textwidth}
+\begin{center}
+Ricardo G. Sanfelice\\%ricardo@ucsc.edu
+{\it University of California \\ Santa Cruz, CA 95064}\\
+{\it USA}
+\end{center}
+\end{minipage}
+\begin{minipage}[t]{0.3\textwidth}
+\begin{center}
+David A. Copp\\%dacopp@engr.ucsb.edu
+{\it University of California \\ Santa Barbara, CA 93109}\\
+{\it USA}
+\end{center}
+\end{minipage}
+\begin{minipage}[t]{0.3\textwidth}
+\begin{center}
+Pablo Nanez\\%pa.nanez49@uniandes.edu.co
+{\it Universidad de Los Andes}\\
+{\it Colombia}
+\end{center}
+\end{minipage}
+\end{minipage}
+
+\begin{center}
+{\today}
+\end{center}
+%\bigskip
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{abstract}
+This note describes the Hybrid Equations (HyEQ) Toolbox implemented in MATLAB/Simulink for the simulation of hybrid dynamical systems. This toolbox is capable of simulating individual and interconnected hybrid systems where multiple hybrid systems are connected and interact such as a bouncing ball on a moving platform, fireflies synchronizing their flashing, and more. The Simulink implementation includes four basic blocks that define the dynamics of a hybrid system. These include a flow map, flow set, jump map, and jump set. The flows and jumps of the system are computed by the integrator system which is comprised of blocks that compute the continuous dynamics of the hybrid system, trigger jumps, update the state of the system and simulation time at jumps, and stop the simulation. We also describe a ``lite simulator" which allows for faster simulation.
+\end{abstract}
+
+\tableofcontents
+
+\section{Introduction}
+\begin{center}
+\begin{framed}To get started, a webinar introducing the HyEQ Toolbox is available at\\
+{\footnotesize\url{http://www.mathworks.com/videos/hyeq-a-toolbox-for-simulation-of-hybrid-dynamical-systems-81992.html}}\\
+A free two-step registration is required by Mathworks.
+\end{framed}
+\end{center}
+
+A hybrid system is a dynamical system with continuous and discrete dynamics. Several mathematical models for hybrid systems have appeared in literature. In this paper, we consider the framework for hybrid systems used in~\cite{SCN13,GST09,ST10,San11}, where a hybrid system $\HS$ on a state space $\Re^n$ with input space $\Re^m$ is defined by the following objects:
+\begin{itemize}
+\item A set {\it C} $\subset \Re^n \times \Re^m$ called the {\it flow set}.
+\item A function {\it f} : $\Re^n \times \Re^m \to \Re^n$ called the {\it flow map}.
+\item A set {\it D} $\subset \Re^n \times \Re^m$ called the {\it jump set}.
+\item A function {\it g} : $\Re^n \times \Re^m \to \Re^n$ called the {\it jump map}.
+\end{itemize}
+
+\bigskip
+\noindent
+We consider the simulation in MATLAB/Simulink of hybrid systems $\HS = (C,f,D,g)$ written as
+\begin{eqnarray}\label{eqn:HS}
+\HS: \hspace{0.25in} x, \hspace{.1in} u \in \Re^{m}, \hspace{.1in} y \in \Re^{n}  \hspace{0.25in} \hybridsystemInOutSimple{x}{u}{y}{C}{=}{f}{D}{g}{h}
+\end{eqnarray}
+
+The flow map {\it f} defines the continuous dynamics on the flow set {\it C}, while the jump map {\it g} defines the discrete dynamics on the jump set {\it D}. These objects are referred to as the {\it data} of the hybrid system $\HS$, which at times is explicitly denoted as $\HS = (C,f,D,g)$.  We illustrate this framework in a simple, yet rich in behavior, hybrid system.
+
+
+\begin{example}{bouncing ball system}
+\label{ex:bb}
+Consider a model for a bouncing ball written as
+\begin{eqnarray}
+\label{eq:bbmodel}
+f(x):=\left[
+ \begin{array}{c}
+   x_{2} \\
+ -\gamma
+ \end{array}
+\right],\ 
+   C : = \defset{ x \in \Re^{2}}{x_{1} \geq 0} \\
+\label{eq:bbmodel2}
+g(x):=\left[ \begin{array}{c}
+ 0 \\
+- \lambda x_{2}
+\end{array}
+\right],\ 
+    D: = \defset{ x \in \Re^{2}}{x_{1} \leq 0, \
+  x_{2} \leq 0}
+\end{eqnarray}
+where $\gamma >0$ is the gravity constant and $\lambda \in [0,1)$ is the restitution coefficient. In this model, we consider the ball to be bouncing on a floor at a height of $0$. This model is re-visited as an example in Section \ref{sec:litesolver} and Section \ref{sec:examples}.
+\end{example}
+
+The remainder of this note is organized as follows. In Section \ref{sec:installation}, we describe how to install the HyEQ Toolbox in MATLAB. In Section \ref{sec:litesolver}, we introduce the Lite HyEQ Simulator for solving hybrid systems without inputs. In Section \ref{sec:HyEQsimulator}, we introduce the HyEQ Simulator implemented in Simulink for solving single and interconnected hybrid systems with inputs.
+%In Section \ref{sec:postprocessing}, we discuss configuration, initialization, and postprocessing.
+In Section \ref{sec:examples}, we work through several examples for the simulation of single and interconnected hybrid systems. In Section \ref{sec:closingremarks}, we give directions to where the simulator files can be downloaded.
+%Sections \ref{sec:acknowledgments} and \ref{sec:refs} include acknowledgments and references, respectively.
+
+\section{Installation}
+\label{sec:installation}
+
+The following procedure describes how to install the Hybrid Equations (HyEQ) Toolbox in MATLAB. This installation adds useful {\tt .m} files to the MATLAB library and several blocks to the Simulink block library.
+
+Steps for installation:
+
+\begin{enumerate}
+\item Download the HyEQ Toolbox from MATLAB Central or the author's website at \url{https://hybrid.soe.ucsc.edu/software}.
+\item Extract all files and save in any place (except the root folder).
+\item Open MATLAB and change the current folder to the folder where the {\tt install.m} is located.
+\item Type {\tt install} in the command window and hit enter to run the file {\tt install.m}.
+\item Follow the on-screen prompts. Must answer yes to the question: \begin{verbatim} Add toolbox permanently into your startup path (highly recommended)? Y/E/N [Y]: y \end{verbatim}
+\item Once installation has finished, close and then reopen MATLAB.
+\end{enumerate}
+
+Now the HyEQ Toolbox is ready for use.
+
+If you wish to uninstall the HyEQ Toolbox from MATLAB, simply run the {\tt tbclean.m} file inside the \HyEQfolder folder, and follow the on-screen prompts.
+
+\section{
+Lite HyEQ Simulator: A stand-alone MATLAB code for simulation of  hybrid systems without inputs}
+\label{sec:litesolver}
+One way to simulate hybrid systems is to use ODE function calls with events in MATLAB. 
+%(see, e.g., [2]). 
+Such an implementation gives fast simulation of a hybrid system.
+
+In the lite HyEQ solver, four basic functions are used to define the {\em data} of the hybrid system $\HS$
+as in \eqref{eqn:HS} (without inputs):
+\begin{itemize}
+\item The flow map is defined in the MATLAB function {\tt
+f.m}. The input to this function is a vector with components defining the state of the system $x$. Its output is the value of the flow map $f$.
+\item The flow set is defined in the MATLAB function {\tt
+C.m}. The input to this function is a vector with components defining the state of the system $x$. Its output is equal to $1$ if the state belongs to the set $C$ or equal to $0$ otherwise.
+\item The jump map is defined in the MATLAB function {\tt
+g.m}. Its input is a vector with components defining the state of the system $x$. Its output is the value of the jump map $g$.
+\item The jump set is defined in the MATLAB function {\tt
+D.m}. Its input is a vector with components defining the state of the system $x$. Its output is equal to $1$ if the state belongs to $D$ or equal to $0$ otherwise.
+\end{itemize}
+
+Our Lite HyEQ Simulator uses a main function {\tt run.m} to initialize, run, and plot solutions for the simulation, functions {\tt f.m, C.m, g.m,} and {\tt D.m} to implement the data of the hybrid system, and {\tt HyEQsolver.m} which will solve the differential equations by integrating the continuous dynamics, $\dot{x}=f(x)$, and jumping by the update law $x^+ = g(x)$. The ODE solver called in {\tt HyEQsolver.m} initially uses the initial or most recent step size, and after each integration, the algorithms in {\tt HyEQsolver.m} check to see if the solution is in the set $C$, $D$, or neither. Depending on which set the solution is in, the simulation is accordingly reset following the dynamics given in $f$ or $g$, or the simulation is stopped. This implementation is fast because it also does not store variables to the workspace and only uses built-in ODE function calls.
+
+Time and jump horizons are set for the simulation using {\tt TSPAN = [TSTART TFINAL]} as the time interval of the simulation and {\tt JSPAN = [JSTART \hspace{2mm} JSTOP]} as the interval for the number of discrete jumps allowed. The simulation stops when either the time or jump horizon, i.e. the final value of either interval, is reached.
+
+\input{input_ex_1_2}
+
+%% ADDED DETAILS OF LITE CODE
+\subsection{Solver Function}
+
+%\ricardo{Perhaps add some text here to briefly describe what the functions implement?}
+
+The solver function {\tt HyEQsolver} solves the hybrid system using three different functions as shown below. First, the flows are calculated using the built-in ODE solver function ODE45 in MATLAB. If the solution leaves the flow set {\tt C}, the discrete event is detected using the function {\tt zeroevents} as shown in Section \ref{sec:eventsdetection}. When the state jumps, the next value of the state is calculated via the jump map {\tt g} using the function {\tt jump} as shown in Section \ref{sec:jumpmap}.\\
+
+\input{Matlab2tex/HyEQsolver_inst.tex}\label{scr:HyEQsolver}
+
+\subsubsection{Events Detection}
+\label{sec:eventsdetection}
+
+\input{Matlab2tex/zeroevents_inst.tex}\label{scr:zeroevents}
+
+\subsubsection{Jump Map}
+\label{sec:jumpmap}
+
+\input{Matlab2tex/jump_inst.tex}\label{scr:jump}
+
+\subsubsection{Function Wrapper}
+\label{sec:funwrapp}
+
+\input{Matlab2tex/fun_wrap_inst.tex}\label{scr:funwrapp}
+
+\subsection{Software Requirements}
+
+In order to run simulations using the Lite HyEQ Simulator, MATLAB R13 or newer is required.
+
+\subsection{Configuration of Solver}
+
+Before a simulation is started, it is important to determine the needed integrator scheme, zero-cross detection settings, precision, and other tolerances. Using the default settings does not always give the most efficient or most accurate simulations.
+In the Lite HyEQ Simulator, these parameters are edited in the {\tt run.m} file using
+
+\begin{verbatim} options = odeset(�RelTol�,1e-6,�MaxStep �,.1);. \end{verbatim}
+
+\subsection{Initialization}
+
+%\ricardo{Perhaps expand this as the HyEQ Simulator?}
+
+The Lite HyEQ Simulator is initialized and run by calling the function {\tt run.m}. Inside {\tt run.m}, the initial conditions, simulation horizons {\tt TSPAN} and {\tt JSPAN}, a rule for jumps, and simulation tolerances are defined. After all of the parameters are defined, the function {\tt HyEQsolver} is called, and the simulation runs. See below for sample code to initialize and run the bouncing ball example, Example ~\ref{ex:bblite}.\\
+
+\input{Matlab2tex/initialization_inst.tex}\label{scr:initialization}
+
+
+\subsection{Postprocessing and Plotting solutions}\label{sec:plotfcn}
+
+The function {\tt run.m} is also used to plot solutions after the simulations is complete. See below for sample code to plot solutions to the bouncing ball example, Example \ref{ex:bblite}.
+
+\input{Matlab2tex/postprocesing_inst.tex}\label{scr:postprocesing}
+
+
+\noindent The following functions are used to generate the plots:
+\begin{itemize}
+\item plotarc(t,j,x,L,jstar,modificatorF,modificatorJ,resolution,DDD,true3D): plots the hybrid time domain (matrix) $(t,j)$ versus the sate $x$  (matrix) taking into account jumps $j$. If $x$ is a matrix ($n$ states), then the hybrid time is plotted versus the rows or columns of the matrix, whichever line up. If $t$ and $j$ are a matrices, then each column of $x$ will be plotted according to the hybrid time domain composed for each column of $t$ and $j$. Depending on the input data, this function is capable of plotting several types of figures, e.g., 2D, 3D, hybrid arcs with color, etc. Next, we list several functions that specialize different types of plotting styles from plotarc. For more information, please type $>>$ help plotarc or $>>$ helpwin plotarc in the command window.
+\item plotarc3(t,j,x,L,jstar,modificatorF,modificatorJ,resolution,true3D) is a version of plotarc that specializes in figures in 3D. For more information, please type $>>$ help plotarc3 or $>>$ helpwin plotarc3 in the command window.
+\item plotflows(t,j,x,$jstar$,resolution): plots (in blue) the projection of the
+  trajectory $x$ onto the flow time axis $t$.  The value of the
+  trajectory for intervals $[t_j,t_{j+1}]$ with empty interior is
+  marked with $*$ (in blue).  Dashed lines (in red) connect the value of the
+  trajectory before and after the jump. 
+  Figure~\ref{fig:input-1} shows a plot created with this function.
+ \begin{itemize}
+ 	\item plotflows(t,j,x,$jstar$): The plot is cut regarding the $jstar$ interval ($jstar = [j-initial j-final]$).
+	\item plotflows(t,j,x,$jstar$,resolution): Also, a maximum resolution in between jumps is given by the input variable resolution
+ \end{itemize}
+\item plotjumps(t,j,x,$jstar$,resolution): plots (in red) the projection of the
+  trajectory $x$ onto the jump time $j$. The initial and final value
+  of the trajectory on each interval $[t_j,t_{j+1}]$ is denoted by
+  $*$ (in red) and the continuous evolution of the trajectory on
+  each interval is depicted with a dashed line (in blue). Figure~\ref{fig:input-1} shows a plot created with this function.
+ \begin{itemize}
+ 	\item plotjumps(t,j,x,$jstar$): The plot is cut regarding the $jstar$ interval ($jstar = [j-initial j-final]$).
+	\item plotjumps(t,j,x,$jstar$,resolution): Also, a maximum resolution in between jumps is given by the input variable resolution
+ \end{itemize}
+
+\item plotHybridArc(t,j,x,$jstar$,resolution): plots (in blue and red) the trajectory $x$ on hybrid
+time domains. The intervals $[t_j,t_{j+1}]$ indexed by the
+corresponding $j$ are depicted in the $t-j$ plane (in red). Figure~\ref{fig:input-3} shows a plot created with this function.
+ \begin{itemize}
+ 	\item plotHybridArc(t,j,x,$jstar$): The plot is cut regarding the $jstar$ interval ($jstar = [j-initial j-final]$).
+	\item plotHybridArc(t,j,x,$jstar$,resolution): Also, a maximum resolution in between jumps is given by the input variable resolution
+ \end{itemize}
+
+\item plotHarc(t,j,x,$jstar$,modificatorF,modificatorJ,resolution) is a function for plotting hybrid arcs (n states).
+\begin{itemize}
+\item plotHarc(t,j,x): plots the trajectory $x$ versus the hybrid time domain $(t,j)$. If $x$ is a matrix, then the time vector is plotted versus the rows or columns of the matrix, whichever line up.
+\item plotHarc(t,j,x,$jstar$): plots the trajectory $x$ versus the hybrid time domain $(t,j)$, and the plot is cut regarding the $jstar$ interval $(jstar = [j_{initial},j_{final}])$.
+\item plotHarc(t,j,x,$jstar$,modificatorF,modificatorJ): ModificatorF and ModificatorJ are cell arrays that contains the standard matlab ploting modificators (type $>>$ help plotHarc or $>>$ helpwin plotHarc in the command window for more information).
+\end{itemize}
+
+\item plotHarcColor(t,j,x,L,$jstar$,resolution) plots the trajectory $x$ on hybrid time domain with color.
+\begin{itemize}
+\item plotHarcColor(t,j,x,L): plots the trajectory $x$ (vector) versus the hybrid time domain $(t,j)$. The hybrid arc is plotted with $L$ data as color. The input vectors $t,\ j,\ x,\ L$ must have the same length. 
+\item      plotHarcColor(t,j,x,L,$jstar$): If a specific interval in $j$ is required, $jstar = [j_{initial},
+ j_{final}]$ must be provided. (type $>>$ help plotHarcColor or $>>$ helpwin plotHarcColor in the command window for more information)
+\end{itemize}
+
+\item plotHarcColor3D(t,j,x,L,$jstar$,modificator,resolution) plots an $3D$ hybrid arc with color.
+\begin{itemize}
+\item plotHarcColor3D(t,j,x,L) plots the trajectory $x$ (3 states) taking into account the hybrid time domain $(t,j)$. The hybrid arc is plotted with $L$ data as color. The input vectors $t,\ j,\ x,\ L$ must have the same length and $x$ must have three columns.
+\item plotHarcColor3D(t,j,x,L,$jstar$) If a specific interval in $j$ is required, $jstar = [j_{initial},
+ j_{final}]$ must be provided.
+ \item plotHarcColor3D(t,j,x,L,$jstar$,modificator) Modificator is a cell array that contains the standard matlab ploting modificators (type $>>$ help plotHarcColor3D or $>>$ helpwin plotHarcColor3D in the command window for more information).
+\end{itemize}
+\end{itemize}
+
+\section{HyEQ Simulator: A Simulink implementation for simulation of single and interconnected hybrid systems with or without inputs}
+\label{sec:HyEQsimulator}
+
+The HyEQ Toolbox includes three main Simulink library blocks that allow for simulation of a hybrid system $\HS =(C,f,D,g)$ using either externally defined functions or embedded MATLAB functions, and a single hybrid system or interconnected hybrid systems with inputs using embedded MATLAB functions. Figure~\ref{fig:Simulinklibblocks} shows these blocks in the Simulink Library Browser.
+
+\begin{figure}[ht]
+  \begin{center}
+    {\includegraphics[width=1\textwidth]{figures/Simulink/SimulinkimplementationMac.eps}}
+\caption{MATLAB/Simulink library blocks for Simulink implementation.}
+\label{fig:Simulinklibblocks}
+  \end{center}
+\end{figure}
+
+\begin{figure}[ht]
+  \begin{center}
+    {\includegraphics[width=.75\textwidth]{figures/Simulink/HSinput.eps}}
+\caption{MATLAB/Simulink implementation of a hybrid system $\HS =(C,f,D,g)$ with inputs.}
+\label{fig:HSinput}
+  \end{center}
+\end{figure}
+
+Figure~\ref{fig:HSinput} shows a Simulink implementation for simulating a hybrid system with inputs using embedded MATLAB functions. In this implementation, four basic blocks are used to define the {\em data} of the hybrid system $\HS$:
+\begin{itemize}
+\item The flow map is implemented in an {\em Embedded MATLAB function block} executing the function {\tt
+f.m}. Its input is a vector with components defining the state of the system $x$, and the input $u$.
+Its output is the value of the flow map $f$ which is connected to the  input of an integrator.
+\item The flow set is implemented in an {\em Embedded MATLAB function block} executing the function {\tt
+C.m}. Its input is a vector with components $x^-$ and input $u$ of the {\em Integrator system}. Its output is equal to $1$ if the state belongs to the set $C$ or equal to $0$ otherwise.
+The minus notation denotes the previous value of the variables (before integration). The value $x^-$ is obtained from the state port of the integrator.
+\item The jump map is implemented in an {\em Embedded MATLAB function block} executing the function {\tt
+g.m}. Its input is a vector with components $x^-$ and input $u$ of the {\em Integrator system}. Its output is the value of the jump map $g$.
+\item The jump set is implemented in an {\em Embedded MATLAB function block} executing the function {\tt
+D.m}. Its input is a vector with components $x^-$ and input $u$ of the {\em Integrator system}. Its output is equal to $1$ if the state belongs to $D$ or equal to $0$ otherwise.
+\end{itemize}
+
+
+In our implementation, MATLAB {\tt .m} files are used. The file {\tt initialization.m} is used to define initial variables before simulation. The file {\tt postprocessing.m} is used to plot the solutions after a simulation is complete. These two {\tt .m} files are called by double-clicking the {\em Double Click to...} blocks at the top of the Simulink Model (see Section \ref{sec:postprocessing} for more information on these {\tt .m} files and their use).
+
+
+\subsection{Specialized library for simulation of Cyber-Physical Systems}
+\label{sec:CPS}
+The HyEQ Toolbox includes a series of blocks that model elements of a cyber-physical system (CPS). Those models are special instances of the hybrid systems blocks described above, particularly the blocks that use embedded MATLAB functions.
+A cyber-physical system is given by the interconnection between a physical process, {\em the plant}, a computer algorithm used for control, {\em the controller}; and  the subsystems needed to interconnect the plant and the controller, i.e., 
+{\em the interfaces,  converters, and signal conditioners}. Most of the elements described in this section are presented in an extended form in~\cite{San17}.
+
+In these notes, the temporal evolution of the variables of a cyber-physical system
+are captured using dynamical models.
+In this document, we advocate that hybrid dynamical system models
+can be employed to capture the behavior of cyber-physical systems.
+More precisely, the evolution of the continuous variables is captured by 
+{\em differential equations}
+while the evolution of the discrete variables is captured by
+{\em difference equations}.
+These equations are typically nonlinear
+due to the complexity of the dynamics of those variables.
+Furthermore, conditions determining the change of 
+the continuous and discrete variables according to the said
+equations/inclusions can be conveniently captured by functions of the
+variables, inputs, and outputs.  
+%In the next sections, these models are introduced in detail and illustrated in examples.
+In Figure~\ref{fig:CPS}, cyber and physical blocks are implemented within the HyEQ simulator.
+
+\begin{figure}[ht]
+  \begin{center}
+    {\includegraphics[width=1.0\textwidth]{figures/Simulink/SimulinkimplementationCPS_Mac.eps}}
+\caption{MATLAB/Simulink library blocks for Cyber-Physical Systems implementation.}
+\label{fig:CPS}
+  \end{center}
+\end{figure}
+
+\subsubsection{Models of physical components}
+\label{sec:PhysicalModels}
+%\subsubsection{Continuous processes}
+
+The physical components of a cyber-physical system include the analog elements, physical systems, and the environment. 
+Consider a model of a physical system given by a differential equation $\dot{x} = f(x,u)$ and a output map $y = h(x,u)$. Among the many possible models available, we capture the dynamics of the physical components
+by using the hybrid systems framework by
+\begin{subequations}\label{eqn:CPSplant}
+\begin{align}
+\dot{x} &= f(x,u), 
+&C &:= \{ x\ |\ x \in \Re^{n}\},\\
+\x^+ &= g(x) =\emptyset,
+&D &:= \emptyset,\\
+y &= h(x,u)
+\end{align}
+\end{subequations}
+Particularly, the model in~\eqref{eqn:CPSplant} can be implemented in the simulink block {\em HSu} in Figures~\ref{fig:HSinput}) and~\ref{fig:CPS}).
+
+\subsubsection{Models of cyber components}
+\label{sec:CyberModels}
+
+The cyber components of a cyber-physical system 	
+include those in charge of performing computations, 
+implementing algorithms, and transmitting digital data over networks.
+The tasks performed by the code (at the software level) 
+and the logic-based mechanisms (at the circuit level)
+involve variables that only change at discrete events, not necessarily periodically.
+
+We denote the state
+variable of the cyber components by $\xc \in \xcSpace$, where $\xcSpace \subset \reals^{n_C}$ is the state space. 
+The dynamics of $\eta$ are defined by a difference equation with
+right-hand side defined by the map $\gc$. 
+We let $\uc \in \ucSpace \subset \reals^{m_C}$ denote the input signals affecting the cyber components
+and $\yc\in\reals^{r_C}$ to be the output defined by
+the output function $\hc$, which is a function of the state $\xc$ and
+of the input $\uc$. With these definitions, the general mathematical
+description of the cyber component is
+\begin{eqnarray} \label{eqn:cyber}
+\xc^+ = \gc(\xc,\uc), \  \ \yc &=& \hc(\xc,\uc) \qquad 
+\end{eqnarray}
+In certain cases, it would be needed to impose restrictions on the state and inputs to the cyber component. 
+%Such is the case when it is needed
+%to determine the values 
+%(e.g., the state belongs to a
+%manifold or the input is constrained), 
+%or to determine conditions that they should satisfy
+%so as to evolve continuously according to \eqref{eqn:env}.
+Such conditions can be modeled 
+imposing that $\xc$ and $\uc$ belong to a subset of their state space,
+namely,
+\begin{equation}\label{eqn:cyberD}
+(\xc,\uc) \in \Dc \subset \xcSpace \times \ucSpace
+\end{equation}
+The model of the cyber components 
+is given by \eqref{eqn:cyber}-\eqref{eqn:cyberD}.
+Next, we provide specific constructions of models of cyber components.
+
+\begin{enumerate}
+\item[1)] {\em Pure Finite State Machines.}
+A finite state machine (FSM) or deterministic finite automaton (DFA) is a system with
+inputs, states, and outputs taking values from discrete sets that are updated at discrete transitions (or jumps)
+triggered by its inputs. 
+Then, given a FSM and an initial state $\xlogic_0 \in \xlogicSpace$,  
+a transition to a state $\xlogic_1 = \delta(\xlogic_0,\uc)$ is performed
+when an input $\uc \in \Sigma$ is applied to it.
+After the transition, the output of the FSM is updated to $\hc(\xlogic_1)$.
+This mechanism can be captured by the difference equation
+\begin{eqnarray}\label{eqn:FSMmodel}
+\xlogic^+ & = & \delta(\xlogic,\uc)  \qquad \yc \ = \ \hc(\xlogic) \qquad (\xlogic,\uc)  \in \xlogicSpace \times \Sigma
+\end{eqnarray}
+This model captures the dynamics
+the model of the cyber components 
+in \eqref{eqn:cyber}-\eqref{eqn:cyberD}
+with
+$$
+\xc = \xlogic, \qquad \xcSpace = \xlogicSpace, \qquad \ucSpace = \Sigma, \qquad \gc = \delta, \qquad \Dc = \xcSpace\times\ucSpace
+$$
+Note that there is no notion of time associated with the FSM model above. An example of this model is presented in Example~\ref{ex:FSM}. In addition, the block FSM in Figure~\ref{fig:CPS} can be used to model these type of systems.
+\medskip
+
+\item[2)] {\em Analog-to-Digital Converters.}
+Analog-to-digital converters (ADCs),  or simply sampling devices,
+are commonly used to provide measurements of the physical systems
+to the cyber components. Their main
+function is to sample their input, which is usually the output of the sensors measuring
+the output $\yp$, at a given periodic rate $T^*_s$ and to make these samples
+available to the embedded computer. A basic model for a sampling device
+consists of a timer state and a sample state.  When the timer reaches
+the value of the sampling time $T^*_s$, the timer is reset to zero and
+the sample state is updated with the inputs to the sampling device. 
+
+The model for the sampling device we propose
+has both continuous and discrete dynamics.
+% and
+%consequently, it is a hybrid system itself. 
+If the timer state has not reached $T^*_s$, then the dynamics are such that the timer state
+increases continuously with a constant, unitary rate. When $T^*_s$ is
+reached, the timer state is reset to zero and the sample state is
+mapped to the inputs of the sampling device. 
+To implement this mechanism, we employ a timer state 
+$\tau_s \in \realsgeq$ and a sample state $m_s \in \reals^{r_P}$.
+The input to the sampling device is denoted by $v_s \in \reals^{r_p}$. 
+The model of the sampling devices is
+\begin{eqnarray}\label{eqn:ADCmodel-a}
+\left.
+\begin{array}{l}
+\dot{\tau}_s =\ 1,  \ \
+\dot{m}_s  =\ 0
+\end{array}
+\right. & \mbox{ when }& \tau_s \in [0,T^*_s] \\ \label{eqn:ADCmodel-b}
+\left.
+\begin{array}{l}
+\tau_s^+  =\ 0,  \ \
+m_s^+ =\ v_s
+\end{array}
+\right. & \mbox{ when }& \tau_s \geq T^*_s
+\end{eqnarray}
+
+In practice,
+there exists a time, usually called {\em the ADC acquisition time},
+between the triggering of the ADC with the sampling device and the update of its output. Such a
+delay limits the number of samples per second 
+%(SPS) 
+that the ADC can provide. 
+Additionally, an ADC can store and process finite-length digital words, which causes quantization. 
+The model above omits effects such as acquisition delays
+and quantization effects, but those can be incorporated if needed.
+In particular, quantization effects can be added to the model 
+in \eqref{eqn:ADCmodel-a}-\eqref{eqn:ADCmodel-b}
+by replacing the update law for $m_s$ to
+$m_s^+ = \mbox{round}(v_s)$, where the function 
+$\mbox{round}$ is such that $ \mbox{round}(v_s)$ is the
+closest number to $v_s$ that the machine precision can represent.
+\medskip
+
+\item[3] {\em Digital-to-Analog Converters.}
+The digital signals in the cyber components need to be converted
+to analog signals for their use in the physical world.
+Digital-to-analog converters (DACs) perform such a task 
+by converging digital signals into analog equivalents.
+One of the most common models for a DAC
+is the zero-order hold model (ZOH). In simple terms, a ZOH converts
+a digital signal at its input into an analog signal 
+at its output.  
+Its output is updated at discrete time instants, typically periodically,
+and held constant in between updates, until new information is available at the
+next sampling time. We will model DACs as ZOH devices with dynamics
+similar to \eqref{eqn:ADCmodel-a}-\eqref{eqn:ADCmodel-b}. Let
+$\tau_h\in\realsgeq$ be the timer state, $m_h \in \reals^{r_C}$ be the
+sample state (note that the value of $h$ indicates the number of DACs
+in the interface), and $v_h \in \reals^{r_C}$ be the inputs of the DAC.
+Its operation is as follows. When $\tau_h \leq 0$, the timer state
+is reset to $\tau_r$ and the sample state is updated with $v_h$ (usually
+the output of the embedded computer), where $\tau_r\in[T^{\mbox{min}},T^{\mbox{max}}]$ is a random variable that models the time in-between communication instants and $T^{\mbox{min}}\leq T^{\mbox{max}}$.  A model that captures this
+mechanism is given by 
+\begin{eqnarray}\label{eqn:DACmodel-a}
+\left.
+\begin{array}{l}
+\dot{\tau}_h =\ -1,   \ \
+\dot{m}_h  =\ 0
+\end{array}
+\right. & \mbox{ when }& \tau_h \in [T^{\mbox{min}},T^{\mbox{max}}] \\ \label{eqn:DACmodel-b}
+\left.
+\begin{array}{ll}
+\tau_h^+  =\ \tau_r,  \ \
+m_h^+ =\ v_h
+\end{array}
+\right. & \mbox{ when }& \tau_h \leq T^{\mbox{min}}
+\end{eqnarray}
+\medskip
+
+\item[4] {\em Digital Networks.}
+The information transfer between the physical and cyber components, or between 
+subsystems within the cyber components, might occur over a digital communication network.  
+The communication links bridging each of these components
+are not capable of continuously transmitting information, but rather,
+they can only transmit sampled (and quantized) information at discrete time instants.
+Combining the ideas in the models of the converters in the previous items, 
+we propose a model of a  digital network link that has a variable that 
+triggers the transfer of information provided at its input, and that
+stores that information until new information arrives.
+We assume that the transmission of information occurs at instants 
+$\{t_i\}_{i=1}^{i^*}$, $i^* \in \nats\cup \{\infty\}$, satisfying
+\begin{eqnarray}\non
+T^{*\min}_{N} & \leq t_{i+1}-t_i\,\leq T^{*\max}_{N}\qquad \forall i\in \{1,2,\ldots, i^*-1\}
+%\\
+%0&\leq t_{1}-t_0\,\leq T_2
+\end{eqnarray}
+where $T^{*\min}_{N}$ and $T^{*\max}_{N}$ are constants satisfying  $$T^{*\min}_{N}, T^{*\max}_{N} \in [0,\infty]$$
+and $$T^{*\min}_{N} \leq T^{*\max}_{N}$$ and $i^*$ is the number of transmission events, which might be finite or infinite.
+The constant $T^{*\min}_{N}$ determines the minimum possible time in between 
+transmissions while the constant $T^{*\max}_{N}$ defines the maximum amount of time elapsed between transmissions.
+In this way, a communication channel that allows transmission events at a high rate
+would have $T^{*\min}_{N}$ small (zero for infinitely fast transmissions), 
+while one with slow data rate would have $T^{*\min}_{N}$ large.
+The constant $T^{*\max}_{N}$ determines
+how often transmissions may take place.
+Note that the constants $T^{*\min}_{N}$ and $T^{*\max}_{N}$ can be
+generalized to functions so as to change according to other states or inputs.
+
+At every $t_i$, the information at the input $v_N$ of the
+communication link is used to update the internal variable 
+$m_N$, which is accessible at the output end of the network
+and remains constant between communication events.
+This internal variable acts as an information buffer, which
+can contain not only the latest piece of information transmitted
+but also previously transmitted information.
+A record of the number of communication events is logged in the internal variable $j_N$. At communication events, the value of $j_N$ gets updated and remains constant in-between events. 
+A mathematical model capturing the said mechanism is given by
+\begin{eqnarray}\label{eqn:DigitalLinkModel-a}
+\left.
+\begin{array}{l}
+\dot{\tau}_N =\ -1,   \ \
+\dot{m}_N  =\ 0,   \ \
+\dot{j}_N =\ 0
+\end{array}
+\right. & \mbox{ when }& \tau_N \in [0,T^{*\max}_{N}] \\ 
+\label{eqn:DigitalLinkModel-b}
+\left.
+\begin{array}{ll}
+\tau_N^+  \in [T^{*\min}_{N},T^{*\max}_{N}],  \ \
+m_N^+ =\ v_N,  \ \
+j_N^+ = j_N+1
+\end{array}
+\right. & \mbox{ when }& \tau_N \leq 0
+\end{eqnarray}
+Note that the update law for $\tau_N$ at jumps is given in terms of a difference inclusion,
+which implies that the new value of $\tau_N$ is taken from the set $[T^{*\min}_{N},T^{*\max}_{N}]$.
+The dimension of the states and the input would depend on 
+the type of components that connect to and from it, and also the size of data transmitted and buffered.
+Similar to the models proposed for conversion, 
+the model of the digital link \eqref{eqn:DigitalLinkModel-a}-\eqref{eqn:DigitalLinkModel-b}
+does not include delays nor quantization, but such effects can be incorporated if needed.
+\medskip
+
+
+\end{enumerate}
+
+\subsection{The Integrator System}
+\label{sec:integratorsystem}
+In this section we discuss the internals of the {\em Integrator System} shown in Figure~\ref{fig:integratorsystem}.
+
+\begin{figure}[ht]
+  \begin{center}
+    {\includegraphics[width=.95\textwidth]{figures/Simulink/Integrator.eps}}
+   \caption{Integrator System}
+\label{fig:integratorsystem}
+  \end{center}
+\end{figure}
+
+
+\subsubsection{CT Dynamics}
+
+This block is shown in Figure~\ref{fig:CTdynamics}. It defines the continuous-time (CT) dynamics by assembling the time derivative of the state $[t\ j\ x^\top]^\top$. States $t$ and $j$ are considered states of the system because they need to be updated throughout the simulation in order to keep track of the time and number of jumps. Without $t$ and $j$, solutions could not be plotted accurately.
+This is given by
+\begin{eqnarray*}
+\dot{t} = 1, \qquad \dot{j} = 0, \qquad \dot{x} = f(x,u)\ .
+\end{eqnarray*}
+Note that input port $1$ takes the value of $f(x,u)$ through the output of the
+{\em Embedded MATLAB function block f} in Figure~\ref{fig:HSinput}.
+
+\begin{figure}[ht]
+  \begin{center}
+    {\includegraphics[width=.4\textwidth]{figures/Simulink/CTdynamics.eps}}
+   \caption{CT dynamics}
+\label{fig:CTdynamics}
+ \end{center}
+\end{figure}
+
+
+\subsubsection{Jump Logic}
+
+This block is shown in Figure~\ref{fig:JumpLogic}. The inputs to the jump logic block are the output of the blocks {\em C} and {\em D} indicating whether the state is in those sets or not, and a random signal with uniform distribution in $[0,1]$. Figure~\ref{fig:JumpLogic} shows the Simulink blocks used to implement the Jump Logic. The variable {\em rule} defines whether the simulator gives priority to jumps, priority to flows, or no priority. It is initialized in {\tt initialization.m}.
+
+The output of the Jump Logic is equal to one when:
+\begin{itemize}
+\item the output of the {\em D block} is equal to one and $rule=1$,
+\item the output of the {\em C block} is equal to zero, the output of the {\em D block} is equal to one, and $rule=2$,
+\item the output of the {\em C block} is equal to zero, the output of the {\em D block} is equal to one, and $rule=3$,
+\item or the output of the {\em C block} is equal to one, the output of the {\em D block} is equal to one, $rule = 3$, and the random signal $r$ is larger or equal than $0.5$.
+\end{itemize}
+Under these events, the output of this block, which is connected to the integrator external reset input, triggers a reset of the integrator, that is, a jump of $\HS$. The reset or jump is activated since the configuration of the reset input is set to ``level hold'', which executes resets when this external input is equal to one (if the next input remains set to one, multiple resets would be triggered). Otherwise, the output is equal to zero.
+
+\begin{figure}[ht]
+  \begin{center}
+    {\includegraphics[width=.8\textwidth]{figures/Simulink/JumpLogic.eps}}
+   \caption{Jump Logic}
+\label{fig:JumpLogic}
+  \end{center}
+\end{figure}
+
+
+\subsubsection{Update Logic}
+
+This block is shown in Figure~\ref{fig:UpdateLogic}. The update logic uses the {\em state port} information of the integrator. This port reports the value of the state of the integrator, $[t\ j\ x^\top]^\top$, at the exact instant that the reset condition becomes true. Notice that $x^-$ differs from $x$ since at a jump, $x^-$ indicates the value of the state that triggers the jump, but it is never assigned as the output of the integrator. In other words, ``$x \in D$" is checked using $x^-$ and if true, $x$ is reset to $g(x^-,u)$. Notice, however, that $u$ is the same because at a jump, $u$ indicates the next evaluated value of the input, and it is assigned as the output of the integrator. The flow time $t$ is kept constant at jumps and $j$ is incremented by one. More precisely
+\begin{eqnarray*}
+t^+=t^-, \qquad j^+=j^-+1,\qquad x^+=g(x^-,u)
+\end{eqnarray*}
+where $[t^-\ j^-\ {x^-}^\top]^\top$ is the state that triggers the jump.
+
+\begin{figure}[ht]
+  \begin{center}
+    {\includegraphics[width=.4\textwidth]{figures/Simulink/UpdateLogic.eps}}
+   \caption{Update Logic}
+\label{fig:UpdateLogic}
+  \end{center}
+\end{figure}
+
+
+
+
+\subsubsection{Stop Logic}
+
+This block is shown in Figure~\ref{fig:StopLogic}. It stops the simulation under any of the
+following events:
+\begin{itemize}
+\item The flow time is larger than or equal to the maximum flow time specified by $T$.
+\item The jump time is larger than or equal to the maximum number of jumps specified by $J$.
+\item The state of the hybrid system $x$ is neither in $C$ nor in $D$.
+\end{itemize}
+Under any of these events, the output of the logic operator
+connected to the {\em Stop block} becomes one, stopping the simulation.
+Note that the inputs $C$ and $D$ are routed from the output of the blocks computing whether the state is in $C$ or $D$ and use the value of $x^-$.
+
+\begin{figure}[ht]
+  \begin{center}
+    {\includegraphics[width=.5\textwidth]{figures/Simulink/StopLogic.eps}}
+   \caption{Stop Logic}
+\label{fig:StopLogic}
+  \end{center}
+\end{figure}
+
+%
+%\section{Configuration, Initialization, and Postprocessing}
+%\label{sec:configinitpost}
+
+\subsection{Software Requirements}
+In order to run simulations of single hybrid systems using externally defined functions, MATLAB with Simulink is required.
+
+In order to run simulations using the HyEQ Simulator with embedded MATLAB functions, MATLAB/Simulink and a supported ANSI, C, or C++ 32-bit compiler must be installed. We now briefly describe how to install necessary compilers for Windows and Mac/Linux. For more information on supported compilers, please visit \url{http://www.mathworks.com/support/compilers/R2012b/win64.html}.
+
+
+\subsubsection{Configuration of HyEQ Simulator with embedded functions for Windows}
+For 32-bit Windows, the LCC compiler is included with MATLAB. First, open MATLAB and then locate and choose a compiler for building MEX-files by typing \begin{verbatim} >> mex -setup \end{verbatim}
+into the MATLAB command window. Then, follow the prompts as shown below.
+
+\begin{verbatim}
+>> mex -setup
+
+Welcome to mex -setup.  This utility will help you set up
+a default compiler.  For a list of supported compilers, see
+http://www.mathworks.com/support/compilers/R2012a/win32.html
+
+Please choose your compiler for building MEX-files:
+
+Would you like mex to locate installed compilers [y]/n? y
+
+Select a compiler:
+[1] Lcc-win32 C 2.4.1
+
+[0] None
+
+Compiler: 1
+
+Please verify your choices:
+
+Compiler: Lcc-win32 C 2.4.1
+
+Are these correct [y]/n? y
+
+Done . . .
+\end{verbatim}
+
+For 64-bit Windows, a C-compiler is not supplied with MATLAB. Before running the HyEQ Toolbox in MATLAB/Simulink, please follow the following steps:
+
+\begin{enumerate}
+\item If you don't have {\em Microsoft .NET Framework 4} on your computer, download and install it from
+\url{http://www.microsoft.com/en-us/download/details.aspx?id=17851}.
+\item Then download and install {\em Microsoft Windows SDK} from
+\url{http://www.microsoft.com/en-us/download/details.aspx?id=8279}.
+\item Then perform the steps outlined above for 32-bit Windows to setup and install the compiler.
+\end{enumerate}
+
+As of October 10, 2013, when installing the toolbox in Windows 8, please follow the next steps.
+\begin{enumerate}
+\item If you don't have {\em Microsoft .NET Framework 4} on your computer, download and install it from
+\url{http://www.microsoft.com/en-us/download/details.aspx?id=8279}.
+\item Then download and install {\em Microsoft Windows SDK}
+	\begin{itemize}
+	\item If you don't have {\em Visual C++ 2010 SP1} installed on your computer:
+		\begin{itemize} 
+		\item Download and install {\em Microsoft Windows SDK 7.1} from
+		\url{http://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=4422}
+		\item Apply the following patch from {\em Microsoft} onto the {\em SDK 7.1} installation: \url{http://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=4422}
+		\end{itemize}
+	\item If you have Visual {\em Visual C++ 2010 SP1} or its redistributable packages installed on your computer:
+		\begin{itemize}
+		\item Uninstall the {\em Visual C++ 2010} redistributable packages, both x64 and x86 versions. This can be done from {\em Control Panel $/$ Uninstall Programs Menu}.
+		\item Download and install {\em Microsoft Windows SDK 7.1} from
+		\url{http://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=4422}
+		\item Apply the following patch from {\em Microsoft} onto the {\em SDK 7.1} installation: \url{http://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=4422}	
+		\item Reinstall the {\em Visual C++ 2010} redistributable packages:	
+		
+		x86 version:
+		\url{http://www.microsoft.com/en-us/download/details.aspx?id=5555}
+		
+		x64 version:
+		\url{http://www.microsoft.com/en-us/download/details.aspx?id=14632}
+		\end{itemize}
+	\end{itemize}
+\item Then perform the steps outlined above for 32-bit Windows to setup and install the compiler.
+\end{enumerate}
+
+\subsubsection{Configuration of HyEQ Simulator with embedded functions for Mac/Linux}
+
+From a terminal window, check that the file {\tt gcc} is in
+the folder {\tt/usr/bin}.
+If it is not there, make a symbolic link. 
+You might require to install the latest version of {\tt Xcode} first.
+In order to generate a symbolic link for gcc, that MATLAB can find to compile the simulation files (see \url{http://www.mathworks.com/support/sysreq/previous_releases.html}), change folder to {\tt /usr/bin} and then
+\begin{verbatim}
+sudo ln -s gcc gcc-4.2
+\end{verbatim}
+\noindent Then, it should be possible to setup the gcc compiler in matlab as follows:
+
+\begin{verbatim}
+>> mex -setup
+    Options files control which compiler to use, the compiler and link command
+    options, and the runtime libraries to link against.
+
+    Using the 'mexsh -setup' command selects an options file that is
+    placed in ~/.matlab/R2013b and used by default for 'mexsh'. An options 
+    file in the current working directory or specified on the command line 
+    overrides the default options file in ~/.matlab/R2013b.
+ 
+    To override the default options file, use the 'mexsh -f' command
+    (see 'mexsh -help' for more information).
+
+\end{verbatim}
+
+The options files available for MEX are:
+
+\begin{verbatim}
+The options files available for mexsh are:
+
+  1: /Applications/MATLAB_R2013b.app/bin/mexopts.sh : 
+      Template Options file for building MEX-files
+ 
+
+  0: Exit with no changes
+
+Enter the number of the compiler (0-1): 1
+
+Overwrite ~/.matlab/R2013b/mexopts.sh ([y]/n)?: Y
+
+/Applications/MATLAB_R2013b.app/bin/mexopts.sh is being copied to 
+/SOME_FOLDER/mexopts.sh
+
+\end{verbatim}
+
+At this point, it is possible to check if the $gcc$ is properly setup by testing any of the Simulink examples with embedded functions (see Figure~\ref{fig:Simulinklibblocks}) (e.g., Examples~\ref{ex:bbinput},~\ref{ex:bbblocks},~\ref{ex:dubinspath},~\ref{ex:interconnection1},~\ref{ex:fireflies} or~\ref{ex:overlap1}).
+
+If an error regarding ``$gmake$'' similar to ``No supported compiler or SDK was found'' and/or a warning ``no such sysrooot directory: $'$Developer/SDKs/MacOSX10.X.sdk$'$'' is shown when compiling, please consider the following procedure.
+
+\begin{itemize}
+\item[A.] For Matlab 2013b and previous:
+
+The compiler can not find the appropriate path. It is necesary to change some lines in the file ``$mexopts.sh$'' (copied previously in the folder ``SOME\_FOLDER'') .
+
+First, locate the Xcode-SDK in your hard drive. Open a terminal window and execute the following command
+\begin{verbatim}
+xcodebuild -version -sdk macosx10.9 Path
+\end{verbatim}
+which returns the location of MacOSX10.9.sdk, denoted here as SDK\_FOLDER. Now, in the MATLAB command window locate the file ``$mexopts.sh$'' by typing 
+\begin{verbatim}
+cd /SOME_FOLDER/
+\end{verbatim}
+Then, open the file 
+\begin{verbatim}
+edit mexopts.sh
+\end{verbatim}
+and edit the lines
+\begin{itemize}
+\item
+\begin{verbatim}
+SDKROOT='/Developer/SDKs/MacOSX10.X.sdk'
+\end{verbatim}
+to 
+\begin{verbatim}
+SDKROOT='SDK_FOLDER'
+\end{verbatim}
+and
+\item
+\begin{verbatim}
+MACOSX_DEPLOYMENT_TARGET='10.X'
+\end{verbatim}
+to 
+\begin{verbatim}
+MACOSX_DEPLOYMENT_TARGET='10.9'
+\end{verbatim}
+\end{itemize}
+
+Now, it is possible to test if the compiler works. If the following error appears
+``\verb!unknown type name 'char16_t'!,'' 
+some flags must be changed to avoid this problem. It is required to add \verb!-Dchar16_t=UINT16_T! and \verb!-std=c++11! to the flags CFLAGS and CFLAGS respectively, e.g., change
+\begin{itemize}
+\item
+\begin{verbatim}
+CFLAGS="-fno-common -no-cpp-precomp -arch $ARCHS -isysroot $SDKROOT 
+-mmacosx-version-min=$MACOSX_DEPLOYMENT_TARGET"
+\end{verbatim}
+to
+\begin{verbatim}
+CFLAGS="-fno-common -no-cpp-precomp -arch $ARCHS -isysroot $SDKROOT 
+-mmacosx-version-min=$MACOSX_DEPLOYMENT_TARGET -Dchar16_t=UINT16_T"
+\end{verbatim}
+and
+\item
+\begin{verbatim}
+CXXFLAGS="-fno-common -no-cpp-precomp -fexceptions -arch $ARCHS -isysroot $SDKROOT 
+-mmacosx-version-min=$MACOSX_DEPLOYMENT_TARGET"
+\end{verbatim}
+to
+\begin{verbatim}
+CXXFLAGS="-fno-common -no-cpp-precomp -fexceptions -arch $ARCHS -isysroot $SDKROOT 
+-mmacosx-version-min=$MACOSX_DEPLOYMENT_TARGET -std=c++11"
+\end{verbatim}
+\end{itemize}
+Finally, restart matlab and test any of the aforementioned Simulink examples.
+for more information visit {\footnotesize\url{http://www.mathworks.com/matlabcentral/answers/121315-how-to-set-the-c-compiler-of-matlab2013a-in-osx-10-9}}
+
+%---------------------------------
+\item[B.] For Matlab 2014b and newer. 
+
+First, locate the Xcode-SDK in your hard drive. It may be SDK 10.9, 10.10, 10.11, here we are going to denote it as \textbf{10.X}. Open a terminal window and execute the following command
+\begin{verbatim}
+xcodebuild -version -sdk macosx10.X Path
+\end{verbatim}
+which returns the location of MacOSX10.X.sdk. 
+We are interested in the last portion of the path, specifically after /Applications/Xcode.app/.Contents/Developer/, denoted here as \textbf{SDK\_FOLDER}. Now, locate and edit the following files
+\begin{verbatim}/Applications/MATLAB_R201??.app/bin/maci64/mexopts/clang_maci64.xml\end{verbatim}
+\begin{verbatim}/Applications/MATLAB_R201??.app/bin/maci64/mexopts/clang++_maci64.xml\end{verbatim}
+Inside those files there are the lines
+\begin{verbatim}
+<dirExists name="$$/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk" />
+<cmdReturns name="find $$ -name MacOSX10.10.sdk" />
+\end{verbatim}
+
+edit (or add below those lines) the lines
+\begin{itemize}
+\item
+\begin{verbatim}
+<dirExists name="$$SDK\_FOLDER" />
+\end{verbatim}
+and
+\item
+\begin{verbatim}
+<cmdReturns name="find $$ -name MacOSX10.X.sdk" />
+\end{verbatim}
+\end{itemize}
+
+Finally, restart matlab and test any of the aforementioned Simulink examples.
+for more information visit {\footnotesize\url{https://bitbucket.org/d2d-development/d2d-software/issues/46/xcode-7-on-osx-with-matlab-r2015a-b}}
+
+\end{itemize}
+
+    
+\subsection{Configuration of Integration Scheme}
+Before a simulation is started, it is important to determine the needed integrator scheme, zero-cross detection settings, precision, and other tolerances. Using the default settings does not always give the most efficient or most accurate simulations. One way to edit these settings is to open the Simulink Model, select {\tt Simulation>Configuration Parameters>Solver}, and change the settings there. We have made this simple by defining variables for configuration parameters in the {\tt initialization.m} file. The last few lines of the {\tt initialization.m} file look like that given below.\\
+
+\input{Matlab2tex/config_inst.tex}\label{scr:config_inst}
+
+
+In these lines, ``RelTol = 1e-8" and ``MaxStep = .001" define the relative tolerance  and maximum step size of the ODE solver, respectively. These parameters greatly affect the speed and accuracy of solutions.
+
+\subsection{Initialization}
+
+When the block labeled {\em Double Click to Initialize} at the top of the Simulink Model is double-clicked, the simulation variables are initialized by calling the script {\tt initialization.m}. The script {\tt initialization.m} defines the initial conditions by defining the initial values of the state components, any necessary parameters, the maximum flow time specified by $T$, the maximum number of jumps specified by $J$, and tolerances used when simulating. These can be changed by editing the script file {\tt initialization.m}. See below for sample code to initialize the bouncing ball example, Example ~\ref{ex:bbinput}.\\
+
+\input{Matlab2tex/initializationBB_inst.tex}\label{scr:initializationBB_inst}
+
+
+It is important to note that variables called in the {\em Embedded MATLAB function blocks}
+must be added as inputs and labeled as ``parameters". This can be done by opening the {\em Embedded MATLAB function block}
+selecting {\tt Tools>Edit Data/Ports} and setting the scope to {\tt
+Parameter}.
+
+After the block labeled {\em Double Click to Initialize} is double-clicked and the variables initialized, the simulation is run by clicking the run button or selecting {\tt Simulation>Start}.
+
+
+\subsection{Postprocessing and Plotting solutions}
+\label{sec:postprocessing}
+
+A similar procedure is used to define the plots of solutions after the simulation is run. The solutions can be plotted by double-clicking on the block at the top of the Simulink Model labeled {\em Double Click to Plot Solutions} which calls the script {\tt postprocessing.m}. The script {\tt postprocessing.m} may be edited to include the desired postprocessing and solution plots. See below for sample code to plot solutions to the bouncing ball example, Example~\ref{ex:bbinput}. The functions used to generate the plots are described in Section~\ref{sec:plotfcn}.\\
+
+\input{Matlab2tex/postprocesingBB_inst.tex}\label{scr:postprocesingBB_inst}
+
+
+%In the Lite HyEQ Simulator, solutions are plotted by calling these functions at the end of the {\tt run.m} function.
+
+\section{Examples}
+\label{sec:examples}
+
+\input{input_ex_1_3}
+
+\input{input_ex_1_4}
+
+\input{input_ex_1_5}
+
+\input{input_ex_1_6}
+
+\input{input_ex_1_7}
+
+\input{input_ex_1_8}
+
+\input{input_ex_4_0}
+
+\input{input_ex_4_1}
+
+\input{input_ex_4_2}
+
+\input{input_ex_4_3}
+
+
+\section{Further Reading}
+\label{sec:closingremarks}
+\noindent Installation files for the HyEQ Toolbox described in this paper can be found at MATLAB Central and at the author's website
+\begin{center}
+\url{https://hybrid.soe.ucsc.edu/software}.
+\end{center}
+Also, resources and examples are shared by the HyEQ Toolbox users in the blog
+\begin{center}
+\url{http://hybridsimulator.wordpress.com}.
+\end{center}
+
+\section{Acknowledgments}
+\label{sec:acknowledgments}
+
+We would like to thank Giampiero Campa for his thoughtful feedback and advice as well as Torstein Ingebrigtsen Bo for his comments and initial version of the lite simulator code.
+%
+Also, we would like to include the list of people that help us to test this toolbox:
+
+\begin{itemize}
+\item Cenk Oguz Saglam - University of California, Santa Barbara
+\item Bharani Malladi - The University of Arizona
+\end{itemize}
+
+
+
+\bibliographystyle{unsrt} 
+\bibliography{biblio}\label{sec:refs}
+
+%[1] R. G. Sanfelice. \emph{Simulating Hybrid Systems in MATLAB/Simulink, v0.3}.
+%Laboratory for Information and Decision Systems, Massachusetts Institute of Technology.
+%
+%\noindent
+%[1] R. G. Sanfelice, D. A. Copp, and P. Nanez ``A Toolbox for Simulation of Hybrid Systems in Matlab/Simulink: Hybrid Equations (HyEQ) Toolbox'', Proceedings of Hybrid Systems: Computation and Control Conference, pp. 101--106, 2013.
+%\\
+%\noindent
+%[2] \url{http://control.ee.ethz.ch/~ifaatic/ex/example1.m}. Institut f{\"u}r Automatik - Automatic Control Laboratory, ETH Zurich, 2011.
+%\\
+%\noindent
+%[3] R. Goebel, R. G. Sanfelice, and A. R. Teel, Hybrid dynamical systems.
+%IEEE Control Systems Magazine, 28-93, 2009.
+%\\
+%\noindent
+%[4] R. G. Sanfelice and A. R. Teel, Dynamical Properties of Hybrid Systems Simulators.
+%Automatica, 46, No. 2, 239--248, 2010.
+%\\
+%\noindent
+%[5] Sanfelice, R. G., Interconnections of Hybrid Systems: Some Challenges and Recent Results
+%Journal of Nonlinear Systems and Applications, 111--121, 2011.
+
+   \include{foot}
+
+
+\end{document}

@@ -1,0 +1,29 @@
+\contentsline {section}{\numberline {1}Introduction}{2}{section.1.1}
+\contentsline {section}{\numberline {2}Installation}{3}{section.1.2}
+\contentsline {section}{\numberline {3} Lite HyEQ Simulator: A stand-alone MATLAB code for simulation of hybrid systems without inputs}{3}{section.1.3}
+\contentsline {subsection}{\numberline {3.1}Solver Function}{7}{subsection.1.3.1}
+\contentsline {subsubsection}{\numberline {3.1.1}Events Detection}{13}{subsubsection.1.3.1.1}
+\contentsline {subsubsection}{\numberline {3.1.2}Jump Map}{14}{subsubsection.1.3.1.2}
+\contentsline {subsubsection}{\numberline {3.1.3}Function Wrapper}{14}{subsubsection.1.3.1.3}
+\contentsline {subsection}{\numberline {3.2}Software Requirements}{15}{subsection.1.3.2}
+\contentsline {subsection}{\numberline {3.3}Configuration of Solver}{15}{subsection.1.3.3}
+\contentsline {subsection}{\numberline {3.4}Initialization}{15}{subsection.1.3.4}
+\contentsline {subsection}{\numberline {3.5}Postprocessing and Plotting solutions}{15}{subsection.1.3.5}
+\contentsline {section}{\numberline {4}HyEQ Simulator: A Simulink implementation for simulation of single and interconnected hybrid systems with or without inputs}{17}{section.1.4}
+\contentsline {subsection}{\numberline {4.1}Specialized library for simulation of Cyber-Physical Systems}{18}{subsection.1.4.1}
+\contentsline {subsubsection}{\numberline {4.1.1}Models of physical components}{19}{subsubsection.1.4.1.1}
+\contentsline {subsubsection}{\numberline {4.1.2}Models of cyber components}{20}{subsubsection.1.4.1.2}
+\contentsline {subsection}{\numberline {4.2}The Integrator System}{22}{subsection.1.4.2}
+\contentsline {subsubsection}{\numberline {4.2.1}CT Dynamics}{22}{subsubsection.1.4.2.1}
+\contentsline {subsubsection}{\numberline {4.2.2}Jump Logic}{23}{subsubsection.1.4.2.2}
+\contentsline {subsubsection}{\numberline {4.2.3}Update Logic}{23}{subsubsection.1.4.2.3}
+\contentsline {subsubsection}{\numberline {4.2.4}Stop Logic}{24}{subsubsection.1.4.2.4}
+\contentsline {subsection}{\numberline {4.3}Software Requirements}{24}{subsection.1.4.3}
+\contentsline {subsubsection}{\numberline {4.3.1}Configuration of HyEQ Simulator with embedded functions for Windows}{25}{subsubsection.1.4.3.1}
+\contentsline {subsubsection}{\numberline {4.3.2}Configuration of HyEQ Simulator with embedded functions for Mac/Linux}{26}{subsubsection.1.4.3.2}
+\contentsline {subsection}{\numberline {4.4}Configuration of Integration Scheme}{28}{subsection.1.4.4}
+\contentsline {subsection}{\numberline {4.5}Initialization}{28}{subsection.1.4.5}
+\contentsline {subsection}{\numberline {4.6}Postprocessing and Plotting solutions}{29}{subsection.1.4.6}
+\contentsline {section}{\numberline {5}Examples}{29}{section.1.5}
+\contentsline {section}{\numberline {6}Further Reading}{71}{section.1.6}
+\contentsline {section}{\numberline {7}Acknowledgments}{71}{section.1.7}

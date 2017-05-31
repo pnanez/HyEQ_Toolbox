@@ -1,0 +1,45 @@
+\begin{example}{Linear time-invariant plant}
+\label{ex:LTIplant}
+
+Following the model of a physical component 
+\IfSAE
+{
+\begin{subequations}\label{eqn:CPSplant}
+\begin{align}
+\dot{x} &= f(x,u), 
+&C &:= \{ x\ |\ x \in \Re^{n}\},\\
+\x^+ &= g(x) =\emptyset,
+&D &:= \emptyset,\\
+y &= h(x,u)
+\end{align}
+\end{subequations}
+}
+{
+in~\eqref{eqn:CPSplant},
+} 
+a linear time-invariant model of the physical component is defined by
+$$
+f(\xp,\up) = \fp(\xp,\up)= A_P \xp + B_P \up, \qquad h(\xp,\up) = \hp(\xp,\up) = M_P \xp + N_P \up
+$$
+where $A_P$, $B_P$, $M_P$, and $N_P$ are matrices of appropriate dimensions. 
+State and input constraints can directly be embedded into the set $\Cp$. 
+For example, the constraint that $\xp$ has all of its components 
+nonnegative and that $\up$ has its components with norm
+less or equal than one is captured by 
+\begin{eqnarray*}
+C_P &=& \defset{(\xp,\up)\in\reals^{n_P}\times \reals^{m_P}}{\xp_i \geq 0 \ \forall i \in \{1,2,\ldots,n_P\}} 
+\\ & & \qquad \cap \defset{(\xp,\up)\in\reals^{n_P}\times \reals^{m_P}}{|\up_i| \leq 1 \  \forall i \in \{1,2,\ldots,m_P\}}
+\end{eqnarray*}
+For example, the evolution of the temperature of a room with a heater
+can be modeled by a linear-time invariant system 
+with state $\xp$ denoting the temperature of the room
+and with input $\up = (\up_1,\up_2)$, where 
+$\up_1$ denotes whether the heater is turned on ($\up_1 = 1$) or
+turned off ($\up_1 = 0$) while $\up_2$ denotes the temperature
+outside the room.
+The evolution of the temperature is given by
+\begin{eqnarray}\label{eqn:TemperatureModel}
+\xpdot & = & -\xp + \matt{z_\Delta & 1} \matt{\up_1 \\ \up_2} \qquad \mbox{ when } (\xp,\up)\in \Cp= \defset{(\xp,\up) \in \reals\times\reals^2}{\up_1 \in \{0,1\}}
+\end{eqnarray}
+where $z_\Delta$ is a constant representing the heater capacity.
+\end{example}

@@ -1,6 +1,6 @@
-function [t j x] = HyEQsolver(f,g,C,D,x0,TSPAN,JSPAN,rule,options,solver)
+function [t j x] = HyEQsolver(f,g,C,D,x0,TSPAN,JSPAN,rule,options,solver,E)
 %HYEQSOLVER solves hybrid equations.
-%   Syntax: [t j x] = HYEQSOLVER(f,g,C,D,x0,TSPAN,JSPAN,rule,options,solver)
+%   Syntax: [t j x] = HYEQSOLVER(f,g,C,D,x0,TSPAN,JSPAN,rule,options,solver,E)
 %   computes solutions to the hybrid equations
 %
 %   \dot{x} = f(x,t,j)  x \in C x^+ = g(x,t,j)  x \in D
@@ -16,16 +16,25 @@ function [t j x] = HyEQsolver(f,g,C,D,x0,TSPAN,JSPAN,rule,options,solver)
 %       the interval for discrete jumps. The algorithm stop when the first
 %       stop condition is reached.
 %
-%   rule (optinal parameter) - rule for jumps
+%   rule (optional parameter) - rule for jumps
 %       rule = 1 (default) -> priority for jumps rule = 2 -> priority for
 %       flows
 %
-%   options (optinal parameter) - options for the solver see odeset f.ex.
+%   options (optional parameter) - options for the solver see odeset f.ex.
 %       options = odeset('RelTol',1e-6);
 %       options = odeset('InitialStep',eps);
 %
-%   solver (optinal parameter. String) - selection of the desired ode
+%   solver (optional parameter. String) - selection of the desired ode
 %       solver. All ode solvers are suported, exept for ode15i.  See help
+%       odeset for detailed information.
+%
+%   E (optional parameter) - Mass matrix [constant matrix | function_handle]
+%       For problems: 
+%       E*\dot{x} = f(x) x \in C 
+%       x^+ = g(x)  x \in D
+%       set this property to the value of the constant mass matrix. For
+%       problems with time- or state-dependent mass matrices, set this
+%       property to a function that evaluates the mass matrix. See help
 %       odeset for detailed information.
 %
 %         Example: Bouncing ball with Lite HyEQ Solver
@@ -46,7 +55,7 @@ function [t j x] = HyEQsolver(f,g,C,D,x0,TSPAN,JSPAN,rule,options,solver)
 %         % run_ex1_2.m or by calling run_ex1_2.m in the MATLAB command window.
 %
 %         % For further information, type in the command window:
-%         helpview(['Example_1_2.html']);
+%         web(['Example_1_2.html']);
 %
 %         % Define initial conditions
 %         x1_0 = 1;
@@ -139,7 +148,7 @@ function [t j x] = HyEQsolver(f,g,C,D,x0,TSPAN,JSPAN,rule,options,solver)
 %   See also HYEQSOLVER, PLOTARC, PLOTARC3, PLOTFLOWS, PLOTHARC,
 %   PLOTHARCCOLOR, PLOTHARCCOLOR3D, PLOTHYBRIDARC, PLOTJUMPS.
 %   Copyright @ Hybrid Systems Laboratory (HSL),
-%   Revision: 0.0.0.3 Date: 04/7/2016 11:50:00
+%   Revision: 0.0.0.4 Date: 04/6/2017 16:26:00
 
 
 if ~exist('rule','var')
@@ -149,9 +158,30 @@ end
 if ~exist('options','var')
     options = odeset();
 end
-
+if exist('E','var') && ~exist('solver','var')
+    solver = 'ode15s';
+end
 if ~exist('solver','var')
     solver = 'ode45';
+end
+if ~exist('E','var')
+    E = [];
+end
+% mass matrix (if existent)
+isDAE = false;
+if ~isempty(E)
+    isDAE = true;
+    switch isa(E,'function_handle')
+        case true % Function E(x)
+            M = E;
+            options = odeset(options,'Mass',M,'Stats','off',...
+                'MassSingular','maybe','MStateDependence','strong',...
+                'InitialSlope',f_hdae(x0,TSPAN(1))); 
+        case false % Constant double matrix
+            M = double(E);
+            options = odeset(options,'Mass',M,'Stats','off',...
+                'MassSingular','maybe','MStateDependence','none');
+    end
 end
 
 odeX = str2func(solver);
@@ -198,6 +228,9 @@ while (j < JSPAN(end) && tout(end) < TSPAN(end))
     % Check if it is possible to flow from current position
     insideC = fun_wrap(xout(end,:).',tout(end),j,C,nargC);
     if insideC == 1
+        if isDAE
+            options = odeset(options,'InitialSlope',f(xout(end,:).',tout(end)));
+        end
         [t,x] = odeX(@(t,x) fun_wrap(x,t,j,f,nargf),[tout(end) tfinal],...
             xout(end,:).', options);
         nt = length(t);
@@ -270,4 +303,36 @@ y = fun_wrap(xout(end,:).',tout(end),jout(end),g,nargfun);
 tout = [tout; tout(end)];
 xout = [xout; y.'];
 jout = [jout; j];
+end
+
+function xdelta = fun_wrap(x,t,j,h,nargfun)
+%fun_wrap   Variable input arguments function (easy use for users).
+%   fun_wrap(x,t,j,h,nargfun) depending on the function h written by the
+%   user, this script selects how the HyEQ solver should call that
+%   function.
+%    x: state
+%    t: time
+%    j: discrete time
+%    h: function handle
+%    nargfun: number of input arguments of function h    
+%--------------------------------------------------------------------------
+% Matlab M-file Project: HyEQ Toolbox @  Hybrid Systems Laboratory (HSL), 
+% https://hybrid.soe.ucsc.edu/software
+% http://hybridsimulator.wordpress.com/
+% Filename: fun_wrap.m
+%--------------------------------------------------------------------------
+%   See also HYEQSOLVER, PLOTARC, PLOTARC3, PLOTFLOWS, PLOTHARC,
+%   PLOTHARCCOLOR, PLOTHARCCOLOR3D, PLOTHYBRIDARC, PLOTJUMPS.
+%   Copyright @ Hybrid Systems Laboratory (HSL),
+%   Revision: 0.0.0.3 Date: 01/28/2016 5:12:00
+
+
+switch nargfun
+    case 1
+        xdelta = h(x);
+    case 2
+        xdelta = h(x,t);
+    case 3
+        xdelta = h(x,t,j);        
+end
 end

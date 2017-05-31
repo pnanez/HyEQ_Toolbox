@@ -4,15 +4,15 @@
 %%%%%  THEOREMS AND ENVIRONMENTS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\newtheorem{nntheorem}{\bf Theorem}[chapter]
-\newtheorem{nnlemma}[nntheorem]{\bf Lemma}
-\newtheorem{nndefinition}[nntheorem]{\bf Definition}
-\newtheorem{nncorollary}[nntheorem]{\bf Corollary}
-\newtheorem{nnproposition}[nntheorem]{\bf Proposition}
-\newtheorem{nnassumption}[nntheorem]{\bf Assumption}
-\newtheorem{nexample}[nntheorem]{\bf Example}
-\newtheorem{nnremark}[nntheorem]{\bf Remark}
-\newtheorem{nnproblem}[nntheorem]{\bf Exercise}
+\newtheorem{nntheorem}{ Theorem}[section]
+\newtheorem{nnlemma}[nntheorem]{ Lemma}
+\newtheorem{nndefinition}[nntheorem]{ Definition}
+\newtheorem{nncorollary}[nntheorem]{ Corollary}
+\newtheorem{nnproposition}[nntheorem]{ Proposition}
+\newtheorem{nnassumption}[nntheorem]{ Assumption}
+\newtheorem{nexample}{ Example}[section]
+\newtheorem{nnremark}[nntheorem]{ Remark}
+\newtheorem{nnproblem}[nntheorem]{ Exercise}
 
 \newenvironment{theorem}[1]
 {\begin{nntheorem}{\rm\textrm{(#1)}}\sl}
@@ -20,6 +20,10 @@
 
 \newenvironment{proposition}[1]
 {\begin{nnproposition}{\rm\textrm{(#1)}}\sl}
+{\end{nnproposition}}
+
+\newenvironment{propositionnodes}[1]
+{\begin{nnproposition}{\rm\textrm{#1}}\sl}
 {\end{nnproposition}}
 
 \newenvironment{lemma}[1]
@@ -38,10 +42,19 @@
 {\begin{nnassumption}{\rm\textrm{(#1)}}\sl}
 {\end{nnassumption}}
 
+\newenvironment{assumptionnodes}[1]
+{\begin{nnassumption}{\rm\textrm{#1}}\sl}
+{\end{nnassumption}}
+
 
 \newenvironment{remark}[1]
 {\begin{nnremark}{\rm\textrm{(#1)}}\sl}
 {\end{nnremark}}
+
+\newenvironment{remarknodes}[1]
+{\begin{nnremark}{\rm\textrm{#1}}\sl}
+{\end{nnremark}}
+
 
 \newenvironment{problem}[1]
 {\begin{nnproblem}{\rm\textrm{(#1)}}\sl}
@@ -65,8 +78,8 @@
                      \hbox{\vrule width1pt height5pt 
             \kern5pt \vrule width1pt} \hrule height1pt}$} }
 
-\newenvironment{proof}
-{\par\noindent\textbf{Proof.}}{\eop\smallskip\vskip 3 pt}
+%\newenvironment{proof}
+%{\par\noindent\textbf{Proof.}}{\eop\smallskip\vskip 3 pt}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -76,8 +89,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  
 \newcommand{\ball}{{\mathbb B}}
-%\newcommand{\con}{{\mathop{\rm con}\nolimits}}
-%\newcommand{\clcon}{{\overline{\con}}}
+\newcommand{\con}{{\mathop{\rm con}\nolimits}}
+\newcommand{\clcon}{{\overline{\con}}}
 \newcommand{\dom}{\mathop{\rm dom}\nolimits}
 \newcommand{\glim}{\mathop{\rm gph\mbox{-}lim}}
 \newcommand{\glimsup}{\mathop{\rm gph\mbox{-}lim\,sup}}
@@ -96,6 +109,8 @@
 \newcommand{\realsplus}{{\reals_{\geq 0}}}
 \newcommand{\realspplus}{{\reals_{>0}}}
 \newcommand{\rge}{\mathop{\rm rge}\nolimits}
+\DeclareMathOperator*{\argmin}{\mathop{\rm argmin}}   % Jan Hlavacek
+\DeclareMathOperator*{\argmax}{\mathop{\rm argmax}}   % Jan Hlavacek
 %\newcommand{\rge}{\mathop{\rm rge}}      
 %\newcommand{\rge}{{\mathop{\rm rge}\nolimits}}
 
@@ -119,9 +134,11 @@
 %% basin of attraction of a compact attractor
 \newcommand{\BA}{\mathcal{B}_\A}
 %% generic measuement error
-\newcommand{\e}{e}
+%\newcommand{\e}{e}
 %% hybrid system
 \newcommand{\HS}{\mathcal{H}}
+%% hybrid DAE system
+\newcommand{\Hdae}{\mathcal{H}_{DAE}}
 %% hybrid system with data
 \newcommand{\HSdata}{\HS=(O,F,C,G,D)}
 %% hybrid system data only
@@ -165,7 +182,7 @@
 %% generic set
 \newcommand{\set}{S}
 %% solution to a hybrid system or just a hybrid arc
-\newcommand{\sol}{x}
+\newcommand{\sol}{\phi}
 %% solution to a hybrid closed-loop system (control)
 \newcommand{\solcl}{\zeta}
 %%
@@ -216,6 +233,8 @@
 \newcommand{\eps}{\varepsilon}
 %% shorthand for \overline
 \newcommand{\ol}[1]{\overline{#1}}
+%% shorthand for \underline
+\newcommand{\ul}[1]{\underline{#1}}
 %% matrix 
 \newcommand{\matt}[1]{\begin{bmatrix}#1\end{bmatrix}} 
 %% set definition
@@ -227,3 +246,695 @@
 \newcommand{\floor}{{\mathop{\rm floor}\nolimits}}
 %
 \newcommand{\HBC}{hybrid basic conditions}
+% vertical vector
+\newcommand{\vect}[1]{{\left(\begin{matrix}#1\end{matrix}\right)}}
+% CT plants data
+%\newcommand{\fp}{\widetilde{f}}
+
+
+%% LOCALIZATION
+\newcommand{\floc}{f_{loc}}
+\newcommand{\gloc}{g_{loc}}
+\newcommand{\Cloc}{C_{loc}}
+\newcommand{\Dloc}{D_{loc}}
+
+
+%%% UNIFORM FORMULAS FOR STUFF
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% hybrid system with no name and eight parameters:
+%% variable, flow set, \in or =, flow map, jump set, \in or =, jump map
+\newcommand{\hybridsystem}[7]
+{
+\left\{
+{
+\setlength\extrarowheight{.2cm}
+\begin{array}{c@{\ }c@{\ }ccc@{\ }c@{\ }c}
+#1 &\in&#2 & \ & \dot{#1} & #3 & #4\left(#1\right) \cr
+#1 &\in&#5 & \ & {#1}^+   & #6 & #7\left(#1\right)   \cr
+\end{array}
+}
+\right.
+}
+
+%% hybrid system with no name and six parameters:
+%% variable, flow set, flow map, jump set, jump map
+%% inclusions only
+\newcommand{\hybridinclusion}[5]
+{
+\hybridsystem{#1}{#2}{\in}{#3}{#4}{\in}{#5}
+}
+
+
+%% hybrid system with a name and nine parameters:
+%% name, variable, flow set, \in or =, flow map, jump set, \in or =, jump map
+\newcommand{\hybridsystemwithname}[8]
+{
+#1: \qquad 
+\hybridsystemn{#2}{#3}{#4}{#5}{#6}{#7}{#8}
+}
+
+
+%% hybrid system with a name and seven parameters:
+%% name, variable, flow map, flow set, jump map, jump set
+\newcommand{\hybridinclusionwithname}[6]
+{
+#1: \qquad 
+\hybridinclusion{#2}{#3}{#4}{#5}{#6}
+}
+
+%% hybrid system with logical modes 
+%% discrete variable, continuous variable, flow set, \in or =, flow map, jump set, \in or =, jump map (data with no subscripts)
+\newcommand{\hybridsystemQ}[8]
+{
+\left\{
+{
+\setlength\extrarowheight{.2cm}
+\begin{array}{c@{\ }c@{\ }ccc@{\ }c@{\ }c}
+#2 & \in & {#3}_{#1} & \ & \dot{#2}    & #4 & {#5}_{#1}\left(#2\right) \cr
+#2 & \in & {#6}_{#1} & \ & {(#1,#2)}^+ & #7 & {#8}_{#1}\left(#2\right)  \cr
+\end{array}
+}
+\right.
+}
+
+
+%% data of a hybrid system, first line C, f or F, second line D, g or G. parameters
+%% variable, label for C, formula for C, f or F etc, formula for F, label for D, formula for D, g or G etc, formula for G, 
+\newcommand{\definehybridsystem}[9]
+{
+\setlength\extrarowheight{.2cm}
+\begin{array}{r@{\ }c@{\ }lcr@{\ }c@{\ }l}
+\displaystyle{#2} & = & \displaystyle{#3} & \qquad &
+\displaystyle{#4\left(#1\right)} & = & \displaystyle{#5} \\
+\displaystyle{#6} & = & \displaystyle{#7} & \qquad &
+\displaystyle{#8\left(#1\right)} & = & \displaystyle{#9}
+\end{array}
+}
+
+%% data of a hybrid system with inputs and outputs, first line C, f or F, second line D, g or G. parameters
+%% 
+%% 1 variable, 2 input, 3 output, 4 flow set, 5 \in or =, 6 flow map, 7 jump set, 8 jump map, 9 output map
+
+
+\newcommand{\hybridsystemInputsOutput}[9]
+{
+\left\{
+{
+%\setlength\extrarowheight{.2cm}
+\begin{array}{l@{\ }c@{\ }lcr@{\ }c@{\ }l}
+\displaystyle{#1} & #5 & #6 (#1,{#2}_c) & \qquad & (#1,{#2}_c)\in #4\\
+\displaystyle{#1}^+ & #5 & #8 (#1,{#2}_d) & \qquad & (#1,{#2}_d)\in #7\\
+\displaystyle{#3}_c & = & {#9}_c (#1) & & \\
+\displaystyle{#3}_d & = & {#9}_d (#1) & & 
+\end{array}
+}
+\right.
+}
+
+%% data of a hybrid system with inputs and outputs, first line C, f or F, second line D, g or G. parameters
+%% 
+%% 1 variable, 2 input, 3 output, 4 flow set, 5 \in or =, 6 flow map, 7 jump set, 8 jump map, 9 output map
+
+
+\newcommand{\hybridsystemInOutSimple}[9]
+{
+\left\{
+{
+%\setlength\extrarowheight{.2cm}
+\begin{array}{l@{\ }c@{\ }lcr@{\ }c@{\ }l}
+\displaystyle{#1} & #5 & #6 (#1,{#2}) & \qquad & (#1,{#2})\in #4\\
+\displaystyle{#1}^+ & #5 & #8 (#1,{#2}) & \qquad & (#1,{#2})\in #7\\
+\displaystyle{#3} & = & {#9} (#1)
+\end{array}
+}
+\right.
+}
+
+
+%% data of a hybrid DAE system with inputs and outputs, first line C, f or F, second line D, g or G. parameters
+%% 
+%% 1 state (x), 2 variable(xi),3 variable(chi),4 variable(sigma), 5 flow map 1(xi), 6 flow map 2(chi), 7 input(u), 8 output, 9 flow set, 10 \in or =, 11 flow map, 12 jump map 1(xi), 13 jump map 2(chi), 14 map 3(sigma), 15 jump set, 16 jump map, 17 output map, definition (:)
+
+\newcommand{\hDAEIOshort}[9]
+{
+    \def\state{#1}%
+    \def\tempxi{#2}%
+    \def\tempchi{#3}%
+    \def\tempsigma{#4}%
+    \def\tempfxi{#5}%
+    \def\tempfchi{#6}%
+    \def\tempu{#7}%
+    \def\tempy{#8}%
+    \def\tempC{#9}%
+    \hDAEIOshortcontinued
+}
+\newcommand{\hDAEIOshortcontinued}[9]
+{
+    \def\tempIn{#1}%10
+    \def\tempF{#2}%11
+    \def\tempgxi{#3}%12
+    \def\tempgchi{#4}%13
+    \def\tempgsigma{#5}%14
+    \def\tempD{#6}%15
+    \def\tempG{#7}%16
+    \def\temph{#8}%17
+    \def\tempdef{#9}%17    
+%    \def\tempC{#9}%18
+\left\{
+{
+\begin{array}{@{}r@{}@{}c@{}@{}l@{}@{}c@{}@{}cc@{}}
+\begin{bmatrix}
+E_{\tempsigma} & 0 & 0 \\ 
+0&I&0\\ 
+0&0&1
+\end{bmatrix}
+\begin{bmatrix}
+\dot{\tempxi}\\ 
+\dot{\tempchi}\\ 
+\dot{\tempsigma}
+\end{bmatrix}
+ & {\tempIn} &
+ \quad 
+ \begin{bmatrix*}[l]
+ {\tempfxi}_{\tempsigma}\tempxi + B_{\tempsigma}{\tempu}_c\\ 
+ {\tempfchi}(\state,{\tempu}_c)\\ 
+  0 \end{bmatrix*}  
+ & \quad & (\state,{\tempu}_c)\in {\tempC}\\
+\begin{bmatrix}{\tempxi}^+\\  
+{\tempchi}^+\\  {\tempsigma}^+
+\end{bmatrix} 
+& \tempIn & 
+\displaystyle\bigcup_{\tilde{\tempsigma}\in {\tempgsigma}(\state,{\tempu}_d)}
+\begin{bmatrix*}[l]
+{\tempgxi}(\state,\tilde{\tempsigma},{\tempu}_d)\\ 
+{\tempgchi} (\state,{\tempu}_d)\\ 
+\tilde{\tempsigma}
+\end{bmatrix*}
+ & \quad & (\state,{\tempu}_d)\in {\tempD}\\
+ \tempy_c & = & \temph_c(\state,{\tempu}_c) & & &\\
+ \tempy_d & = & \temph_d(\state,{\tempu}_d) & & &
+\end{array}
+}
+\right.
+}
+
+%% data of a hybrid DAE system with inputs and outputs, first line C, f or F, second line D, g or G. parameters
+%% 
+%% 1 state (x), 2 variable(xi),3 variable(chi),4 variable(sigma), 5 flow map 1(xi), 6 flow map 2(chi), 7 input(u), 8 output, 9 flow set, 10 \in or =, 11 flow map, 12 jump map 1(xi), 13 jump map 2(chi), 14 map 3(sigma), 15 jump set, 16 jump map, 17 output map, definition (:)
+
+\newcommand{\hDAEclshort}[9]
+{
+    \def\state{#1}%
+    \def\tempxi{#2}%
+    \def\tempchi{#3}%
+    \def\tempsigma{#4}%
+    \def\tempfxi{#5}%
+    \def\tempfchi{#6}%
+    \def\tempu{#7}%
+    \def\tempy{#8}%
+    \def\tempC{#9}%
+    \hDAEclshortcontinued
+}
+\newcommand{\hDAEclshortcontinued}[9]
+{
+    \def\tempIn{#1}%10
+    \def\tempF{#2}%11
+    \def\tempgxi{#3}%12
+    \def\tempgchi{#4}%13
+    \def\tempgsigma{#5}%14
+    \def\tempD{#6}%15
+    \def\tempG{#7}%16
+    \def\temph{#8}%17
+    \def\tempdef{#9}%17    
+%    \def\tempC{#9}%18
+\left\{
+{
+\begin{array}{@{}rclrrr}
+\begin{bmatrix}
+E_{\tempsigma} & 0 & 0 \\ 
+0&I&0\\ 
+0&0&1
+\end{bmatrix}
+\begin{bmatrix}
+\dot{\tempxi}\\ 
+\dot{\tempchi}\\ 
+\dot{\tempsigma}
+\end{bmatrix}
+ & {\tempIn} & 
+ \tempF(\state,-\kc(\yflow)+\tildeuflow)\\
+% \begin{bmatrix*}[l]
+% {\tempfxi}_{\tempsigma}\tempxi + B_{\tempsigma}(-\kc(\yflow)+\tildeuflow)\\ 
+% {\tempfchi}(\state,{\tempu}_c)\\ 
+%  0 \end{bmatrix*}  
+   &&\qquad\qquad(\state,-\kc(\yflow)+\tildeuflow)\in {\tempC}\\
+\begin{bmatrix}{\tempxi}^+\\  
+{\tempchi}^+\\  {\tempsigma}^+
+\end{bmatrix} 
+& \tempIn & 
+ \tempG(\state,0)
+%\displaystyle\bigcup_{\tilde{\tempsigma}\in {\tempgsigma}(\state,{\tempu}_d)}
+%\begin{bmatrix*}[l]
+%{\tempgxi}(\state,\tilde{\tempsigma},{\tempu}_d)\\ 
+%{\tempgchi} (\state,{\tempu}_d)\\ 
+%\tilde{\tempsigma}
+%\end{bmatrix*}
+  \qquad\qquad\quad (\state,0)\in {\tempD}\\
+ \tempy_c & = & \temph_c(\state,-\kc(\yflow)+\tildeuflow) & & &\\
+ \tempy_d & = & \temph_d(\state,0) & & &
+\end{array}
+}
+\right.
+}
+
+%% data of a hybrid DAE system with inputs and outputs, first line C, f or F, second line D, g or G. parameters
+%% 
+%% 1 state (x), 2 variable(xi),3 variable(chi),4 variable(sigma), 5 flow map 1(xi), 6 flow map 2(chi), 7 input(u), 8 output, 9 flow set, 10 \in or =, 11 flow map, 12 jump map 1(xi), 13 jump map 2(chi), 14 map 3(sigma), 15 jump set, 16 jump map, 17 output map, definition (:)
+
+\newcommand{\hDAEInOutput}[9]
+{
+    \def\state{#1}%
+    \def\tempxi{#2}%
+    \def\tempchi{#3}%
+    \def\tempsigma{#4}%
+    \def\tempfxi{#5}%
+    \def\tempfchi{#6}%
+    \def\tempu{#7}%
+    \def\tempy{#8}%
+    \def\tempC{#9}%
+    \hDAEInOutputcontinued
+}
+\newcommand{\hDAEInOutputcontinued}[9]
+{
+    \def\tempIn{#1}%10
+    \def\tempF{#2}%11
+    \def\tempgxi{#3}%12
+    \def\tempgchi{#4}%13
+    \def\tempgsigma{#5}%14
+    \def\tempD{#6}%15
+    \def\tempG{#7}%16
+    \def\temph{#8}%17
+    \def\tempdef{#9}%17    
+%    \def\tempC{#9}%18
+\left\{
+{
+%\setlength\extrarowheight{.2cm}
+\begin{array}{r@{\ }c@{\ }lcr@{\ }c@{\ }l}
+\begin{bmatrix}
+E_{\tempsigma} & 0 & 0 \\ 
+0&I&0\\ 
+0&0&1
+\end{bmatrix}
+\begin{bmatrix}
+\dot{\tempxi}\\ 
+\dot{\tempchi}\\ 
+\dot{\tempsigma}
+\end{bmatrix}
+ & {\tempIn} & \begin{bmatrix*}[l]
+ {\tempfxi}_{\tempsigma}\tempxi + B_{\tempsigma}{\tempu}_c\\ 
+ {\tempfchi}(\state,{\tempu}_c)\\ 
+  0 \end{bmatrix*} =\tempdef {\tempF}(\state,{\tempu}_c) 
+ & \quad & (\state,{\tempu}_c)\in {\tempC}\\
+\begin{bmatrix}{\tempxi}^+\\  
+{\tempchi}^+\\  {\tempsigma}^+
+\end{bmatrix} 
+& \tempIn & \displaystyle\bigcup_{\tilde{\tempsigma}\in {\tempgsigma}(\state,{\tempu}_d)}
+\begin{bmatrix*}[l]
+{\tempgxi}(\state,\tilde{\tempsigma},{\tempu}_d)\\ 
+{\tempgchi} (\state,{\tempu}_d)\\ 
+\tilde{\tempsigma}
+\end{bmatrix*}=\tempdef \tempG(\state,\tempu_d) 
+ & \quad & (\state,{\tempu}_d)\in {\tempD}\\
+ \tempy_c & = & \temph_c(\state,{\tempu}_c) & & &\\
+ \tempy_d & = & \temph_d(\state,{\tempu}_d) & & &
+\end{array}
+}
+\right.
+}
+
+
+%% data of a hybrid DAE system with ZERO-inputs and outputs, first line C, f or F, second line D, g or G. parameters
+%% 
+%% 1 state (x), 2 variable(xi),3 variable(chi),4 variable(sigma), 5 flow map 1(xi), 6 flow map 2(chi), 7 input(u), 8 output, 9 flow set, 10 \in or =, 11 flow map, 12 jump map 1(xi), 13 jump map 2(chi), 14 map 3(sigma), 15 jump set, 16 jump map, 17 output map, definition (:)
+
+\newcommand{\hDAEZeroInOutput}[9]
+{
+    \def\state{#1}%
+    \def\tempxi{#2}%
+    \def\tempchi{#3}%
+    \def\tempsigma{#4}%
+    \def\tempfxi{#5}%
+    \def\tempfchi{#6}%
+    \def\tempu{#7}%
+    \def\tempy{#8}%
+    \def\tempC{#9}%
+    \hDAEZeroInOutputcontinued
+}
+\newcommand{\hDAEZeroInOutputcontinued}[9]
+{
+    \def\tempIn{#1}%10
+    \def\tempF{#2}%11
+    \def\tempgxi{#3}%12
+    \def\tempgchi{#4}%13
+    \def\tempgsigma{#5}%14
+    \def\tempD{#6}%15
+    \def\tempG{#7}%16
+    \def\temph{#8}%17
+    \def\tempdef{#9}%17    
+%    \def\tempC{#9}%18
+\left\{
+{
+%\setlength\extrarowheight{.2cm}
+\begin{array}{r@{\ }c@{\ }lcr@{\ }c@{\ }l}
+\begin{bmatrix}
+E_{\tempsigma} & 0 & 0 \\ 
+0&I&0\\ 
+0&0&1
+\end{bmatrix}
+\begin{bmatrix}
+\dot{\tempxi}\\ 
+\dot{\tempchi}\\ 
+\dot{\tempsigma}
+\end{bmatrix}
+ & {\tempIn} & \begin{bmatrix*}[l]
+ {\tempfxi}_{\tempsigma}\tempxi + B_{\tempsigma}{\tempu}\\ 
+ {\tempfchi}(\state,{\tempu})\\ 
+  0 \end{bmatrix*} =\tempdef {\tempF}(\state,{\tempu}) 
+ & \quad & (\state,{\tempu})\in {\tempC}\\
+\begin{bmatrix}{\tempxi}^+\\  
+{\tempchi}^+\\  {\tempsigma}^+
+\end{bmatrix} 
+& \tempIn & \displaystyle\bigcup_{\tilde{\tempsigma}\in {\tempgsigma}(\state,{\tempu})}
+\begin{bmatrix*}[l]
+{\tempgxi}(\state,\tilde{\tempsigma},{\tempu})\\ 
+{\tempgchi} (\state,{\tempu})\\ 
+\tilde{\tempsigma}
+\end{bmatrix*}=\tempdef \tempG(\state,\tempu) 
+ & \quad & (\state,{\tempu})\in {\tempD}\\
+ \tempy_c & = & \temph(\state,{\tempu}) & & &\\
+ \tempy_d & = & \temph(\state,{\tempu}) & & &
+\end{array}
+}
+\right.
+}
+
+
+%% data of a hybrid DAE system with ZERO-inputs and outputs, first line C, f or F, second line D, g or G. parameters
+%% 
+%% 1 state (x), 2 variable(xi),3 variable(chi),4 variable(sigma), 5 flow map 1(xi), 6 flow map 2(chi), 7 input(u), 8 output, 9 flow set, 10 \in or =, 11 flow map, 12 jump map 1(xi), 13 jump map 2(chi), 14 map 3(sigma), 15 jump set, 16 jump map, 17 output map, definition (:)
+
+\newcommand{\hDAEZeroInOutputShort}[9]
+{
+    \def\state{#1}%
+    \def\tempxi{#2}%
+    \def\tempchi{#3}%
+    \def\tempsigma{#4}%
+    \def\tempfxi{#5}%
+    \def\tempfchi{#6}%
+    \def\tempu{#7}%
+    \def\tempy{#8}%
+    \def\tempC{#9}%
+    \hDAEZeroInOutputShortcontinued
+}
+\newcommand{\hDAEZeroInOutputShortcontinued}[9]
+{
+    \def\tempIn{#1}%10
+    \def\tempF{#2}%11
+    \def\tempgxi{#3}%12
+    \def\tempgchi{#4}%13
+    \def\tempgsigma{#5}%14
+    \def\tempD{#6}%15
+    \def\tempG{#7}%16
+    \def\temph{#8}%17
+    \def\tempdef{#9}%17    
+%    \def\tempC{#9}%18
+\left\{
+{
+%\setlength\extrarowheight{.2cm}
+\begin{array}{@{}r@{}@{}c@{}@{}l@{}@{}l@{}@{}cc@{}}
+\begin{bmatrix}
+E_{\tempsigma} & 0 & 0 \\ 
+0&I&0\\ 
+0&0&1
+\end{bmatrix}
+\begin{bmatrix}
+\dot{\tempxi}\\ 
+\dot{\tempchi}\\ 
+\dot{\tempsigma}
+\end{bmatrix}
+ & {\tempIn} & 
+  \begin{bmatrix*}[c]
+ {\tempfxi}_{\tempsigma}\tempxi + B_{\tempsigma}{\tempu}\\ 
+ {\tempfchi}(\state,{\tempu})\\ 
+  0 \end{bmatrix*}
+ & \quad\quad\quad & (\state,{\tempu})\in {\tempC}\\
+\begin{bmatrix}{\tempxi}^+\\  
+{\tempchi}^+\\  {\tempsigma}^+
+\end{bmatrix} 
+& \tempIn & \displaystyle\bigcup_{\tilde{\tempsigma}\in {\tempgsigma}(\state,{\tempu})}
+\begin{bmatrix*}[c]
+{\tempgxi}(\state,\tilde{\tempsigma},{\tempu})\\ 
+{\tempgchi} (\state,{\tempu})\\ 
+\tilde{\tempsigma}
+\end{bmatrix*}
+ & \quad\quad\quad & (\state,{\tempu})\in {\tempD}\\
+ \tempy_c & = & \temph_c(\state,{\tempu}) & & &\\
+ \tempy_d & = & \temph_d(\state,{\tempu}) & & &
+\end{array}
+}
+\right.
+}
+
+%% data of a hat hybrid DAE system with inputs and outputs, first line C, f or F, second line D, g or G. parameters
+%% 
+%% 1 state (x), 2 variable(xi),3 variable(chi),4 variable(sigma), 5 flow map 1(xi), 6 flow map 2(chi), 7 input(u), 8 output, 9 flow set, 10 \in or =, 11 flow map, 12 jump map 1(xi), 13 jump map 2(chi), 14 map 3(sigma), 15 jump set, 16 jump map, 17 output map, definition (:)
+
+\newcommand{\hathDAEInOutput}[9]
+{
+    \def\state{#1}%
+    \def\tempxi{#2}%
+    \def\tempchi{#3}%
+    \def\tempsigma{#4}%
+    \def\tempfxi{#5}%
+    \def\tempfchi{#6}%
+    \def\tempu{#7}%
+    \def\tempy{#8}%
+    \def\tempC{#9}%
+    \hathDAEInOutputcontinued
+}
+\newcommand{\hathDAEInOutputcontinued}[9]
+{
+    \def\tempIn{#1}%10
+    \def\tempF{#2}%11
+    \def\tempgxi{#3}%12
+    \def\tempgchi{#4}%13
+    \def\tempgsigma{#5}%14
+    \def\tempD{#6}%15
+    \def\tempG{#7}%16
+    \def\temph{#8}%17
+    \def\tempdef{#9}%17    
+%    \def\tempC{#9}%18
+\left\{
+{
+%\setlength\extrarowheight{.2cm}
+\begin{array}{r@{\ }c@{\ }lcr@{\ }c@{\ }l}
+\begin{bmatrix}
+E_{\tempsigma} & 0 & 0 \\ 
+0&I&0\\ 
+0&0&1
+\end{bmatrix}
+\begin{bmatrix}
+\dot{\tempxi}\\ 
+\dot{\tempchi}\\ 
+\dot{\tempsigma}
+\end{bmatrix}
+ & {\tempIn} & \begin{bmatrix*}[l]
+ {\tempfxi}_{\tempsigma}\tempxi +B_{\tempsigma} {\tempu}_c\\ 
+ {\tempfchi}(\state,{\tempu}_c)\\ 
+  0 \end{bmatrix*} = {\tempF}(\state,{\tempu}_c) 
+ & \quad & (\state,{\tempu}_c)\in {\tempC}\\
+\begin{bmatrix}{\tempxi}^+\\  
+{\tempchi}^+\\  {\tempsigma}^+
+\end{bmatrix} 
+& \tempIn & \displaystyle\bigcup_{\tilde{\tempsigma}\in {\tempgsigma}(\state,{\tempu}_d)}
+\begin{bmatrix*}[l]
+\hat{\tempgxi}(\state,\tilde{\tempsigma},{\tempu}_d)\\ 
+{\tempgchi} (\state,{\tempu}_d)\\ 
+\tilde{\tempsigma}
+\end{bmatrix*}=\tempdef \hat{\tempG}(\state,\tempu_d) 
+ & \quad & (\state,{\tempu}_d)\in \hat{\tempD}\\
+ \tempy_c & = & \temph_c(\state,{\tempu}_c) & & &\\
+ \tempy_d & = & \temph_d(\state,{\tempu}_d) & & &
+\end{array}
+}
+\right.
+}
+
+%% data of a TILDE hybrid DAE system with inputs and outputs, first line C, f or F, second line D, g or G. parameters
+%% 
+%% 1 state (x), 2 variable(xi),3 variable(chi),4 variable(sigma), 5 flow map 1(xi), 6 flow map 2(chi), 7 input(u), 8 output, 9 flow set, 10 \in or =, 11 flow map, 12 jump map 1(xi), 13 jump map 2(chi), 14 map 3(sigma), 15 jump set, 16 jump map, 17 output map, definition (:)
+
+\newcommand{\tildehDAEInOutput}[9]
+{
+    \def\state{#1}%
+    \def\tempxi{#2}%
+    \def\tempchi{#3}%
+    \def\tempsigma{#4}%
+    \def\tempfxi{#5}%
+    \def\tempfchi{#6}%
+    \def\tempu{#7}%
+    \def\tempy{#8}%
+    \def\tempC{#9}%
+    \tildehDAEInOutputcontinued
+}
+\newcommand{\tildehDAEInOutputcontinued}[9]
+{
+    \def\tempIn{#1}%10
+    \def\tempF{#2}%11
+    \def\tempgxi{#3}%12
+    \def\tempgchi{#4}%13
+    \def\tempgsigma{#5}%14
+    \def\tempD{#6}%15
+    \def\tempG{#7}%16
+    \def\temph{#8}%17
+    \def\tempdef{#9}%17    
+%    \def\tempC{#9}%18
+\left\{
+{
+%\setlength\extrarowheight{.2cm}
+\begin{array}{r@{\ }c@{\ }lcr@{\ }c@{\ }l}
+\begin{bmatrix}
+\dot{\tempxi}\\ 
+\dot{\tempchi}\\ 
+\dot{\tempsigma}
+\end{bmatrix}
+ & {\tempIn} & \begin{bmatrix*}[l]
+ \tilde{\tempfxi}_{\tempsigma}(\tempxi,{\tempu}_c)\\ 
+ {\tempfchi}(\state,{\tempu}_c)\\ 
+  0 \end{bmatrix*} =\tempdef \tilde{\tempF}(\state,{\tempu}_c) 
+ & \quad & (\state,{\tempu}_c)\in {\tempC}\\
+\begin{bmatrix}{\tempxi}^+\\  
+{\tempchi}^+\\  {\tempsigma}^+
+\end{bmatrix} 
+& \tempIn & \displaystyle\bigcup_{\tilde{\tempsigma}\in {\tempgsigma}(\state,{\tempu}_d)}
+\begin{bmatrix*}[l]
+\hat{\tempgxi}(\state,\tilde{\tempsigma},{\tempu}_d)\\ 
+{\tempgchi} (\state,{\tempu}_d)\\ 
+\tilde{\tempsigma}
+\end{bmatrix*}=\tempdef \hat{\tempG}(\state,\tempu_d) 
+ & \quad & (\state,{\tempu}_d)\in \hat{\tempD}\\
+ \tempy_c & = & \temph_c(\state,{\tempu}_c) & & &\\
+ \tempy_d & = & \temph_d(\state,{\tempu}_d) & & &
+\end{array}
+}
+\right.
+}
+
+
+%% data of a hybrid DAE system with inputs and outputs for switched DAE Arbitrary switching, first line C, f or F, second line D, g or G. parameters
+%% 
+%% 1 state (x), 2 variable(xi), 3 variable(sigma), 4 flow map 1(xi), 5 input(u), 6 output, 7 flow set, 8 \in or =, 9 flow map, 10 jump map 1(xi), 11 map 3(sigma), 12 jump set, 13 jump map, 14 output map, definition (:)
+
+\newcommand{\hDAEIOshortSwDAE}[7]
+{
+    \def\state{#1}%
+    \def\tempxi{#2}%
+    \def\tempsigma{#3}%
+    \def\tempfxi{#4}%
+    \def\tempu{#5}%
+    \def\tempy{#6}%
+    \def\tempC{#7}%
+    \hDAEIOshortSwDAEcontinued
+}
+\newcommand{\hDAEIOshortSwDAEcontinued}[8]
+{
+    \def\tempIn{#1}%8
+    \def\tempF{#2}%9
+    \def\tempgxi{#3}%10
+    \def\tempgsigma{#4}%11
+    \def\tempD{#5}%12
+    \def\tempG{#6}%13
+    \def\temph{#7}%14
+    \def\tempdef{#8}%15    
+%    \def\tempC{#9}%18
+\left\{
+{
+\begin{array}{@{}r@{}@{}c@{}@{}l@{}@{}c@{}@{}cc@{}}
+\begin{bmatrix}
+E_{\tempsigma} & 0 \\ 
+0&1
+\end{bmatrix}
+\begin{bmatrix}
+\dot{\tempxi}\\ 
+\dot{\tempsigma}
+\end{bmatrix}
+ & {=} &
+ \begin{bmatrix*}[l]
+ {\tempfxi}_{\tempsigma}\tempxi + B_{\tempsigma}{\tempu}_c\\ 
+  0 \end{bmatrix*}  
+ & \quad\quad & (\state,{\tempu}_c)\in {\tempC}\\
+\begin{bmatrix}
+{\tempxi}^+\\  
+{\tempsigma}^+
+\end{bmatrix} 
+& \tempIn &
+\displaystyle\bigcup_{\tilde{\tempsigma}\in {\tempgsigma}}
+\begin{bmatrix*}[c]
+{\tempgxi}\\ 
+\tilde{\tempsigma}
+\end{bmatrix*}
+ & \quad\quad & (\state,{\tempu}_d)\in {\tempD}\\
+ \tempy_c & = & \temph_{c,\tempsigma}(\tempxi,{\tempu}_c) & & &\\
+ \tempy_d & = & \temph_{d,\tempsigma}(\tempxi,{\tempu}_d) & & &
+\end{array}
+}
+\right.
+}
+
+
+%%% Highlight modifications
+\def\startmodif{\color{blue}}
+\def\stopmodif{\color{black}\normalcolor}
+
+
+
+%%% Comments
+%\newcommand{\rafal}[1]{{\noindent \color{red} \tt \small #1}}
+%\newcommand{\andy}[1]{{\noindent \color{green} \tt \small #1}}
+%\newcommand{\ricardo}[1]{{\noindent \color{blue} \tt \small #1}}
+%\def\startmodif{\color{red}}
+%\def\stopmodif{\color{black}\normalcolor}
+%
+%\def\startmodifa{\color{green}}
+%\def\stopmodifa{\color{black}\normalcolor}
+%
+%\def\startmodifaa{\color{black}}
+%\def\stopmodifaa{\color{black}\normalcolor}
+%
+%\def\startmodifr{\color{blue}}
+%\def\stopmodifr{\color{black}\normalcolor}
+%
+%\def\startmodifra{\color{black}}
+%\def\stopmodifra{\color{black}\normalcolor}
+
+
+\newcommand{\Sphere}{\mathbb{S}}
+
+\newcommand{\T}{\mathcal{T}}
+
+
+\newcommand{\diff}{\tiny\mbox{diff}}
+
+\newcommand{\imp}{\tiny\mbox{imp}}
+
+
+
+
+
+
+
+
+
+
+
+

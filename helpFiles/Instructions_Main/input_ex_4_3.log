@@ -1,0 +1,38 @@
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  11 MAY 2017 11:07
+entering extended mode
+ \write18 enabled.
+ file:line:error style messages enabled.
+ %&-line parsing enabled.
+**input_ex_4_3.tex
+(./input_ex_4_3.tex
+LaTeX2e <2011/06/27>
+Babel <3.9f> and hyphenation patterns for 78 languages loaded.
+
+./input_ex_4_3.tex:1: LaTeX Error: Environment example undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1 \begin{example}
+                   {Sample-and-hold Feedback Control}
+? 
+./input_ex_4_3.tex:1: Emergency stop.
+ ...                                              
+                                                  
+l.1 \begin{example}
+                   {Sample-and-hold Feedback Control}
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+ 
+Here is how much of TeX's memory you used:
+ 7 strings out of 493315
+ 291 string characters out of 6137904
+ 52158 words of memory out of 5000000
+ 3558 multiletter control sequences out of 15000+600000
+ 3640 words of font info for 14 fonts, out of 8000000 for 9000
+ 957 hyphenation exceptions out of 8191
+ 5i,0n,4p,76b,16s stack positions out of 5000i,500n,10000p,200000b,80000s
+./input_ex_4_3.tex:1:  ==> Fatal error occurred, no output PDF file produced!

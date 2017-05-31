@@ -22,23 +22,23 @@ j = [jz,jhatz];
 figure(1) 
 clf
 subplot(4,1,1),plotarc([tz,thatz],[jz,jhatz],[z(:,1),hatz(:,1)]);
-legend('System state z1','Estimation hatz1')
+legend('System state x1','Estimation hatx1')
 grid on
-ylabel('z1 vs hatz1')
+ylabel('x1 vs hatx1')
 xlabel('time')
 subplot(4,1,2),plotarc([tz,thatz],[jz,jhatz],[z(:,2),hatz(:,2)]);
-legend('System state z2','Estimation hatz2')
+legend('System state x2','Estimation hatx2')
 grid on
-ylabel('z2 vs hatz2')
+ylabel('x2 vs hatx2')
 xlabel('time')
 subplot(4,1,3),plotarc([tz,thatz],[jz,jhatz],[z(:,3),hatz(:,3)]);
-legend('System state z1','Estimation hatz1')
+legend('System state x1','Estimation hatx1')
 grid on
-ylabel('z3 vs hatz3')
+ylabel('x3 vs hatx3')
 xlabel('time')
 subplot(4,1,4),plotarc([tz,thatz],[jz,jhatz],[z(:,4),hatz(:,4)]);
-legend('System state z1','Estimation hatz1')
+legend('System state x4','Estimation hatx4')
 grid on
-ylabel('z1 vs hatz1')
+ylabel('x4 vs hatx4')
 xlabel('time')
  

@@ -1,0 +1,28 @@
+% This file was automatically created from the m-file 
+% "m2tex.m" written by USL. 
+% The fontencoding in this file is UTF-8. 
+%  
+% You will need to include the following two packages in 
+% your LaTeX-Main-File. 
+%  
+% \usepackage{color} 
+% \usepackage{fancyvrb} 
+%  
+% It is advised to use the following option for Inputenc 
+% \usepackage[utf8]{inputenc} 
+%  
+  
+% definition of matlab colors: 
+\definecolor{mblue}{rgb}{0,0,1} 
+\definecolor{mgreen}{rgb}{0.13333,0.5451,0.13333} 
+\definecolor{mred}{rgb}{0.62745,0.12549,0.94118} 
+\definecolor{mgrey}{rgb}{0.5,0.5,0.5} 
+\definecolor{mdarkgrey}{rgb}{0.25,0.25,0.25} 
+  
+\DefineShortVerb[fontfamily=courier,fontseries=m]{\$} 
+\DefineShortVerb[fontfamily=courier,fontseries=b]{\#} 
+  
+\noindent                           \hspace*{-1.6em}{\scriptsize 1}$  $\color{mblue}$function$\color{black}$ xdot = f(x, u, ctes)$\\ \hspace*{-1.6em}{\scriptsize 2}$  $\color{mgreen}$%--------------------------------------------------------------------------$\color{black}$$\\ \hspace*{-1.6em}{\scriptsize 3}$  $\color{mgreen}$% Matlab M-file Project: HyEQ Toolbox @  Hybrid Systems Laboratory (HSL), $\color{black}$$\\ \hspace*{-1.6em}{\scriptsize 4}$  $\color{mgreen}$% https://hybrid.soe.ucsc.edu/software$\color{black}$$\\ \hspace*{-1.6em}{\scriptsize 5}$  $\color{mgreen}$% http://hybridsimulator.wordpress.com/$\color{black}$$\\ \hspace*{-1.6em}{\scriptsize 6}$  $\color{mgreen}$%--------------------------------------------------------------------------$\color{black}$$\\ \hspace*{-1.6em}{\scriptsize 7}$  $\color{mgreen}$% Project: Simulation of a hybrid system (plant with constraints in the$\color{black}$$\\ \hspace*{-1.6em}{\scriptsize 8}$  $\color{mgreen}$% state and the input)$\color{black}$$\\ \hspace*{-1.6em}{\scriptsize 9}$  $\color{mgreen}$% Description: Flow map$\color{black}$$\\ \hspace*{-2em}{\scriptsize 10}$  $\color{mgreen}$%--------------------------------------------------------------------------$\color{black}$$\\ \hspace*{-2em}{\scriptsize 11}$  $\color{mgreen}$%--------------------------------------------------------------------------$\color{black}$$\\ \hspace*{-2em}{\scriptsize 12}$  $\color{mgreen}$%   See also PLOTARC, PLOTARC3, PLOTFLOWS, PLOTHARC, PLOTHARCCOLOR,$\color{black}$$\\ \hspace*{-2em}{\scriptsize 13}$  $\color{mgreen}$%   PLOTHARCCOLOR3D, PLOTHYBRIDARC, PLOTJUMPS.$\color{black}$$\\ \hspace*{-2em}{\scriptsize 14}$  $\color{mgreen}$%   Copyright @ Hybrid Systems Laboratory (HSL),$\color{black}$$\\ \hspace*{-2em}{\scriptsize 15}$  $\color{mgreen}$%   Revision: 0.0.0.3 Date: 05/20/2015 3:42:00$\color{black}$$\\ \hspace*{-2em}{\scriptsize 16}$  $\color{mgreen}$%--------------------------------------------------------------------------$\color{black}$$\\ \hspace*{-2em}{\scriptsize 17}$  $\color{mgreen}$% flow map: xdot=f(x,u);$\color{black}$$\\ \hspace*{-2em}{\scriptsize 18}$  $\\ \hspace*{-2em}{\scriptsize 19}$  $\color{mgreen}$% ctes = [A,B,C,K'];$\color{black}$$\\ \hspace*{-2em}{\scriptsize 20}$  $\\ \hspace*{-2em}{\scriptsize 21}$  A = ctes(:,1:2);$\\ \hspace*{-2em}{\scriptsize 22}$  B = ctes(:,3);$\\ \hspace*{-2em}{\scriptsize 23}$  C = ctes(:,4:5);$\\ \hspace*{-2em}{\scriptsize 24}$  K = ctes(:,6)';$\\ \hspace*{-2em}{\scriptsize 25}$  $\\ \hspace*{-2em}{\scriptsize 26}$  xdot = A*x + B*u;$\\ 
+  
+\UndefineShortVerb{\$} 
+\UndefineShortVerb{\#}
