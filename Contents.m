@@ -1,5 +1,5 @@
 % HyEQ_Toolbox_V204
-% Version 2 (04) 17-May-2017
+% Version 2 (04) 12-Jun-2017
 %
 %    hyeqsolver      -  solves hybrid equations.
 %    plotharc        -    Hybrid arc plot (n states).
@@ -8,7 +8,7 @@
 %    plothybridarc   -    Hybrid arc plot (n states).
 %    plotflows       -   plot a Hybrid arc plot (1D).
 %    plotjumps       -    plot a Hybrid arc plot (1D).
-%    tbclean         -    Removes HyEQ_Toolbox_V202.
+%    tbclean         -    Removes HyEQ_Toolbox_V204.
 
 % Generated at 23-Apr-2014 18:10:04 by MAKEINSTALL
-% Modified at 17-May-2017 11:18:43 by MAKEINSTALL
+% Modified at 12-Jun-2017 14:37:58 by MAKEINSTALL
