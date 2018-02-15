@@ -22,7 +22,10 @@
 \DefineShortVerb[fontfamily=courier,fontseries=m]{\$} 
 \DefineShortVerb[fontfamily=courier,fontseries=b]{\#} 
   
-\noindent           \hspace*{-1.6em}{\scriptsize 1}$  $\color{mblue}$function$\color{black}$ [j tout jout xout] = jump(g,j,tout,jout,xout,nargfun)$\\ \hspace*{-1.6em}{\scriptsize 2}$  $\color{mgreen}$% Jump$\color{black}$$\\ \hspace*{-1.6em}{\scriptsize 3}$  j = j+1;$\\ \hspace*{-1.6em}{\scriptsize 4}$  y = fun_wrap(xout(end,:).',tout(end),jout(end),g,nargfun); $\\ \hspace*{-1.6em}{\scriptsize 5}$  $\color{mgreen}$% Save results$\color{black}$$\\ \hspace*{-1.6em}{\scriptsize 6}$  tout = [tout; tout(end)];$\\ \hspace*{-1.6em}{\scriptsize 7}$  xout = [xout; y.'];$\\ \hspace*{-1.6em}{\scriptsize 8}$  jout = [jout; j];$\\ \hspace*{-1.6em}{\scriptsize 9}$  $\color{mblue}$end$\color{black}$$\\ \hspace*{-2em}{\scriptsize 10}$  $\\ 
+\begin{Verbatim}[commandchars=\$\{\},numbers=left,numbersep=2pt] 
+    $textcolor{mblue}{function} [j tout jout xout] = jump(g,j,tout,jout,xout,nargfun)     $textcolor{mgreen}{% Jump}     j = j+1;     y = fun_wrap(xout(end,:).',tout(end),jout(end),g,nargfun);      $textcolor{mgreen}{% Save results}     tout = [tout; tout(end)];     xout = [xout; y.'];     jout = [jout; j];     $textcolor{mblue}{end}       
+\end{Verbatim}  
   
 \UndefineShortVerb{\$} 
-\UndefineShortVerb{\#}
+\UndefineShortVerb{\#} 
+ 

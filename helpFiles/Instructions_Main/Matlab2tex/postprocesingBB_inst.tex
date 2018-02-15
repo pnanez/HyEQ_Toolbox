@@ -22,7 +22,10 @@
 \DefineShortVerb[fontfamily=courier,fontseries=m]{\$} 
 \DefineShortVerb[fontfamily=courier,fontseries=b]{\#} 
   
-\noindent                   \hspace*{-1.6em}{\scriptsize 1}$  $\color{mgreen}$%postprocessing for the bouncing ball example$\color{black}$$\\ \hspace*{-1.6em}{\scriptsize 2}$  $\color{mgreen}$% plot solution$\color{black}$$\\ \hspace*{-1.6em}{\scriptsize 3}$  figure(1)$\\ \hspace*{-1.6em}{\scriptsize 4}$  clf$\\ \hspace*{-1.6em}{\scriptsize 5}$  subplot(2,1,1),plotflows(t,j,x)$\\ \hspace*{-1.6em}{\scriptsize 6}$  grid $\color{mred}$on$\color{black}$$\\ \hspace*{-1.6em}{\scriptsize 7}$  ylabel($\color{mred}$'x'$\color{black}$)$\\ \hspace*{-1.6em}{\scriptsize 8}$  subplot(2,1,2),plotjumps(t,j,x)$\\ \hspace*{-1.6em}{\scriptsize 9}$  grid $\color{mred}$on$\color{black}$$\\ \hspace*{-2em}{\scriptsize 10}$  ylabel($\color{mred}$'x'$\color{black}$)$\\ \hspace*{-2em}{\scriptsize 11}$  $\color{mgreen}$% plot hybrid arc$\color{black}$$\\ \hspace*{-2em}{\scriptsize 12}$  figure(2)$\\ \hspace*{-2em}{\scriptsize 13}$  plotHybridArc(t,j,x)$\\ \hspace*{-2em}{\scriptsize 14}$  xlabel($\color{mred}$'j'$\color{black}$)$\\ \hspace*{-2em}{\scriptsize 15}$  ylabel($\color{mred}$'t'$\color{black}$)$\\ \hspace*{-2em}{\scriptsize 16}$  zlabel($\color{mred}$'x'$\color{black}$)$\\ \hspace*{-2em}{\scriptsize 17}$  grid $\color{mred}$on$\color{black}$$\\ \hspace*{-2em}{\scriptsize 18}$  view(37.5,30)$\\ 
+\begin{Verbatim}[commandchars=\$\{\},numbers=left,numbersep=2pt] 
+    $textcolor{mgreen}{%postprocessing for the bouncing ball example}     $textcolor{mgreen}{% plot solution}     figure(1)     clf     subplot(2,1,1),plotflows(t,j,x)     grid $textcolor{mred}{on}     ylabel($textcolor{mred}{'x'})     subplot(2,1,2),plotjumps(t,j,x)     grid $textcolor{mred}{on}     ylabel($textcolor{mred}{'x'})     $textcolor{mgreen}{% plot hybrid arc}     figure(2)     plotHybridArc(t,j,x)     xlabel($textcolor{mred}{'j'})     ylabel($textcolor{mred}{'t'})     zlabel($textcolor{mred}{'x'})     grid $textcolor{mred}{on}     view(37.5,30)  
+\end{Verbatim}  
   
 \UndefineShortVerb{\$} 
-\UndefineShortVerb{\#}
+\UndefineShortVerb{\#} 
+ 

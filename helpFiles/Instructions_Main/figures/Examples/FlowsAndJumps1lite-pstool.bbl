@@ -1,0 +1,39 @@
+\begin{thebibliography}{1}
+
+\bibitem{SCN13}
+R.~G. Sanfelice, D.~A. Copp, and P.~Nanez.
+\newblock A toolbox for simulation of hybrid systems in {M}atlab/{S}imulink:
+  {H}ybrid {E}quations ({HyEQ}) {T}oolbox.
+\newblock In {\em Proceedings of Hybrid Systems: Computation and Control
+  Conference}, pages 101--106, 2013.
+
+\bibitem{GST09}
+R.~Goebel, R.~Sanfelice, and A.~Teel.
+\newblock Hybrid dynamical systems.
+\newblock {\em Control Systems, IEEE}, 29(2):28 --93, april 2009.
+
+\bibitem{ST10}
+Ricardo~G. Sanfelice and Andrew~R. Teel.
+\newblock Dynamical properties of hybrid systems simulators.
+\newblock {\em Automatica}, 46(2):239 -- 248, 2010.
+
+\bibitem{San11}
+R.~G. Sanfelice.
+\newblock Interconnections of hybrid systems: Some challenges and recent
+  results.
+\newblock {\em Journal of Nonlinear Systems and Applications}, 2(1-2):111--121,
+  2011.
+
+\bibitem{San17}
+R.~G. Sanfelice.
+\newblock Cmpe142 {C}lass {N}otes - {I}ntroduction to {C}yber-{P}hysical
+  {S}ystems.
+\newblock https://hybrid.soe.ucsc.edu/cmpe149-249-2016, 2017.
+
+\bibitem{FGST16}
+F.~Ferrante, F.~Gouaisbaut, R.~G. Sanfelice, and S.~Tarbouriech.
+\newblock State estimation of linear systems in the presence of sporadic
+  measurements.
+\newblock {\em Automatica}, 73:101--109, November 2016.
+
+\end{thebibliography}

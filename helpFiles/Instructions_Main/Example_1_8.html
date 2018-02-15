@@ -8,15 +8,14 @@
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /> 
 <meta name="generator" content="TeX4ht (http://www.tug.org/tex4ht/)" /> 
 <meta name="originator" content="TeX4ht (http://www.tug.org/tex4ht/)" /> 
-<!-- xhtml,html --> 
+<!-- xhtml,mathml-,html --> 
 <meta name="src" content="Example_1_8.tex" /> 
-<meta name="date" content="2017-05-11 11:50:00" /> 
 <link rel="stylesheet" type="text/css" href="Example_1_8.css" /> 
 </head><body 
 >
    <h3 class="sectionHead"><span class="titlemark">1   </span> <a 
  id="x1-10001"></a>Examples</h3>
-<!--l. 50--><p class="noindent" >The examples below illustrate the use of the Simulink implementation above.
+<!--l. 51--><p class="noindent" >The examples below illustrate the use of the Simulink implementation above.
 </p>
    <div class="newtheorem">
 <!--l. 2--><p class="noindent" ><span class="head">
@@ -27,16 +26,16 @@ class="cmbx-10">&#x00A0;1.8</span> </span>(a simple mathematical example to show
 system with data </p><div class="eqnarray">
    <center class="math-display" >
 <img 
-src="Example_1_80x.png" alt="f(x) := - x, C := [0,1], g(x ) := 1 + mod(x,2), D := {1}&#x222A; {2}.
+src="Example_1_80x.png" alt="f(x) := &#x2212; x, C := [0,1], g(x ) := 1 + mod(x,2), D := {1}&#x222A; {2}.
 " class="math-display"  /></center>
 </div>
-<!--l. 12--><p class="indent" >   Note that solutions from <span 
+<!--l. 10--><p class="indent" >   Note that solutions from <span 
 class="cmmi-10">&#x03BE; </span>= 1 and <span 
 class="cmmi-10">&#x03BE; </span>= 2 are nonunique. The following simulations show the use of the variable
 <span 
 class="cmmi-10">rule </span>in the <span 
 class="cmti-10">Jump Logic block</span>.
-</p><!--l. 17--><p class="indent" >   <span 
+</p><!--l. 15--><p class="indent" >   <span 
 class="cmbx-10">Jumps enforced: </span>A solution from <span 
 class="cmmi-10">x</span>0 = 1 with <span 
 class="cmmi-10">T </span>= 10<span 
@@ -44,19 +43,25 @@ class="cmmi-10">,J </span>= 20, <span
 class="cmmi-10">rule </span>= 1 is depicted in Figure&#x00A0;<a 
 href="#x1-1003r1">1(a)<!--tex4ht:ref: fig:overlap1-1 --></a>. The
 solution jumps from 1 to 2, and from 2 to 1 repetitively.
-</p><!--l. 22--><p class="indent" >   <span 
+</p><!--l. 20--><p class="indent" >   <span 
 class="cmbx-10">Flows enforced: </span>A solution from <span 
 class="cmmi-10">x</span>0 = 1 with <span 
 class="cmmi-10">T </span>= 10<span 
 class="cmmi-10">,J </span>= 20, <span 
 class="cmmi-10">rule </span>= 2 is depicted in Figure&#x00A0;<a 
-href="#x1-1004r2">1(b)<!--tex4ht:ref: fig:overlap1-2 --></a>. The
-solution flows for all time and converges exponentially to zero. </p><hr class="figure" /><div class="figure" 
+href="#x1-1004r2">1(b)<!--tex4ht:ref: fig:overlap1-2 --></a>. The solution
+flows for all time and converges exponentially to zero.
+</p>
+   <hr class="figure" /><div class="figure" 
 ><a 
  id="x1-10051"></a>
+<div class="center" 
+>
+<!--l. 26--><p class="noindent" >
 <a 
- id="x1-1003r1"></a> <img 
-src="Example_1_81x.png" alt="PIC" class="graphics" width="211.38832pt" height="158.90532pt"  /><!--tex4ht:graphics  
+ id="x1-1003r1"></a>
+</p><!--l. 35--><p class="noindent" > <img 
+src="Example_1_81x.png" alt="PIC" class="graphics" width="211" height="158"  /><!--tex4ht:graphics  
 name="Example_1_81x.png" src="figures/Examples/Overlap1JumpPriority.eps"  
 -->
                <span 
@@ -65,11 +70,11 @@ class="cmr-8">(a) Forced jumps logic.</span>
                                                                                          
 <a 
  id="x1-1004r2"></a> <img 
-src="Example_1_82x.png" alt="PIC" class="graphics" width="211.38832pt" height="158.90532pt"  /><!--tex4ht:graphics  
+src="Example_1_82x.png" alt="PIC" class="graphics" width="211" height="158"  /><!--tex4ht:graphics  
 name="Example_1_82x.png" src="figures/Examples/Overlap1FlowPriority.eps"  
 -->
                <span 
-class="cmr-8">(b) Forced flows logic.</span>
+class="cmr-8">(b) Forced flows logic.</span>                </p></div>
 <br /> <div class="caption" 
 ><span class="id">Figure&#x00A0;1: </span><span  
 class="content">Solution of Example&#x00A0;<a 
@@ -79,14 +84,14 @@ href="#x1-10011">1.8<!--tex4ht:ref: ex:overlap1 --></a></span></div><!--tex4ht:l
 ><a 
  id="x1-10092"></a> <a 
  id="x1-1006r1"></a> <img 
-src="Example_1_83x.png" alt="PIC" class="graphics" width="211.38832pt" height="158.90532pt"  /><!--tex4ht:graphics  
+src="Example_1_83x.png" alt="PIC" class="graphics" width="211" height="158"  /><!--tex4ht:graphics  
 name="Example_1_83x.png" src="figures/Examples/Overlap1RandomPriority.eps"  
 -->
              <span 
 class="cmr-8">(a) Random logic for flowing/jumping.</span>
 <a 
  id="x1-1007r2"></a> <img 
-src="Example_1_84x.png" alt="PIC" class="graphics" width="211.38832pt" height="158.90532pt"  /><!--tex4ht:graphics  
+src="Example_1_84x.png" alt="PIC" class="graphics" width="211" height="158"  /><!--tex4ht:graphics  
 name="Example_1_84x.png" src="figures/Examples/Overlap1TRandomPriority.eps"  
 -->
          <span 
@@ -95,7 +100,7 @@ class="cmr-8">(b) Random logic for flowing/jumping.</span>
                                                                                          
 <a 
  id="x1-1008r3"></a> <img 
-src="Example_1_85x.png" alt="PIC" class="graphics" width="211.38832pt" height="158.90532pt"  /><!--tex4ht:graphics  
+src="Example_1_85x.png" alt="PIC" class="graphics" width="211" height="158"  /><!--tex4ht:graphics  
 name="Example_1_85x.png" src="figures/Examples/Overlap1TRandomPriorityZoom.eps"  
 -->
    <span 
@@ -105,7 +110,7 @@ class="cmr-8">(c) Random logic for flowing/jumping. Zoomed version.</span>
 class="content">Solution of Example&#x00A0;<a 
 href="#x1-10011">1.8<!--tex4ht:ref: ex:overlap1 --></a></span></div><!--tex4ht:label?: x1-10092 -->
    </div><hr class="endfigure" />
-<!--l. 58--><p class="indent" >   <span 
+<!--l. 68--><p class="indent" >   <span 
 class="cmbx-10">Random rule: </span>A solution from <span 
 class="cmmi-10">x</span>0 = 1 with <span 
 class="cmmi-10">T </span>= 10<span 
@@ -121,7 +126,7 @@ src="Example_1_86x.png" alt="D  := [1&#x2215;50,1]&#x222A; {2}
 " class="math-display"  /></center>
 </div>causes the overlap between <span 
 class="cmmi-10">C </span>and <span 
-class="cmmi-10">D </span>to be &#8220;thicker&#8221;. The simulation result is depicted in Figure&#x00A0;<a 
+class="cmmi-10">D </span>to be &#x201C;thicker&#x201D;. The simulation result is depicted in Figure&#x00A0;<a 
 href="#x1-1007r2">2(b)<!--tex4ht:ref: fig:overlap1T-1 --></a> with the same
 parameters used in the simulation in Figure&#x00A0;<a 
 href="#x1-1006r1">2(a)<!--tex4ht:ref: fig:overlap1-3 --></a>. The plot suggests that the solution jumps several times until
@@ -134,7 +139,7 @@ the solution flows and that at (<span
 class="cmmi-10">t,j</span>) = (0<span 
 class="cmmi-10">.</span>2<span 
 class="cmmi-10">e</span><span 
-class="cmsy-10">- </span>3<span 
+class="cmsy-10">&#x2212; </span>3<span 
 class="cmmi-10">,</span>0) it jumps. After the jump, it continues flowing, then it jumps a few
 times, then it flows, etc. The combination of flowing and jumping occurs while the solution is in the
 intersection of <span 
@@ -142,26 +147,26 @@ class="cmmi-10">C </span>and <span
 class="cmmi-10">D</span>, where the selection of whether flowing or jumping is done randomly due to using
 <span 
 class="cmmi-10">rule </span>= 3.
-<!--l. 94--><p class="indent" >   This simulation also reveals that this implementation does not precisely generate hybrid arcs. The maximum
+<!--l. 93--><p class="indent" >   This simulation also reveals that this implementation does not precisely generate hybrid arcs. The maximum
 step size was set to 0<span 
 class="cmmi-10">.</span>1<span 
 class="cmmi-10">e </span><span 
-class="cmsy-10">- </span>3. The solution flows during the first two steps of the integration of the
+class="cmsy-10">&#x2212; </span>3. The solution flows during the first two steps of the integration of the
 flows with maximum step size. The value at <span 
 class="cmmi-10">t </span>= 0<span 
 class="cmmi-10">.</span>1<span 
 class="cmmi-10">e </span><span 
-class="cmsy-10">- </span>3 is very close to 1. At <span 
+class="cmsy-10">&#x2212; </span>3 is very close to 1. At <span 
 class="cmmi-10">t </span>= 0<span 
 class="cmmi-10">.</span>2<span 
 class="cmmi-10">e </span><span 
-class="cmsy-10">- </span>3, instead of
+class="cmsy-10">&#x2212; </span>3, instead of
 assuming a value given by the flow map, the value of the solution is about 0<span 
 class="cmmi-10">.</span>5, which is the result
 of the jump occurring at (0<span 
 class="cmmi-10">.</span>2<span 
 class="cmmi-10">e </span><span 
-class="cmsy-10">- </span>3<span 
+class="cmsy-10">&#x2212; </span>3<span 
 class="cmmi-10">,</span>0). This is the value stored in <span 
 class="cmmi-10">x </span>at such time by the integrator.
 Note that the value of <span 
@@ -169,15 +174,15 @@ class="cmmi-10">x</span><span
 class="cmsy-10">&#x2032; </span>at (0<span 
 class="cmmi-10">.</span>2<span 
 class="cmmi-10">e </span><span 
-class="cmsy-10">- </span>3<span 
+class="cmsy-10">&#x2212; </span>3<span 
 class="cmmi-10">,</span>0) is the one given by the flow map that triggers the jump,
 and if available for recording, it should be stored in (0<span 
 class="cmmi-10">.</span>2<span 
 class="cmmi-10">e </span><span 
-class="cmsy-10">- </span>3<span 
+class="cmsy-10">&#x2212; </span>3<span 
 class="cmmi-10">,</span>0). This is a limitation of the current
 implementation.
-</p><!--l. 130--><p class="indent" >   The following simulations show the <span 
+</p><!--l. 105--><p class="indent" >   The following simulations show the <span 
 class="cmti-10">Stop Logic block </span>stopping the simulation at different events. </p><hr class="figure" /><div class="figure" 
 ><a 
  id="x1-10133"></a>
@@ -185,7 +190,7 @@ class="cmti-10">Stop Logic block </span>stopping the simulation at different eve
                                                                                          
 <a 
  id="x1-1011r1"></a> <img 
-src="Example_1_87x.png" alt="PIC" class="graphics" width="211.38832pt" height="158.90532pt"  /><!--tex4ht:graphics  
+src="Example_1_87x.png" alt="PIC" class="graphics" width="211" height="158"  /><!--tex4ht:graphics  
 name="Example_1_87x.png" src="figures/Examples/Overlap2JumpPriority.eps"  
 -->
          <span 
@@ -194,7 +199,7 @@ class="cmmi-8">D</span><span
 class="cmr-8">.</span>
 <a 
  id="x1-1012r2"></a> <img 
-src="Example_1_88x.png" alt="PIC" class="graphics" width="211.38832pt" height="158.90532pt"  /><!--tex4ht:graphics  
+src="Example_1_88x.png" alt="PIC" class="graphics" width="211" height="158"  /><!--tex4ht:graphics  
 name="Example_1_88x.png" src="figures/Examples/Overlap4FlowPriority.eps"  
 -->
                 <span 
@@ -204,7 +209,7 @@ class="cmr-8">(b) Forced flow logic.</span>
 class="content">Solution of Example&#x00A0;<a 
 href="#x1-10011">1.8<!--tex4ht:ref: ex:overlap1 --></a> with premature stopping.</span></div><!--tex4ht:label?: x1-10133 -->
    </div><hr class="endfigure" />
-<!--l. 164--><p class="indent" >   <span 
+<!--l. 122--><p class="indent" >   <span 
 class="cmbx-10">Solution outside </span><span 
 class="cmmi-10">C </span><span 
 class="cmsy-10">&#x222A; </span><span 
@@ -222,7 +227,7 @@ class="cmmi-10">C </span><span
 class="cmsy-10">&#x222A; </span><span 
 class="cmmi-10">D</span>. Figure&#x00A0;<a 
 href="#x1-1011r1">3(a)<!--tex4ht:ref: fig:overlap2-1 --></a> shows this.
-</p><!--l. 168--><p class="indent" >   <span 
+</p><!--l. 126--><p class="indent" >   <span 
 class="cmbx-10">Solution reaches the boundary of </span><span 
 class="cmmi-10">C </span><span 
 class="cmbx-10">from where jumps are not possible: </span>Replacing the flow set by
@@ -236,7 +241,7 @@ class="cmmi-10">rule </span>= 2 flows for all time until it reaches the
 boundary of <span 
 class="cmmi-10">C </span>where jumps are not possible. Figure&#x00A0;<a 
 href="#x1-1012r2">3(b)<!--tex4ht:ref: fig:overlap4-1 --></a> shows this.
-</p><!--l. 175--><p class="indent" >   Note that in this implementation, the Stop Logic is such that when the state of the hybrid system is not in
+</p><!--l. 133--><p class="indent" >   Note that in this implementation, the Stop Logic is such that when the state of the hybrid system is not in
 (<span 
 class="cmmi-10">C </span><span 
 class="cmsy-10">&#x222A; </span><span 
@@ -245,7 +250,7 @@ value of the computed solution will not belong to <span
 class="cmmi-10">C</span>. It could be desired to be able to recompute the solution so that
 its last point belongs to the corresponding set. From that point, it should be the case that solutions cannot be
 continued.
-</p><!--l. 194--><p class="indent" >   For MATLAB/Simulink files of this example, see Examples/Example_<a 
+</p><!--l. 142--><p class="indent" >   For MATLAB/Simulink files of this example, see Examples/Example_<a 
 href="#x1-10011">1.8<!--tex4ht:ref: ex:overlap1 --></a>.
                                                                                          _ 
 </p>

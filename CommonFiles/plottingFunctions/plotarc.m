@@ -373,8 +373,7 @@ if fastpl==1 && color == false % Fast plot possible
                 plot3(x(indexi,1),x(indexi,2),x(indexi,3),modificatorF{1:end})                
             else
                 plot(t(indexi,:),x(indexi,:),modificatorF{1:end})
-            end
-            hold on;
+            end            
         end
         if ij>1
             if mverok==1 && color==false % post R2014b plot behaviour
@@ -391,6 +390,7 @@ if fastpl==1 && color == false % Fast plot possible
                     modificatorJ{1:end});
             end
         end
+        hold on;
     end
     hold off;
     return

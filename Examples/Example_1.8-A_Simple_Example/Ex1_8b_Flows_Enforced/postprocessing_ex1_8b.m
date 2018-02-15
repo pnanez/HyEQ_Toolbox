@@ -16,12 +16,16 @@
 % plot solution
 figure(1)
 clf
-subplot(2,1,1),plotflows(t,j,x)
+clear modificatorF modificatorJ
+modificatorF{1} = 'b'; % pick the color for the flow
+subplot(2,1,1),plotarc(t,j,x,[],[],modificatorF);
 grid on
 ylabel('x')
+xlabel('flows [t]')
 
-subplot(2,1,2),plotjumps(t,j,x)
+modificatorF{1} = 'b--';
+subplot(2,1,2),plotarc(j,j,x,[],[],modificatorF);
 grid on
 ylabel('x')
-
+xlabel('jumps [j]')
                

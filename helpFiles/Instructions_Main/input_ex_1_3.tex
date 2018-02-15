@@ -63,18 +63,29 @@ system are $\gamma = 9.81$ and $\lambda=0.8$.
 %\end{figure}
 
 \begin{figure}[ht]
-  \centering
+\begin{center}
+\subfigure[Height \label{fig:input-1}]
+{
+\psfragfig[width=.45\textwidth]{figures/Examples/FlowsAndJumps1}
+{
   \psfrag{flows [t]}[c]{flows [$t$]}
   \psfrag{jumps [j]}[c]{jumps [$j$]}
   \psfrag{x1}[c]{$x_1$}
   \psfrag{x2}[c]{$x_2$}
-\subfigure[Height]{
-    \includegraphics[width=.45\textwidth]{figures/Examples/FlowsAndJumps1.eps}
-\label{fig:input-1}}
+}
+}
 \qquad
-\subfigure[Velocity]{
-    \includegraphics[width=.45\textwidth]{figures/Examples/FlowsAndJumps2.eps}
-\label{fig:input-2}}
+\subfigure[Velocity \label{fig:input-2}]
+{
+    \psfragfig[width=.45\textwidth]{figures/Examples/FlowsAndJumps2}
+{
+  \psfrag{flows [t]}[c]{flows [$t$]}
+  \psfrag{jumps [j]}[c]{jumps [$j$]}
+  \psfrag{x1}[c]{$x_1$}
+  \psfrag{x2}[c]{$x_2$}
+}
+}
+\end{center}
 \caption{Solution of Example~\ref{ex:bbinput}}
 \end{figure}
 
@@ -85,7 +96,6 @@ system are $\gamma = 9.81$ and $\lambda=0.8$.
   \psfrag{x1}[c]{$x_1$}
     {\includegraphics[width=.8\textwidth]{figures/Examples/HybridArc1.eps}}
    \caption{Hybrid arc corresponding to a solution of Example~\ref{ex:bbinput}: height}
-\label{fig:input-3}
   \end{center}
 \end{figure}
 

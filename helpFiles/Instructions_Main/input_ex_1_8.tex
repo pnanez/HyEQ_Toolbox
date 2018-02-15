@@ -6,8 +6,6 @@ Consider the hybrid system with data
 f(x) := -x,\ C:= [0,1], \
 g(x) := 1+\mbox{mod}(x,2), \ D:=  \{1\}\cup\{2\}.
 \end{eqnarray*}
-%\ricardo{Perhaps we should combine the figures below into subfigures so that they don't take
-%so much space.  Perhaps a page with a 2x2 grid of figures?}
 
 Note that solutions from $\solinit = 1$ and $\solinit = 2$ are
 nonunique.  The following simulations show the use of the variable
@@ -23,17 +21,29 @@ $2$, and from $2$ to $1$ repetitively.
 A solution from $x0=1$ with $T=10,J=20$, $rule = 2$ is depicted in
 Figure~\ref{fig:overlap1-2}. The solution flows for all time
 and converges exponentially to zero.
+
 \begin{figure}[ht]
+\begin{center}
+\subfigure[Forced jumps logic. \label{fig:overlap1-1}]
+{
+\psfragfig[width=.45\textwidth]{figures/Examples/Overlap1JumpPriority}
+{
   \psfrag{flows [t]}[c]{flows [$t$]}
   \psfrag{jumps [j]}[c]{jumps [$j$]}
   \psfrag{x}[c]{$x$}
-  \centering
-\subfigure[Forced jumps logic.]{
-    \includegraphics[width=.45\textwidth]{figures/Examples/Overlap1JumpPriority.eps}
-\label{fig:overlap1-1}}
-\subfigure[Forced flows logic.]{
-    \includegraphics[width=.45\textwidth]{figures/Examples/Overlap1FlowPriority.eps}
-\label{fig:overlap1-2}}
+}
+}
+\qquad
+\subfigure[Forced flows logic. \label{fig:overlap1-2}]
+{
+    \psfragfig[width=.45\textwidth]{figures/Examples/Overlap1FlowPriority}
+{
+  \psfrag{flows [t]}[c]{flows [$t$]}
+  \psfrag{jumps [j]}[c]{jumps [$j$]}
+  \psfrag{x}[c]{$x$}
+}
+}
+\end{center}
 \caption{Solution of Example~\ref{ex:overlap1}}
 \end{figure}
 
@@ -60,17 +70,6 @@ A solution from $x0=1$ with $T=10,J=20$, $rule = 3$ is depicted in
 Figure~\ref{fig:overlap1-3}. The solution jumps to $2$, then jumps to
 $1$ and flows for the rest of the time converging to zero
 exponentially.
-%\begin{figure}[ht]
-%  \begin{center}%
-%  \psfrag{flows [t]}[c]{flows [$t$]}
-%  \psfrag{jumps [j]}[c]{jumps [$j$]}
-%  \psfrag{x}[c]{$x$}
-%    {\includegraphics[width=.8\textwidth]{figures/Examples/Overlap1RandomPriority.eps}}
-%   \caption{Solution of Example~\ref{ex:overlap1} with random logic for flowing/jumping.}
-%%File: Overlap1.zip.
-%\label{fig:overlap1-3}
-%  \end{center}
-%\end{figure}
 Enlarging $D$ to
 \begin{eqnarray*}
 D:=  [1/50,1]\cup\{2\}
@@ -102,30 +101,6 @@ in $x$ at such time by the integrator. Note that the value of $x'$ at
 $(0.2e-3,0)$ is the one given by the flow map that triggers the jump,
 and if available for recording, it should be stored in $(0.2e-3,0)$.
 This is a limitation of the current implementation.
-%\begin{figure}[ht]
-%  \begin{center}%
-%  \psfrag{flows [t]}[c]{flows [$t$]}
-%  \psfrag{jumps [j]}[c]{jumps [$j$]}
-%  \psfrag{x}[c]{$x$}
-%    {\includegraphics[width=.8\textwidth]{figures/Examples/Overlap1TRandomPriority.eps}}
-%   \caption{Solution of Example~\ref{ex:overlap1} with random logic for flowing/jumping.}
-%%File: Overlap1T.zip
-%\label{fig:overlap1T-1}
-%  \end{center}
-%\end{figure}
-%
-%\begin{figure}[ht]
-%  \begin{center}%
-%  \psfrag{flows [t]}[c]{flows [$t$]}
-%  \psfrag{jumps [j]}[c]{jumps [$j$]}
-%  \psfrag{x}[c]{$x$}
-%    {\includegraphics[width=.8\textwidth]{figures/Examples/Overlap1TRandomPriorityZoom.eps}}
-%   \caption{Solution of Example~\ref{ex:overlap1} with random logic for flowing/jumping. Zoomed version.}
-%%File: Overlap1T.zip
-%\label{fig:overlap1T-2}
-%  \end{center}
-%\end{figure}
-
 
 The following simulations show the {\em Stop Logic block} stopping
 the simulation at different events.
@@ -143,23 +118,6 @@ the simulation at different events.
 \label{fig:overlap4-1}}
 \caption{Solution of Example~\ref{ex:overlap1} with premature stopping.}
 \end{figure}
-%
-%Replacing $O$ by $(-1,2)$, a solution starting
-%from $x0=1$ with $T=10,J=20$, $rule = 1$ fails to exists
-%after the first jump. This is depicted in Figure~\ref{fig:overlap2-1}
-%(cf. Figure~\ref{fig:overlap1-1})
-%\\
-%\begin{figure}[ht]
-%  \begin{center}%
-%  \psfrag{flows [t]}[c]{flows [$t$]}
-%  \psfrag{jumps [j]}[c]{jumps [$j$]}
-%  \psfrag{x}[c]{$x$}
-%    {\includegraphics[width=.8\textwidth]{figures/Examples/Overlap2JumpPriority.eps}}
-%   \caption{Solution of Example~\ref{ex:overlap1} with forced jump logic and different $D$.}
-%\label{fig:overlap2-1}
-%  \end{center}
-%\end{figure}
-% show stopping logic by D
 
 {\bf Solution outside $C\cup D$:}
 Taking $D = \{1\}$, a simulation starting from $x0=1$ with $T=10,J=20$, $rule = 1$ stops since the solution leaves $C\cup D$. Figure~\ref{fig:overlap2-1} shows this.
@@ -180,16 +138,6 @@ belong to $C$. It
 could be desired to be able to recompute the solution so that its last
 point belongs to the corresponding set. From that point, it should be
 the case that solutions cannot be continued.
-%\begin{figure}[ht]
-%  \begin{center}%
-%  \psfrag{flows [t]}[c]{flows [$t$]}
-%  \psfrag{jumps [j]}[c]{jumps [$j$]}
-%  \psfrag{x}[c]{$x$}
-%    {\includegraphics[width=.8\textwidth]{figures/Examples/Overlap4FlowPriority.eps}}
-%   \caption{Solution of Example~\ref{ex:overlap1} with forced flow logic.}
-%\label{fig:overlap4-1}
-%  \end{center}
-%\end{figure}
 
 For MATLAB/Simulink files of this example, see \IfSAE{Examples/Example\_\ref{ex:overlap1}}{Examples/Example\_1.8}.
 
