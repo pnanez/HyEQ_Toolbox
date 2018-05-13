@@ -260,6 +260,7 @@ while (j < JSPAN(end) && tout(end) < TSPAN(end))
     end
     fprintf('\b\b\b\b%3.0f%%',max(100*j/JSPAN(end),100*tout(end)/TSPAN(end)));
 end
+fprintf('\b\b\b\b%3.0f%%',100); % ensure correct completion percentage is printed
 t = tout;
 x = xout;
 j = jout;
