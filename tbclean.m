@@ -1,6 +1,6 @@
 function tbclean
-%TBCLEAN   Removes HyEQ_Toolbox_V2_04.
-%    TBCLEAN removes all files of HyEQ_Toolbox_V2_04 from
+%TBCLEAN   Removes HyEQ_Toolbox_V2_05.
+%    TBCLEAN removes all files of HyEQ_Toolbox_V2_05 from
 %    the filesystem and its entry from the Matlab
 %    startup file.
 %    
@@ -16,7 +16,7 @@ function tbclean
 % Norbert Marwan, Potsdam University, Germany
 % http://www.agnld.uni-potsdam.de
 %
-% Generation date: 13-Jun-2017 10:57:11
+% Generation date: 12-May-2018 17:15:39
 % $Date: 2014/09/04 07:33:00 $
 % $Revision: 3.33 $
 
@@ -29,13 +29,13 @@ try
   fid = 0;
   warning('off')
   disp('-----------------------------------')
-  disp('    REMOVING HyEQ_Toolbox_V2_04    ')
+  disp('    REMOVING HyEQ_Toolbox_V2_05    ')
   disp('-----------------------------------')
   currentpath=pwd;
   oldtoolboxpath = fileparts(which(mfilename));
 
-  disp(['  HyEQ_Toolbox_V2_04 found in ', oldtoolboxpath,''])
-  i = input('> Delete HyEQ_Toolbox_V2_04? Y/N [Y]: ','s');
+  disp(['  HyEQ_Toolbox_V2_05 found in ', oldtoolboxpath,''])
+  i = input('> Delete HyEQ_Toolbox_V2_05? Y/N [Y]: ','s');
   if isempty(i), i = 'Y'; end
 
   if strcmpi('Y',i)
@@ -43,8 +43,8 @@ try
   
         p=path; i1=0; i = ''; number_warnings_pathdef = 0;
   
-        while findstr(upper('HyEQ_Toolbox_V2_04'),upper(p)) > i1
-           i1=findstr(upper('HyEQ_Toolbox_V2_04'),upper(p));
+        while findstr(upper('HyEQ_Toolbox_V2_05'),upper(p)) > i1
+           i1=findstr(upper('HyEQ_Toolbox_V2_05'),upper(p));
            if ~isempty(i1)
                i1=i1(end);
                if isunix, i2=findstr(':',p); else, i2=findstr(';',p); end
@@ -125,7 +125,7 @@ try
            if exist('rmdir') == 5 && exist(oldtoolboxpath) == 7, rmdir(oldtoolboxpath,'s'); else, delete(oldtoolboxpath), end
            disp(['  Removing folder ',oldtoolboxpath,''])
         end
-       disp(['  HyEQ_Toolbox_V2_04 now removed.'])
+       disp(['  HyEQ_Toolbox_V2_05 now removed.'])
   else
        disp(['  Nothing happened. Keep smiling.'])
   end
@@ -161,7 +161,7 @@ catch
     fprintf(fid,'%s\n',datestr(now,0));
     fprintf(fid,'%s\n',['Matlab ',char(version),' on ',computer]);
     fprintf(fid,'%s\n',repmat('-',50,1));
-    fprintf(fid,'%s\n','HyEQ_Toolbox_V2_04');
+    fprintf(fid,'%s\n','HyEQ_Toolbox_V2_05');
     fprintf(fid,'%s\n',x);
     fprintf(fid,'%s\n',y);
     fprintf(fid,'%s\n',z);

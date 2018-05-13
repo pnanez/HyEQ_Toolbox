@@ -1,19 +1,19 @@
 % modify the following lines for your purpose
 
-toolbox_name='HyEQ_Toolbox_V2_04';          % name of the toolbox
+toolbox_name='HyEQ_Toolbox_V2_05';          % name of the toolbox
 
 install_file='install.m';             % name of the install script
 deinstall_file='tbclean.m';           % name of the deinstall script
 old_dirs='';                          % possible old (obsolete) toolbox folders
 install_path='';                      % the root folder where the toolbox folder will be located (default is $USER$/matlab or $MATLABROOT$/toolbox, or $USERS$/octave when installing for Octave)
-install_dirUNIX='HyEQ_Toolbox_V2_04';   % the folder where the toolbox files will be extracted (UNIX)
+install_dirUNIX='HyEQ_Toolbox_V2_05';   % the folder where the toolbox files will be extracted (UNIX)
 install_dirPC=install_dirUNIX;        % the folder where the toolbox files will be extracted (PC)
 src_dir='';  % folder with the origin toolbox
 include_pfiles=0;                     % switch to ignore (=0) or include (=1) Matlab p-files
 
-version_file='2.04';                      % include in this file a line like this: % $Revision: 3.30 $
+version_file='2.05';                      % include in this file a line like this: % $Revision: 3.31 $
 version_number='2';                    % or put the version number in this variable
-release='04';                           % the release number
+release='05';                           % the release number
 infostring='Please, restart Matlab before use the HyEQ toolbox.\n To get started, please go to\n  Software downloads:\n   https://hybrid.soe.ucsc.edu/software\n   http://www.mathworks.com/matlabcentral/fileexchange/41372-hybrid-equations-toolbox-v2-03\n  Manual:\n   https://hybrid.soe.ucsc.edu/biblio/2014/hybrid-equations-hyeq-toolbox\n  Examples:\n   http://hybridsimulator.wordpress.com \nFor help with the HyEQ toolbox commands, type\n web HyEQ_Toolbox_v204.html\n or';                        % further information displayed during installation
 
 % if the info.xml does not yet exist it will be created with the following
