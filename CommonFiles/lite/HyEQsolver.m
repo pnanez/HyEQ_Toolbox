@@ -1,4 +1,4 @@
-function [t j x] = HyEQsolver(f,g,C,D,x0,TSPAN,JSPAN,rule,options,solver,E)
+function [t j x] = HyEQsolver(f,g,C,D,x0,TSPAN,JSPAN,rule,options,solver,E, progress)
 %HYEQSOLVER solves hybrid equations.
 %   Syntax: [t j x] = HYEQSOLVER(f,g,C,D,x0,TSPAN,JSPAN,rule,options,solver,E)
 %   computes solutions to the hybrid equations
@@ -167,6 +167,11 @@ end
 if ~exist('E','var')
     E = [];
 end
+if ~exist('progress', 'var')
+    progress = PopupHybridProgress();
+elseif strcmp(progress, 'silent')
+    progress = SilentHybridProgress();
+end
 % mass matrix (if existent)
 isDAE = false;
 if ~isempty(E)
@@ -183,6 +188,8 @@ if ~isempty(E)
                 'MassSingular','maybe','MStateDependence','none');
     end
 end
+
+options = odeset(options, 'OutputFcn', @ODE_callback);
 
 odeX = str2func(solver);
 nargf = nargin(f);
@@ -221,7 +228,16 @@ if rule == 1
         end
     end
 end
-fprintf('Completed: %3.0f%%',0);
+
+progress.init(TSPAN, JSPAN);
+function stop = ODE_callback(t, ~, flag)
+    stop = 0;
+    if isempty(flag) % Only update if not 'init' or 'done'   
+        progress.setT(t);
+        return
+    end
+end
+
 while (j < JSPAN(end) && tout(end) < TSPAN(end))
     options = odeset(options,'Events',@(t,x) zeroevents(x,t,j,C,D,...
         rule,nargC,nargD));
@@ -258,13 +274,12 @@ while (j < JSPAN(end) && tout(end) < TSPAN(end))
             [j tout jout xout] = jump(g,j,tout,jout,xout,nargg);
         end
     end
-    fprintf('\b\b\b\b%3.0f%%',max(100*j/JSPAN(end),100*tout(end)/TSPAN(end)));
+    progress.setJ(j);
 end
-fprintf('\b\b\b\b%3.0f%%',100); % ensure correct completion percentage is printed
 t = tout;
 x = xout;
 j = jout;
-fprintf('\nDone\n');
+progress.done();
 end
 
 function [value,isterminal,direction] = zeroevents(x,t,j,C,D,rule,nargC,nargD)
