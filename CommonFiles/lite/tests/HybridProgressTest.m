@@ -1,8 +1,9 @@
 classdef HybridProgressTest < matlab.unittest.TestCase
 
-
+    
     methods (Test)
-        function testT(testCase)
+        function testT(testCase)    
+            % This test is incomplete.
             hp = HybridProgress();
             hp.tspan = [0, 10];
             hp.jspan = [0, 5];

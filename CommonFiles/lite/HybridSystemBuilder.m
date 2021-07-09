@@ -9,7 +9,6 @@ classdef HybridSystemBuilder
     %                 .jumpSetIndicator(@(x) x >= 0);
     % system = builder.build();
 
-    
     properties(Access = private)
         flow_map_handle = @(x) 0;
         jump_map_handle = @(x) 0;

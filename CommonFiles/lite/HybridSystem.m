@@ -58,6 +58,8 @@ classdef (Abstract) HybridSystem < handle
 
             if ~exist('config', 'var')
                 config = ODESolverConfig();
+            elseif strcmp(config, "silent")
+                config = ODESolverConfig().progress("silent");
             end
 
             % Check arguments

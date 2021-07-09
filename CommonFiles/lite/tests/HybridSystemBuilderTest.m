@@ -7,7 +7,7 @@ classdef HybridSystemBuilderTest < matlab.unittest.TestCase
         function testDefaultBuilderProducesTrivalSolution(testCase)
             system = HybridSystemBuilder().build();
             x0 = 0.34;
-            sol = system.solve(x0, [0, 1], [0, 10]);
+            sol = system.solve(x0, [0, 1], [0, 10], "silent");
             testCase.assertEqual(sol.t, 0);
             testCase.assertEqual(sol.j, 0);
             testCase.assertEqual(sol.x, x0);
@@ -41,7 +41,7 @@ classdef HybridSystemBuilderTest < matlab.unittest.TestCase
                             .jumpSetIndicator(@(x) 1);
             system = builder.build();
             
-            sol = system.solve(12, [0, 100], [1, 5]);
+            sol = system.solve(12, [0, 100], [1, 5], "silent");
 
             testCase.assertEqual(sol.t(end), 0);
             testCase.assertEqual(sol.j(end), 5);
@@ -54,7 +54,7 @@ classdef HybridSystemBuilderTest < matlab.unittest.TestCase
                             .jumpPriority();
 
             system = builder.build();
-            sol = system.solve(12, [0, 100], [1, 5]);
+            sol = system.solve(12, [0, 100], [1, 5], "silent");
 
             testCase.assertEqual(sol.t(end), 0);
             testCase.assertEqual(sol.j(end), 5);
@@ -67,7 +67,7 @@ classdef HybridSystemBuilderTest < matlab.unittest.TestCase
                             .flowPriority();
             system = builder.build();
             
-            sol = system.solve(12, [0, 100], [1, 5]);
+            sol = system.solve(12, [0, 100], [1, 5], "silent");
 
             testCase.assertEqual(sol.t(end), 100);
 

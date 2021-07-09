@@ -8,12 +8,12 @@ classdef HybridSystemTest < matlab.unittest.TestCase
             C_indicator = @(x, t, j) 0;
             D_indicator = @(x, t, j) 1;
             system = EZHybridSystem(f, g, C_indicator, D_indicator);
-            sol = system.solve(1, [0, 1], [0, 10]);
+            sol = system.solve(1, [0, 1], [0, 10], "silent");
         end
 
         function testBouncingBall(testCase)
             system = BouncingBallHybridSystem();
-            sol = system.solve([1; 0], [0, 1], [0, 10]);
+            sol = system.solve([1; 0], [0, 1], [0, 10], "silent");
         end
 
         %%%%%%%%%%%%%%%% Test JumpTime calculations %%%%%%%%%%%%%%%%%

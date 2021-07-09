@@ -1,4 +1,5 @@
-%% Bouncing Ball System
+%% *Bouncing Ball System*
+close all
 clc
 system_bb = BouncingBallHybridSystem();
 
@@ -7,7 +8,7 @@ tspan = [0, 20];
 jspan = [0, 30];
 sol_bb = system_bb.solve(x0, tspan, jspan)
 
-% Plotting
+%% Plot flows
 figure(1)
 clf
 plot_builder_bb = HybridPlotBuilder();
@@ -16,6 +17,7 @@ plot_builder_bb.title("Height", "Velocity") ...
     .jumpColor('m') ... % Hide jumps
     .plotflows(sol_bb);
 
+%% Plot Hybrid Arcs
 % Plot components 2 and 1--in that order--as hybrid arcs, each in their own subplot.
 % The axes are linked so rotation, zooming, etc. in one subplot is mirrored 
 % in all the others plot (the one exception is vertical scaling, which is
@@ -27,6 +29,7 @@ plot_builder_bb.title("Height", "Velocity") ...
     .jumpColor('r') ... % Show jumps (they were previously hidden)
     .plotHyrbidArc(sol_bb);
 
+%% Plot state
 % Plot the trajectory of the system in phase space.
 figure(3)
 clf
@@ -34,7 +37,8 @@ plot_builder_bb = HybridPlotBuilder();
 plot_builder_bb.title("Phase Space: $v$ vs. $h$") ...
     .labels('$h$', '$v$') ...
     .plot(sol_bb) 
-%%
+
+%% Plot state with alternative configuration
 % Plot the trajectory of the system in phase space using a customized
 % plotting configuration. Note that we are using the same object 'plot_builder_bb,' 
 % so the values we set for the title and labels are preserved.
@@ -54,14 +58,13 @@ plot_builder_bb ...
     .slice([2, 1]) ... % Switch the order of the variables.
     .plot(sol_bb)
 
-%% plotDwellTimes() 
+%% Plot dwell times 
 figure(5)
 clf
 HybridUtils.plotDwellTimes(sol_bb)
 
-%% More Plotting
+%% Plot state for a 3D system
 % Example 6.20 (modified) from the Hybrid Dynamical Systems textbook.
-
 figure(6)
 clf
 system_3D = Example3DHybridSystem();
@@ -81,14 +84,11 @@ clf
 % and a discrete variable q \in {0, 1}
 system_with_modes = ExampleModesHybridSystem();
 
-% We set the progress listener to 'silent' so that we don't have the
-% progress bar popping up repeatedly.
-config = ODESolverConfig().progress("silent");
 for i=1:7
     % Create a random initial condition and solve.
     z0 = 20*rand(2, 1) - 10;
     q0 = round(rand());
-    sol_modes = system_with_modes.solve([z0; q0], [0, 10], [0, 10], config);
+    sol_modes = system_with_modes.solve([z0; q0], [0, 10], [0, 10], "silent");
     
     q = sol_modes.x(:, 3);
     
@@ -113,6 +113,7 @@ end
 % above, a new instance of HybridPlotBuilder is created in each iteration,
 % so the legend will only have two entries. 
 builder.legend("$q = 0$", "$q = 1$");
+
 %% Quick System Definition with _HybridSystemBuilder_
 % Create a quick in-line definition of a hybrid system. (Not reccomended for 
 % long-term use or complex systems.)
@@ -131,4 +132,4 @@ plot(sol_EZ) % Note that we can call "plot" on HybridSolutions.
 
 %% Run Tests
 % To run tests, add the 'tests' subfolder to the path. 
-runTests()
+% runTests()
