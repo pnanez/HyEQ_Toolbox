@@ -156,7 +156,7 @@ classdef HybridPlotBuilder < handle
 
                 xlabel("$t$", "interpreter", this.text_interpreter)
                 this.ylabel(i)
-                this.applyTitle(subplot_ndx)
+                this.applyTitle(i)
                 subplot_ndx = subplot_ndx + 1;
             end 
         end
@@ -173,7 +173,7 @@ classdef HybridPlotBuilder < handle
 
                 xlabel("$j$", "interpreter", this.text_interpreter)
                 this.ylabel(i)
-                this.applyTitle(subplot_ndx)
+                this.applyTitle(i)
                 subplot_ndx = subplot_ndx + 1;
             end 
         end
@@ -184,7 +184,7 @@ classdef HybridPlotBuilder < handle
             subplot_ndx = 1;
             subplots = [];
             for i=indices_to_plot
-            	subplots(i) = subplot(length(indices_to_plot), 1, subplot_ndx); %#ok<AGROW>
+            	subplots(subplot_ndx) = subplot(length(indices_to_plot), 1, subplot_ndx); %#ok<AGROW>
 
                 % Prepend t and j, then plot.
                 sliced_x = [hybrid_sol.t, hybrid_sol.j, hybrid_sol.x(:, i)];
@@ -193,7 +193,7 @@ classdef HybridPlotBuilder < handle
                 xlabel("$t$", "interpreter", this.text_interpreter)
                 ylabel("$j$", "interpreter", this.text_interpreter)
                 this.zlabel(i)
-                this.applyTitle(subplot_ndx)
+                this.applyTitle(i)
                 subplot_ndx = subplot_ndx + 1;
             end
 
