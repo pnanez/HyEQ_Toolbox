@@ -22,8 +22,16 @@ classdef ODESolverConfig < handle
             this.solver = solver;
         end
 
+        function this = relTol(this, tol)
+            this.relativeTolerance(tol);
+        end
+
         function this = relativeTolerance(this, relTol)
             this.ode_options = odeset(this.ode_options, "RelTol", relTol);
+        end
+
+        function this = absTol(this, tol)
+            this.absoluteTolerance(tol);
         end
 
         function this = absoluteTolerance(this, absTol)
