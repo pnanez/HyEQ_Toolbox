@@ -1,7 +1,7 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration build-checksum="654105728" file="C:\Users\pwintz\code\HybridSimulator\HybridEquationsToolbox.prj" location="C:\Users\pwintz\code\HybridSimulator" name="HybridEquationsToolbox" target="target.toolbox" target-name="Package Toolbox">
+  <configuration build-checksum="2946357043" file="C:\Users\pwintz\code\HybridSimulator\HybridEquationsToolbox.prj" location="C:\Users\pwintz\code\HybridSimulator" name="HybridEquationsToolbox" target="target.toolbox" target-name="Package Toolbox">
     <param.appname>Hybrid Equations Toolbox</param.appname>
-    <param.authnamewatermark>Testing</param.authnamewatermark>
+    <param.authnamewatermark>Hybrid Systems Laboratory</param.authnamewatermark>
     <param.email>pwintz@ucsc.edu</param.email>
     <param.company>UCSC</param.company>
     <param.summary />
@@ -22,7 +22,8 @@
 % .svn
 install.m
 makeinstall.rc
-.git
+package_toolbox.m
+.git*
 % A single file in a subfolder of the toolbox folder:
 % example/.svn
 %
@@ -39,13 +40,6 @@ makeinstall.rc
     <param.exclude.pcodedmfiles>true</param.exclude.pcodedmfiles>
     <param.examples>&lt;?xml version="1.0" encoding="utf-8"?&gt;
 &lt;examples&gt;
-   &lt;exampleCategory name="Example_1"&gt;
-      &lt;example name="run_ex1_2a" type="html"&gt;
-         &lt;file type="source"&gt;/Examples/Example_1.2a-Bouncing_Ball_with_simulink_External_files/html/run_ex1_2a.html&lt;/file&gt;
-         &lt;file type="main"&gt;/Examples/Example_1.2a-Bouncing_Ball_with_simulink_External_files/run_ex1_2a.m&lt;/file&gt;
-         &lt;file type="thumbnail"/&gt;
-      &lt;/example&gt;
-   &lt;/exampleCategory&gt;
    &lt;exampleCategory name="PlotHarc"&gt;
       &lt;example name="plotHarc_help" type="html"&gt;
          &lt;file type="source"&gt;/helpFiles/Matlab_Publish/MatlabScripts/PlotHarc/html/plotHarc_help.html&lt;/file&gt;
@@ -57,38 +51,20 @@ makeinstall.rc
       &lt;example name="run_HyEQsolver_Help" type="html"&gt;
          &lt;file type="source"&gt;/helpFiles/Matlab_Publish/MatlabScripts/ex_1_2/html/run_HyEQsolver_Help.html&lt;/file&gt;
          &lt;file type="main"&gt;/helpFiles/Matlab_Publish/MatlabScripts/ex_1_2/run_HyEQsolver_Help.m&lt;/file&gt;
-         &lt;file type="thumbnail"/&gt;
-      &lt;/example&gt;
-   &lt;/exampleCategory&gt;
-   &lt;exampleCategory name="Ex1_8d_Solution_Outside_C_D"&gt;
-      &lt;example name="initialization_ex1_8d" type="html"&gt;
-         &lt;file type="source"&gt;/Examples/Example_1.8-A_Simple_Example/Ex1_8d_Solution_Outside_C_D/html/initialization_ex1_8d.html&lt;/file&gt;
-         &lt;file type="main"&gt;/Examples/Example_1.8-A_Simple_Example/Ex1_8d_Solution_Outside_C_D/initialization_ex1_8d.m&lt;/file&gt;
-         &lt;file type="thumbnail"/&gt;
-      &lt;/example&gt;
-      &lt;example name="postprocessing_ex1_8d" type="html"&gt;
-         &lt;file type="source"&gt;/Examples/Example_1.8-A_Simple_Example/Ex1_8d_Solution_Outside_C_D/html/postprocessing_ex1_8d.html&lt;/file&gt;
-         &lt;file type="main"&gt;/Examples/Example_1.8-A_Simple_Example/Ex1_8d_Solution_Outside_C_D/postprocessing_ex1_8d.m&lt;/file&gt;
-         &lt;file type="thumbnail"/&gt;
-      &lt;/example&gt;
-   &lt;/exampleCategory&gt;
-   &lt;exampleCategory name="Ex1_8e_Solution_Reaches_Boundary_of_C"&gt;
-      &lt;example name="initialization_ex1_8e" type="html"&gt;
-         &lt;file type="source"&gt;/Examples/Example_1.8-A_Simple_Example/Ex1_8e_Solution_Reaches_Boundary_of_C/html/initialization_ex1_8e.html&lt;/file&gt;
-         &lt;file type="main"&gt;/Examples/Example_1.8-A_Simple_Example/Ex1_8e_Solution_Reaches_Boundary_of_C/initialization_ex1_8e.m&lt;/file&gt;
-         &lt;file type="thumbnail"/&gt;
-      &lt;/example&gt;
-      &lt;example name="postprocessing_ex1_8e" type="html"&gt;
-         &lt;file type="source"&gt;/Examples/Example_1.8-A_Simple_Example/Ex1_8e_Solution_Reaches_Boundary_of_C/html/postprocessing_ex1_8e.html&lt;/file&gt;
-         &lt;file type="main"&gt;/Examples/Example_1.8-A_Simple_Example/Ex1_8e_Solution_Reaches_Boundary_of_C/postprocessing_ex1_8e.m&lt;/file&gt;
-         &lt;file type="thumbnail"/&gt;
+         &lt;file type="thumbnail"&gt;/helpFiles/Matlab_Publish/MatlabScripts/ex_1_2/html/run_HyEQsolver_Help.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/ex_1_2/html/run_HyEQsolver_Help_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/ex_1_2/html/run_HyEQsolver_Help_02.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/ex_1_2/html/run_HyEQsolver_Help_03.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/ex_1_2/html/run_HyEQsolver_Help_04.png&lt;/file&gt;
       &lt;/example&gt;
    &lt;/exampleCategory&gt;
    &lt;exampleCategory name="Example_publish_template"&gt;
       &lt;example name="Template_to_publish" type="html"&gt;
          &lt;file type="source"&gt;/helpFiles/Matlab_Publish/MatlabScripts/Example_publish_template/html/Template_to_publish.html&lt;/file&gt;
          &lt;file type="main"&gt;/helpFiles/Matlab_Publish/MatlabScripts/Example_publish_template/Template_to_publish.m&lt;/file&gt;
-         &lt;file type="thumbnail"/&gt;
+         &lt;file type="thumbnail"&gt;/helpFiles/Matlab_Publish/MatlabScripts/Example_publish_template/html/Template_to_publish.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/Example_publish_template/html/Template_to_publish_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/Example_publish_template/html/Template_to_publish_02.png&lt;/file&gt;
       &lt;/example&gt;
    &lt;/exampleCategory&gt;
 &lt;/examples&gt;</param.examples>
@@ -102,6 +78,7 @@ makeinstall.rc
       <item>/CommonFiles</item>
       <item>/Applications/MATLAB_R2020b.app/toolbox/local</item>
       <item>/Examples</item>
+      <item>/CommonFiles/simulinkBased</item>
     </param.matlabpath.excludes>
     <param.javaclasspath.excludes />
     <param.exported.on.package>true</param.exported.on.package>
@@ -165,10 +142,7 @@ makeinstall.rc
       <file>${PROJECT_ROOT}\helpFiles</file>
       <file>${PROJECT_ROOT}\HyEQ_Toolbox_v204.pdf</file>
       <file>${PROJECT_ROOT}\info.xml</file>
-      <file>${PROJECT_ROOT}\package_toolbox.m</file>
       <file>${PROJECT_ROOT}\readme.rtf</file>
-      <file>${PROJECT_ROOT}\slprj</file>
-      <file>${PROJECT_ROOT}\tbclean.m</file>
     </fileset.rootfiles>
     <fileset.depfun.included />
     <fileset.depfun.excluded>
