@@ -1,0 +1,176 @@
+<deployment-project plugin="plugin.toolbox" plugin-version="1.0">
+  <configuration build-checksum="2946357043" file="C:\Users\pwintz\code\HybridSimulator\HybridEquationsToolbox.prj" location="C:\Users\pwintz\code\HybridSimulator" name="HybridEquationsToolbox" target="target.toolbox" target-name="Package Toolbox">
+    <param.appname>Hybrid Equations Toolbox</param.appname>
+    <param.authnamewatermark>Hybrid Systems Laboratory</param.authnamewatermark>
+    <param.email>pwintz@ucsc.edu</param.email>
+    <param.company>UCSC</param.company>
+    <param.summary />
+    <param.description />
+    <param.screenshot />
+    <param.version>0.0</param.version>
+    <param.output>${PROJECT_ROOT}\Hybrid Equations Toolbox.mltbx</param.output>
+    <param.products.name />
+    <param.products.id />
+    <param.products.version />
+    <param.platforms />
+    <param.guid>65a20ccf-a3d3-4384-b713-5c73c49e2af1</param.guid>
+    <param.exclude.filters>% List files contained in your toolbox folder that you would like to exclude
+% from packaging.  Excludes should be listed relative to the toolbox folder.
+% Some examples of how to specify excludes are provided below:
+%
+% A single file in the toolbox folder:
+% .svn
+install.m
+makeinstall.rc
+package_toolbox.m
+.git*
+% A single file in a subfolder of the toolbox folder:
+% example/.svn
+%
+% All files in a subfolder of the toolbox folder:
+% example/*
+.git/*
+% All files of a certain name in all subfolders of the toolbox folder:
+% **/.svn
+**/.DS_Store
+%
+% All files matching a pattern in all subfolders of the toolbox folder:
+% **/*.bak
+**/*.tex</param.exclude.filters>
+    <param.exclude.pcodedmfiles>true</param.exclude.pcodedmfiles>
+    <param.examples>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;examples&gt;
+   &lt;exampleCategory name="PlotHarc"&gt;
+      &lt;example name="plotHarc_help" type="html"&gt;
+         &lt;file type="source"&gt;/helpFiles/Matlab_Publish/MatlabScripts/PlotHarc/html/plotHarc_help.html&lt;/file&gt;
+         &lt;file type="main"&gt;/helpFiles/Matlab_Publish/MatlabScripts/PlotHarc/plotHarc_help.m&lt;/file&gt;
+         &lt;file type="thumbnail"/&gt;
+      &lt;/example&gt;
+   &lt;/exampleCategory&gt;
+   &lt;exampleCategory name="ex_1_2"&gt;
+      &lt;example name="run_HyEQsolver_Help" type="html"&gt;
+         &lt;file type="source"&gt;/helpFiles/Matlab_Publish/MatlabScripts/ex_1_2/html/run_HyEQsolver_Help.html&lt;/file&gt;
+         &lt;file type="main"&gt;/helpFiles/Matlab_Publish/MatlabScripts/ex_1_2/run_HyEQsolver_Help.m&lt;/file&gt;
+         &lt;file type="thumbnail"&gt;/helpFiles/Matlab_Publish/MatlabScripts/ex_1_2/html/run_HyEQsolver_Help.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/ex_1_2/html/run_HyEQsolver_Help_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/ex_1_2/html/run_HyEQsolver_Help_02.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/ex_1_2/html/run_HyEQsolver_Help_03.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/ex_1_2/html/run_HyEQsolver_Help_04.png&lt;/file&gt;
+      &lt;/example&gt;
+   &lt;/exampleCategory&gt;
+   &lt;exampleCategory name="Example_publish_template"&gt;
+      &lt;example name="Template_to_publish" type="html"&gt;
+         &lt;file type="source"&gt;/helpFiles/Matlab_Publish/MatlabScripts/Example_publish_template/html/Template_to_publish.html&lt;/file&gt;
+         &lt;file type="main"&gt;/helpFiles/Matlab_Publish/MatlabScripts/Example_publish_template/Template_to_publish.m&lt;/file&gt;
+         &lt;file type="thumbnail"&gt;/helpFiles/Matlab_Publish/MatlabScripts/Example_publish_template/html/Template_to_publish.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/Example_publish_template/html/Template_to_publish_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/Example_publish_template/html/Template_to_publish_02.png&lt;/file&gt;
+      &lt;/example&gt;
+   &lt;/exampleCategory&gt;
+&lt;/examples&gt;</param.examples>
+    <param.demosxml />
+    <param.apps />
+    <param.registered.apps />
+    <param.docs>${PROJECT_ROOT}\info.xml</param.docs>
+    <param.getting.started.guide>${PROJECT_ROOT}\doc\GettingStarted.mlx</param.getting.started.guide>
+    <param.matlabpath.excludes>
+      <item>/</item>
+      <item>/CommonFiles</item>
+      <item>/Applications/MATLAB_R2020b.app/toolbox/local</item>
+      <item>/Examples</item>
+      <item>/CommonFiles/simulinkBased</item>
+    </param.matlabpath.excludes>
+    <param.javaclasspath.excludes />
+    <param.exported.on.package>true</param.exported.on.package>
+    <param.required.addons />
+    <param.matlab.project.id />
+    <param.matlab.project.name />
+    <param.release.start />
+    <param.release.end />
+    <param.release.current.only>false</param.release.current.only>
+    <param.compatiblity.windows>true</param.compatiblity.windows>
+    <param.compatiblity.macos>true</param.compatiblity.macos>
+    <param.compatiblity.linux>true</param.compatiblity.linux>
+    <param.compatiblity.matlabonline>true</param.compatiblity.matlabonline>
+    <param.installation.map />
+    <param.additional.sw.names />
+    <param.additional.sw.licenses />
+    <param.additional.sw.win.url />
+    <param.additional.sw.mac.url />
+    <param.additional.sw.linux.url />
+    <unset>
+      <param.summary />
+      <param.description />
+      <param.screenshot />
+      <param.output />
+      <param.products.name />
+      <param.products.id />
+      <param.products.version />
+      <param.platforms />
+      <param.exclude.pcodedmfiles />
+      <param.demosxml />
+      <param.apps />
+      <param.registered.apps />
+      <param.javaclasspath.excludes />
+      <param.required.addons />
+      <param.matlab.project.id />
+      <param.matlab.project.name />
+      <param.release.start />
+      <param.release.end />
+      <param.release.current.only />
+      <param.compatiblity.windows />
+      <param.compatiblity.macos />
+      <param.compatiblity.linux />
+      <param.compatiblity.matlabonline />
+      <param.installation.map />
+      <param.additional.sw.names />
+      <param.additional.sw.licenses />
+      <param.additional.sw.win.url />
+      <param.additional.sw.mac.url />
+      <param.additional.sw.linux.url />
+    </unset>
+    <fileset.rootdir>
+      <file>${PROJECT_ROOT}</file>
+    </fileset.rootdir>
+    <fileset.rootfiles>
+      <file>${PROJECT_ROOT}\buildsearchdb.m</file>
+      <file>${PROJECT_ROOT}\CommonFiles</file>
+      <file>${PROJECT_ROOT}\Contents.m</file>
+      <file>${PROJECT_ROOT}\demos.xml</file>
+      <file>${PROJECT_ROOT}\doc</file>
+      <file>${PROJECT_ROOT}\Examples</file>
+      <file>${PROJECT_ROOT}\helpFiles</file>
+      <file>${PROJECT_ROOT}\HyEQ_Toolbox_v204.pdf</file>
+      <file>${PROJECT_ROOT}\info.xml</file>
+      <file>${PROJECT_ROOT}\readme.rtf</file>
+    </fileset.rootfiles>
+    <fileset.depfun.included />
+    <fileset.depfun.excluded>
+      <file>${MATLAB_ROOT}\toolbox\local\userpath.m</file>
+    </fileset.depfun.excluded>
+    <fileset.package />
+    <build-deliverables>
+      <file location="${PROJECT_ROOT}" name="Hybrid Equations Toolbox.mltbx" optional="false">C:\Users\pwintz\code\HybridSimulator\Hybrid Equations Toolbox.mltbx</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>C:\Program Files\MATLAB\R2021a</root>
+      <toolboxes />
+    </matlab>
+    <platform>
+      <unix>false</unix>
+      <mac>false</mac>
+      <windows>true</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>false</linux>
+      <solaris>false</solaris>
+      <osver>10.0</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>win64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>
