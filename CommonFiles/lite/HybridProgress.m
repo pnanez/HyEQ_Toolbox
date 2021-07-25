@@ -6,6 +6,10 @@ classdef HybridProgress < handle
         j (1,1)
     end
 
+    properties
+        cancel; % When true, HyEQSolver aborts.
+    end
+
     properties(Dependent)
         t_percent
         j_percent
@@ -16,6 +20,7 @@ classdef HybridProgress < handle
         function init(this, tspan, jspan)
             this.tspan = tspan;
             this.jspan = jspan;
+            this.cancel = false;
             this.setBoth(tspan(1), jspan(1));
         end
 

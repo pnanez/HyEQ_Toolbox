@@ -10,13 +10,13 @@ classdef TerminationCause
    enumeration
       STATE_IS_INFINITE("Final state is infinite.")
       STATE_IS_NAN("Final state is NaN.")
-      STATE_NOT_IN_C_UNION_D("Solution left the flow and jump sets")
-      T_REACHED_END_OF_TSPAN("Continuous time t reached the end of tspan")
-      J_REACHED_END_OF_JSPAN("Discrete time j reached the end of jspan")
+      STATE_NOT_IN_C_UNION_D("Solution left the flow and jump sets.")
+      T_REACHED_END_OF_TSPAN("Continuous time t reached the end of tspan.")
+      J_REACHED_END_OF_JSPAN("Discrete time j reached the end of jspan.")
         
       % Exceptional values:
-      SYSTEM_NOT_PROVIDED("To determine termination cause, pass hybrid system to HybridSolution")
-      NO_CAUSE("The cause of termination was not identified!")
+      SYSTEM_NOT_PROVIDED("To determine termination cause, pass hybrid system to HybridSolution.")
+      NO_CAUSE("The cause of termination was not identified (possibly canceled)!")
    end
 
     methods(Static)

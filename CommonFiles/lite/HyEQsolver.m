@@ -231,14 +231,14 @@ end
 
 progress.init(TSPAN, JSPAN);
 function stop = ODE_callback(t, ~, flag)
-    stop = 0;
+    stop = progress.cancel;
     if isempty(flag) % Only update if not 'init' or 'done'   
         progress.setT(t);
         return
     end
 end
 
-while (j < JSPAN(end) && tout(end) < TSPAN(end))
+while (j < JSPAN(end) && tout(end) < TSPAN(end) && ~progress.cancel)
     options = odeset(options,'Events',@(t,x) zeroevents(x,t,j,C,D,...
         rule,nargC,nargD));
     % Check if it is possible to flow from current position
@@ -341,7 +341,6 @@ function xdelta = fun_wrap(x,t,j,h,nargfun)
 %   PLOTHARCCOLOR, PLOTHARCCOLOR3D, PLOTHYBRIDARC, PLOTJUMPS.
 %   Copyright @ Hybrid Systems Laboratory (HSL),
 %   Revision: 0.0.0.3 Date: 01/28/2016 5:12:00
-
 
 switch nargfun
     case 1
