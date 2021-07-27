@@ -47,10 +47,14 @@ classdef HybridSolution
 
             for i=1:length(t)
                 x_curr = x(i, :)';
-                this.f_vals(i, :) = hybrid_system.flow_map_3args(x_curr, t(i), j(i))';
-                this.g_vals(i, :) = hybrid_system.jump_map_3args(x_curr, t(i), j(i))';
                 this.C_vals(i) = hybrid_system.flow_set_indicator_3args(x_curr, t(i), j(i));
                 this.D_vals(i) = hybrid_system.jump_set_indicator_3args(x_curr, t(i), j(i));
+                if this.C_vals(i) % Only evaluate flow map in the flow set.
+                    this.f_vals(i, :) = hybrid_system.flow_map_3args(x_curr, t(i), j(i))';
+                end
+                if this.D_vals(i) % Only evaluate jump map in the jump set.
+                    this.g_vals(i, :) = hybrid_system.jump_map_3args(x_curr, t(i), j(i))';
+                end
             end
 
             this.termination_cause = TerminationCause.getCause(hybrid_system, ...
