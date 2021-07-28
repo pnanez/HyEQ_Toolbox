@@ -1,7 +1,7 @@
 %% *Bouncing Ball System*
 close all
 clc
-system_bb = BouncingBallHybridSystem();
+system_bb = ExampleBouncingBallHybridSystem();
 
 x0 = [1;0];
 tspan = [0, 20];

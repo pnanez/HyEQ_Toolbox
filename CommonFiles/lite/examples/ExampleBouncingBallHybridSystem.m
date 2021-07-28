@@ -1,4 +1,4 @@
-classdef BouncingBallHybridSystem < HybridSystem
+classdef ExampleBouncingBallHybridSystem < HybridSystem
 
     properties 
         gravity = 9.8;

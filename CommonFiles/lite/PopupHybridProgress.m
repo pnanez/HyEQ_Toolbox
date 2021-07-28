@@ -46,7 +46,7 @@ classdef PopupHybridProgress < HybridProgress
         function done(this)    
             if isvalid(this.progressbar) && this.progressbar.Visible
                 close(this.progressbar)
-                delete(this.progressbar)       % DELETE the waitbar; don't try to CLOSE it.
+                delete(this.progressbar)
             end
         end
        
