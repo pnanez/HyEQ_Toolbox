@@ -149,8 +149,8 @@ classdef HybridPlotBuilder < handle
 
             subplot_ndx = 1;
             for i=indices_to_plot
-            	subplot(length(indices_to_plot), 1, subplot_ndx)
-
+            	open_subplot(length(indices_to_plot), subplot_ndx);
+                
                 to_plot = [hybrid_sol.t, hybrid_sol.x(:, i)];
                 this.plot_sliced(hybrid_sol, to_plot)
 
@@ -166,7 +166,7 @@ classdef HybridPlotBuilder < handle
 
             subplot_ndx = 1;
             for i=indices_to_plot
-            	subplot(length(indices_to_plot), 1, subplot_ndx)
+            	open_subplot(length(indices_to_plot), subplot_ndx);
 
                 sliced_x = [hybrid_sol.j, hybrid_sol.x(:, i)];
                 this.plot_sliced(hybrid_sol, sliced_x)
@@ -184,7 +184,7 @@ classdef HybridPlotBuilder < handle
             subplot_ndx = 1;
             subplots = [];
             for i=indices_to_plot
-            	subplots(subplot_ndx) = subplot(length(indices_to_plot), 1, subplot_ndx); %#ok<AGROW>
+            	subplots(subplot_ndx) = open_subplot(length(indices_to_plot), subplot_ndx); %#ok<AGROW>
 
                 % Prepend t and j, then plot.
                 sliced_x = [hybrid_sol.t, hybrid_sol.j, hybrid_sol.x(:, i)];
@@ -230,45 +230,6 @@ classdef HybridPlotBuilder < handle
             this.applyTitle(1) % Use first title entry                  
         end
 
-        function plot_sliced(this, hybrid_sol, sliced_x)
-
-            if ~isempty(this.timestepsFilter)
-                assert(length(this.timestepsFilter) == size(sliced_x, 1), ...
-                    "The length of the filter does not match the timesteps in the HybridSolution.")
-                % Set entries that don't match the filter to NaN.
-                sliced_x(~this.timestepsFilter) = NaN;
-            end
-
-            % Add an invisible plot that will show up in the legend.
-            this.addLegendEntry()
-
-            % Save the current 'hold' state.
-            was_hold_on = ishold();
-            hold on
-
-            x_prev = [];
-            for j = unique(hybrid_sol.j)'
-                interval_of_flow_indices = (hybrid_sol.j == j);
-                x_now = sliced_x(interval_of_flow_indices, :);
-                switch size(sliced_x, 2)
-                    case 2   
-                        this.plotFlow2D(x_now)
-                        this.plotJump2D(x_prev, x_now)
-                    case 3   
-                        this.plotFlow3D(x_now)
-                        this.plotJump3D(x_prev, x_now)
-                        view(34.8,16.8)
-                end
-                x_prev = x_now;
-            end
-
-            % Turn off 'hold' if it was off at the beginning of this
-            % function.
-            if ~was_hold_on
-                hold off
-            end
-        end
-
         function lgd = legend(this, varargin)
             % LEGEND Add a legend for each call to builder.plots() while 
             % in the current figure. (Plots in other figures will be
@@ -303,6 +264,48 @@ classdef HybridPlotBuilder < handle
     end
 
     methods(Access = private)
+
+        function plot_sliced(this, hybrid_sol, sliced_x)
+
+            if ~isempty(this.timestepsFilter)
+                assert(length(this.timestepsFilter) == size(sliced_x, 1), ...
+                    "The length of the filter does not match the timesteps in the HybridSolution.")
+                % Set entries that don't match the filter to NaN so they are not plotted.
+                sliced_x(~this.timestepsFilter) = NaN;
+            end
+
+            % Add an invisible plot that will show up in the legend.
+            % Drawing this point will also clear the plot if 'hold' is off
+            this.addLegendEntry()
+            
+            % We have to turn on hold while plotting the hybrid arc, so 
+            % we save the current hold state and restore it at the end.
+            was_hold_on = ishold();
+            hold on
+
+            x_prev = [];
+            for j = unique(hybrid_sol.j)'
+                interval_of_flow_indices = (hybrid_sol.j == j);
+                x_now = sliced_x(interval_of_flow_indices, :);
+                switch size(sliced_x, 2)
+                    case 2   
+                        this.plotFlow2D(x_now)
+                        this.plotJump2D(x_prev, x_now)
+                    case 3   
+                        this.plotFlow3D(x_now)
+                        this.plotJump3D(x_prev, x_now)
+                        view(34.8,16.8)
+                end
+                x_prev = x_now;
+            end
+
+            % Turn off 'hold' if it was off at the beginning of this
+            % function.
+            if ~was_hold_on
+                hold off
+            end
+        end
+        
         function indices_to_plot = indicesToPlot(this, hybrid_sol)
             n = size(hybrid_sol.x, 2);
             if isempty(this.component_indices)
@@ -410,5 +413,17 @@ classdef HybridPlotBuilder < handle
             this.plots_for_legend = [this.plots_for_legend, p];
         end
                 
+    end
+end
+        
+%%% Local functions %%%
+
+function sp = open_subplot(subplots_count, index)
+    is_hold_on = ishold(); % Save the hold status to apply in subplots.
+    sp = subplot(subplots_count, 1, index);
+    if is_hold_on
+        % Subplots default to hold off, so we modify the hold
+        % status to match what was met before 
+        hold on
     end
 end
