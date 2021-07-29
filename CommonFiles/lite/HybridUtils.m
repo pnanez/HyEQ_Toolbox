@@ -4,10 +4,11 @@ classdef HybridUtils
 
     methods(Static)
 
-        function [jump_t, jump_j, jump_indices] = jumpTimes(t, j)
-            % Takes the t and j vectors output by HyEQsolver to find the time
+        function [jump_t, jump_j, jump_indices, is_jump] = jumpTimes(t, j)
+            % JUMPTIMES Takes the t and j vectors output by HyEQsolver to find the time
             % values where jump events occur. Also returns the corresponding values
-            % of j and the indices of the events. 
+            % of j, the indices of the events, and an array containing ones in each 
+            % entry where a jump did occured and a zero otherwise.
             assert(length(t) == length(j), "Length(t)=%d ~= length(j)=%d", length(t), length(j))
             assert(~isempty(t), "t and j are empty")
 
@@ -18,32 +19,33 @@ classdef HybridUtils
                 return;
             end
 
-            differences = HybridUtils.prepend_entry_to_vector(diff(j) > 0, 0);
-            jump_indices = find(differences);
+            is_jump = HybridUtils.prepend_entry_to_vector(diff(j) > 0, 0);
+            jump_indices = find(is_jump);
             jump_t = t(jump_indices);
             jump_j = j(jump_indices);
         end
 
-        function dwell_times = dwellTimes(t, j)
-            % Compute the dwell times (duration between each jump).
+        function flow_lengths = flowLengths(t, j)
+            % FLOWLENGTHS Compute the flow lengths (duration between each jump).
+            
             % If the solution ends with an interval of flow, rather
             % than a jump, then we append the length of that last
-            % interval of flow to the dwell times. We calculate the minimum
-            % dwell time before appending the last interval of flow in case
+            % interval of flow to the flow lengths. We calculate the minimum
+            % flow length before appending the last interval of flow in case
             % that last interval happens to be shorter than the minimum. 
 
             jump_times = HybridUtils.jumpTimes(t, j);
-            dwell_times = diff([0; jump_times]);
+            flow_lengths = diff([0; jump_times]);
 
             % Unless there was a jump at the final time, we append the
-            % length of the final interval of flow to the dwell times. If
+            % length of the final interval of flow to the flow lengths. If
             % there weren't any jumps, then this interval is the entire
             % length of t(end) - t(1), otherwise it is 
             % t(end) - jump_times(end).
             if isempty(jump_times)
-                dwell_times(end+1) = t(end) - t(1);
+                flow_lengths(end+1) = t(end) - t(1);
             elseif(jump_times(end) ~= t(end))
-                dwell_times(end+1) = t(end) - jump_times(end);
+                flow_lengths(end+1) = t(end) - jump_times(end);
             end
         end
 

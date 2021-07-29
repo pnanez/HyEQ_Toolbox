@@ -1,7 +1,7 @@
 classdef (Abstract) HybridSystem < handle
 
     properties
-        jump_priority = HybridPriorityRule.JUMP;
+        hybrid_priority = HybridPriority.JUMP;
         mass_matrix = [];
 
         % State dimension is an optional property. If set, additional error
@@ -54,12 +54,14 @@ classdef (Abstract) HybridSystem < handle
         function sol = solve(this, x0, tspan, jspan, config)
             % SOLVE Compute a solution to this hybrid system starting from
             % initial state 'x0' over continuous time 'tspan' and discrete
-            % time 'jspan'.
-
+            % time 'jspan'. The optional 'config' argument can either be an
+            % instance of HybridSolverConfig or the string "silent" to
+            % disable progress updates.
+            
             if ~exist('config', 'var')
-                config = ODESolverConfig();
+                config = HybridSolverConfig();
             elseif strcmp(config, "silent")
-                config = ODESolverConfig().progress("silent");
+                config = HybridSolverConfig().progress("silent");
             end
 
             % Check arguments
@@ -77,8 +79,8 @@ classdef (Abstract) HybridSystem < handle
                                    this.flow_set_indicator_without_self_arg, ...
                                    this.jump_set_indicator_without_self_arg, ...
                                    x0, tspan, jspan, ...
-                                   this.jump_priority, config.ode_options, ...
-                                   config.solver, this.mass_matrix, config.progressListener);
+                                   this.hybrid_priority, config.ode_options, ...
+                                   config.ode_solver, this.mass_matrix, config.progressListener);
             
             % Wrap solution in HybridSolution class (or another class if
             % the function wrap_solution is overriden).

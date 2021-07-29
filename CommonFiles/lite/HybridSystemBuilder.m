@@ -23,7 +23,7 @@ classdef HybridSystemBuilder
                                            this.jump_map_handle, ...
                                            this.flow_set_indicator_handle, ...
                                            this.jump_set_indicator_handle);
-            hybridSystem.jump_priority = this.priority;
+            hybridSystem.hybrid_priority = this.priority;
         end
 
         function this = flowMap(this, flow_map_handle)

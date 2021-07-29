@@ -13,9 +13,9 @@ classdef HybridSolution
         C_vals (:, 1) uint8;
         D_vals (:, 1) uint8;
 
-        flow_lengths (:,1) double;
-        jump_times (:,1) double; 
-        min_flow_length double;
+        flow_lengths (:,1) double; % The duration of each interval of flow.
+        jump_times (:,1) double; % The continuous time of each jump.
+        shortest_flow_length double;
         total_flow_length double;
         jump_count uint32;
 
@@ -37,8 +37,8 @@ classdef HybridSolution
             this.jump_times = HybridUtils.jumpTimes(t, j);
             this.total_flow_length = t(end) - t(1);
             this.jump_count = length(this.jump_times);
-            this.flow_lengths = HybridUtils.dwellTimes(t, j);
-            this.min_flow_length = min(this.flow_lengths);
+            this.flow_lengths = HybridUtils.flowLengths(t, j);
+            this.shortest_flow_length = min(this.flow_lengths);
 
             this.hybrid_system = hybrid_system;
 

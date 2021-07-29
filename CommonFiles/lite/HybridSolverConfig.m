@@ -1,45 +1,45 @@
-classdef ODESolverConfig < handle
+classdef HybridSolverConfig < handle
 
+    properties
+        ode_solver = "ode45";
+    end
+    
     properties(SetAccess = private)
         ode_options;
     
-        progressListener = PopupHybridProgress();
-    end
-
-    properties
-        solver = "ode45";
+        progressListener HybridProgress = PopupHybridProgress();
     end
 
     methods
-        function this = ODESolverConfig()
+        function this = HybridSolverConfig()
             this.ode_options = odeset();
         end
             
-        function this = set.solver(this, solver)
-            if solver == "ode15i"
+        function set.ode_solver(this, ode_solver)
+            if ode_solver == "ode15i"
                 error("The 'ode15i' solver is not supported");
             end
-            this.solver = solver;
+            this.ode_solver = ode_solver;
         end
 
-        function this = relTol(this, tol)
-            this.relativeTolerance(tol);
-        end
-
-        function this = relativeTolerance(this, relTol)
+        function this = RelTol(this, relTol)
+            % RelTol  Set the relative tolerance for the ODE solver.
             this.ode_options = odeset(this.ode_options, "RelTol", relTol);
         end
 
-        function this = absTol(this, tol)
-            this.absoluteTolerance(tol);
-        end
-
-        function this = absoluteTolerance(this, absTol)
+        function this = AbsTol(this, absTol)
+            % AbsTol  Set the absolute tolerance for the ODE solver.
             this.ode_options = odeset(this.ode_options, "AbsTol", absTol);
         end
 
-        function this = maxStep(this, maxStep)
+        function this = MaxStep(this, maxStep)
+            % MaxStep  Set the maximum step size for the ODE solver.
             this.ode_options = odeset(this.ode_options, "MaxStep", maxStep);
+        end
+        
+        function this = odeOption(this, name, value)
+            % ODEOPTION  Set an arbitrary ODE option via name-value pair.
+           this.ode_options.(name) = value; 
         end
 
         function this = progress(this, progressListener)

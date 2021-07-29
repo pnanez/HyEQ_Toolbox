@@ -6,7 +6,6 @@ classdef ExampleBouncingBallHybridSystem < HybridSystem
     end
 
     methods 
-
         % To define the data of the system, we implement 
         % the abstract functions from HybridSystem.m
 
@@ -28,6 +27,3 @@ classdef ExampleBouncingBallHybridSystem < HybridSystem
     end
 
 end
-
-
-

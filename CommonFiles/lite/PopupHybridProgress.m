@@ -60,9 +60,13 @@ classdef PopupHybridProgress < HybridProgress
        
         function openWaitbar(this)
             if isempty(this.progressbar)
+                % If this.progressbar is empty, then it has not been created
+                % after this PopupHybridProgress was initialized, so we do that
+                % now.
+                cancel_callback = @(src, event) this.cancelSolver();
                 this.progressbar = waitbar(0.0, "", ...
                     "Name", "Hybrid Solver Progress", ...
-                    "CreateCancelBtn", @(src, event) this.cancelSolver());
+                    "CreateCancelBtn", cancel_callback);
             end
         end
         

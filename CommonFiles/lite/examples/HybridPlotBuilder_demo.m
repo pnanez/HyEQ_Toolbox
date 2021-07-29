@@ -10,7 +10,7 @@ jspan = [0 30];
 sol1 = bb_system.solve([10, 0], tspan, jspan);
 sol2 = bb_system.solve([ 5, 10], tspan, jspan);
 
-% Multiple Plots in a Single Figure
+%% Replacing vs. Adding Plots to a Figure
 % By default, each call to a HybridPlotBuilder plot function overwrites the 
 % previous plots. In the following code, we call |plotflows| twice. The
 % first call plots a solution in green, but the second call resets the figure

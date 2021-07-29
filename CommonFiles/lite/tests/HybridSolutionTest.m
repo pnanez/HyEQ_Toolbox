@@ -6,9 +6,9 @@ classdef HybridSolutionTest < matlab.unittest.TestCase
 
     methods (Test)
 
-        %%%%%%%%%%%%%%%% Test jump_times and dwell_times %%%%%%%%%%%%%%%%%
-        % Thorough testing of jump time and dwell time calculations are in
-        % jumpTimesTest.m and dwellTimesTest.m. The tests here simply
+        %%%%%%%%%%%%%%%% Test jump_times and flow_lengths %%%%%%%%%%%%%%%%%
+        % Thorough testing of jump time and flow length calculations are in
+        % jumpTimesTest.m and flowLengthTest.m. The tests here simply
         % verify that the HybridSolution class is wired up correctly.
         function testJumpTimes(testCase)
             t = linspace(0, 12, 5)'; % Not important
@@ -18,13 +18,13 @@ classdef HybridSolutionTest < matlab.unittest.TestCase
             testCase.assertEqual(sol.jump_times, [t(2); t(5)])
         end
 
-        function testDwellTimes(testCase)
+        function testFlowLengths(testCase)
             t = [0; 0.5; 0.5; 2; 3; 3; 4];
             j = [0;   0;   1; 1; 1; 2; 2];
             x = zeros(7, 1); % Not important
             sol = HybridSolution(testCase.dummySystem, t, j, x, [0, 100], [0, 100]);
-            testCase.assertEqual(sol.dwell_times, [0.5; 2.5; 1])
-            testCase.assertEqual(sol.min_dwell_time, 0.5)
+            testCase.assertEqual(sol.flow_lengths, [0.5; 2.5; 1])
+            testCase.assertEqual(sol.shortest_flow_length, 0.5)
         end
 
         %%%%%%%%%%%%%%%% Test Data Validation %%%%%%%%%%%%%%%%%
