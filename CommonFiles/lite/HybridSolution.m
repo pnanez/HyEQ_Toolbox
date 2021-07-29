@@ -5,17 +5,18 @@ classdef HybridSolution
         j (:, 1) double;
         x (:, :) double;
 
+        x0 (1, :) double;
+        xf (1, :) double;
+
         f_vals (:, :) double;
         g_vals (:, :) double;
         C_vals (:, 1) uint8;
         D_vals (:, 1) uint8;
 
-        x0 % (1, :) double;
-
+        flow_lengths (:,1) double;
         jump_times (:,1) double; 
-        dwell_times (:,1) double;
-        flow_duration double;
-        min_dwell_time double;
+        min_flow_length double;
+        total_flow_length double;
         jump_count uint32;
 
         termination_cause TerminationCause; 
@@ -32,11 +33,12 @@ classdef HybridSolution
             this.j = j;
             this.x = x;
             this.x0 = x(1,:);
+            this.xf = x(end,:);
             this.jump_times = HybridUtils.jumpTimes(t, j);
-            this.flow_duration = t(end) - t(1);
+            this.total_flow_length = t(end) - t(1);
             this.jump_count = length(this.jump_times);
-            this.dwell_times = HybridUtils.dwellTimes(t, j);
-            this.min_dwell_time = min(this.dwell_times);
+            this.flow_lengths = HybridUtils.dwellTimes(t, j);
+            this.min_flow_length = min(this.flow_lengths);
 
             this.hybrid_system = hybrid_system;
 

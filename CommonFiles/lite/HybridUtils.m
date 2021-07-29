@@ -96,15 +96,15 @@ classdef HybridUtils
             end      
         end
 
-        function plotDwellTimes(sol)
-            values = sol.dwell_times;
+        function plotFlowLengths(sol)
+            values = sol.flow_lengths;
             indices = 1:length(values);
             semilogy(indices, values, "b*");
             % xlim([0, indices(end) + 2])
             hold on
-            title("Dwell times of each interval of flow") % Choose better title?
-            xlabel("$j$", "interpreter", "latex") % Choose better label?
-            ylabel("$\Delta t$", "interpreter", "latex") % Choose better label?
+            title("Lengths of Intervals of Flow")
+            xlabel("$j$", "interpreter", "latex")
+            ylabel("$\Delta t$", "interpreter", "latex")
             
             % Only draw ticks at (at most) 12 of the indices.
             xtickindices = floor(indices(1):length(indices)/12:indices(end));
@@ -119,8 +119,8 @@ classdef HybridUtils
             x_padding = 0.03 * (indices_span + 1); % 3-percent on each side.
             xlim([indices(1) - x_padding, indices(end) + x_padding])
                         
-            % Zero values are not displayed in semilog plots, but zero 
-            % dwell times correspond to instaneous jumping, which is 
+            % Zero values are not displayed in semilog plots, but flows
+            % of length zero correspond to instaneous jumping, which is 
             % important information to display, so we mark zero values in 
             % a different color at the bottom of the plot.
             zero_indices = values == 0;

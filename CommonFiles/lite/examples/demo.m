@@ -61,7 +61,7 @@ plot_builder_bb ...
 %% Plot dwell times 
 figure(5)
 clf
-HybridUtils.plotDwellTimes(sol_bb)
+HybridUtils.plotFlowLengths(sol_bb)
 
 %% Plot state for a 3D system
 % Example 6.20 (modified) from the Hybrid Dynamical Systems textbook.
