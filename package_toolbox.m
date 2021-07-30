@@ -6,7 +6,7 @@ addpath('CommonFiles/lite', ...
     'CommonFiles/plottingFunctions', ...
     'CommonFiles/simulinkBased/Library2014b')
 
-% Make sure we can run getting started.
+% Make sure we can run the GettingStarted live script.
 run doc/GettingStarted
 
 projectFile = 'HybridEquationsToolbox.prj';
