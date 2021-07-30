@@ -75,4 +75,13 @@ classdef PopupHybridProgress < HybridProgress
         end
     end
     
+    methods(Static)
+        function closeAllWaitbars()
+            % Sometimes MATLAB's waitbars get stuck and cannot be closed
+            % via the normal methods, so calling this method will force
+            % them all to close.
+            F = findall(0,'type','figure','tag','TMWWaitbar');
+            delete(F);
+        end
+    end
 end
