@@ -69,7 +69,9 @@ classdef (Abstract) HybridSystem < handle
             assert(length(tspan) == 2, "tspan should be an array of two values in the form [tstart, tend]")
             assert(length(jspan) == 2, "jspan should be an array of two values in the form [jstart, jend]")
             if ~isempty(this.state_dimension)
-                assert(length(x0) == this.state_dimension, "x0 does not match the dimension of the system")
+                assert(length(x0) == this.state_dimension, ...
+                    "size(x0)=%d does not match the dimension of the system=%d",...
+                    length(x0), this.state_dimension)
             end
             this.assert_functions_can_be_evaluated_at_point(x0, tspan(1), jspan(1));           
 
@@ -89,7 +91,24 @@ classdef (Abstract) HybridSystem < handle
 
         % Override this function to use other wrappers.
         function sol = wrap_solution(this, t, j, x, tspan, jspan)
-            sol = HybridSolution(this, t, j, x, tspan, jspan);
+            % Compute the values of the flow and jump maps and sets at each
+            % point in the solution trajectory.
+            f_vals = NaN(size(x));
+            g_vals = NaN(size(x));
+            C_vals = NaN(size(t));
+            D_vals = NaN(size(t));
+            for i=1:length(t)
+                x_curr = x(i, :)';
+                C_vals(i) = this.flow_set_indicator_3args(x_curr, t(i), j(i));
+                D_vals(i) = this.jump_set_indicator_3args(x_curr, t(i), j(i));
+                if C_vals(i) % Only evaluate flow map in the flow set.
+                    f_vals(i, :) = this.flow_map_3args(x_curr, t(i), j(i))';
+                end
+                if D_vals(i) % Only evaluate jump map in the jump set.
+                    g_vals(i, :) = this.jump_map_3args(x_curr, t(i), j(i))';
+                end
+            end
+            sol = HybridSolution(t, j, x, f_vals, g_vals, C_vals, D_vals, tspan, jspan);
         end
         
     end
@@ -160,16 +179,16 @@ classdef (Abstract) HybridSystem < handle
         % implementation. Any arguements not used by the
         % implementation are ignored.
         function f = flow_map_3args(this, x, t, j)
-            f = HybridSystem.evaluate_handle_with_correct_args(this.flow_map_without_self_arg, x, t, j);
+            f = evaluate_handle_with_correct_args(this.flow_map_without_self_arg, x, t, j);
         end
         function g = jump_map_3args(this, x, t, j)
-            g = HybridSystem.evaluate_handle_with_correct_args(this.jump_map_without_self_arg, x, t, j);
+            g = evaluate_handle_with_correct_args(this.jump_map_without_self_arg, x, t, j);
         end
         function C = flow_set_indicator_3args(this, x, t, j)
-            C = HybridSystem.evaluate_handle_with_correct_args(this.flow_set_indicator_without_self_arg, x, t, j);
+            C = evaluate_handle_with_correct_args(this.flow_set_indicator_without_self_arg, x, t, j);
         end
         function D = jump_set_indicator_3args(this, x, t, j)
-            D = HybridSystem.evaluate_handle_with_correct_args(this.jump_set_indicator_without_self_arg, x, t, j);
+            D = evaluate_handle_with_correct_args(this.jump_set_indicator_without_self_arg, x, t, j);
         end
     end
 
@@ -271,23 +290,26 @@ classdef (Abstract) HybridSystem < handle
             nargs = length(method_data.InputNames);
         end
     end
-
-    methods(Access = private, Static)
-        function value = evaluate_handle_with_correct_args(func_handle, x, t, j)
-            % Evaluate the given function with the correct number of
-            % arguements. 
-            nargs = nargin(func_handle);
-            switch nargs % number of args in h, not counting the first "this" argument.
-                case 1
-                    value = func_handle(x);
-                case 2
-                    value = func_handle(x, t);
-                case 3
-                    value = func_handle(x, t, j);
-                otherwise
-                    error("Functions must have 1,2, or 3 arguments. Instead the function had %d.", nargs)
-            end
+    
+    methods(Static, Access = protected)
+        function config = defaultSolverConfig()
+            config = HybridSolverConfig();
         end
     end
+end
 
+function value = evaluate_handle_with_correct_args(func_handle, x, t, j)
+    % Evaluate the given function with the correct number of
+    % arguements. 
+    nargs = nargin(func_handle);
+    switch nargs % number of args in h, not counting the first "this" argument.
+        case 1
+            value = func_handle(x);
+        case 2
+            value = func_handle(x, t);
+        case 3
+            value = func_handle(x, t, j);
+        otherwise
+            error("Functions must have 1,2, or 3 arguments. Instead the function had %d.", nargs)
+    end
 end

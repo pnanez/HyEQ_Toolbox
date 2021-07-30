@@ -15,43 +15,33 @@ classdef TerminationCause
       J_REACHED_END_OF_JSPAN("Discrete time j reached the end of jspan.")
         
       % Exceptional values:
-      SYSTEM_NOT_PROVIDED("To determine termination cause, pass hybrid system to HybridSolution.")
       NO_CAUSE("The cause of termination was not identified (possibly canceled)!")
    end
 
     methods(Static)
-        function cause = getCause(hybrid_system, t, j, x, tspan, jspan)
-            xf = x(end,:);
+        function cause = getCause(t, j, x, C_vals, D_vals, tspan, jspan)
+            %%% From the given data, compute the reason that the solution
+            %%% terminated. 
+            x_final = x(end,:);
 
-            if any(isinf(xf)) 
-                cause = TerminationCause.STATE_IS_INFINITE; % sprintf("Final state x(t = %f) = %s is not finite.", t(end), mat2str(xf));
+            if any(isinf(x_final)) 
+                cause = TerminationCause.STATE_IS_INFINITE;
                 return;
-            elseif any(isnan(xf)) 
+            elseif any(isnan(x_final)) 
                 cause = TerminationCause.STATE_IS_NAN;
                 return;
             elseif t(end) >= tspan(end)
-                cause = TerminationCause.T_REACHED_END_OF_TSPAN; % sprintf("Final continuous time t=%0.2f is at end of tspan=%s.", t(end), mat2str(tspan));
+                cause = TerminationCause.T_REACHED_END_OF_TSPAN;
                 return;
             elseif j(end) >= jspan(end)
-                cause = TerminationCause.J_REACHED_END_OF_JSPAN; % sprintf("Final discrete time j=%d is past end of jspan=%s.", j(end), mat2str(jspan));
+                cause = TerminationCause.J_REACHED_END_OF_JSPAN;
                 return;
-            end
-
-            % At this point, we have tested as much as we can without the system.
-            if isempty(hybrid_system)            
-                cause = TerminationCause.SYSTEM_NOT_PROVIDED;
+            elseif ~C_vals(end) && ~D_vals(end)
+                cause = TerminationCause.STATE_NOT_IN_C_UNION_D;
             else
-                % If the hybrid system is given, then we determine what
-                % caused the solution to terminate.
-                is_xf_in_C = hybrid_system.flow_set_indicator_3args(xf, t(end), j(end));
-                is_xf_in_D = hybrid_system.jump_set_indicator_3args(xf, t(end), j(end));
-                if ~is_xf_in_C && ~is_xf_in_D
-                    cause = TerminationCause.STATE_NOT_IN_C_UNION_D; % sprintf("Final state x(t = %f) = %s is not in (C union D).", t(end), mat2str(xf));
-                else
-                    % UNKNOWN REASON
-                    % warning("The TerminationCause unexpectedly could not be identified.")
-                    cause = TerminationCause.NO_CAUSE; 
-                end
+                % UNKNOWN REASON
+                % warning("The TerminationCause unexpectedly could not be identified.")
+                cause = TerminationCause.NO_CAUSE; 
             end
         end
     end

@@ -7,14 +7,13 @@ x0 = [1;0];
 tspan = [0, 20];
 jspan = [0, 30];
 sol_bb = system_bb.solve(x0, tspan, jspan)
-
 %% Plot flows
 figure(1)
 clf
 plot_builder_bb = HybridPlotBuilder();
 plot_builder_bb.title("Height", "Velocity") ...
     .labels('$h$', '$v$') ...
-    .jumpColor('m') ... % Hide jumps
+    .jumpColor('m') ...
     .plotflows(sol_bb);
 
 %% Plot Hybrid Arcs
