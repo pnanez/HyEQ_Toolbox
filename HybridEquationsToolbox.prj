@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration build-checksum="2946357043" file="C:\Users\pwintz\code\HybridSimulator\HybridEquationsToolbox.prj" location="C:\Users\pwintz\code\HybridSimulator" name="HybridEquationsToolbox" target="target.toolbox" target-name="Package Toolbox">
+  <configuration build-checksum="2946357043" file="C:\Users\pwintz\code\hybrid-toolbox\HybridEquationsToolbox.prj" location="C:\Users\pwintz\code\hybrid-toolbox" name="HybridEquationsToolbox" target="target.toolbox" target-name="Package Toolbox">
     <param.appname>Hybrid Equations Toolbox</param.appname>
     <param.authnamewatermark>Hybrid Systems Laboratory</param.authnamewatermark>
     <param.email>pwintz@ucsc.edu</param.email>
@@ -7,7 +7,7 @@
     <param.summary />
     <param.description />
     <param.screenshot />
-    <param.version>0.0</param.version>
+    <param.version>3.0.0.2</param.version>
     <param.output>${PROJECT_ROOT}\Hybrid Equations Toolbox.mltbx</param.output>
     <param.products.name />
     <param.products.id />
@@ -150,7 +150,7 @@ package_toolbox.m
     </fileset.depfun.excluded>
     <fileset.package />
     <build-deliverables>
-      <file location="${PROJECT_ROOT}" name="Hybrid Equations Toolbox.mltbx" optional="false">C:\Users\pwintz\code\HybridSimulator\Hybrid Equations Toolbox.mltbx</file>
+      <file location="${PROJECT_ROOT}" name="Hybrid Equations Toolbox.mltbx" optional="false">C:\Users\pwintz\code\hybrid-toolbox\Hybrid Equations Toolbox.mltbx</file>
     </build-deliverables>
     <workflow />
     <matlab>
