@@ -7,7 +7,7 @@
     <param.summary />
     <param.description />
     <param.screenshot />
-    <param.version>3.0.0.2</param.version>
+    <param.version>3.0.0.5</param.version>
     <param.output>${PROJECT_ROOT}\Hybrid Equations Toolbox.mltbx</param.output>
     <param.products.name />
     <param.products.id />
@@ -40,6 +40,28 @@ package_toolbox.m
     <param.exclude.pcodedmfiles>true</param.exclude.pcodedmfiles>
     <param.examples>&lt;?xml version="1.0" encoding="utf-8"?&gt;
 &lt;examples&gt;
+   &lt;exampleCategory name="examples"&gt;
+      &lt;example name="CompoundHybridSystems_demo" type="html"&gt;
+         &lt;file type="source"&gt;/CommonFiles/lite/examples/html/CompoundHybridSystems_demo.html&lt;/file&gt;
+         &lt;file type="main"&gt;/CommonFiles/lite/examples/CompoundHybridSystems_demo.m&lt;/file&gt;
+         &lt;file type="thumbnail"&gt;/CommonFiles/lite/examples/html/CompoundHybridSystems_demo.png&lt;/file&gt;
+         &lt;file type="image"&gt;/CommonFiles/lite/examples/html/CompoundHybridSystems_demo_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/CommonFiles/lite/examples/html/CompoundHybridSystems_demo_02.png&lt;/file&gt;
+         &lt;file type="image"&gt;/CommonFiles/lite/examples/html/CompoundHybridSystems_demo_03.png&lt;/file&gt;
+      &lt;/example&gt;
+      &lt;example name="HybridPlotBuilder_demo" type="html"&gt;
+         &lt;file type="source"&gt;/CommonFiles/lite/examples/html/HybridPlotBuilder_demo.html&lt;/file&gt;
+         &lt;file type="main"&gt;/CommonFiles/lite/examples/HybridPlotBuilder_demo.m&lt;/file&gt;
+         &lt;file type="thumbnail"&gt;/CommonFiles/lite/examples/html/HybridPlotBuilder_demo.png&lt;/file&gt;
+         &lt;file type="image"&gt;/CommonFiles/lite/examples/html/HybridPlotBuilder_demo_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/CommonFiles/lite/examples/html/HybridPlotBuilder_demo_02.png&lt;/file&gt;
+      &lt;/example&gt;
+      &lt;example name="HybridSystem_demo" type="html"&gt;
+         &lt;file type="source"&gt;/CommonFiles/lite/examples/html/HybridSystem_demo.html&lt;/file&gt;
+         &lt;file type="main"&gt;/CommonFiles/lite/examples/HybridSystem_demo.m&lt;/file&gt;
+         &lt;file type="thumbnail"/&gt;
+      &lt;/example&gt;
+   &lt;/exampleCategory&gt;
    &lt;exampleCategory name="PlotHarc"&gt;
       &lt;example name="plotHarc_help" type="html"&gt;
          &lt;file type="source"&gt;/helpFiles/Matlab_Publish/MatlabScripts/PlotHarc/html/plotHarc_help.html&lt;/file&gt;

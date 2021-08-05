@@ -238,6 +238,8 @@ function stop = ODE_callback(t, ~, flag)
     end
 end
 
+try % Try block to close progress bar upon errors
+
 while (j < JSPAN(end) && tout(end) < TSPAN(end) && ~progress.cancel)
     options = odeset(options,'Events',@(t,x) zeroevents(x,t,j,C,D,...
         rule,nargC,nargD));
@@ -280,6 +282,12 @@ t = tout;
 x = xout;
 j = jout;
 progress.done();
+
+catch exception
+    progress.done();
+    rethrow(exception)
+end
+
 end
 
 function [value,isterminal,direction] = zeroevents(x,t,j,C,D,rule,nargC,nargD)

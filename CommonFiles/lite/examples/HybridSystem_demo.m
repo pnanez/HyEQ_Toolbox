@@ -13,7 +13,7 @@
 % we define several variables in the |properties| block and functions in the |methods| 
 % block. Every subclass of |HybridSystem| must define the |flow_map, jump_map, flow_set_indicator,| 
 % and |jump_set_indicator| functions. The indicator functions should return |1| 
-% inside their respective sets and 0 otherwise.
+% inside their respective sets and |0| otherwise.
 % 
 % Notice that the first argument in each of the functions is |this|. The |this|
 % arugment provides a reference to the object on which the function was
@@ -115,13 +115,27 @@ config.odeOption("MassSingular", 'no');
 config.ode_options
 
 %% 
-% Computing a hybrid solution can take a while, so progress updates are
-% provided and are also configurable. The default behavior is to use the 
-% |PopupHybridProgress| class.
+% Computing a hybrid solution can take be slow, so progress updates are
+% displayed. The default behavior is to use the 
+% |PopupHybridProgress| class. 
 progress = PopupHybridProgress();
-progress.t_decimal_places = 1; % Change the update and display resolution for continuous time;
-progress.min_delay = 1.0; % Set the maximum refresh rate to 1 second.
+
+%%
+% We can configure the |progress| object by setting the values
+% of its properties. First, we change the displayed resolution for 
+% continuous time (this also effects the frequency of updates).
+progress.t_decimal_places = 1; 
+
+%%
+% We can also set the maximum refresh rate to 1 second to make the solver
+% slightly faster.
+progress.min_delay = 1.0;
+
+%%
+% Then we pass |progress| to |config.progress| and pass |config| to
+% |solve|.
 config.progress(progress);
+bb_system.solve(x0, tspan, jspan, config);
 
 %% 
 % Alternatively, progress updates can be disabled by passing |"silent"| to

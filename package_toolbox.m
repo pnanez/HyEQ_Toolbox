@@ -11,3 +11,11 @@ run doc/GettingStarted
 
 projectFile = 'HybridEquationsToolbox.prj';
 matlab.addons.toolbox.packageToolbox(projectFile)
+
+rmpath('CommonFiles/lite', ...
+    'CommonFiles/lite/examples', ...
+    'CommonFiles/plottingFunctions', ...
+    'CommonFiles/simulinkBased/Library2014b')
+
+close all
+disp("Packaging complete")

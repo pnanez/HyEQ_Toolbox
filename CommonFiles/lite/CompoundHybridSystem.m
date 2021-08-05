@@ -94,7 +94,7 @@ classdef CompoundHybridSystem < HybridSystem
                 j1plus = j1;
                 j2plus = j2 + 1;
             else
-                warning("jump_map called for x not in the jump set of either system")
+                % warning("jump_map called for x not in the jump set of either system")
                 % We check that the jump maps can be evaluated.
                 this.subsystem1.jump_map(x1, this.kappa_1D(x1, x2), t, j1);
                 this.subsystem2.jump_map(x2, this.kappa_2D(x1, x2), t, j2);

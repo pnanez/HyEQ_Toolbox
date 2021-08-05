@@ -1,8 +1,16 @@
 classdef PopupHybridProgress < HybridProgress
     
     properties
-        t_decimal_places = 2; % Number of decimal points to display for continuous time
-        min_delay = 0.25; % Minimum number of seconds between updates to the waitbar.
+        % The t_decimal_places property deterimines the number of decimal points to
+        % display for t in the progress bar. The progress bar updates when
+        % the value of t up to the precision determined by this value
+        % changes (so long as min_delay has passed).
+        t_decimal_places = 2; 
+        
+        % The property min_delay sets the minimum number of seconds between 
+        % updates to the progress bar. Smaller values can significantly
+        % slow down the solver.
+        min_delay = 0.25; 
     end
     
     properties(Access = private)
@@ -52,10 +60,13 @@ classdef PopupHybridProgress < HybridProgress
         end
 
         function done(this)    
-            if ~isempty(this.progressbar) && isvalid(this.progressbar) && this.progressbar.Visible
-                close(this.progressbar)
-                delete(this.progressbar)
+            if isempty(this.progressbar)
+                % The progress bar was never opened, 
+                % so we don't need to close it.
+               return 
             end
+            close(this.progressbar)
+            delete(this.progressbar)
         end
        
         function openWaitbar(this)
@@ -76,7 +87,7 @@ classdef PopupHybridProgress < HybridProgress
     end
     
     methods(Static)
-        function closeAllWaitbars()
+        function forceCloseAll()
             % Sometimes MATLAB's waitbars get stuck and cannot be closed
             % via the normal methods, so calling this method will force
             % them all to close.

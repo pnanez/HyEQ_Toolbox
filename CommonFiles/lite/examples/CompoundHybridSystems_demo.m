@@ -4,7 +4,7 @@
 % to simulate multiple interlinked hybrid systems. 
 % Consider the controlled hybrid systems $\mathcal H_1$ and $\mathcal H_2$ with 
 % data $(f_1, g_1, C_1, D_1)$ and $(f_2, g_2, C_2, D_2)$ with state spaces 
-% $\mathcal X_1$ and $\mathcal X_2.$ Let $x_1 \in \mathcal X_1$ and $x_2 \mathcal X_2.$
+% $\mathcal X_1$ and $\mathcal X_2.$ Let $x_1 \in \mathcal X_1$ and $x_2 \in \mathcal X_2.$
 % Then dynamics of $\mathcal H_1$
 % 
 % $$ \dot{x}_1 = f_1(x_1, u_1, t, j_1) \quad (x_1, u_1) \in C'_1 \times U_{C1} =: C_1 $$
@@ -28,18 +28,18 @@
 % $u_2 = \kappa_{2D}(x_1, x_2)$ while $x \in D'_2$. 
 %
 % We now define the compound system $\tilde H$ that consists of subsystems 
-% $\mathcal H_1$ and $\mathcal H_2.$ The state $ \tilde x$ of $\tilde H$ is the
+% $\mathcal H_1$ and $\mathcal H_2.$ The state $\tilde x$ of $\tilde H$ is the
 % concatenation of $x_1$ and $x_2$ along with two natural numbers $j_1$ and $j_2$
 % that track the discrete times of the subsystems (since they can jump at
 % different times). That is, $\tilde x = (x_1, x_2, j_1, j_2).$ 
 % We want the system to flow whenever both subsystems are in their respective 
-% flow sets and to jump whenever either is in their jump set. 
-% Thus, the flow set is $\tilde C := C_1' \times C_2',$ and the jump set is 
-% $\tilde D = D_1'\times \mathcal X_2 \bigcup \mathcal X_1 \times D_2'.$
+% flow sets and to jump whenever either is in their jump set, and priority
+% is given to jumps.
+% Thus, we use the flow set $\tilde C := C_1' \times C_2',$ and the jump set 
+% $\tilde D = (D_1'\times \mathcal X_2) \bigcup (\mathcal X_1 \times D_2').$
 % The flow map is 
 %
-% $$ \dot{\tilde{x}}
-%   = \left[\begin{array}{c}
+% $$ \dot{\tilde{x}} = \tilde{f}(\tilde x):= \left[\begin{array}{c}
 %       f_1(x_1, \kappa_{1C}(x_1, x_2), t, j_1) \\ 
 %       f_2(x_2, \kappa_{2C}(x_1, x_2), t, j_2) \\ 
 %       0 \\ 
@@ -49,8 +49,7 @@
 % or $\mathcal X_1 \times D_2'$. If $\tilde x \in D_1'\times \mathcal X_2,$
 % then
 %
-% $$\tilde x^+ 
-%   = \left[\begin{array}{c}
+% $$\tilde x^+ = \tilde{g}_1(\tilde x):= \left[\begin{array}{c}
 %       g_1(x_1, \kappa_{1D}(x_1, x_2), t, j_1) \\ 
 %       x_2 \\ 
 %       j_1 + 1 \\ 
@@ -58,8 +57,7 @@
 %
 % and if $\tilde x \in \mathcal X_1 \times D_2',$ then
 %
-% $$\tilde x^+ 
-%   = \left[\begin{array}{c}
+% $$\tilde x^+ = \tilde{g}_2(\tilde x):= \left[\begin{array}{c}
 %       x_1 \\ 
 %       g_2(x_2, \kappa_{2D}(x_1, x_2), t, j_2) \\ 
 %       j_1 \\ 
@@ -75,13 +73,13 @@
 % <include>ExampleControlledHybridSystem.m</include>
 %
 % Then, we can create two instances (here they happen to both be the same class, 
-% but they will often be two different classes):
+% but they will generally be different classes):
 subsystem1 = ExampleControlledHybridSystem();
 subsystem2 = ExampleControlledHybridSystem();
 
 %% Create a Compound Hybrid System
-% Now that we have two subsystems, we merely pass these to the constructor
-% of the |CompoundHybridSystem| class to create a coupled system.
+% Now that we have two subsystems, we merely pass these to the
+% |CompoundHybridSystem| constructor to create a coupled system.
 sys = CompoundHybridSystem(subsystem1, subsystem2);
 
 %%
@@ -119,7 +117,7 @@ HybridPlotBuilder()...
     .slice(1:4).plotflows(sol);
 
 %% 
-% Now, we may want the solutions of the two subsystems separtely. 
+% Now, we may want the solutions of the two subsystems separately. 
 % The |CompoundHybridSolution| object contains two additional properties not 
 % defined in the |HybridSolution| class: |subsystem1_sol| and |subsystem2_sol|.
 % As the names suggest, these contain the solutions of the subsystems. 
@@ -145,6 +143,5 @@ hpb.flowColor("k").jumpColor("g")...
 hpb.legend("$\mathcal H_1$", "$\mathcal H_1$", "$\mathcal H_2$", "$\mathcal H_2$");
 
 %%
-% (There is currently an  defect in the placement of legends for subplots, 
-% so the legends for all subplots 
-% are placed in the first one.)
+% (Note: There is currently an  defect in the placement of legends for subplots, 
+% so the legends for all subplots are placed in the first one.)
