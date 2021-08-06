@@ -10,7 +10,7 @@ classdef HybridPlotBuilder < handle
     end
 
     properties(SetAccess = private)
-        titles
+        component_titles;
         component_labels; 
 
         % Plot settings
@@ -35,8 +35,13 @@ classdef HybridPlotBuilder < handle
 
     methods
 
-        function this = title(this, varargin)
-            this.titles = varargin;
+        function this = title(this, title)
+            assert(length(title) == 1, "For setting multiple titles, use titles()")
+            this.component_titles = title;
+        end
+        
+        function this = titles(this, varargin)
+            this.component_titles = varargin;
         end
 
         function this = labels(this, varargin)
@@ -126,7 +131,7 @@ classdef HybridPlotBuilder < handle
         end
 
         function this = jumpEndMarkerSize(this, size)
-            % JUMPENDMARKERSIZE Set the marker size for the emd 
+            % JUMPENDMARKERSIZE Set the marker size for the end 
             % point of each jump.
             assert(size >= 0, "Size must be positive")
             this.jump_end_marker_size = size;
@@ -142,6 +147,13 @@ classdef HybridPlotBuilder < handle
             % FILTER Pick the timesteps to display. All others are hidden
             % from plots. 
             this.timestepsFilter = timesteps_filter;
+        end
+        
+        function this = textInterpreter(this, interpreter)
+            INTERPRETERS = ["none", "tex", "latex"];
+            is_valid = ismember(interpreter,INTERPRETERS);
+            assert(is_valid, "'%s' is not a valid value. Use one of these values: 'none' | 'tex' | 'latex'.", interpreter)
+            this.text_interpreter = interpreter;
         end
 
         function plotflows(this, hybrid_sol)
@@ -178,7 +190,7 @@ classdef HybridPlotBuilder < handle
             end 
         end
 
-        function plotHyrbidArc(this, hybrid_sol)
+        function plotHybridArc(this, hybrid_sol)
             indices_to_plot = indicesToPlot(this, hybrid_sol);
 
             subplot_ndx = 1;
@@ -218,6 +230,7 @@ classdef HybridPlotBuilder < handle
                 this.plotflows(hybrid_sol)
                 return
             end
+            subplot(1, 1, 1) % Reset to only one subplot
 
             sliced_x = hybrid_sol.x(:, sliced_indices);
             this.plot_sliced(hybrid_sol, sliced_x)
@@ -269,7 +282,8 @@ classdef HybridPlotBuilder < handle
 
             if ~isempty(this.timestepsFilter)
                 assert(length(this.timestepsFilter) == size(sliced_x, 1), ...
-                    "The length of the filter does not match the timesteps in the HybridSolution.")
+                    "The length(filter)=%d does not match the timesteps=%d in the HybridSolution.", ...
+                    length(this.timestepsFilter), size(sliced_x, 1))
                 % Set entries that don't match the filter to NaN so they are not plotted.
                 sliced_x(~this.timestepsFilter) = NaN;
             end
@@ -396,8 +410,8 @@ classdef HybridPlotBuilder < handle
         end
 
         function applyTitle(this, index)
-            if index <= length(this.titles)
-                title(this.titles(index), "interpreter", this.text_interpreter)
+            if index <= length(this.component_titles)
+                title(this.component_titles(index), "interpreter", this.text_interpreter)
             end
         end
 

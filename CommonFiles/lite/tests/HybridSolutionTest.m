@@ -12,17 +12,25 @@ classdef HybridSolutionTest < matlab.unittest.TestCase
         % verify that the HybridSolution class is wired up correctly.
         function testJumpTimes(testCase)
             t = linspace(0, 12, 5)'; % Not important
-            j = [0; 1; 1; 1; 2]; % Jump at second index
-            x = zeros(5, 1); % Not important
-            sol = HybridSolution(testCase.dummySystem, t, j, x, [0, 100], [0, 100]);
+            j = [0; 1; 1; 1; 2]; % Jump at indices 2 and 5.
+            x      = NaN(5, 1); % Not important
+            f_vals = NaN(5, 1);
+            g_vals = NaN(5, 1);
+            C_vals = NaN(5, 1);
+            D_vals = NaN(5, 1);
+            sol = HybridSolution(t, j, x, f_vals, g_vals, C_vals, D_vals, [0, 100], [0, 100]);
             testCase.assertEqual(sol.jump_times, [t(2); t(5)])
         end
 
         function testFlowLengths(testCase)
             t = [0; 0.5; 0.5; 2; 3; 3; 4];
             j = [0;   0;   1; 1; 1; 2; 2];
-            x = zeros(7, 1); % Not important
-            sol = HybridSolution(testCase.dummySystem, t, j, x, [0, 100], [0, 100]);
+            x = NaN(7, 1); % Not important
+            f_vals = NaN(7, 1);
+            g_vals = NaN(7, 1);
+            C_vals = NaN(7, 1);
+            D_vals = NaN(7, 1);
+            sol = HybridSolution(t, j, x, f_vals, g_vals, C_vals, D_vals, [0, 100], [0, 100]);
             testCase.assertEqual(sol.flow_lengths, [0.5; 2.5; 1])
             testCase.assertEqual(sol.shortest_flow_length, 0.5)
         end
@@ -53,17 +61,6 @@ classdef HybridSolutionTest < matlab.unittest.TestCase
                     'HybridSolution:WrongShape')
             testCase.verifyError(@()HybridSolution(testCase.dummySystem, t, j', x, [0, 100], [0, 100]), ...
                     'HybridSolution:WrongShape')
-        end
-
-        %%%%%%%%%%%%% Test TerminationCause Identification %%%%%%%%%%%%%%
-        % We only need to test that this works in one case, because all the
-        % various cases are tested in TerminationCauseTest.m
-        function testTerminationCause(testCase)
-            t = linspace(0, 12, 3)'; 
-            j = zeros(3, 1); 
-            x = [0; 1; inf];
-            sol = HybridSolution(testCase.dummySystem, t, j, x, [0, 100], [0, 100]);
-            testCase.assertEqual(sol.termination_cause, TerminationCause.STATE_IS_INFINITE)
         end
 
     end

@@ -12,7 +12,7 @@ classdef HybridSystemTest < matlab.unittest.TestCase
         end
 
         function testBouncingBall(testCase)
-            system = BouncingBallHybridSystem();
+            system = ExampleBouncingBallHybridSystem();
             sol = system.solve([1; 0], [0, 1], [0, 10], "silent");
         end
 

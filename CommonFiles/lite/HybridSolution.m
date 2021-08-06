@@ -87,6 +87,17 @@ classdef HybridSolution
                 .slice(indices)...
                 .plotjumps(this);
         end
+
+        function plotHybridArc(this, indices)
+            n = size(this.x, 2);
+            if ~exist("indices", "var")
+                last_index = min(n, 4);
+                indices = 1:last_index;
+            end
+            HybridPlotBuilder()...
+                .slice(indices)...
+                .plotHybridArc(this);
+        end
     end
 
 end
