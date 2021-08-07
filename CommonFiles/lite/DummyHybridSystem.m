@@ -1,4 +1,4 @@
-classdef DummyHybridSytem < HybridSystem
+classdef DummyHybridSystem < HybridSystem
 % This class is provided to use as a default value for classes that have
 % HybridSystem property values. It's also useful as a template for creating
 % new HybridSystem subclasses.

@@ -12,10 +12,6 @@ classdef CompoundHybridSolution < HybridSolution
             this.subsystem1_sol = subsystem1_sol;
             this.subsystem2_sol = subsystem2_sol;
         end
-
     end
-
-    
-    
 end
 

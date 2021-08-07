@@ -23,7 +23,7 @@ classdef HyEQsolverTest < matlab.unittest.TestCase
             x0 = 1;
             tspan = [0, 100];
             jspan = [1, 100];
-            rule = 1; % flow priority
+            rule = 1; % jump priority
             [t, ~, x] = HyEQsolver(f, g, C, D, x0, tspan, jspan, rule);
             
             testCase.assertEqual(t(end), 0) % This assertion is OK

@@ -47,10 +47,10 @@ classdef EZHybridSystem < HybridSystem
     methods
         function this = EZHybridSystem(flow_map_handle, jump_map_handle, ...
                         flow_set_indicator_handle, jump_set_indicator_handle)
-            EZHybridSystem.check_function_handle(flow_map_handle)
-            EZHybridSystem.check_function_handle(jump_map_handle)
-            EZHybridSystem.check_function_handle(flow_set_indicator_handle)
-            EZHybridSystem.check_function_handle(jump_set_indicator_handle)
+            check_function_handle(flow_map_handle)
+            check_function_handle(jump_map_handle)
+            check_function_handle(flow_set_indicator_handle)
+            check_function_handle(jump_set_indicator_handle)
             this.flow_map_handle = flow_map_handle;
             this.jump_map_handle = jump_map_handle;
             this.flow_set_indicator_handle = flow_set_indicator_handle;
@@ -58,43 +58,42 @@ classdef EZHybridSystem < HybridSystem
         end
 
         function xdot = flow_map(this, x, t, j)
-            xdot = EZHybridSystem.evaluate_with_correct_args(this.flow_map_handle, x, t, j);
+            xdot = evaluate_with_correct_args(this.flow_map_handle, x, t, j);
         end
 
         function x_plus = jump_map(this, x, t, j)
-            x_plus = EZHybridSystem.evaluate_with_correct_args(this.jump_map_handle, x, t, j);
+            x_plus = evaluate_with_correct_args(this.jump_map_handle, x, t, j);
         end
         
         function C = flow_set_indicator(this, x, t, j)
-            C = EZHybridSystem.evaluate_with_correct_args(this.flow_set_indicator_handle, x, t, j);
+            C = evaluate_with_correct_args(this.flow_set_indicator_handle, x, t, j);
         end
 
         function D = jump_set_indicator(this, x, t, j)
-            D = EZHybridSystem.evaluate_with_correct_args(this.jump_set_indicator_handle, x, t, j);
+            D = evaluate_with_correct_args(this.jump_set_indicator_handle, x, t, j);
         end
     end
 
-    methods(Access = private, Static)
-        function result = evaluate_with_correct_args(func_handle, x, t, j)
-            narginchk(4,4)
-            nargs = nargin(func_handle);
-            switch nargs
-                case 1
-                    result = func_handle(x);
-                case 2
-                    result = func_handle(x, t);
-                case 3
-                    result = func_handle(x, t, j);
-                otherwise
-                    error("Functions must have 1,2, or 3 arguments. Instead the function had %d.", nargs) 
-            end
-        end
+end
 
-        function check_function_handle(function_handle)
-            assert(isa(function_handle, 'function_handle'), "Argument '%s' was not a function handle!", function_handle)
-            nargs = nargin(function_handle);
-            assert(nargs >= 1, "There must be at least one argument (namely, 'x')!")
-            assert(nargs <= 3, "There must be no more than three arguments ('x, t, j')!")
-        end
+function result = evaluate_with_correct_args(func_handle, x, t, j)
+    narginchk(4,4)
+    nargs = nargin(func_handle);
+    switch nargs
+        case 1
+            result = func_handle(x);
+        case 2
+            result = func_handle(x, t);
+        case 3
+            result = func_handle(x, t, j);
+        otherwise
+            error("Functions must have 1,2, or 3 arguments. Instead the function had %d.", nargs) 
     end
+end
+
+function check_function_handle(function_handle)
+    assert(isa(function_handle, 'function_handle'), "Argument '%s' was not a function handle!", function_handle)
+    nargs = nargin(function_handle);
+    assert(nargs >= 1, "There must be at least one argument (namely, 'x')!")
+    assert(nargs <= 3, "There must be no more than three arguments ('x, t, j')!")
 end
