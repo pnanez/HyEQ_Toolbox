@@ -11,8 +11,27 @@ classdef HybridSolverConfig < handle
     end
 
     methods
-        function this = HybridSolverConfig()
+        function this = HybridSolverConfig(varargin)
             this.ode_options = odeset();
+            
+            % Parse Name/Value pairs from arguments.
+            parser = inputParser();
+            nonnegative_validator = @(n)validateattributes(n,{'numeric'},{'nonnegative'});
+            addParameter(parser,'RelTol',NaN,nonnegative_validator);
+            addParameter(parser,'AbsTol',NaN,nonnegative_validator);
+            addParameter(parser,'MaxStep',NaN,nonnegative_validator);
+            parse(parser, varargin{:})
+            
+            % Apply non-NaN values.
+            if ~isnan(parser.Results.RelTol)
+                this.RelTol(parser.Results.RelTol)
+            end
+            if ~isnan(parser.Results.AbsTol)
+                this.AbsTol(parser.Results.AbsTol)
+            end
+            if ~isnan(parser.Results.MaxStep)
+                this.MaxStep(parser.Results.MaxStep)
+            end
         end
             
         function set.ode_solver(this, ode_solver)
