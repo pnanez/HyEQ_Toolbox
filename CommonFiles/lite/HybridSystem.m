@@ -49,6 +49,39 @@ classdef (Abstract) HybridSystem < handle
             % "@this.flow_map," "@this.jump_map," etc. in the constructor, it does
             % not work as expected. It appears to store a reference to this
             % as it is at this point, in its unconstructed state.
+            
+            names = {'flow_map', 'jump_map', ...
+                      'flow_set_indicator', 'jump_set_indicator'};            
+            mc = metaclass(this);
+            for iName = 1:length(names)        
+                name = names{iName};
+                mask = arrayfun(@(x)strcmp(x.Name, name), mc.MethodList);
+                method = mc.MethodList(mask);
+                
+                % Check that the first argument is a reference to 'this'
+                % object, rather than the state vector.
+                first_argument_name = method.InputNames{1};
+                is_this = strcmp(first_argument_name, "this");
+                is_self = strcmp(first_argument_name, "self");
+                is_tilde = strcmp(first_argument_name, "~");
+%                 valid_second_arg_names = {"this", "self", "~"};
+%                 validatestring(first_argument_name, valid_second_arg_names)
+                assert(is_this || is_self || is_tilde , ...
+                    "The first argument in %s must be 'this', 'self', or '~' but instead was '%s'.", ...
+                    name, first_argument_name)
+                
+                % Check that the second argument is the state vector. 
+                % For the state vector, we expect users to choose various
+                % names for the state other than simply 'x' (e.g., 'z',
+                % 'xhat', etc.), so instead of checking that the name
+                % matches some list of strings, we make sure it does not match 't'.
+                second_argument_name = method.InputNames{2};
+                is_t = strcmp(second_argument_name, "t");
+                assert(~is_t , ...
+                    "The second argument in %s should be the state vector (e.g. 'x') " + ...
+                    "but instead was 't'. Did you remember the first 'this' argument?", ...
+                    name)
+            end
         end
         
         function sol = solve(this, x0, tspan, jspan, config)
