@@ -1,12 +1,12 @@
 classdef HybridPlotBuilder < handle
 
     properties(Constant)
-        DEFAULT_PLOT_COLORS = [[0 0.4470 0.7410]; [0.8500 0.3250 0.0980]; 
-                               [0.9290 0.6940 0.1250]; [0.4940 0.1840 0.5560]; 
-                               [0.4660 0.6740 0.1880]; [0.3010 0.7450 0.9330]; 
-                               [0.6350 0.0780 0.1840]];
-        DEFAULT_LABELS_TEX = ["x_1", "x_2", "x_3"];
-        DEFAULT_LABELS_LATEX = ["$x_1$", "$x_2$", "$x_3$"];
+        DEFAULT_PLOT_COLORS = [[0 0.4470 0.7410]; [0.8500 0.3250 0.0980];
+            [0.9290 0.6940 0.1250]; [0.4940 0.1840 0.5560];
+            [0.4660 0.6740 0.1880]; [0.3010 0.7450 0.9330];
+            [0.6350 0.0780 0.1840]];
+        
+        INTERPRETERS = ["none", "tex", "latex"];
     end
 
     properties(SetAccess = private)
@@ -31,6 +31,38 @@ classdef HybridPlotBuilder < handle
         component_indices uint32 = [];
         timestepsFilter = [];
         max_subplots = 4;
+    end
+    properties(Dependent)
+        % Labels that correctly adjust to different text interpreters.
+        t_label
+        j_label
+    end
+    methods
+        function value = get.t_label(this)
+            if strcmp(this.text_interpreter, "none")
+                value = "t"; % No formatting
+            elseif strcmp(this.text_interpreter, "tex")
+                value = "t";
+            elseif strcmp(this.text_interpreter, "latex")
+                value = "$t$";
+            else
+                error("text interpreter '%s' unrecognized",... 
+                            this.text_interpreter);
+            end
+        end
+
+        function value = get.j_label(this)
+            if strcmp(this.text_interpreter, "none")
+                value = "j"; % No formatting
+            elseif strcmp(this.text_interpreter, "tex")
+                value = "j";
+            elseif strcmp(this.text_interpreter, "latex")
+                value = "$j$";
+            else
+                error("text interpreter '%s' unrecognized",... 
+                            this.text_interpreter);
+            end
+        end
     end
 
     methods
@@ -150,8 +182,7 @@ classdef HybridPlotBuilder < handle
         end
         
         function this = textInterpreter(this, interpreter)
-            INTERPRETERS = ["none", "tex", "latex"];
-            is_valid = ismember(interpreter,INTERPRETERS);
+            is_valid = ismember(interpreter,HybridPlotBuilder.INTERPRETERS);
             assert(is_valid, "'%s' is not a valid value. Use one of these values: 'none' | 'tex' | 'latex'.", interpreter)
             this.text_interpreter = interpreter;
         end
@@ -166,7 +197,7 @@ classdef HybridPlotBuilder < handle
                 to_plot = [hybrid_sol.t, hybrid_sol.x(:, i)];
                 this.plot_sliced(hybrid_sol, to_plot)
 
-                xlabel("$t$", "interpreter", this.text_interpreter)
+                xlabel(this.t_label, "interpreter", this.text_interpreter)
                 this.ylabel(i)
                 this.applyTitle(i)
                 subplot_ndx = subplot_ndx + 1;
@@ -183,7 +214,7 @@ classdef HybridPlotBuilder < handle
                 sliced_x = [hybrid_sol.j, hybrid_sol.x(:, i)];
                 this.plot_sliced(hybrid_sol, sliced_x)
 
-                xlabel("$j$", "interpreter", this.text_interpreter)
+                xlabel(this.j_label, "interpreter", this.text_interpreter)
                 this.ylabel(i)
                 this.applyTitle(i)
                 subplot_ndx = subplot_ndx + 1;
@@ -202,8 +233,8 @@ classdef HybridPlotBuilder < handle
                 sliced_x = [hybrid_sol.t, hybrid_sol.j, hybrid_sol.x(:, i)];
                 this.plot_sliced(hybrid_sol, sliced_x)
 
-                xlabel("$t$", "interpreter", this.text_interpreter)
-                ylabel("$j$", "interpreter", this.text_interpreter)
+                xlabel(this.t_label, "interpreter", this.text_interpreter)
+                ylabel(this.j_label, "interpreter", this.text_interpreter)
                 this.zlabel(i)
                 this.applyTitle(i)
                 subplot_ndx = subplot_ndx + 1;
@@ -390,23 +421,41 @@ classdef HybridPlotBuilder < handle
                 'Marker', this.jump_end_marker, ...
                 'MarkerSize', this.jump_end_marker_size)
         end
-
-        function xlabel(this, index)
+        
+        function label = createLabel(this, index)
             if index <= length(this.component_labels)
-                xlabel(this.component_labels(index), "interpreter", this.text_interpreter)
+                label = this.component_labels(index);  
+            else
+                if strcmp(this.text_interpreter, "none")
+                    fmt = "x_%d"; % No formatting
+                elseif strcmp(this.text_interpreter, "tex")
+                    fmt = "x_{%d}";
+                elseif strcmp(this.text_interpreter, "latex")
+                    fmt = "$x_{%d}$";
+                else
+                    error("text interpreter '%s' unrecognized",... 
+                                this.text_interpreter);
+                end
+                label = sprintf(fmt, index);
             end
+        end
+        
+        function xlabel(this, index)
+            % xlabel Add a label to the x-axis for the component at 'index'.
+            label = this.createLabel(index);
+            xlabel(label, "interpreter", this.text_interpreter)
         end
 
         function ylabel(this, index)
-            if index <= length(this.component_labels)
-                ylabel(this.component_labels(index), "interpreter", this.text_interpreter)
-            end
+            % ylabel Add a label to the y-axis for the component at 'index'.
+            label = this.createLabel(index);
+            ylabel(label, "interpreter", this.text_interpreter)
         end
 
         function zlabel(this, index)
-            if index <= length(this.component_labels)
-                zlabel(this.component_labels(index), "interpreter", this.text_interpreter)
-            end
+            % zlabel Add a label to the z-axis for the component at 'index'.
+            label = this.createLabel(index);
+            zlabel(label, "interpreter", this.text_interpreter)
         end
 
         function applyTitle(this, index)
