@@ -242,38 +242,14 @@ classdef (Abstract) HybridSystem < handle
         end
 
         function assert_functions_can_be_evaluated_at_point(this, x, t, j)
-            this.assert_function_can_be_evaluated(this.flow_map_without_self_arg, this.flow_map_nargs, x, t, j)
-            this.assert_function_can_be_evaluated(this.jump_map_without_self_arg, this.jump_map_nargs, x, t, j)
-            this.assert_function_can_be_evaluated(this.flow_set_indicator_without_self_arg, this.flow_set_indicator_nargs, x, t, j)
-            this.assert_function_can_be_evaluated(this.jump_set_indicator_without_self_arg, this.jump_set_indicator_nargs, x, t, j)
-        end
-
-        function assert_function_can_be_evaluated(this, func_handl, nargs, x, t, j)
-            try
-                this.evaluate(func_handl, nargs, x, t, j);
-            catch e
-                warning("Could not evaluate '%s'=%s at x0=%s, t=%0.2f, j=%d.", nargs, char(func_handl), mat2str(x), t, j)
-                rethrow(e)
-            end
+            assert_function_can_be_evaluated(this.flow_map_without_self_arg, this.flow_map_nargs, x, t, j)
+            assert_function_can_be_evaluated(this.jump_map_without_self_arg, this.jump_map_nargs, x, t, j)
+            assert_function_can_be_evaluated(this.flow_set_indicator_without_self_arg, this.flow_set_indicator_nargs, x, t, j)
+            assert_function_can_be_evaluated(this.jump_set_indicator_without_self_arg, this.jump_set_indicator_nargs, x, t, j)
         end   
-
-        function value = evaluate(this, func_handle, nargs, x, t, j)
-            % Evaluate the given function with the correct number of
-            % arguements. 
-            switch nargs - 1 % number of args in h, not counting the first "this" argument.
-                case 1
-                    value = func_handle(x);
-                case 2
-                    value = func_handle(x, t);
-                case 3
-                    value = func_handle(x, t, j);
-                otherwise
-                    error("Functions must have 1,2, or 3 aruments. Instead the function had %d.", nargs)
-            end
-        end
     end
 
-    properties(SetAccess = private)
+    properties(Hidden, SetAccess = private)
         flow_map_nargs int8 = -1
         jump_map_nargs int8 = -1
         flow_set_indicator_nargs int8 = -1
@@ -344,5 +320,30 @@ function value = evaluate_handle_with_correct_args(func_handle, x, t, j)
             value = func_handle(x, t, j);
         otherwise
             error("Functions must have 1,2, or 3 arguments. Instead the function had %d.", nargs)
+    end
+end
+
+function assert_function_can_be_evaluated(func_handl, nargs, x, t, j)
+    try
+        evaluate(func_handl, nargs, x, t, j);
+    catch e
+        warning("Could not evaluate '%s'=%s at x0=%s, t=%0.2f, j=%d.", nargs, char(func_handl), mat2str(x), t, j)
+        rethrow(e)
+    end
+end
+
+% This function appears to be unused. Delete?
+function value = evaluate(func_handle, nargs, x, t, j)
+    % Evaluate the given function with the correct number of
+    % arguements. 
+    switch nargs - 1 % number of args in h, not counting the first "this" argument.
+        case 1
+            value = func_handle(x);
+        case 2
+            value = func_handle(x, t);
+        case 3
+            value = func_handle(x, t, j);
+        otherwise
+            error("Functions must have 1,2, or 3 aruments. Instead the function had %d.", nargs)
     end
 end

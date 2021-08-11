@@ -2,6 +2,41 @@ html/
 *.mltbx
 demos.xml
 
+### Exclude Automatically generated help files ###
+*.css
+*.html
+*.4ct
+*.4tc
+*.idv
+*.lg
+*.xref
+*.tmp
+
+## LaTeX ##
+# Core latex/pdflatex auxiliary files:
+*.aux
+*.lof
+*.log
+*.lot
+*.fls
+*.out
+*.toc
+*.fmt
+*.fot
+*.cb
+*.cb2
+.*.lb
+
+## Intermediate documents:
+*.dvi
+*.xdv
+*-converted-to.*
+# these rules might exclude image files for figures etc.
+*.ps
+*.eps
+*.pdf
+*.png
+
 
 # Created by https://www.toptal.com/developers/gitignore/api/matlab,windows,macos
 # Edit at https://www.toptal.com/developers/gitignore?templates=matlab,windows,macos

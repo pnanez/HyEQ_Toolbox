@@ -3,11 +3,11 @@
     <param.appname>Hybrid Equations Toolbox</param.appname>
     <param.authnamewatermark>Hybrid Systems Laboratory</param.authnamewatermark>
     <param.email>pwintz@ucsc.edu</param.email>
-    <param.company>UCSC</param.company>
+    <param.company>UC, Santa Cruz</param.company>
     <param.summary />
     <param.description />
     <param.screenshot />
-    <param.version>3.0.0.6</param.version>
+    <param.version>3.0.0.7</param.version>
     <param.output>${PROJECT_ROOT}\Hybrid Equations Toolbox.mltbx</param.output>
     <param.products.name />
     <param.products.id />

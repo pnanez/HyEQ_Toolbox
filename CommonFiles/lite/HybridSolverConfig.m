@@ -24,13 +24,13 @@ classdef HybridSolverConfig < handle
             
             % Apply non-NaN values.
             if ~isnan(parser.Results.RelTol)
-                this.RelTol(parser.Results.RelTol)
+                this.RelTol(parser.Results.RelTol);
             end
             if ~isnan(parser.Results.AbsTol)
-                this.AbsTol(parser.Results.AbsTol)
+                this.AbsTol(parser.Results.AbsTol);
             end
             if ~isnan(parser.Results.MaxStep)
-                this.MaxStep(parser.Results.MaxStep)
+                this.MaxStep(parser.Results.MaxStep);
             end
         end
             
