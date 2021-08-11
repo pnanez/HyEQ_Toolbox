@@ -168,7 +168,7 @@ if ~exist("priority", "var")
     priority = HybridPriority.default();
 end
 % We enforce a small maximum step so that a first-order approximation of
-% dxdt is close to f(x), allowing us to verify.
+% dxdt is close to f(x), allowing us to verify they are almost equal.
 options = odeset("MaxStep", 0.01); 
 [t, j, x] = HyEQsolver(f, g, C, D, x0, tspan, jspan, priority, options);
 sol = HybridSolution.fromLegacyData(t, j, x, f, g, C, D, tspan, jspan);
