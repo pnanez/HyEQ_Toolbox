@@ -100,6 +100,33 @@ classdef HybridSolution
         end
     end
 
+    methods(Static)
+        function hs = fromLegacyData(t, j, x, f, g, C, D, tspan, jspan)
+            % fromLegacyData Create a HybridSolution given the input and
+            % output arguments of HyEQsolver.
+            f = wrap_with_three_args(f);
+            g = wrap_with_three_args(g);
+            C = wrap_with_three_args(C);
+            D = wrap_with_three_args(D);
+            f_vals = NaN(size(x));
+            g_vals = NaN(size(x));
+            C_vals = NaN(size(t));
+            D_vals = NaN(size(t));
+            for i=1:length(t)
+                x_curr = x(i, :)';
+                C_vals(i) = C(x_curr, t(i), j(i));
+                D_vals(i) = D(x_curr, t(i), j(i));
+                if C_vals(i) % Only evaluate flow map in the flow set.
+                    f_vals(i, :) = f(x_curr, t(i), j(i))';
+                end
+                if D_vals(i) % Only evaluate jump map in the jump set.
+                    g_vals(i, :) = g(x_curr, t(i), j(i))';
+                end
+            end
+            hs = HybridSolution(t, j, x, ...
+                    f_vals, g_vals, C_vals, D_vals, tspan, jspan);
+        end
+    end
 end
 
 % Local functions %
@@ -122,5 +149,18 @@ function checkVectorSizes(t, j, x)
         error('HybridSolution:WrongShape', ...
             "The length(t)=%d and length(x)=%d must match.", ...
             size(t, 1), size(x, 1));
+    end
+end
+
+function f_handle = wrap_with_three_args(function_handle)
+    switch nargin(function_handle)
+        case 1
+            f_handle = @(x, t, j) function_handle(x);
+        case 2
+            f_handle = @(x, t, j) function_handle(x, t);
+        case 3
+            f_handle = function_handle;
+        otherwise
+            error("Function must have 1,2, or 3 arguments")
     end
 end
