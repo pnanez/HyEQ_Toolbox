@@ -1,4 +1,4 @@
-function [t j x] = HyEQsolver(f,g,C,D,x0,TSPAN,JSPAN,rule,options,solver,E,progress)
+function [t, j, x] = HyEQsolver(f,g,C,D,x0,TSPAN,JSPAN,rule,options,solver,E,progress)
 %HYEQSOLVER solves hybrid equations.
 %   Syntax: [t j x] = HYEQSOLVER(f,g,C,D,x0,TSPAN,JSPAN,rule,options,solver,E)
 %   computes solutions to the hybrid equations
@@ -161,7 +161,7 @@ end
 if exist('E','var') && ~exist('solver','var')
     solver = 'ode15s';
 end
-if ~exist('solver','var')
+if ~exist('solver','var') || isempty(solver)
     solver = 'ode45';
 end
 if ~exist('E','var')
@@ -197,8 +197,6 @@ nargg = nargin(g);
 nargC = nargin(C);
 nargD = nargin(D);
 
-
-
 % simulation horizon
 tstart = TSPAN(1);
 tfinal = TSPAN(end);
@@ -216,26 +214,13 @@ else
     error('Error, x0 does not have the proper size')
 end
 
-% Jump if jump is prioritized:
-if rule == 1
-    while (j<JSPAN(end))
-        % Check if value it is possible to jump current position
-        insideD = fun_wrap(xout(end,:).',tout(end),j,D,nargD);
-        if insideD == 1
-            [j tout jout xout] = jump(g,j,tout,jout,xout,nargg);
-        else
-            break;
-        end
-    end
-end
-
 progress.init(TSPAN, JSPAN);
 function stop = ODE_callback(t, ~, flag)
     stop = progress.cancel;
     if isempty(flag) % Only update if not 'init' or 'done'   
         progress.setT(t);
         return
-    end
+    end     
 end
 
 try % Try block to close progress bar upon errors
@@ -243,44 +228,86 @@ try % Try block to close progress bar upon errors
 while (j < JSPAN(end) && tout(end) < TSPAN(end) && ~progress.cancel)
     options = odeset(options,'Events',@(t,x) zeroevents(x,t,j,C,D,...
         rule,nargC,nargD));
+    
     % Check if it is possible to flow from current position
     insideC = fun_wrap(xout(end,:).',tout(end),j,C,nargC);
-    if insideC == 1
+    insideD = fun_wrap(xout(end,:).',tout(end),j,D,nargD);
+    if ~insideC && ~insideD
+        break
+    end
+    doFlow = insideC && ((rule == 1 && ~insideD) || rule == 2);
+    doJump = insideD && (rule == 1 || (rule == 2 && ~insideC));
+%     fprintf("do flow? %d, in C? %d, in D? %d\n", doFlow, insideC, insideD)
+    assert(~(doFlow && doJump))
+    if doFlow
         if isDAE
             options = odeset(options,'InitialSlope',f(xout(end,:).',tout(end)));
         end
-        [t,x] = odeX(@(t,x) fun_wrap(x,t,j,f,nargf),[tout(end) tfinal],...
+        [t_flow,x_flow] = odeX(@(t,x) fun_wrap(x,t,j,f,nargf),[tout(end) tfinal],...
             xout(end,:).', options);
-        nt = length(t);
-        tout = [tout; t];
-        xout = [xout; x];
-        jout = [jout; j*ones(1,nt)'];
-    end
-    
-    %Check if it is possible to jump
-    insideD = fun_wrap(xout(end,:).',tout(end),j,D,nargD);
-    if insideD == 0
-        break;
-    else
-        if rule == 1
-            while (j<JSPAN(end))
-                % Check if it is possible to jump from current position
-                insideD = fun_wrap(xout(end,:).',tout(end),j,D,nargD);
-                if insideD == 1
-                    [j tout jout xout] = jump(g,j,tout,jout,xout,nargg);
-                else
+        
+        % Matlab ODE solvers miss events if they occur at the second time
+        % step (such as the case as if the state in the boundary of a
+        % closed set). To correct for this, we manually check if the second
+        % state entry is at a point where flowing is allowed. If it is,
+        % then we simply append the solution from the ODE solver to the
+        % output. But if it's not, then we try time steps from the initial
+        % point to find the longest time step that takes us out of C (or
+        % into D, if using jump priority). The next state value is then
+        % calculated using linear interpolation and appended to the output.
+        second_state_in_C = fun_wrap(x_flow(2, :),t_flow(2),j,C,nargC);
+        second_state_in_D = fun_wrap(x_flow(2, :),t_flow(2),j,D,nargD);
+        will_second_state_flow = second_state_in_C && ~(second_state_in_D && rule == 1);
+        if will_second_state_flow || length(t_flow) == 2
+            nt = length(t_flow);
+            % We add the new interval of flow to the solution--omitting the
+            % first entry because it duplicates the previous entry in the
+            % solution.
+            tout = [tout; t_flow(2:end)];
+            xout = [xout; x_flow(2:end,:)];
+            jout = [jout; j*ones(1,nt-1)'];
+        else 
+            % If the second state in the flow will not jump, then this
+            % indicates that the flow started in the flow set then
+            % immediately left it. In this case, we calculate the next step
+            % using the Euler forward method with a very small time step
+            % to take us out of the flow set.
+            delta_t_from_ode = t_flow(2) - tout(end); 
+            for delta_t = 10.^(-9:9) % Iterate through 1e-9, 1e-8, etc.
+                if delta_t_from_ode <= delta_t
+                    % If delta_t is larger than the step used by the ODE
+                    % solver, then larger steps sizes won't improve our
+                    % solution and might cause use to miss the desired
+                    % step, so we simply use the ODE solution.
+                    t_next = t_flow(2);
+                    x_next = x_flow(2,:)';
+                    break;
+                end
+                x_now = xout(end, :)';
+                t_next = tout(end) + delta_t;
+                x_next = x_now + delta_t * fun_wrap(x_now,tout(end),j,f,nargf);
+                next_in_C = fun_wrap(x_next,t_next,j,C,nargC);
+                next_in_D = fun_wrap(x_next,t_next,j,D,nargD);
+                next_will_jump = next_in_D && ~(next_in_C && rule == 2);
+                if next_will_jump
                     break;
                 end
             end
-        else
-            [j tout jout xout] = jump(g,j,tout,jout,xout,nargg);
+            tout = [tout; t_next];
+            xout = [xout; x_next'];
+            jout = [jout; j];
         end
+    elseif doJump
+        [j, tout, jout, xout] = jump(g,j,tout,jout,xout,nargg);
+        progress.setJ(j);
     end
-    progress.setJ(j);
+    
 end
+
 t = tout;
 x = xout;
 j = jout;
+
 progress.done();
 
 catch exception
@@ -291,35 +318,27 @@ end
 end
 
 function [value,isterminal,direction] = zeroevents(x,t,j,C,D,rule,nargC,nargD)
-switch rule
-    case 1 % -> priority for jumps
-        isterminal(1) = 1; % InsideC
-        isterminal(2) = 1; % Inside(C \cap D)
-        isterminal(3) = 1; % OutsideC
-        direction(1) = -1; % InsideC
-        direction(2) = -1; % Inside(C \cap D)
-        direction(3) =  1; % OutsideC
-    case 2 %(default) -> priority for flows
-        isterminal(1) = 1; % InsideC
-        isterminal(2) = 0; % Inside(C \cap D)
-        isterminal(3) = 1; % OutsideC
-        direction(1) = -1; % InsideC
-        direction(2) = -1; % Inside(C \cap D)
-        direction(3) =  1; % OutsideC
-end
+% ZEROEVENTS Creates an event to terminate the ode solver when the state leaves C or enters D (if rule == 1).
 
 insideC = fun_wrap(x,t,j,C,nargC);
 insideD = fun_wrap(x,t,j,D,nargD);
-outsideC = -fun_wrap(x,t,j,C,nargC);
-
-
-value(1) = 2*insideC;
-value(2) = 2-insideC - insideD;
-value(3) = 2*outsideC;
+switch rule
+    case 1 % -> priority for jumps
+        % For jump priority, we terminate flows whenever (1) the solution 
+        % leaves C, or (2) the solution enters D. 
+        stop = ~insideC || insideD;
+    case 2 % -> priority for flows
+        % For flow priority, we terminate flows whenever the solution 
+        % leaves C.
+        stop = ~insideC;
+end
+isterminal = 1;
+value = 1 - stop;
+direction = -1;
 
 end
 
-function [j tout jout xout] = jump(g,j,tout,jout,xout,nargfun)
+function [j, tout, jout, xout] = jump(g,j,tout,jout,xout,nargfun)
 % Jump
 j = j+1;
 y = fun_wrap(xout(end,:).',tout(end),jout(end),g,nargfun); 
