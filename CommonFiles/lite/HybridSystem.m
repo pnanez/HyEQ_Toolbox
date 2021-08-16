@@ -87,20 +87,27 @@ classdef (Abstract) HybridSystem < handle
         function sol = solve(this, x0, tspan, jspan, config)
             % SOLVE Compute a solution to this hybrid system starting from
             % initial state 'x0' over continuous time 'tspan' and discrete
-            % time 'jspan'. The optional 'config' argument can either be an
-            % instance of HybridSolverConfig or the string "silent" to
-            % disable progress updates.
+            % time 'jspan'. If 'tspan' and 'jspan' are not supplied, then
+            % the default span [0, 10] is used. The optional 'config'
+            % argument can either be an instance of HybridSolverConfig or
+            % the string "silent" to disable progress updates.
             
+            % Check arguments
+            narginchk(2,5);
+            if ~exist('tspan', 'var')
+               tspan = [0, 10]; 
+            end
+            if ~exist('jspan', 'var')
+               jspan = [0, 10]; 
+            end
+            assert(length(tspan) == 2, "tspan should be an array of two values in the form [tstart, tend]")
+            assert(length(jspan) == 2, "jspan should be an array of two values in the form [jstart, jend]")
             if ~exist('config', 'var')
                 config = HybridSolverConfig();
             elseif strcmp(config, "silent")
                 config = HybridSolverConfig().progress("silent");
             end
 
-            % Check arguments
-            narginchk(4,5);
-            assert(length(tspan) == 2, "tspan should be an array of two values in the form [tstart, tend]")
-            assert(length(jspan) == 2, "jspan should be an array of two values in the form [jstart, jend]")
             if ~isempty(this.state_dimension)
                 assert(length(x0) == this.state_dimension, ...
                     "size(x0)=%d does not match the dimension of the system=%d",...
@@ -116,7 +123,7 @@ classdef (Abstract) HybridSystem < handle
                                    x0, tspan, jspan, ...
                                    this.hybrid_priority, config.ode_options, ...
                                    config.ode_solver, this.mass_matrix, config.progressListener);
-            
+                        
             % Wrap solution in HybridSolution class (or another class if
             % the function wrap_solution is overriden).
             sol = this.wrap_solution(t, j, x, tspan, jspan);

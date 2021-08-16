@@ -51,7 +51,8 @@ classdef PopupHybridProgress < HybridProgress
             
             if show_update
                 this.openWaitbar()
-                msg = sprintf("Solving Hybrid Sysytem. t=%." + this.t_decimal_places + "f, j=%d", this.t, this.j);
+                msg = sprintf("Solving Hybrid Sysytem. t=%." + ...
+                        this.t_decimal_places + "f, j=%d", this.t, this.j);
                 waitbar(pct, this.progressbar, msg)
                 this.last_update_t = round_t;
                 this.last_update_j = this.j;
@@ -65,8 +66,11 @@ classdef PopupHybridProgress < HybridProgress
                 % so we don't need to close it.
                return 
             end
-            close(this.progressbar)
+            if isvalid(this.progressbar)
+                close(this.progressbar)
+            end
             delete(this.progressbar)
+            this.progressbar = [];
         end
        
         function openWaitbar(this)

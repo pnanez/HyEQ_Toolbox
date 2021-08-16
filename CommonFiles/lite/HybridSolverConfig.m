@@ -58,23 +58,34 @@ classdef HybridSolverConfig < handle
         
         function this = odeOption(this, name, value)
             % ODEOPTION  Set an arbitrary ODE option via name-value pair.
-           this.ode_options.(name) = value; 
+            this.ode_options.(name) = value;
         end
-
+        
         function this = progress(this, progressListener)
             % PROGRESS Set the progress listener for displaying the portion
-            % completed while running the hybrid solver. The argument 
+            % completed while running the hybrid solver. The argument
             % 'progressListener' must be either an instance of
             % HybridProgress or a string equal to 'popup'(default) or
             % 'silent'. When 'popup' is selected, a graphic progress bar is
             % displayed. When 'silent' is selected, no progress updates are
             % shown. This is slightly faster than the popup progress bar
-            % and is useful when solving many hybrid systems. 
-
-            if ~isstring(progressListener)  
-                assert(isa(progressListener, 'HybridProgress'), ...
-                        "progressListener is not an instance of HybridProgress")
-                this.progressListener = progressListener;
+            % and is useful when solving many hybrid systems.
+            
+            if ischar(progressListener)
+                % Convert progressListener to a string if it is a char
+                % array (i.e., if single quotes 'silent' was used instead
+                % of double quotes "silent")
+                progressListener = string(progressListener);
+            end
+            
+            if ~isstring(progressListener)
+                if isa(progressListener, 'HybridProgress')
+                    this.progressListener = progressListener;
+                else
+                    error("HybridSolverConfig:InvalidProgress", ...
+                        "The progress listener must be a subclass of HybridProgress, but instead was '%s'.",...
+                        class(progressListener));
+                end
                 return;
             end
             switch progressListener
@@ -82,10 +93,12 @@ classdef HybridSolverConfig < handle
                     this.progressListener = PopupHybridProgress();
                 case "silent"
                     this.progressListener = SilentHybridProgress();
-                otherwise 
-                    warning("progress type '%s' not recognized", progressListener);
+                otherwise
+                    error("HybridSolverConfig:InvalidProgress", ...
+                        "The progress type '%s' was unrecognized. Should be 'popup' or 'string'.",...
+                        progressListener);
             end
         end
     end
-
+    
 end

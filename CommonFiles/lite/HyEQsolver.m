@@ -148,7 +148,7 @@ function [t, j, x] = HyEQsolver(f,g,C,D,x0,TSPAN,JSPAN,rule,options,solver,E,pro
 %   See also HYEQSOLVER, PLOTARC, PLOTARC3, PLOTFLOWS, PLOTHARC,
 %   PLOTHARCCOLOR, PLOTHARCCOLOR3D, PLOTHYBRIDARC, PLOTJUMPS.
 %   Copyright @ Hybrid Systems Laboratory (HSL),
-%   Revision: 0.0.0.4 Date: 04/6/2017 16:26:00
+%   Revision: 3.0.0 Date: 08/14/2021
 
 
 if ~exist('rule','var')
@@ -223,7 +223,9 @@ function stop = ODE_callback(t, ~, flag)
     end     
 end
 
-try % Try block to close progress bar upon errors
+% Configure the progress bar to automatically close when the 'cleanup'
+% object is destroyed (e.g., when the function exits, throws an error, etc.)
+cleanup = onCleanup(@progress.done);
 
 while (j < JSPAN(end) && tout(end) < TSPAN(end) && ~progress.cancel)
     options = odeset(options,'Events',@(t,x) zeroevents(x,t,j,C,D,rule));
@@ -237,13 +239,12 @@ while (j < JSPAN(end) && tout(end) < TSPAN(end) && ~progress.cancel)
     doFlow = insideC && ((rule == 1 && ~insideD) || rule == 2);
     doJump = insideD && (rule == 1 || (rule == 2 && ~insideC));
 %     fprintf("do flow? %d, in C? %d, in D? %d\n", doFlow, insideC, insideD)
-    assert(~(doFlow && doJump))
+    assert(~(doFlow && doJump), "Cannot do flow and do jump")
     if doFlow
         if isDAE
             options = odeset(options,'InitialSlope',f(xout(end,:).',tout(end)));
         end
-        [t_flow,x_flow] = odeX(@(t,x) f(x,t,j),[tout(end) tfinal],...
-            xout(end,:).', options);
+        [t_flow,x_flow] = odeX(@(t,x) f(x,t,j),[tout(end) tfinal],xout(end,:).', options);
         
         % Matlab ODE solvers miss events if they occur at the second time
         % step (such as the case as if the state in the boundary of a
@@ -254,17 +255,17 @@ while (j < JSPAN(end) && tout(end) < TSPAN(end) && ~progress.cancel)
         % point to find the longest time step that takes us out of C (or
         % into D, if using jump priority). The next state value is then
         % calculated using linear interpolation and appended to the output.
-        second_state_in_C = C(x_flow(2, :),t_flow(2),j);
-        second_state_in_D = D(x_flow(2, :),t_flow(2),j);
+        second_state_in_C = C(x_flow(2, :)',t_flow(2),j);
+        second_state_in_D = D(x_flow(2, :)',t_flow(2),j);
         will_second_state_flow = second_state_in_C && ~(second_state_in_D && rule == 1);
         if will_second_state_flow || length(t_flow) == 2
             nt = length(t_flow);
             % We add the new interval of flow to the solution--omitting the
             % first entry because it duplicates the previous entry in the
             % solution.
-            tout = [tout; t_flow(2:end)];
-            xout = [xout; x_flow(2:end,:)];
-            jout = [jout; j*ones(1,nt-1)'];
+            tout = [tout; t_flow(2:end)]; %#ok<AGROW>
+            xout = [xout; x_flow(2:end,:)]; %#ok<AGROW>
+            jout = [jout; j*ones(1,nt-1)']; %#ok<AGROW>
         else 
             % If the second state in the flow will not jump, then this
             % indicates that the flow started in the flow set then
@@ -292,15 +293,14 @@ while (j < JSPAN(end) && tout(end) < TSPAN(end) && ~progress.cancel)
                     break;
                 end
             end
-            tout = [tout; t_next];
-            xout = [xout; x_next'];
-            jout = [jout; j];
+            tout = [tout; t_next]; %#ok<AGROW>
+            xout = [xout; x_next']; %#ok<AGROW>
+            jout = [jout; j]; %#ok<AGROW>
         end
     elseif doJump
         [j, tout, jout, xout] = jump(g,j,tout,jout,xout);
         progress.setJ(j);
     end
-    
 end
 
 t = tout;
@@ -308,11 +308,6 @@ x = xout;
 j = jout;
 
 progress.done();
-
-catch exception
-    progress.done();
-    rethrow(exception)
-end
 
 end
 

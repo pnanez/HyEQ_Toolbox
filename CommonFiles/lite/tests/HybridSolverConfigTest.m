@@ -41,6 +41,43 @@ classdef HybridSolverConfigTest < matlab.unittest.TestCase
             f = @() HybridSolverConfig("MaxStep", -5);
             testCase.verifyError(f, "MATLAB:expectedNonnegative");
         end
+        
+        function testDefaultProgress(testCase)
+           progress = HybridSolverConfig().progressListener;
+           metaclass = ?PopupHybridProgress;
+           testCase.assertInstanceOf(progress, metaclass)
+        end
+        
+        function testSilentProgressFromString(testCase)
+           progress = HybridSolverConfig().progress("silent").progressListener;
+           metaclass = ?SilentHybridProgress;
+           testCase.assertInstanceOf(progress, metaclass)
+        end
+        
+        function testSilentProgressFromCharArray(testCase)
+           progress = HybridSolverConfig().progress('silent').progressListener;
+           metaclass = ?SilentHybridProgress;
+           testCase.assertInstanceOf(progress, metaclass)
+        end
+        
+        function testProgressFromObject(testCase)
+           popupProgress = PopupHybridProgress();
+           popupProgress.min_delay = 2.3;
+           progress = HybridSolverConfig().progress(popupProgress).progressListener;
+           testCase.assertEqual(progress, popupProgress)
+        end
+        
+        function testProgressFromInvalidString(testCase)
+            config = HybridSolverConfig();
+            testCase.verifyError(@() config.progress('whatever'), ...
+                'HybridSolverConfig:InvalidProgress');
+        end
+        
+        function testProgressFromInvalidObject(testCase)
+            config = HybridSolverConfig();
+            testCase.verifyError(@() config.progress(23948), ...
+                'HybridSolverConfig:InvalidProgress');
+        end
 
     end
 
