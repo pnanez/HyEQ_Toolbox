@@ -1,11 +1,6 @@
 classdef HybridPlotBuilder < handle
 
     properties(Constant)
-        DEFAULT_PLOT_COLORS = [[0 0.4470 0.7410]; [0.8500 0.3250 0.0980];
-            [0.9290 0.6940 0.1250]; [0.4940 0.1840 0.5560];
-            [0.4660 0.6740 0.1880]; [0.3010 0.7450 0.9330];
-            [0.6350 0.0780 0.1840]];
-        
         INTERPRETERS = ["none", "tex", "latex"];
     end
 
@@ -24,6 +19,8 @@ classdef HybridPlotBuilder < handle
         jump_start_marker_size double = 6;
         jump_end_marker string = "*";
         jump_end_marker_size double = 6;
+        grid logical = true
+        auto_subplots logical = true;
         text_interpreter = "latex";
     end
     properties(Access = private)
@@ -97,7 +94,7 @@ classdef HybridPlotBuilder < handle
 
         function this = flowLineWidth(this, width)
             % FLOWLINEWIDTH Set the width of flow lines.
-            assert(width >= 0, "Line width must be positive")
+            assert(width > 0, "Line width must be positive")
             this.flow_line_width = width;
         end
 
@@ -119,7 +116,7 @@ classdef HybridPlotBuilder < handle
 
         function this = jumpLineWidth(this, width)
             % JUMPLINEWIDTH Set the width of jump lines.
-            assert(width >= 0, "Line width must be positive")
+            assert(width > 0, "Line width must be positive")
             this.jump_line_width = width;
         end
 
@@ -148,7 +145,7 @@ classdef HybridPlotBuilder < handle
         function this = jumpStartMarkerSize(this, size)
             % JUMPSTARTMARKERSIZE Set the marker size for the starting 
             % point of each jump.
-            assert(size >= 0, "Size must be positive")
+            assert(size > 0, "Size must be positive")
             this.jump_start_marker_size = size;
         end
 
@@ -165,13 +162,25 @@ classdef HybridPlotBuilder < handle
         function this = jumpEndMarkerSize(this, size)
             % JUMPENDMARKERSIZE Set the marker size for the end 
             % point of each jump.
-            assert(size >= 0, "Size must be positive")
+            assert(size > 0, "Size must be positive")
             this.jump_end_marker_size = size;
         end
 
         function this = slice(this, component_indices)
             % SLICE Pick the state components to plot by providing the
             % corresponding indices. 
+            
+            if size(component_indices, 1) > 1
+                % We need component_indices to be a row vector so that when
+                % we use it to create a for-loop (i.e., "for
+                % i=component_indices"), every entry is used for 
+                % one iteration each. If component_indices is a column
+                % vector, instead, then the entire column is used as the
+                % value of 'i' for only a single iteration.
+                assert(size(component_indices, 2) == 1)
+                component_indices = component_indices';
+            end
+            
             this.component_indices = component_indices;
         end
 
@@ -179,6 +188,16 @@ classdef HybridPlotBuilder < handle
             % FILTER Pick the timesteps to display. All others are hidden
             % from plots. 
             this.timestepsFilter = timesteps_filter;
+        end
+        
+        function this = autoSubplots(this, auto_subplots)
+            % AUTOSUBPLOTS Configure whether to automatically create subplots for each component.
+            if strcmp("on", auto_subplots)
+                auto_subplots = true;
+            elseif strcmp("off", auto_subplots)
+                auto_subplots = false;
+            end
+            this.auto_subplots = auto_subplots;
         end
         
         function this = textInterpreter(this, interpreter)
@@ -192,8 +211,9 @@ classdef HybridPlotBuilder < handle
 
             subplot_ndx = 1;
             for i=indices_to_plot
-            	open_subplot(length(indices_to_plot), subplot_ndx);
-                
+                if this.auto_subplots
+                    subplots(subplot_ndx) = open_subplot(length(indices_to_plot), subplot_ndx); %#ok<AGROW>
+                end
                 to_plot = [hybrid_sol.t, hybrid_sol.x(:, i)];
                 this.plot_sliced(hybrid_sol, to_plot)
 
@@ -202,6 +222,12 @@ classdef HybridPlotBuilder < handle
                 this.applyTitle(i)
                 subplot_ndx = subplot_ndx + 1;
             end 
+            
+            if this.auto_subplots
+                % Link the x-axes of the subplots so zooming and panning
+                % one subplot effects the others.
+                linkaxes(subplots,'x')
+            end
         end
 
         function plotjumps(this, hybrid_sol)
@@ -209,8 +235,9 @@ classdef HybridPlotBuilder < handle
 
             subplot_ndx = 1;
             for i=indices_to_plot
-            	open_subplot(length(indices_to_plot), subplot_ndx);
-
+                if this.auto_subplots
+                    subplots(subplot_ndx) = open_subplot(length(indices_to_plot), subplot_ndx); %#ok<AGROW>
+                end
                 sliced_x = [hybrid_sol.j, hybrid_sol.x(:, i)];
                 this.plot_sliced(hybrid_sol, sliced_x)
 
@@ -219,15 +246,22 @@ classdef HybridPlotBuilder < handle
                 this.applyTitle(i)
                 subplot_ndx = subplot_ndx + 1;
             end 
+            
+            if this.auto_subplots
+                % Link the x-axes of the subplots so zooming and panning
+                % one subplot effects the others.
+                linkaxes(subplots,'x')
+            end
         end
 
         function plotHybridArc(this, hybrid_sol)
             indices_to_plot = indicesToPlot(this, hybrid_sol);
 
             subplot_ndx = 1;
-            subplots = [];
             for i=indices_to_plot
-            	subplots(subplot_ndx) = open_subplot(length(indices_to_plot), subplot_ndx); %#ok<AGROW>
+                if this.auto_subplots
+                    subplots(subplot_ndx) = open_subplot(length(indices_to_plot), subplot_ndx); %#ok<AGROW>
+                end           	
 
                 % Prepend t and j, then plot.
                 sliced_x = [hybrid_sol.t, hybrid_sol.j, hybrid_sol.x(:, i)];
@@ -239,10 +273,12 @@ classdef HybridPlotBuilder < handle
                 this.applyTitle(i)
                 subplot_ndx = subplot_ndx + 1;
             end
-
-            % Link the subplot axes so that the views are sync'ed.
-            Link = linkprop(subplots,{'CameraUpVector', 'CameraPosition', 'CameraTarget', 'XLim', 'YLim'});
-            setappdata(gcf, 'StoreTheLink', Link);
+            
+            if this.auto_subplots
+                % Link the subplot axes so that the views are sync'ed.
+                Link = linkprop(subplots,{'CameraUpVector', 'CameraPosition', 'CameraTarget', 'XLim', 'YLim'});
+                setappdata(gcf, 'StoreTheLink', Link);
+            end
         end
 
         function plot(this, hybrid_sol)
@@ -261,8 +297,9 @@ classdef HybridPlotBuilder < handle
                 this.plotflows(hybrid_sol)
                 return
             end
-            subplot(1, 1, 1) % Reset to only one subplot
-
+            if this.auto_subplots
+                subplot(1, 1, 1) % Reset to only one subplot
+            end
             sliced_x = hybrid_sol.x(:, sliced_indices);
             this.plot_sliced(hybrid_sol, sliced_x)
 
@@ -344,6 +381,10 @@ classdef HybridPlotBuilder < handle
                 x_prev = x_now;
             end
 
+            if this.grid
+                grid on 
+            end 
+            
             % Turn off 'hold' if it was off at the beginning of this
             % function.
             if ~was_hold_on
@@ -354,16 +395,13 @@ classdef HybridPlotBuilder < handle
         function indices_to_plot = indicesToPlot(this, hybrid_sol)
             n = size(hybrid_sol.x, 2);
             if isempty(this.component_indices)
-                last_index = min(n, this.max_subplots); % This 
+                last_index = min(n, this.max_subplots);
                 indices_to_plot = 1:last_index;
             else
                 indices_to_plot = this.component_indices;
             end
             assert(all(indices_to_plot >= 1))
             assert(all(indices_to_plot <= n))
-%             if length(component_indices) > 5
-%                 warning("Plotting more than five components makes the subplots hard to read")
-%             end
         end
 
         function plotFlow2D(this, x)

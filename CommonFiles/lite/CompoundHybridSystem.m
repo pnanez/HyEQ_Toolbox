@@ -31,25 +31,25 @@ classdef CompoundHybridSystem < HybridSystem
         % Must be set to a function handle with a signiture matching 
         %    u_1C = kappa_1C(x1, x2)
         % The x1 and x2 arguments are the states of the two subsystems.
-        kappa_1C
+        kappa_1C = @(x1, x2) error("Set kappa_1C.");
         
         % Feedback function for subsystem2 during flows. 
         % Must be set to a function handle with a signiture matching 
         %    u_2C = kappa_2C(x1, x2)
         % The x1 and x2 arguments are the states of the two subsystems.
-        kappa_2C
+        kappa_2C = @(x1, x2) error("Set kappa_2C.");
         
         % Feedback function for subsystem1 at jumps. 
         % Must be set to a function handle with a signiture matching 
         %    u_1D = kappa_1D(x1, x2)
         % The x1 and x2 arguments are the states of the two subsystems.
-        kappa_1D
+        kappa_1D = @(x1, x2) error("Set kappa_1D.");
         
         % Feedback function for subsystem2 at jumps. 
         % Must be set to a function handle with a signiture matching 
         %    u_2D = kappa_2D(x1, x2)
         % The x1 and x2 arguments are the states of the two subsystems.
-        kappa_2D
+        kappa_2D = @(x1, x2) error("Set kappa_2D.");
     end
     
     methods
@@ -140,7 +140,7 @@ classdef CompoundHybridSystem < HybridSystem
             x0 = [x1_0; x2_0; jspan(1); jspan(1)];
             
             if ~exist("config", "var")
-                config = HybridSystem.defaultSolverConfig();
+                config = HybridSolverConfig();
             end
             
             sol = this.solve@HybridSystem(x0, tspan, jspan, config);

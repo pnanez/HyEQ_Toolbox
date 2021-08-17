@@ -98,16 +98,6 @@ classdef HybridSolution < handle
                 .slice(indices)...
                 .plotHybridArc(this);
         end
-        
-%         function copyProperties(output)
-%             C = metaclass(this);
-%             P = C.Properties;
-%             for k = 1:length(P)
-%                 if ~P{k}.Dependent
-%                     output.(P{k}.Name) = this.(P{k}.Name);
-%                 end
-%             end
-%         end
     end
 
     methods

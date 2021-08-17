@@ -116,10 +116,10 @@ classdef (Abstract) HybridSystem < handle
             this.assert_functions_can_be_evaluated_at_point(x0, tspan(1), jspan(1));           
 
             % Compute solution
-            [t, j, x] = HyEQsolver(this.flow_map_without_self_arg, ...
-                                   this.jump_map_without_self_arg, ...
-                                   this.flow_set_indicator_without_self_arg, ...
-                                   this.jump_set_indicator_without_self_arg, ...
+            [t, j, x] = HyEQsolver(this.flow_map_3args, ...
+                                   this.jump_map_3arg, ...
+                                   this.flow_set_indicator_3args, ...
+                                   this.jump_set_indicator_3arg, ...
                                    x0, tspan, jspan, ...
                                    this.hybrid_priority, config.ode_options, ...
                                    config.ode_solver, this.mass_matrix, config.progressListener);
@@ -155,145 +155,84 @@ classdef (Abstract) HybridSystem < handle
         end
     end
 
-    properties(Access = private)
-        % We cannot pass the function handles @this.jump_map, 
-        % @this.jump_map, etc to HyEQsolver because each is a function of 
-        % one extra argument (the reference to "this" object.) Thus, we
-        % construct function handles with the first argument removed.
-        flow_map_without_self_arg
-        jump_map_without_self_arg
-        flow_set_indicator_without_self_arg
-        jump_set_indicator_without_self_arg
-    end
-
-    methods % Define getters for "<function name>_without_self_arg" functions
-        function value = get.flow_map_without_self_arg(this)
-            if(isempty(this.flow_map_without_self_arg))
-                % If flow_map_without_self_arg has not yet been constructed,
-                % then we use convert_to_fixed_nargs to do so.
-                value = this.convert_to_fixed_nargs(@this.flow_map, "flow_map");
-                this.flow_map_without_self_arg = value;
-            else
-                value = this.flow_map_without_self_arg;
-            end
-        end
-        
-        function value = get.jump_map_without_self_arg(this)
-            if(isempty(this.jump_map_without_self_arg))
-                % If jump_map_without_self_arg has not yet been constructed,
-                % then we use convert_to_fixed_nargs to do so.
-                value = this.convert_to_fixed_nargs(@this.jump_map, "jump_map");
-                this.jump_map_without_self_arg = value;
-            else
-                value = this.jump_map_without_self_arg;
-            end
-        end
-        
-        function value = get.flow_set_indicator_without_self_arg(this)
-            if(isempty(this.flow_set_indicator_without_self_arg))
-                % If flow_set_indicator_without_self_arg has not yet been 
-                % constructed, then we use convert_to_fixed_nargs to do so.
-                value = this.convert_to_fixed_nargs(@this.flow_set_indicator, "flow_set_indicator");
-                this.flow_set_indicator_without_self_arg = value;
-            else
-                value = this.flow_set_indicator_without_self_arg;
-            end
-        end
-        
-        function value = get.jump_set_indicator_without_self_arg(this)
-            if(isempty(this.jump_set_indicator_without_self_arg))
-                % If jump_set_indicator_without_self_arg has not yet been 
-                % constructed, then we use convert_to_fixed_nargs to do so.
-                value = this.convert_to_fixed_nargs(@this.jump_set_indicator, "jump_set_indicator");
-                this.jump_set_indicator_without_self_arg = value;
-            else
-                value = this.jump_set_indicator_without_self_arg;
-            end
-        end
-    end
-
-    methods 
+    properties(SetAccess = private)
         % It can be difficult to work with generic HybridSystem objects
-        % because the functions have an undetermined number of arguments,
-        % so we define the following convenience functions that allow each
-        % of the functions to be called with all three arguments "x, t, j"
-        % (plus the reference to "this" object) regardless of the actual
-        % implementation. Any arguements not used by the
-        % implementation are ignored.
-        function f = flow_map_3args(this, x, t, j)
-            f = evaluate_handle_with_correct_args(this.flow_map_without_self_arg, x, t, j);
+        % because the functions have an undetermined number of arguments.
+        % Additionally, we cannot pass the function handles @this.jump_map,
+        % @this.jump_map, etc. directly to HyEQsolver because each is a
+        % function of one extra argument (the reference to "this" object.)
+        % Thus, we construct function handles with with three arguments 
+        % "x, t, j" (the "this" argument is removed).
+        flow_map_3args
+        jump_map_3arg
+        flow_set_indicator_3args
+        jump_set_indicator_3arg
+    end
+
+    methods % Define getters for "<function name>_3arg" functions
+        function value = get.flow_map_3args(this)
+            if(isempty(this.flow_map_3args))
+                % If flow_map_3args has not yet been constructed,
+                % then we use convert_to_3_args to do so.
+                this.flow_map_3args = this.convert_to_3_args(@this.flow_map, "flow_map");
+            end
+            value = this.flow_map_3args;
         end
-        function g = jump_map_3args(this, x, t, j)
-            g = evaluate_handle_with_correct_args(this.jump_map_without_self_arg, x, t, j);
+        
+        function value = get.jump_map_3arg(this)
+            if isempty(this.jump_map_3arg)
+                % If jump_map_3arg has not yet been constructed,
+                % then we use convert_to_3_args to do so.
+                this.jump_map_3arg = this.convert_to_3_args(@this.jump_map, "jump_map");
+            end
+            value = this.jump_map_3arg;
         end
-        function C = flow_set_indicator_3args(this, x, t, j)
-            C = evaluate_handle_with_correct_args(this.flow_set_indicator_without_self_arg, x, t, j);
+        
+        function value = get.flow_set_indicator_3args(this)
+            if isempty(this.flow_set_indicator_3args)
+                % If flow_set_indicator_3args has not yet been 
+                % constructed, then we use convert_to_3_args to do so.
+                this.flow_set_indicator_3args ...
+                    = this.convert_to_3_args(@this.flow_set_indicator, "flow_set_indicator");
+            end
+            value = this.flow_set_indicator_3args;
         end
-        function D = jump_set_indicator_3args(this, x, t, j)
-            D = evaluate_handle_with_correct_args(this.jump_set_indicator_without_self_arg, x, t, j);
+        
+        function value = get.jump_set_indicator_3arg(this)
+            if isempty(this.jump_set_indicator_3arg)
+                % If jump_set_indicator_3arg has not yet been 
+                % constructed, then we use convert_to_3_args to do so.
+                this.jump_set_indicator_3arg ...
+                    = this.convert_to_3_args(@this.jump_set_indicator, "jump_set_indicator");
+            end
+            value = this.jump_set_indicator_3arg;
         end
     end
 
     methods (Access = private)        
-        function func_lambda = convert_to_fixed_nargs(this, func_handle, func_name)
+        function func_lambda = convert_to_3_args(this, func_handle, func_name)
             nargs = this.implementated_nargs(func_name);
-            switch nargs - 1 % number of args in h, not counting the first "this" argument.
+            switch nargs - 1 % number of args in func_handle, not counting the first "this" argument.
                 case 1
-                    func_lambda = @(x) func_handle(x);
+                    func_lambda = @(x, t, j) func_handle(x);
                 case 2
-                    func_lambda = @(x, t) func_handle(x, t);
+                    func_lambda = @(x, t, j) func_handle(x, t);
                 case 3
+                    % We cannot simplify this as "func_lambda =
+                    % func_handle" because func_handle has varargsin, which
+                    % includes "this" in the first argument.
                     func_lambda = @(x, t, j) func_handle(x, t, j);
                 otherwise
                     error("Functions must have 2,3, or 4 arguments (including 'this'). Instead the function had %d.", nargs) 
             end
-            assert(nargin(func_lambda) == nargs - 1);
         end
 
         function assert_functions_can_be_evaluated_at_point(this, x, t, j)
-            assert_function_can_be_evaluated(this.flow_map_without_self_arg, this.flow_map_nargs, x, t, j)
-            assert_function_can_be_evaluated(this.jump_map_without_self_arg, this.jump_map_nargs, x, t, j)
-            assert_function_can_be_evaluated(this.flow_set_indicator_without_self_arg, this.flow_set_indicator_nargs, x, t, j)
-            assert_function_can_be_evaluated(this.jump_set_indicator_without_self_arg, this.jump_set_indicator_nargs, x, t, j)
+            assert_function_can_be_evaluated(this.flow_map_3args, x, t, j)
+            assert_function_can_be_evaluated(this.jump_map_3arg, x, t, j)
+            assert_function_can_be_evaluated(this.flow_set_indicator_3args, x, t, j)
+            assert_function_can_be_evaluated(this.jump_set_indicator_3arg, x, t, j)
         end   
-    end
-
-    properties(Hidden, SetAccess = private)
-        flow_map_nargs int8 = -1
-        jump_map_nargs int8 = -1
-        flow_set_indicator_nargs int8 = -1
-        jump_set_indicator_nargs int8 = -1         
-    end
-
-    methods 
-        function value = get.flow_map_nargs(this)
-            if this.flow_map_nargs ~= -1
-                value = this.flow_map_nargs;
-            else 
-                value = this.implementated_nargs("flow_map");
-            end
-        end
-        function value = get.jump_map_nargs(this)
-            if this.jump_map_nargs ~= -1
-                value = this.jump_map_nargs;
-            else 
-                value = this.implementated_nargs("jump_map");
-            end
-        end
-        function value = get.flow_set_indicator_nargs(this)
-            if this.flow_set_indicator_nargs ~= -1
-                value = this.flow_set_indicator_nargs;
-            else 
-                value = this.implementated_nargs("flow_set_indicator");
-            end
-        end
-        function value = get.jump_set_indicator_nargs(this)
-            if this.jump_set_indicator_nargs ~= -1
-                value = this.jump_set_indicator_nargs;
-            else 
-                value = this.implementated_nargs("jump_set_indicator");
-            end
-        end
     end
 
     methods(Access = private)
@@ -308,51 +247,13 @@ classdef (Abstract) HybridSystem < handle
             nargs = length(method_data.InputNames);
         end
     end
-    
-    methods(Static, Access = protected)
-        function config = defaultSolverConfig()
-            config = HybridSolverConfig();
-        end
-    end
 end
 
-function value = evaluate_handle_with_correct_args(func_handle, x, t, j)
-    % Evaluate the given function with the correct number of
-    % arguements. 
-    nargs = nargin(func_handle);
-    switch nargs % number of args in h, not counting the first "this" argument.
-        case 1
-            value = func_handle(x);
-        case 2
-            value = func_handle(x, t);
-        case 3
-            value = func_handle(x, t, j);
-        otherwise
-            error("Functions must have 1,2, or 3 arguments. Instead the function had %d.", nargs)
-    end
-end
-
-function assert_function_can_be_evaluated(func_handl, nargs, x, t, j)
+function assert_function_can_be_evaluated(func_handl, x, t, j)
     try
-        evaluate(func_handl, nargs, x, t, j);
+        func_handl(x, t, j);
     catch e
         warning("Could not evaluate '%s'=%s at x0=%s, t=%0.2f, j=%d.", nargs, char(func_handl), mat2str(x), t, j)
         rethrow(e)
-    end
-end
-
-% This function appears to be unused. Delete?
-function value = evaluate(func_handle, nargs, x, t, j)
-    % Evaluate the given function with the correct number of
-    % arguements. 
-    switch nargs - 1 % number of args in h, not counting the first "this" argument.
-        case 1
-            value = func_handle(x);
-        case 2
-            value = func_handle(x, t);
-        case 3
-            value = func_handle(x, t, j);
-        otherwise
-            error("Functions must have 1,2, or 3 aruments. Instead the function had %d.", nargs)
     end
 end

@@ -7,8 +7,9 @@
 close all
 system = ExampleBouncingBallHybridSystem();
 system_3D = Example3DHybridSystem();
-sol = system.solve([10, 0], [0 30], [0 30]);
-sol_3D = system_3D.solve([0; 1; 0], [0, 20], [0, 100]);
+config = HybridSolverConfig("MaxStep", 0.1); % Smaller steps make the plots look better.
+sol = system.solve([10, 0], [0 30], [0 30], config);
+sol_3D = system_3D.solve([0; 1; 0], [0, 20], [0, 100], config);
 
 %% Default Plotting
 % To create a plot without any customization, we create an instance of
@@ -209,9 +210,10 @@ builder.legend("$q = 0$", "$q = 1$");
 % and plots a solution in black and green.
 tspan = [0 10];
 jspan = [0 30];
-sol1 = system.solve([10, 0], tspan, jspan);
-sol2 = system.solve([ 5, 10], tspan, jspan);
+sol1 = system.solve([10, 0], tspan, jspan, config);
+sol2 = system.solve([ 5, 10], tspan, jspan, config);
 
+figure()
 HybridPlotBuilder().flowColor('blue').jumpColor("red") ... % default colors.
     .plotflows(sol1)
 HybridPlotBuilder().flowColor('black').jumpColor("green")...

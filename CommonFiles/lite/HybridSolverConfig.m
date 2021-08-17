@@ -23,7 +23,7 @@ classdef HybridSolverConfig < handle
                 % Delete first entry
                 varargin(1) = [];
             end
-            
+
             % Parse Name/Value pairs from arguments.
             parser = inputParser();
             nonnegative_validator = @(n)validateattributes(n,{'numeric'},{'nonnegative'});
