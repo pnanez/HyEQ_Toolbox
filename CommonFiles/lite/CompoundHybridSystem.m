@@ -191,8 +191,8 @@ classdef CompoundHybridSystem < HybridSystem
             jump_count2 = j2(end) - j2(1);
             jspan1 = [jspan(1), jspan(2) - jump_count2];
             jspan2 = [jspan(1), jspan(2) - jump_count1];
-            ss1_sol = generateSubsystemSolution(this.subsystem1, t, j1, x1, u1, tspan, jspan1);
-            ss2_sol = generateSubsystemSolution(this.subsystem2, t, j2, x2, u2, tspan, jspan2);
+            ss1_sol = this.subsystem1.wrap_solution(t, j1, x1, u1, tspan, jspan1);
+            ss2_sol = this.subsystem2.wrap_solution(t, j2, x2, u2, tspan, jspan2);
             
             sol = CompoundHybridSolution(sol, ss1_sol, ss2_sol, tspan, jspan);
         end
@@ -225,29 +225,5 @@ classdef CompoundHybridSystem < HybridSystem
             end
         end
     end
-end
-        
-%%% Local functions %%% 
-
-function ss1_sol = generateSubsystemSolution(subsystem, t, j_ss, x_ss, u_ss, tspan, jspan)
-    % Compute the values of the flow and jump maps and sets at each
-    % point in the solution trajectory.
-    f_ss_vals = NaN(size(x_ss));
-    g_ss_vals = NaN(size(x_ss));
-    C_ss_vals = NaN(size(t));
-    D_ss_vals = NaN(size(t));
-    for i=1:length(t)
-        x_i = x_ss(i, :)';
-        u_i = u_ss(i, :)';
-        C_ss_vals(i) = subsystem.flow_set_indicator(x_i, u_i, t(i), j_ss(i));
-        D_ss_vals(i) = subsystem.jump_set_indicator(x_i, u_i, t(i), j_ss(i));
-        if C_ss_vals(i) % Only evaluate flow map in the flow set.
-            f_ss_vals(i, :) = subsystem.flow_map(x_i, u_i, t(i), j_ss(i))';
-        end
-        if D_ss_vals(i) % Only evaluate jump map in the jump set.
-            g_ss_vals(i, :) = subsystem.jump_map(x_i, u_i, t(i), j_ss(i))';
-        end
-    end
-    ss1_sol = ControlledHybridSolution(t, j_ss, x_ss, u_ss, f_ss_vals, g_ss_vals, C_ss_vals, D_ss_vals, tspan, jspan);
 end
 

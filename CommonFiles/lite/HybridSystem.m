@@ -131,6 +131,10 @@ classdef (Abstract) HybridSystem < handle
 
         % Override this function to use other wrappers.
         function sol = wrap_solution(this, t, j, x, tspan, jspan)
+            sol = HybridSolution(this, t, j, x, tspan, jspan);
+        end
+        
+        function [f_vals, g_vals, C_vals, D_vals] = generateFGCD(this, t, j, x)            
             % Compute the values of the flow and jump maps and sets at each
             % point in the solution trajectory.
             f_vals = NaN(size(x));
@@ -148,9 +152,7 @@ classdef (Abstract) HybridSystem < handle
                     g_vals(i, :) = this.jump_map_3args(x_curr, t(i), j(i))';
                 end
             end
-            sol = HybridSolution(t, j, x, f_vals, g_vals, C_vals, D_vals, tspan, jspan);
         end
-        
     end
 
     properties(Access = private)
