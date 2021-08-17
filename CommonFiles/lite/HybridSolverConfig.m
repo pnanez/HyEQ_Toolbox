@@ -14,6 +14,16 @@ classdef HybridSolverConfig < handle
         function this = HybridSolverConfig(varargin)
             this.ode_options = odeset();
             
+            % Check if the first argument is "silent". If it is, set the
+            % progress listener and remove the first argument from
+            % varargin.
+            if ~isempty(varargin) && strcmp(varargin{1}, "silent")
+                this.progressListener = SilentHybridProgress();
+
+                % Delete first entry
+                varargin(1) = [];
+            end
+            
             % Parse Name/Value pairs from arguments.
             parser = inputParser();
             nonnegative_validator = @(n)validateattributes(n,{'numeric'},{'nonnegative'});

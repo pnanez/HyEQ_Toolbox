@@ -12,14 +12,14 @@ classdef HybridSolutionTest < matlab.unittest.TestCase
         % verify that the HybridSolution class is wired up correctly.
         function testJumpTimes(testCase)
             t = linspace(0, 12, 5)'; % Not important
-            j = [0; 1; 1; 1; 2]; % Jump at indices 2 and 5.
+            j = [0; 1; 1; 1; 2]; % Jump at indices 1 and 4.
             x      = NaN(5, 1); % Not important
             f_vals = NaN(5, 1);
             g_vals = NaN(5, 1);
             C_vals = NaN(5, 1);
             D_vals = NaN(5, 1);
             sol = HybridSolution(t, j, x, f_vals, g_vals, C_vals, D_vals, [0, 100], [0, 100]);
-            testCase.assertEqual(sol.jump_times, [t(2); t(5)])
+            testCase.assertEqual(sol.jump_times, HybridUtils.jumpTimes(t, j))
         end
 
         function testFlowLengths(testCase)

@@ -2,7 +2,7 @@
 <?xml-stylesheet type="text/xsl" href="http://www.mathworks.com/namespace/info/v1/info.xsd"?>
 
 <matlabrelease>R2012a</matlabrelease>
-<name>HyEQ_Toolbox_V204</name>
+<name>Hybrid Equations</name><!-- "Toolbox" is appended in the displayed text-->
 <type>toolbox</type>
 <icon>$toolbox/matlab/general/matlabicon.gif</icon>
 <help_location>helpFiles/</help_location>

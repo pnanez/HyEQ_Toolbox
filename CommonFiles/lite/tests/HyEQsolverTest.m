@@ -74,11 +74,27 @@ classdef HyEQsolverTest < matlab.unittest.TestCase
             g = @(x) 0;
             C = @(x) x <= 1.5;
             D = @(x) 1;
+            [t, j, x] = HyEQsolver(f, g, C, D, x0, tspan, jspan, rule);   
+            sol = HybridSolution.fromLegacyData(t, j, x, f, g, C, D, tspan, jspan);         
+            testCase.assertLessThanOrEqual(sol.x, 1.500001)
+        end
+        
+        function testTrivialSolution(testCase)
+            x0 = 1.5;
+            tspan = [3, 5];
+            jspan = [4, 5];
+            rule = 2;
+            f = @(x) x;
+            g = @(x) 0;
+            C = @(x) 0;
+            D = @(x) 0;
             [t, j, x] = HyEQsolver(f, g, C, D, x0, tspan, jspan, rule);
             
             sol = HybridSolution.fromLegacyData(t, j, x, f, g, C, D, tspan, jspan);
             
-            testCase.assertLessThanOrEqual(x, 1.500001)
+            testCase.assertEqual(sol.x, x0')
+            testCase.assertEqual(sol.t, tspan(1))
+            testCase.assertEqual(sol.j, jspan(1))
         end
 
         function testBouncingBallStaysAboveGround(testCase)

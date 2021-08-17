@@ -100,12 +100,12 @@ classdef (Abstract) HybridSystem < handle
             if ~exist('jspan', 'var')
                jspan = [0, 10]; 
             end
-            assert(length(tspan) == 2, "tspan should be an array of two values in the form [tstart, tend]")
-            assert(length(jspan) == 2, "jspan should be an array of two values in the form [jstart, jend]")
+            assert(length(tspan) == 2, "tspan must be an array of two values in the form [tstart, tend]")
+            assert(length(jspan) == 2, "jspan must be an array of two values in the form [jstart, jend]")
             if ~exist('config', 'var')
                 config = HybridSolverConfig();
             elseif strcmp(config, "silent")
-                config = HybridSolverConfig().progress("silent");
+                config = HybridSolverConfig("silent");
             end
 
             if ~isempty(this.state_dimension)

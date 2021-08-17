@@ -2,13 +2,25 @@ classdef HybridSystemTest < matlab.unittest.TestCase
     
     methods (Test)
        
-        function testFunctionOne(testCase)
+        function testOnlyJumps(testCase)
             f = @(x, t, j) 0;
             g = @(x, t, j) -x;
             C_indicator = @(x, t, j) 0;
             D_indicator = @(x, t, j) 1;
-            system = EZHybridSystem(f, g, C_indicator, D_indicator);
+            system = HybridSystem(f, g, C_indicator, D_indicator);
             sol = system.solve(1, [0, 1], [0, 10], "silent");
+            testCase.assertTrue(all(sol.x(1:2:end) ==  1))
+            testCase.assertTrue(all(sol.x(2:2:end) == -1))
+        end
+        
+        function testOnlyFlows(testCase)
+            f = @(x, t, j) 2;
+            g = @(x, t, j) NaN;
+            C_indicator = @(x, t, j) 1;
+            D_indicator = @(x, t, j) 0;
+            system = HybridSystem(f, g, C_indicator, D_indicator);
+            sol = system.solve(0, [0, 1], [0, 10], "silent");
+            testCase.assertEqual(sol.x, 2*sol.t, 'AbsTol', 1e-8)
         end
 
         function testBouncingBall(testCase)
