@@ -7,7 +7,7 @@
 close all
 system = ExampleBouncingBallHybridSystem();
 system_3D = Example3DHybridSystem();
-config = HybridSolverConfig("MaxStep", 0.1); % Smaller steps make the plots look better.
+config = HybridSolverConfig("Refine", 15); % "Refine" option makes the plots smoother.
 sol = system.solve([10, 0], [0 30], [0 30], config);
 sol_3D = system_3D.solve([0; 1; 0], [0, 20], [0, 100], config);
 
@@ -91,8 +91,7 @@ HybridPlotBuilder().slice(1:2)...
     .jumpMarker("s")... % square
     .jumpMarkerSize(12)...
     .plot(sol_3D)
-xlim([-1.1, 1.1])
-ylim([-1.1, 1.1])
+axis padded
 
 %% 
 % To hide jumps or flows, set the corresponding color to "none." Jump
@@ -103,7 +102,7 @@ HybridPlotBuilder().slice(2)...
     .jumpEndMarker("none")...
     .jumpLineStyle("none")...
     .plotflows(sol)
-title("Starting point of each jump") % An alternative way to add titles is shown below.
+title("Starting Velocity of Each Jump") % An alternative way to add titles is shown below.
 
 %% Component Labels
 % Plot labels are set component-wise. In the bouncing ball system, the first
@@ -152,8 +151,8 @@ HybridPlotBuilder().title("Phase Plot").plot(sol)
 %% Filtering Solutions
 % Portions of solutions can be hidden with the |filter| function. In this
 % example, we create a filter that only includes points where the second
-% component (velocity) is negative. (In this example, the time-step size
-% along flows is large, so the hidden lines that connect to filtered points 
+% component (velocity) is negative. (If the time-step size
+% along flows is large, hidden lines connected to filtered points may
 % extends a noticible distance into the portion of the solution that should
 % be visible.)
 figure()
@@ -169,38 +168,40 @@ HybridPlotBuilder()...
 % and a discrete variable $q \in \{0, 1\}$. Points in the solution where 
 % $q = 0$ are plotted in blue, and points where $q = 1$ are plotted in
 % black. The same |HybridPlotBuilder| object is used for both plots by saving it 
-% to the |builder| variable (this allows us to specify the labels only once).
+% to the |builder| variable (this allows us to specify the labels only
+% once and add a legend for both plots). 
 system_with_modes = ExampleModesHybridSystem();
 
-for i=1:10
-    % Create a random initial condition and solve.
-    z0 = 20*rand(2, 1) - 10;
-    q0 = round(rand());
-    sol_modes = system_with_modes.solve([z0; q0], [0, 10], [0, 10], "silent");
-    
-    q = sol_modes.x(:, 3);
-    
-    % Plot the [1, 2] components (that is, the first two components) of
-    % sol_modes at all time steps where q == 0. 
-    builder = HybridPlotBuilder();
-    builder.title("Phase Portrait") ...
-        .labels("$x_1$", "$x_2$") ...
-        .slice([1,2]) ... % Pick which state components to plot
-        .filter(q == 0) ... % Only plot points where q is 0.
-        .plot(sol_modes)
-    hold on % See the section below about "hold on"
-    % Plot in black the solution (still only the [1,2] components) for all time
-    % steps where q == 1. 
-    builder.flowColor("black") ...
-        .jumpColor("none") ...
-        .filter(q == 1) ... % Only plot points where q is 1.
-        .plot(sol_modes)
-end
+% Create initial condition and solve.
+z0 = [-7; 7];
+q0 = 0;
+sol_modes = system_with_modes.solve([z0; q0], [0, 10], [0, 10], "silent");
+
+% Extract values for q-component.
+q = sol_modes.x(:, 3);
+
+% Plot the [1, 2] components (that is, the first two components) of
+% sol_modes at all time steps where q == 0. 
+builder = HybridPlotBuilder();
+builder.title("Phase Portrait") ...
+    .labels("$x_1$", "$x_2$") ...
+    .slice([1,2]) ... % Pick which state components to plot
+    .filter(q == 0) ... % Only plot points where q is 0.
+    .plot(sol_modes)
+hold on % See the section below about "hold on"
+% Plot in black the solution (still only the [1,2] components) for all time
+% steps where q == 1. 
+builder.flowColor("black") ...
+    .jumpColor("none") ...
+    .filter(q == 1) ... % Only plot points where q is 1.
+    .plot(sol_modes)
+axis padded
+axis equal
+
 %% Legends
-% Next, we add a legend to the last plot. 
-% Note that in the loop above, a new instance of |HybridPlotBuilder| is 
-% assigned to |builder| in each iteration, then |plot| is called twice, 
-% so the legend will only have two entries. 
+% Next, we add a legend to the previous plot. 
+% The |plot| function is called on a single instance of
+% |HybridPlotBuilder|, so the legend will have two entries. 
 builder.legend("$q = 0$", "$q = 1$");
 
 %% Replacing vs. Adding Plots to a Figure
@@ -214,7 +215,7 @@ sol1 = system.solve([10, 0], tspan, jspan, config);
 sol2 = system.solve([ 5, 10], tspan, jspan, config);
 
 figure()
-HybridPlotBuilder().flowColor('blue').jumpColor("red") ... % default colors.
+HybridPlotBuilder()... % Plots blue flows and red jumps by default.
     .plotflows(sol1)
 HybridPlotBuilder().flowColor('black').jumpColor("green")...
     .title("Multiple Calls to $\texttt{plotflows}$ with \texttt{hold off}") ...
@@ -227,3 +228,40 @@ hold on
 HybridPlotBuilder().flowColor('black').jumpColor("green")...
     .title("Multiple Calls to $\texttt{plotflows}$ with \texttt{hold on}")...
     .plotflows(sol2)
+
+%% Additional configuration
+% There are numerous options for configuring the appearance of Matlab plots
+% that are not included explicitly in HybridPlotBuilder (See 
+% <https://www.mathworks.com/help/matlab/ref/matlab.graphics.axis.axes-properties.html
+% here>)
+% For plots with a single subplot, the appearance can be modified using the
+% same methods as for any other Matlab plot. 
+
+HybridPlotBuilder().plot(sol);
+grid on
+ax = gca;
+ax.YAxisLocation = "right";
+axis padded
+
+%%
+% Plots with multiple subplots can also be configured as described above by
+% calling |subplot| and making the desired modifications, but that approach
+% is messy and often repetative. The |configureSubplot| function provides a
+% cleaner alternative. A function handle is passed to |configureSubplot|,
+% which is then called by |HybridPlotBuilder| when each subplot is active.
+% The first (and only) argument of |configureSubplot| is the index of the
+% component that is plotted in the active subplot.
+HybridPlotBuilder()...
+    .configureSubplots(@apply_plot_settings)...
+    .plotflows(sol);
+
+function apply_plot_settings(component)
+    title(sprintf("This is the plot of component %d", component))
+    subtitle('An Insightful Subtitle','FontAngle','italic')
+    ax = gca;
+    ax.GridLineStyle = '--';
+    ax.LabelFontSizeMultiplier = 1.8;
+    grid on
+    grid minor
+    axis padded
+end

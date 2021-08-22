@@ -5,10 +5,12 @@ classdef HybridPlotBuilder < handle
     end
 
     properties(SetAccess = private)
+        % Text
         component_titles;
         component_labels; 
+        text_interpreter = "latex";
 
-        % Plot settings
+        % Plots
         flow_color = "b";
         flow_line_style string = "-";
         flow_line_width double = 0.5;
@@ -19,9 +21,10 @@ classdef HybridPlotBuilder < handle
         jump_start_marker_size double = 6;
         jump_end_marker string = "*";
         jump_end_marker_size double = 6;
-        grid logical = true
+        
+        % Subplots
         auto_subplots logical = true;
-        text_interpreter = "latex";
+        subplots_callback function_handle = @(component) disp('');
     end
     properties(Access = private)
         plots_for_legend = [];
@@ -200,6 +203,10 @@ classdef HybridPlotBuilder < handle
             this.auto_subplots = auto_subplots;
         end
         
+        function this = configureSubplots(this, callback)
+           this.subplots_callback = callback;
+        end
+        
         function this = textInterpreter(this, interpreter)
             is_valid = ismember(interpreter,HybridPlotBuilder.INTERPRETERS);
             assert(is_valid, "'%s' is not a valid value. Use one of these values: 'none' | 'tex' | 'latex'.", interpreter)
@@ -221,6 +228,9 @@ classdef HybridPlotBuilder < handle
                 this.ylabel(i)
                 this.applyTitle(i)
                 subplot_ndx = subplot_ndx + 1;
+                if this.auto_subplots
+                    this.subplots_callback(i);
+                end
             end 
             
             if this.auto_subplots
@@ -244,6 +254,9 @@ classdef HybridPlotBuilder < handle
                 xlabel(this.j_label, "interpreter", this.text_interpreter)
                 this.ylabel(i)
                 this.applyTitle(i)
+                if this.auto_subplots
+                   this.subplots_callback(i); 
+                end
                 subplot_ndx = subplot_ndx + 1;
             end 
             
@@ -271,6 +284,9 @@ classdef HybridPlotBuilder < handle
                 ylabel(this.j_label, "interpreter", this.text_interpreter)
                 this.zlabel(i)
                 this.applyTitle(i)
+                if this.auto_subplots
+                   this.subplots_callback(); 
+                end
                 subplot_ndx = subplot_ndx + 1;
             end
             
@@ -355,9 +371,14 @@ classdef HybridPlotBuilder < handle
                 % Set entries that don't match the filter to NaN so they are not plotted.
                 sliced_x(~this.timestepsFilter) = NaN;
             end
+            
+            flows_x = HybridPlotBuilder.separateFlows(...
+                                    hybrid_sol.t, hybrid_sol.j, sliced_x);
+            [jumps_x, jumps_befores, jumps_afters] ...
+                = HybridPlotBuilder.separateJumps(hybrid_sol.t, hybrid_sol.j, sliced_x);
 
             % Add an invisible plot that will show up in the legend.
-            % Drawing this point will also clear the plot if 'hold' is off
+            % Drawing this point will also clear the plot if 'hold' is off.
             this.addLegendEntry()
             
             % We have to turn on hold while plotting the hybrid arc, so 
@@ -365,25 +386,18 @@ classdef HybridPlotBuilder < handle
             was_hold_on = ishold();
             hold on
 
-            x_prev = [];
-            for j = unique(hybrid_sol.j)'
-                interval_of_flow_indices = (hybrid_sol.j == j);
-                x_now = sliced_x(interval_of_flow_indices, :);
-                switch size(sliced_x, 2)
-                    case 2   
-                        this.plotFlow2D(x_now)
-                        this.plotJump2D(x_prev, x_now)
-                    case 3   
-                        this.plotFlow3D(x_now)
-                        this.plotJump3D(x_prev, x_now)
-                        view(34.8,16.8)
-                end
-                x_prev = x_now;
+            switch size(sliced_x, 2)
+                case 2
+                    this.plotFlow2D(flows_x)
+                    this.plotJump2D(jumps_x, jumps_befores, jumps_afters)
+                case 3
+                    this.plotFlow3D(flows_x)
+                    this.plotJump3D(jumps_x, jumps_befores, jumps_afters)
+                    view(34.8,16.8)
+                otherwise
+                    error("HybridPlotBuilder:WrongNumberOfComponents", ...
+                        "The plot_sliced method can only plot in 2D and 3D.")
             end
-
-            if this.grid
-                grid on 
-            end 
             
             % Turn off 'hold' if it was off at the beginning of this
             % function.
@@ -395,66 +409,74 @@ classdef HybridPlotBuilder < handle
         function indices_to_plot = indicesToPlot(this, hybrid_sol)
             n = size(hybrid_sol.x, 2);
             if isempty(this.component_indices)
-                last_index = min(n, this.max_subplots);
+                if this.auto_subplots
+                    last_index = min(n, this.max_subplots);
+                else
+                    last_index = n;
+                end
                 indices_to_plot = 1:last_index;
             else
                 indices_to_plot = this.component_indices;
             end
-            assert(all(indices_to_plot >= 1))
-            assert(all(indices_to_plot <= n))
+            assert(min(indices_to_plot) >= 1)
+            assert(max(indices_to_plot) <= n, ...
+                "max(indices_to_plot)=%d is greater than n=%d", ...
+                max(indices_to_plot), n)
         end
 
         function plotFlow2D(this, x)
+            if isempty(x)
+               return 
+            end
             plot(x(:,1), x(:,2), 'Color', this.flow_color, ...
                             'LineStyle', this.flow_line_style, ...
                             'LineWidth', this.flow_line_width)
         end
 
         function plotFlow3D(this, x)
+            if isempty(x)
+               return 
+            end
             plot3(x(:,1), x(:,2), x(:,3), ...
                             'Color', this.flow_color, ...
                             'LineStyle', this.flow_line_style, ...
                             'LineWidth', this.flow_line_width)
         end
 
-        function plotJump2D(this, x_before, x_after)
-            if isempty(x_before)
-                return % Not a jump
-            end
-            plot([x_before(end,1); x_after(1,1)], ...
-                 [x_before(end,2); x_after(1,2)], ...
+        function plotJump2D(this, x_jump, x_start, x_end)
+            % Plot the line from start to end.
+            plot(x_jump(:,1), x_jump(:,2), ...
                 'Color', this.jump_color, ...
                 'LineStyle', this.jump_line_style, ...
                 'LineWidth', this.jump_line_width)
             % Plot the start of the jump
-            plot(x_before(end,1), x_before(end,2), ...
+            plot(x_start(:,1), x_start(:,2), ...
                 'Color', this.jump_color, ...
                 'Marker', this.jump_start_marker, ...
                 'MarkerSize', this.jump_start_marker_size)
             % Plot the end of the jump
-            plot(x_after(1,1), x_after(1,2), ...
+            plot(x_end(:,1), x_end(:,2), ...
                 'Color', this.jump_color, ...
                 'Marker', this.jump_end_marker, ...
                 'MarkerSize', this.jump_end_marker_size)
         end
 
-        function plotJump3D(this, x_before, x_after)
+        function plotJump3D(this, x_jump, x_before, x_after)
             if isempty(x_before)
                 return % Not a jump
             end
-            plot3([x_before(end,1); x_after(1,1)], ...
-                 [x_before(end,2); x_after(1,2)], ...
-                 [x_before(end,3); x_after(1,3)], ...
+            % Plot jump line
+            plot3(x_jump(:,1), x_jump(:, 2), x_jump(:, 3), ...
                 'Color', this.jump_color, ...
                 'LineStyle', this.jump_line_style, ...
                 'LineWidth', this.jump_line_width)
             % Plot the start of the jump
-            plot3(x_before(end,1), x_before(end,2), x_before(end,3), ...
+            plot3(x_before(:,1), x_before(:,2), x_before(:,3), ...
                 'Color', this.jump_color, ...
                 'Marker', this.jump_start_marker, ...
                 'MarkerSize', this.jump_start_marker_size)
             % Plot the end of the jump
-            plot3(x_after(1,1), x_after(1,2), x_after(1,3), ...
+            plot3(x_after(:,1), x_after(:,2), x_after(:,3), ...
                 'Color', this.jump_color, ...
                 'Marker', this.jump_end_marker, ...
                 'MarkerSize', this.jump_end_marker_size)
@@ -514,6 +536,82 @@ classdef HybridPlotBuilder < handle
             this.plots_for_legend = [this.plots_for_legend, p];
         end
                 
+    end
+    
+    methods(Static, Hidden)
+       
+        function flows_x = separateFlows(t, j, x)
+            [~, ~, ~, is_jump] = HybridUtils.jumpTimes(t, j);
+            
+            if length(t) <= 1
+                flows_x = [];
+                return
+            end
+
+            % Modify is_jump by prepending a 1 and setting the last entry
+            % to 1. These changes emulate 'virtual' jumps immediately prior
+            % to and after the given hybrid time domain.
+            is_jump = [1; is_jump(1:(end-1)); 1];
+            
+            % Everywhere in the domain where the previous entry was a jump
+            % and the next entry is not is the start of an interval of
+            % flow.
+            is_start_of_flow = diff(is_jump) == -1;
+            
+            % Similarly, everywhere in the domain where the previous entry
+            % was not a jump and the next entry is a jump, is the end of
+            % an interval of flow.
+            is_end_of_flow = diff(is_jump) == 1;
+            
+            start_of_flow_ndxs = find(is_start_of_flow);
+            end_of_flow_ndxs = find(is_end_of_flow);
+            
+            n_flows = sum(is_start_of_flow);
+            n_interior_flow_boundaries = n_flows - 1;
+            n_flow_entries = sum(end_of_flow_ndxs - start_of_flow_ndxs + 1);
+            
+            % Create an array to hold the values with NaN padding between
+            % flows.
+            flows_x = NaN(n_flow_entries+n_interior_flow_boundaries, size(x, 2));
+            
+            % out_start_ndx tracks the starting index for the output array.
+            out_start_ndx = 1;
+            for i = 1:n_flows
+                start_ndx = start_of_flow_ndxs(i);
+                end_ndx = end_of_flow_ndxs(i);
+                ndx_count = end_ndx - start_ndx + 1;
+                
+                in_ndxs = start_ndx:end_ndx;
+                out_ndxs = out_start_ndx:(out_start_ndx + ndx_count - 1);
+                flows_x(out_ndxs, :) = x(in_ndxs, :);
+                
+                out_start_ndx = out_start_ndx + ndx_count + 1;
+            end
+        end
+        
+        function [jumps_x, jumps_befores, jumps_afters] = separateJumps(t, j, x)
+            [~, ~, jump_indices] = HybridUtils.jumpTimes(t, j);
+
+            jump_count = length(jump_indices);
+            
+            % Create an array to hold the values with NaN padding between
+            % flows.
+            n = size(x, 2);
+            jumps_befores = NaN(3*jump_count, n);
+            jumps_afters = NaN(3*jump_count, n);
+            jumps_x = NaN(3*jump_count, n);
+
+            for i=1:jump_count
+                jump_ndx = jump_indices(i);
+                offset = 3*(i-1);
+                jumps_befores(1 + offset, :) = x(jump_ndx, :);
+                if jump_ndx < size(x, 1)
+                    jumps_afters(1 + offset, :) = x(jump_ndx+1, :);
+                end 
+            end
+            jumps_x(1:3:end, :) = jumps_befores(1:3:end, :);
+            jumps_x(2:3:end, :) = jumps_afters(1:3:end, :);
+        end 
     end
 end
         

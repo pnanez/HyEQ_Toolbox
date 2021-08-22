@@ -30,6 +30,7 @@ classdef HybridSolverConfig < handle
             addParameter(parser,'RelTol',NaN,nonnegative_validator);
             addParameter(parser,'AbsTol',NaN,nonnegative_validator);
             addParameter(parser,'MaxStep',NaN,nonnegative_validator);
+            addParameter(parser,'Refine',NaN,nonnegative_validator);
             parse(parser, varargin{:})
             
             % Apply non-NaN values.
@@ -41,6 +42,9 @@ classdef HybridSolverConfig < handle
             end
             if ~isnan(parser.Results.MaxStep)
                 this.MaxStep(parser.Results.MaxStep);
+            end
+            if ~isnan(parser.Results.Refine)
+                this.Refine(parser.Results.Refine);
             end
         end
             
@@ -64,6 +68,12 @@ classdef HybridSolverConfig < handle
         function this = MaxStep(this, maxStep)
             % MaxStep  Set the maximum step size for the ODE solver.
             this.ode_options = odeset(this.ode_options, "MaxStep", maxStep);
+        end
+
+        function this = Refine(this, refine)
+            % Refine Solution refinement factor. See documentation for
+            % odeset.
+            this.ode_options = odeset(this.ode_options, "Refine", refine);
         end
         
         function this = odeOption(this, name, value)
