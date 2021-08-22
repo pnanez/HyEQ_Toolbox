@@ -117,9 +117,9 @@ classdef (Abstract) HybridSystem < handle
 
             % Compute solution
             [t, j, x] = HyEQsolver(this.flow_map_3args, ...
-                                   this.jump_map_3arg, ...
+                                   this.jump_map_3args, ...
                                    this.flow_set_indicator_3args, ...
-                                   this.jump_set_indicator_3arg, ...
+                                   this.jump_set_indicator_3args, ...
                                    x0, tspan, jspan, ...
                                    this.hybrid_priority, config.ode_options, ...
                                    config.ode_solver, this.mass_matrix, config.progressListener);
@@ -164,9 +164,9 @@ classdef (Abstract) HybridSystem < handle
         % Thus, we construct function handles with with three arguments 
         % "x, t, j" (the "this" argument is removed).
         flow_map_3args
-        jump_map_3arg
+        jump_map_3args
         flow_set_indicator_3args
-        jump_set_indicator_3arg
+        jump_set_indicator_3args
     end
 
     methods % Define getters for "<function name>_3arg" functions
@@ -179,13 +179,13 @@ classdef (Abstract) HybridSystem < handle
             value = this.flow_map_3args;
         end
         
-        function value = get.jump_map_3arg(this)
-            if isempty(this.jump_map_3arg)
-                % If jump_map_3arg has not yet been constructed,
+        function value = get.jump_map_3args(this)
+            if isempty(this.jump_map_3args)
+                % If jump_map_3args has not yet been constructed,
                 % then we use convert_to_3_args to do so.
-                this.jump_map_3arg = this.convert_to_3_args(@this.jump_map, "jump_map");
+                this.jump_map_3args = this.convert_to_3_args(@this.jump_map, "jump_map");
             end
-            value = this.jump_map_3arg;
+            value = this.jump_map_3args;
         end
         
         function value = get.flow_set_indicator_3args(this)
@@ -198,14 +198,14 @@ classdef (Abstract) HybridSystem < handle
             value = this.flow_set_indicator_3args;
         end
         
-        function value = get.jump_set_indicator_3arg(this)
-            if isempty(this.jump_set_indicator_3arg)
-                % If jump_set_indicator_3arg has not yet been 
+        function value = get.jump_set_indicator_3args(this)
+            if isempty(this.jump_set_indicator_3args)
+                % If jump_set_indicator_3args has not yet been 
                 % constructed, then we use convert_to_3_args to do so.
-                this.jump_set_indicator_3arg ...
+                this.jump_set_indicator_3args ...
                     = this.convert_to_3_args(@this.jump_set_indicator, "jump_set_indicator");
             end
-            value = this.jump_set_indicator_3arg;
+            value = this.jump_set_indicator_3args;
         end
     end
 
@@ -229,13 +229,11 @@ classdef (Abstract) HybridSystem < handle
 
         function assert_functions_can_be_evaluated_at_point(this, x, t, j)
             assert_function_can_be_evaluated(this.flow_map_3args, x, t, j)
-            assert_function_can_be_evaluated(this.jump_map_3arg, x, t, j)
+            assert_function_can_be_evaluated(this.jump_map_3args, x, t, j)
             assert_function_can_be_evaluated(this.flow_set_indicator_3args, x, t, j)
-            assert_function_can_be_evaluated(this.jump_set_indicator_3arg, x, t, j)
+            assert_function_can_be_evaluated(this.jump_set_indicator_3args, x, t, j)
         end   
-    end
 
-    methods(Access = private)
         function nargs = implementated_nargs(this, function_name)
             % For abstract methods, we cannot use the function nargin to
             % get the number of arguments for the subclass implementation
@@ -253,7 +251,7 @@ function assert_function_can_be_evaluated(func_handl, x, t, j)
     try
         func_handl(x, t, j);
     catch e
-        warning("Could not evaluate '%s'=%s at x0=%s, t=%0.2f, j=%d.", nargs, char(func_handl), mat2str(x), t, j)
+        warning("Could not evaluate '%s'=%s at x0=%s, t=%0.2f, j=%d.", char(func_handl), mat2str(x), t, j)
         rethrow(e)
     end
 end

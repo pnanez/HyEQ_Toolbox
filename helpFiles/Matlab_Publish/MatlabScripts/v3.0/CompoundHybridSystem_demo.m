@@ -80,17 +80,22 @@ subsystem2 = ExampleControlledHybridSystem();
 %% Create a Compound Hybrid System
 % Now that we have two subsystems, we merely pass these to the
 % |CompoundHybridSystem| constructor to create a coupled system.
-sys = CompoundHybridSystem(subsystem1, subsystem2);
+sys = CompoundHybridSystem([subsystem1, subsystem2]);
 
 %%
 % Next, we set the feedback functions for each subsystem. The functions
 % |kappa_1C| and |kappa_1D| generate the input for subsystem1 during flows
 % and jumps, respectively, and |kappa_2C| and |kappa_2D| do the same for
 % subsystem 2. 
-sys.kappa_1C = @(x1, x2) -5;   
-sys.kappa_1D = @(x1, x2) 0;   
-sys.kappa_2C = @(x1, x2) x1(1) - x2(1);   
-sys.kappa_2D = @(x1, x2) 0;     
+sys.kappa_D
+% sys.setContinuousFeedback({@(x1, x2, t, j) -5, @(x1, x2, t, j) x1(1)-x2(1)}); 
+% sys.kappa_C{1} = @(x1, x2, t, j) -5;
+% sys.kappa_D{1} = @(x1, x2, t, j) 0; 
+% sys.kappa_C{2} = @(x1, x2, t, j) x1(1)-x2(1);   
+% sys.kappa_D{2} = @(x1, x2, t, j) 0;   
+sys.kappa_C
+sys.setContinuousFeedback({@(x1, x2, t, j) -5, @(x1, x2, t, j) x1(1)-x2(1)}); 
+sys.kappa_C
 
 %% Compute a solution
 % To compute a solution, we call |solve| on the system, similar to a
@@ -100,9 +105,9 @@ sys.kappa_2D = @(x1, x2) 0;
 % of the states and appends the discrete time variables |j1| and |j2|.
 x1_initial = [10;  0];
 x2_initial = [ 0; 10];
-tspan = [0 30];
+tspan = [0, 30];
 jspan = [0, 30];
-sol = sys.solve(x1_initial, x2_initial, tspan, jspan);
+sol = sys.solve({x1_initial; x2_initial}, tspan, jspan);
 
 %% Interpret and Plot the Solution
 % The |solve| function returns a |CompoundHybridSolution| object that contains all the
@@ -124,7 +129,7 @@ HybridPlotBuilder()...
 % Looking at the solution for subystem1, we see all the data from |HybridSolution|
 % along with a new property |u| that contains the input to |subsystem1| that 
 % generated this solution:% 
-sol.subsystem1_sol
+sol.subsys_sols{1}
 
 %% 
 % The solutions to the subystems can plotted just like any other solution.
@@ -135,13 +140,30 @@ figure()
 hpb = HybridPlotBuilder()...
     .labels("$h$", "$v$")...
     .titles("Height", "Velocity");
-hpb.plotflows(sol.subsystem1_sol);
+hpb.plotflows(sol.subsys_sols{1});
 hold on
 hpb.flowColor("k").jumpColor("g")...
-    .plotflows(sol.subsystem2_sol);
+    .plotflows(sol.subsys_sols{2});
 
 hpb.legend("$\mathcal H_1$", "$\mathcal H_1$", "$\mathcal H_2$", "$\mathcal H_2$");
 
 %%
 % (Note: There is currently an  defect in the placement of legends for subplots, 
 % so the legends for all subplots are placed in the first one.)
+
+%% Plotting Control
+% Developing easy ways to plot the control signal is still under
+% development, but for now you can simply pass the t, j, and u from the
+% subystem solutions to |plotflows|.
+figure()
+plotflows(sol.subsys_sols{2}.t, sol.subsys_sols{2}.j, sol.subsys_sols{2}.u)
+
+
+%% Single System
+% The |CompoundHybridSystem| class can also be used with a single subsystem
+% for cases where you want to be able to modify the feedback functions
+% without modifying the code for the system. 
+sys_1 = CompoundHybridSystem(subsystem1);
+sys_1.kappa_C{1} = @(x1, t, j) -5;   
+sys_1.kappa_D{1} = @(x1, t, j) 0;   
+sol = sys_1.solve({x1_initial}, tspan, jspan);
