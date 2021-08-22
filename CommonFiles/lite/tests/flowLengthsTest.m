@@ -33,7 +33,7 @@ classdef flowLengthsTest < matlab.unittest.TestCase
 
         function testTwoJumps(testCase)
             t = [0; 3; 3; 4; 5; 10];
-            j = [0; 0; 1; 1; 2; 2];
+            j = [0; 0; 1; 1; 1; 2];
             flowLengths = HybridUtils.flowLengths(t, j);
             testCase.assertEqual(flowLengths, [3; 2; 5]);
         end

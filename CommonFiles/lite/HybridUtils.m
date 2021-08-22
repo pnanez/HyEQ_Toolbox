@@ -9,17 +9,18 @@ classdef HybridUtils
             % values where jump events occur. Also returns the corresponding values
             % of j, the indices of the events, and an array containing ones in each 
             % entry where a jump did occured and a zero otherwise.
-            assert(length(t) == length(j), "Length(t)=%d ~= length(j)=%d", length(t), length(j))
+            assert(length(t) == length(j), "length(t)=%d ~= length(j)=%d", length(t), length(j))
             assert(~isempty(t), "t and j are empty")
 
             if length(t) == 1 % Handle the case of a trivial solution.
                 jump_t = []; 
                 jump_j = [];
                 jump_indices = [];
+                is_jump = 0;
                 return;
             end
 
-            is_jump = HybridUtils.prepend_entry_to_vector(diff(j) > 0, 0);
+            is_jump = [diff(j) > 0; 0];
             jump_indices = find(is_jump);
             jump_t = t(jump_indices);
             jump_j = j(jump_indices);
@@ -150,7 +151,7 @@ classdef HybridUtils
         end
 
         function [t_interp, j_interp, x_interp] = interpolateHybridArc(t, j, x, steps_per_interval)
-            [t, j, x] = HybridUtils.remove_duplicate_hyprid_times(t, j, x);
+            [t, j, x] = remove_duplicate_hybrid_times(t, j, x);
 
             intervals = length(unique(j));
             jspan =  [j(1), j(end)];
@@ -177,27 +178,30 @@ classdef HybridUtils
             end
         end
     end
+end
 
-    % We define here methods that are used above but shouldn't be called
-    % externally.
-    methods(Access = private, Static)
-        function x = prepend_entry_to_vector(x, value)
-            first_nonsingleton_dim = find(size(x) > 1);
-            if isempty(first_nonsingleton_dim)
-                first_nonsingleton_dim = 1;
-            end
-            x = cat(first_nonsingleton_dim, value, x);
-        end
-
-        function [t, j, x] = remove_duplicate_hyprid_times(t, j, x)
-
-            is_distinct = [1; diff(t) | diff(j)];
-            is_distinct_ndx = find(is_distinct);
-            t = t(is_distinct_ndx);
-            j = j(is_distinct_ndx);
-            x = x(is_distinct_ndx, :);
-
-        end
+function x = prepend_entry_to_vector(x, value)
+    first_nonsingleton_dim = find(size(x) > 1);
+    if isempty(first_nonsingleton_dim)
+        first_nonsingleton_dim = 1;
     end
+    x = cat(first_nonsingleton_dim, value, x);
+end
+
+function x = append_entry_to_vector(x, value)
+    first_nonsingleton_dim = find(size(x) > 1);
+    if isempty(first_nonsingleton_dim)
+        first_nonsingleton_dim = 1;
+    end
+    x = cat(first_nonsingleton_dim, x, value);
+end
+
+function [t, j, x] = remove_duplicate_hybrid_times(t, j, x)
+
+    is_distinct = [1; diff(t) | diff(j)];
+    is_distinct_ndx = find(is_distinct);
+    t = t(is_distinct_ndx);
+    j = j(is_distinct_ndx);
+    x = x(is_distinct_ndx, :);
 end
 

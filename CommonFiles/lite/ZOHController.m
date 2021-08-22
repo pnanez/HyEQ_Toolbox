@@ -2,23 +2,21 @@ classdef ZOHController < ControlledHybridSystem
 
     properties
         sample_time;
-        kappa; % Feedback function
     end
     
     properties(SetAccess = immutable)
-        zoh_dim
-        zoh_indices;
-        timer_index;
-    end
-    
-    properties
         state_dimension
         control_dimension
     end
+    
+    properties(SetAccess = immutable, Hidden)
+        zoh_dim
+        zoh_indices
+        timer_index
+    end
         
     methods
-        function obj = ZOHController(zoh_dim, kappa, sample_time)
-            obj.kappa = kappa;
+        function obj = ZOHController(zoh_dim, sample_time)
             obj.sample_time = sample_time;
             obj.zoh_dim = zoh_dim;
             obj.zoh_indices = 1:zoh_dim;
@@ -32,8 +30,8 @@ classdef ZOHController < ControlledHybridSystem
             xdot = [zoh_dot; 1];
         end
 
-        function xplus = jump_map(this, ~, u, ~, ~) 
-            zoh = this.kappa(u);
+        function xplus = jump_map(~, ~, u, ~, ~) 
+            zoh = u;
             xplus = [zoh; 0];
         end
 

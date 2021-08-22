@@ -62,20 +62,18 @@ classdef HybridSystemBuilderTest < matlab.unittest.TestCase
 
         function testFlowPriority(testCase)
             builder = HybridSystemBuilder() ...
+                            .flowMap(@(x) 1)...
                             .flowSetIndicator(@(x) 1) ...
                             .jumpSetIndicator(@(x) 1) ...
                             .flowPriority();
             system = builder.build();
             
-            sol = system.solve(12, [0, 100], [1, 5], "silent");
+            tspan = [0, 100];
+            jspan = [1, 5];
+            sol = system.solve(12, tspan, jspan, "silent");
 
             testCase.assertEqual(sol.t(end), 100);
-
-            % There appears to be a bug in HyEQsolver that increments j in
-            % the last entry. Until this is fixed, we will just check that
-            % the penultimate value in j is 1. 
-            testCase.assertEqual(sol.j(end-1), 1);
-            %testCase.assertEqual(sol.j(end), 1);
+            testCase.assertEqual(sol.j(end), jspan(1));
         end
 
     end
