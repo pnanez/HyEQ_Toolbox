@@ -154,6 +154,16 @@ function [t, j, x] = HyEQsolver(f,g,C,D,x0,TSPAN,JSPAN,rule,options,solver,E,pro
 if ~exist('rule','var')
     rule = 1;
 end
+try
+    rule = HybridPriority(rule);
+    eventLogic = IndicatorFunctionHybridEventLogic(rule);
+catch e
+    if isa(rule, 'HybridEventLogic')
+        eventLogic = rule;
+    else
+        rethrow(e)
+    end
+end
 
 if ~exist('options','var')
     options = odeset();
@@ -228,18 +238,15 @@ end
 cleanup = onCleanup(@progress.done);
 
 while (j < JSPAN(end) && tout(end) < TSPAN(end) && ~progress.cancel)
-    options = odeset(options,'Events',@(t,x) zeroevents(x,t,j,C,D,rule));
+    zeroevents = eventLogic.getOdeEventsFunction();
+    options = odeset(options,'Events',@(t,x) zeroevents(x,t,j,C,D));
     
     % Check if it is possible to flow from current position
-    insideC = C(xout(end,:).',tout(end),j);
-    insideD = D(xout(end,:).',tout(end),j);
-    if ~insideC && ~insideD
+    [inC, inD] = eventLogic.inFlowOrJump(C, D, xout(end,:).', tout(end), j);
+    if ~inC && ~inD
         break
     end
-    doFlow = insideC && ((rule == 1 && ~insideD) || rule == 2);
-    doJump = insideD && (rule == 1 || (rule == 2 && ~insideC));
-%     fprintf("do flow? %d, in C? %d, in D? %d\n", doFlow, insideC, insideD)
-    assert(~(doFlow && doJump), "Cannot do flow and do jump")
+    [doFlow, doJump] = eventLogic.doFlowOrJump(inC, inD);
     if doFlow
         if isDAE
             options = odeset(options,'InitialSlope',f(xout(end,:).',tout(end)));
@@ -255,9 +262,9 @@ while (j < JSPAN(end) && tout(end) < TSPAN(end) && ~progress.cancel)
         % point to find the longest time step that takes us out of C (or
         % into D, if using jump priority). The next state value is then
         % calculated using linear interpolation and appended to the output.
-        second_state_in_C = C(x_flow(2, :)',t_flow(2),j);
-        second_state_in_D = D(x_flow(2, :)',t_flow(2),j);
-        will_second_state_flow = second_state_in_C && ~(second_state_in_D && rule == 1);
+        [entry2_in_C, entry2_in_D] ...
+            = eventLogic.inFlowOrJump(C, D, x_flow(2, :)',t_flow(2),j);
+        will_second_state_flow = eventLogic.doFlowOrJump(entry2_in_C, entry2_in_D);
         if will_second_state_flow || length(t_flow) == 2
             nt = length(t_flow);
             % We add the new interval of flow to the solution--omitting the
@@ -286,10 +293,10 @@ while (j < JSPAN(end) && tout(end) < TSPAN(end) && ~progress.cancel)
                 x_now = xout(end, :)';
                 t_next = tout(end) + delta_t;
                 x_next = x_now + delta_t * f(x_now,tout(end),j);
-                next_in_C = C(x_next,t_next,j);
-                next_in_D = D(x_next,t_next,j);
-                next_will_jump = next_in_D && ~(next_in_C && rule == 2);
-                if next_will_jump
+                [next_in_C, next_in_D] ...
+                    = eventLogic.inFlowOrJump(C, D, x_next,t_next,j);
+                next_will_flow = eventLogic.doFlowOrJump(next_in_C, next_in_D);
+                if ~next_will_flow
                     break;
                 end
             end
@@ -308,27 +315,6 @@ x = xout;
 j = jout;
 
 progress.done();
-
-end
-
-function [value,isterminal,direction] = zeroevents(x,t,j,C,D,rule)
-% ZEROEVENTS Creates an event to terminate the ode solver when the state leaves C or enters D (if rule == 1).
-
-insideC = C(x,t,j);
-insideD = D(x,t,j);
-switch rule
-    case 1 % -> priority for jumps
-        % For jump priority, we terminate flows whenever (1) the solution 
-        % leaves C, or (2) the solution enters D. 
-        stop = ~insideC || insideD;
-    case 2 % -> priority for flows
-        % For flow priority, we terminate flows whenever the solution 
-        % leaves C.
-        stop = ~insideC;
-end
-isterminal = 1;
-value = 1 - stop;
-direction = -1;
 
 end
 

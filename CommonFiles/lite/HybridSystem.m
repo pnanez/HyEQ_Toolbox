@@ -1,7 +1,7 @@
 classdef (Abstract) HybridSystem < handle
 
     properties
-        hybrid_priority = HybridPriority.JUMP;
+        hybrid_priority = IndicatorFunctionHybridEventLogic(HybridPriority.JUMP);
         mass_matrix = [];
 
         % State dimension is an optional property. If set, additional error
@@ -43,6 +43,18 @@ classdef (Abstract) HybridSystem < handle
         D = jump_set_indicator(this, x, t, j)
     end
 
+    methods 
+        function set.hybrid_priority(this, value)
+            if isinteger(value)
+                this.hybrid_priority = IndicatorFunctionHybridEventLogic(value);
+            elseif isa(value, "HybridEventLogic")
+                this.hybrid_priority = value;
+            else
+                error("Unexpected type")
+            end
+        end
+    end
+    
     methods
         function this = HybridSystem()
             % WARNING: Don't reference function handles for 
@@ -104,8 +116,10 @@ classdef (Abstract) HybridSystem < handle
             assert(length(jspan) == 2, "jspan must be an array of two values in the form [jstart, jend]")
             if ~exist('config', 'var')
                 config = HybridSolverConfig();
+                config.hybridLogic = this.hybrid_priority;
             elseif strcmp(config, "silent")
                 config = HybridSolverConfig("silent");
+                config.hybridLogic = this.hybrid_priority;
             end
 
             if ~isempty(this.state_dimension)
@@ -115,6 +129,8 @@ classdef (Abstract) HybridSystem < handle
             end
             this.assert_functions_can_be_evaluated_at_point(x0, tspan(1), jspan(1));           
 
+            this.hybrid_priority = config.hybridLogic;
+            
             % Compute solution
             [t, j, x] = HyEQsolver(this.flow_map_3args, ...
                                    this.jump_map_3args, ...
