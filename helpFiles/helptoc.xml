@@ -1,12 +1,17 @@
 <?xml version='1.0' encoding="utf-8"?>
 <toc version="2.0">
 
-    <tocitem target="Instructions_Main/HyEQ_Toolbox_v204.html">My Toolbox
+    <tocitem target="Instructions_Main/HyEQ_Toolbox_v204.html">Hybrid Equation Toolbox
+        <tocitem target="Instructions_Main/HyEQ_Toolbox_v204.html" image="HelpIcon.FUNCTION">New in Version 3.0
+            <tocitem target="Matlab_Publish/MatlabScripts/v3.0/html/HybridSystem_demo.html">Solve Hybrid Systems</tocitem>
+            <tocitem target="Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo.html">Plot Solutions</tocitem>
+            <tocitem target="Matlab_Publish/MatlabScripts/v3.0/html/CompoundHybridSystem_demo.html">Solve Multiple Interconnected Systems</tocitem>
+        </tocitem>
         <tocitem target="Instructions_Main/HyEQ_Toolbox_v204.html" image="HelpIcon.FUNCTION">Functions
             <tocitem target="Matlab_Publish/Html/html_plotHarc/plotHarc_help.html">plotHarc()</tocitem>
             <tocitem target="Matlab_Publish/Html/html_HyEQSolver/run_HyEQsolver_Help.html">HyEQSolver()</tocitem>
         </tocitem>
-        <tocitem target="Instructions_Main/HyEQ_Toolbox_v203.html" image="HelpIcon.EXAMPLES">Examples
+        <tocitem target="Instructions_Main/HyEQ_Toolbox_v204.html" image="HelpIcon.EXAMPLES">Examples
             <tocitem target="Instructions_Main/Example_1_2.html">Bouncing ball with Lite HyEQ Solver</tocitem>
             <tocitem target="Instructions_Main/Example_1_3.html">Bouncing ball with input</tocitem>
             <tocitem target="Instructions_Main/Example_1_4.html">Alternate way to simulate the bouncing ball</tocitem>
@@ -17,7 +22,7 @@
             <tocitem target="Instructions_Main/Example_4_0.html">A simple mathematical model of a physical component</tocitem>
             <tocitem target="Instructions_Main/Example_4_1.html">Implementation of a Finite State Machine (FSM)</tocitem>
             <tocitem target="Instructions_Main/Example_4_2.html">Estimation over a network</tocitem>
-            <tocitem target="Instructions_Main/Example_4_3.html">Sample-and-hold Feedbac Control</tocitem>
+            <tocitem target="Instructions_Main/Example_4_3.html">Sample-and-hold Feedback Control</tocitem>
         </tocitem>
     </tocitem>
 </toc>

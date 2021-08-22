@@ -5,6 +5,7 @@ toolbox_dirs = {'CommonFiles/lite', ...
     'CommonFiles/lite/examples', ...
     'CommonFiles/plottingFunctions', ...
     'CommonFiles/simulinkBased/Library2014b'};
+publish_dirs = {'helpFiles/Matlab_publish'};
 test_dir = "CommonFiles/lite/tests";
 
 % Setup path
@@ -19,6 +20,8 @@ rmpath(test_dir)
 
 % Make sure we can run the GettingStarted live script.
 run doc/GettingStarted
+
+% TODO: Add publishing of help documents and figures.
 
 matlab.addons.toolbox.packageToolbox(projectFile)
 
