@@ -100,7 +100,7 @@ bb_system.solve(x0, tspan, jspan, config);
 
 %% 
 % The ODE solver and options can be modified in |config|. The functions 
-% |RelTol|, |AbsTol|, and |MaxStep| provide convenient ways to set the
+% |RelTol|, |AbsTol|, |MaxStep|, and |Refine| provide convenient ways to set the
 % corresponding ODE solver options. Other options can be set using the
 % |odeOption| function, but are untested with the hybrid equation solver so they 
 % should be used with caution.
@@ -108,6 +108,7 @@ bb_system.solve(x0, tspan, jspan, config);
 config.ode_solver = "ode23s";
 config.RelTol(1e-3);
 config.AbsTol(1e-4);
+config.Refine(4);
 config.odeOption("InitialStep", 0.4);
 config.odeOption("MassSingular", 'no');
 

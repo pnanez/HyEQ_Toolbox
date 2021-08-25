@@ -36,7 +36,7 @@ classdef PopupHybridProgress < HybridProgress
             init@HybridProgress(this, tspan, jspan);
         end
 
-        function update(this)   
+        function update(this)
             pct = max(this.t_percent, this.j_percent);
             round_t = floor(10^this.t_decimal_places * this.t) / 10^this.t_decimal_places;
             
@@ -45,9 +45,10 @@ classdef PopupHybridProgress < HybridProgress
             % the displayed (rounded) value of 't' has changed. 
             % The speedup from this optimization depends on the
             % system being solved and the choices of min_delay and
-            % t_decimal places, but we've seen improvements on the order of 5x. 
-            show_update = toc(this.last_update_tic) > this.min_delay ...
-                            && (round_t > this.last_update_t || this.j > this.last_update_j);
+            % t_decimal places, but we've seen improvements of ~5x.  
+            is_past_min_delay = toc(this.last_update_tic) > this.min_delay;
+            is_value_changed = round_t > this.last_update_t || this.j > this.last_update_j;
+            show_update = is_past_min_delay && is_value_changed;
             
             if show_update
                 this.openWaitbar()

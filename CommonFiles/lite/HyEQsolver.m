@@ -236,10 +236,11 @@ while (j < JSPAN(end) && tout(end) < TSPAN(end) && ~progress.cancel)
     if ~insideC && ~insideD
         break
     end
-    doFlow = insideC && ((rule == 1 && ~insideD) || rule == 2);
+    doFlow = insideC && (rule == 2 || (rule == 1 && ~insideD));
     doJump = insideD && (rule == 1 || (rule == 2 && ~insideC));
 %     fprintf("do flow? %d, in C? %d, in D? %d\n", doFlow, insideC, insideD)
     assert(~(doFlow && doJump), "Cannot do flow and do jump")
+    assert(doFlow || doJump, "Must either jump or flow")
     if doFlow
         if isDAE
             options = odeset(options,'InitialSlope',f(xout(end,:).',tout(end)));
@@ -267,7 +268,7 @@ while (j < JSPAN(end) && tout(end) < TSPAN(end) && ~progress.cancel)
             xout = [xout; x_flow(2:end,:)]; %#ok<AGROW>
             jout = [jout; j*ones(1,nt-1)']; %#ok<AGROW>
         else 
-            % If the second state in the flow will not jump, then this
+            % If the second state in the flow will not flow, then this
             % indicates that the flow started in the flow set then
             % immediately left it. In this case, we calculate the next step
             % using the Euler forward method with a very small time step
@@ -288,11 +289,12 @@ while (j < JSPAN(end) && tout(end) < TSPAN(end) && ~progress.cancel)
                 x_next = x_now + delta_t * f(x_now,tout(end),j);
                 next_in_C = C(x_next,t_next,j);
                 next_in_D = D(x_next,t_next,j);
-                next_will_jump = next_in_D && ~(next_in_C && rule == 2);
-                if next_will_jump
+                next_will_not_flow = ~next_in_C || (rule == 1 && next_in_D);
+                if next_will_not_flow
                     break;
                 end
             end
+            
             tout = [tout; t_next]; %#ok<AGROW>
             xout = [xout; x_next']; %#ok<AGROW>
             jout = [jout; j]; %#ok<AGROW>

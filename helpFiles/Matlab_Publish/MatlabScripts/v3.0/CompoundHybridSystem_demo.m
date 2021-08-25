@@ -22,10 +22,10 @@
 %
 % To create feedback connections between $\mathcal H_1$ and $\mathcal H_2,$ 
 % we choose the inputs
-% $u_1 = \kappa_{1C}(x_1, x_2)$ while $x \in C'_1$; 
-% $u_1 = \kappa_{1D}(x_1, x_2)$ while $x \in D'_1$;
-% $u_2 = \kappa_{2C}(x_1, x_2)$ while $x \in C'_2$; and 
-% $u_2 = \kappa_{2D}(x_1, x_2)$ while $x \in D'_2$. 
+% $u_1 = \kappa_{1C}(x_1, x_2)$ when $x_1 \in C'_1$; 
+% $u_1 = \kappa_{1D}(x_1, x_2)$ when $x_1 \in D'_1$;
+% $u_2 = \kappa_{2C}(x_1, x_2)$ when $x_2 \in C'_2$; and 
+% $u_2 = \kappa_{2D}(x_1, x_2)$ when $x_2 \in D'_2$. 
 %
 % We now define the compound system $\tilde H$ that consists of subsystems 
 % $\mathcal H_1$ and $\mathcal H_2.$ The state $\tilde x$ of $\tilde H$ is the

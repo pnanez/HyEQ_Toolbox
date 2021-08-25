@@ -200,7 +200,8 @@ classdef HybridPlotBuilder < handle
             elseif strcmp("off", auto_subplots)
                 auto_subplots = false;
             end
-            this.auto_subplots = auto_subplots;
+            assert(isscalar(auto_subplots), "Argument 'auto_subplots' was an array")
+            this.auto_subplots = logical(auto_subplots);
         end
         
         function this = configureSubplots(this, callback)
@@ -292,8 +293,8 @@ classdef HybridPlotBuilder < handle
             
             if this.auto_subplots
                 % Link the subplot axes so that the views are sync'ed.
-                Link = linkprop(subplots,{'CameraUpVector', 'CameraPosition', 'CameraTarget', 'XLim', 'YLim'});
-                setappdata(gcf, 'StoreTheLink', Link);
+                link = linkprop(subplots, {'View', 'XLim', 'YLim'});
+                setappdata(gcf, 'StoreTheLink', link);
             end
         end
 

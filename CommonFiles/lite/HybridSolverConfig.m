@@ -1,11 +1,11 @@
 classdef HybridSolverConfig < handle
 
     properties
-        ode_solver = "ode45";
+        ode_solver string = "ode45";
     end
     
     properties(SetAccess = private)
-        ode_options;
+        ode_options odeset;
     
         progressListener HybridProgress = PopupHybridProgress();
     end

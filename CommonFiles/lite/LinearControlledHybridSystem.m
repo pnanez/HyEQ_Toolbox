@@ -13,6 +13,11 @@ classdef LinearControlledHybridSystem < ControlledHybridSystem
         p_d
     end
     
+    properties(GetAccess = private, SetAccess = immutable)
+       no_discrete
+       no_control
+    end
+    
     %%%%%% System Data %%%%%% 
     methods
         function obj = LinearControlledHybridSystem(...
@@ -20,6 +25,16 @@ classdef LinearControlledHybridSystem < ControlledHybridSystem
                 A_d, B_d, ...
                 P_c, p_c, ...
                 P_d, p_d)
+            if isempty(A_d) && isempty(B_d)
+               % No discrete motion
+               obj.no_discrete = true;
+            end
+            if isempty(B_c)
+               B_c = zeros(size(A_c, 1), 0);
+            end
+            if isempty(B_d)
+               B_d = zeros(size(B_c));
+            end
             n = size(A_c, 1);
             m = size(B_c, 2);
             obj.state_dimension = n;
@@ -27,19 +42,27 @@ classdef LinearControlledHybridSystem < ControlledHybridSystem
             % Check state matrices
             % assert(size(A_c, 1) == n, "A_c has wrong number of rows.") always true.
             assert(all(size(A_c) == [n, n]), "A_c has wrong size.")
-            assert(all(size(A_d) == [n, n]), "A_d has wrong size.")
-            % Check input matrices
-            % assert(size(B_c, 1) == m) always true.
-            assert(all(size(B_c) == [n m]), "B_c has wrong size.")
-            assert(all(size(B_d) == [n m]), "B_d has wrong size.")
+            if ~obj.no_discrete
+                assert(all(size(A_d) == [n, n]), "A_d has wrong size.")
+            end
+            if ~obj.no_control
+                % Check input matrices
+                % assert(size(B_c, 1) == m) always true.
+                assert(all(size(B_c) == [n m]), "B_c has wrong size.")
+                if ~obj.no_discrete
+                    assert(all(size(B_d) == [n m]), "B_d has wrong size.")
+                end
+            end
             obj.A_c = A_c;
             obj.B_c = B_c;
             obj.A_d = A_d;
             obj.B_d = B_d;
-            obj.P_c = P_c;
-            obj.p_c = p_c;
-            obj.P_d = P_d;
-            obj.p_d = p_d;
+            if ~obj.no_discrete
+                obj.P_c = P_c;
+                obj.p_c = p_c;
+                obj.P_d = P_d;
+                obj.p_d = p_d;
+            end
         end
             
         % The jump_map function must be implemented with the following 
@@ -53,11 +76,19 @@ classdef LinearControlledHybridSystem < ControlledHybridSystem
         end 
 
         function C = flow_set_indicator(this, x, u, t, j) 
-            C = (x'*this.P_c*x + this.p_c) <= 0;
+            if this.no_discrete
+                C = 1;
+            else
+                C = (x'*this.P_c*x + this.p_c) <= 0;
+            end
         end
 
         function D = jump_set_indicator(this, x, u, t, j)
-            D = (x'*this.P_d*x + this.p_d) <= 0;
+            if this.no_discrete
+                D = 0;
+            else
+                D = (x'*this.P_d*x + this.p_d) <= 0;
+            end
         end
     end
     

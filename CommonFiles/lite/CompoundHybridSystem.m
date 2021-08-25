@@ -28,7 +28,8 @@ classdef CompoundHybridSystem < HybridSystem
     end
     
     properties(SetAccess = immutable)
-        subsystems (:, 1) ControlledHybridSystem = DummyControlledHybridSystem(); 
+        subsystems (:, 1) cell = {}; 
+        subsys_n;
     end
     
     properties(GetAccess = private, SetAccess = immutable) 
@@ -45,15 +46,16 @@ classdef CompoundHybridSystem < HybridSystem
         function obj = CompoundHybridSystem(subsystems) % Constructor
            obj = obj@HybridSystem();
            obj.subsystems = subsystems;
-           sys_count = length(subsystems);
+           subsys_n = length(subsystems);
+           obj.subsys_n = subsys_n;
            ndx = 1; % Start index for ith subsystem state variable.
-           for i = 1:sys_count
-               ss = subsystems(i);
+           for i = 1:subsys_n
+               ss = subsystems{i} ;
                ss_n = ss.state_dimension;
                obj.x_indices{i} = ndx : (ndx + ss_n - 1);
                ndx = ndx + ss_n;
            end
-           for i = 1:sys_count
+           for i = 1:subsys_n
               obj.j_index(i) = ndx;
               ndx = ndx + 1;
            end
@@ -73,7 +75,7 @@ classdef CompoundHybridSystem < HybridSystem
             % the entries corresponding to the j-values.  
             xdot = zeros(this.state_dimension, 1); 
             for i=1:length(this.subsystems)
-               ss = this.subsystems(i);
+               ss = this.subsystems{i};
                j = js(i);
                
                u = eval_feedback(this.kappa_C{i}, xs, t, j);
@@ -86,7 +88,7 @@ classdef CompoundHybridSystem < HybridSystem
             [xs, js] = this.split(x);
             xplus = NaN(this.state_dimension, 1);
             for i=1:length(this.subsystems)
-               ss = this.subsystems(i);
+               ss = this.subsystems{i};
                j = js(i);
                u = eval_feedback(this.kappa_D{i}, xs, t, j);
                assert_control_length(length(u), ss.control_dimension, i)
@@ -114,7 +116,7 @@ classdef CompoundHybridSystem < HybridSystem
             C = true; 
             [xs, js] = this.split(x);
             for i=1:length(this.subsystems)
-               ss = this.subsystems(i);
+               ss = this.subsystems{i};
                j = js(i);
                u = eval_feedback(this.kappa_C{i}, xs, t, j);
                assert_control_length(length(u), ss.control_dimension, i)
@@ -135,7 +137,7 @@ classdef CompoundHybridSystem < HybridSystem
             D = false; 
             [xs, js] = this.split(x);
             for i=1:length(this.subsystems)
-               ss = this.subsystems(i);
+               ss = this.subsystems{i};
                j = js(i);
                u = eval_feedback(this.kappa_D{i}, xs, t, j);
                assert_control_length(length(u), ss.control_dimension, i)
@@ -161,7 +163,14 @@ classdef CompoundHybridSystem < HybridSystem
             % the compound state. (The subsystems can jump at separate times, 
             % so track the jumps for each in the last components of the 
             % compound state).
-            
+            assert(iscell(xs_0), "xs_0 must be a cell array")
+            assert(length(xs_0) == this.subsys_n, "Wrong number of initial states")
+            for i=1:this.subsys_n
+                ss_dim = this.subsystems{i}.state_dimension;
+                assert(all(size(xs_0{i}) == [ss_dim, 1]), ...
+                    "System %d has state dimension %d but the initial value had shape %s.",...
+                    i, ss_dim, mat2str(size(xs_0{i})));
+            end
             xs_0 = cat(1, xs_0{:});
             js_0 = jspan(1)*ones(length(this.subsystems), 1);
             
@@ -182,7 +191,7 @@ classdef CompoundHybridSystem < HybridSystem
             
             [xs_all, js_all] = this.split_many(x);
             for i=1:length(this.subsystems)
-               ss = this.subsystems(i);
+               ss = this.subsystems{i};
                ss_j = js_all(:, i);
                ss_x = xs_all(:, this.x_indices{i});
                u = NaN(length(t), ss.control_dimension);
@@ -196,7 +205,7 @@ classdef CompoundHybridSystem < HybridSystem
                for k = 1:length(t)
                    xs = {};
                    for indices = this.x_indices 
-                       xs{end+1} = x(k, indices{1});
+                       xs{end+1} = x(k, indices{1})';
                    end
                    if is_jump(k)
                        % u(k, :) = this.kappa_D{i}(xs, t, ss_j)';
@@ -216,7 +225,7 @@ classdef CompoundHybridSystem < HybridSystem
                ss_jump_count = ss_j(end) - ss_j(1);
                others_jump_count = total_jump_count - ss_jump_count;
                ss_jspan = [jspan(1), jspan(end) - others_jump_count];
-               ss_sols{i} = ss.wrap_solution(t, ss_j, ss_x, u, tspan, ss_jspan);
+               ss_sols{i} = ss.wrap_solution(t, ss_j, ss_x, u, tspan, ss_jspan); %#ok<AGROW>
             end         
             sol = CompoundHybridSolution(sol, ss_sols, tspan, jspan);
         end
@@ -286,7 +295,7 @@ kappas = cell(sys_count, 1);
 args_fmt = join(repmat("x%d", sys_count, 1), ", ");
 feedback_arugments_string = sprintf(args_fmt, 1:sys_count);
 for i = 1:sys_count
-    n = subsystems(i).control_dimension;
+    n = subsystems{i}.control_dimension;
     kappa_eval_string = sprintf("kappas{i} = @("+feedback_arugments_string+", t, j) zeros(%d, 1);", n);
     eval(kappa_eval_string);
 end
