@@ -28,6 +28,7 @@ classdef HybridPlotBuilder < handle
     end
     properties(Access = private)
         plots_for_legend = [];
+        axes_for_legend = [];
         component_indices uint32 = [];
         timestepsFilter = [];
         max_subplots = 4;
@@ -216,21 +217,46 @@ classdef HybridPlotBuilder < handle
 
         function plotflows(this, hybrid_sol)
             indices_to_plot = indicesToPlot(this, hybrid_sol);
-
+            
+            was_hold_on = ishold();
+            if ~was_hold_on
+                % Clear the plot
+                plot(nan, nan);
+            end
+            
             subplot_ndx = 1;
             for i=indices_to_plot
                 if this.auto_subplots
                     subplots(subplot_ndx) = open_subplot(length(indices_to_plot), subplot_ndx); %#ok<AGROW>
+%                     if ~was_hold_on
+%                         % Clear the plot
+%                         plot(nan, nan);
+%                     end
+                else
+                    hold on
                 end
+                
                 to_plot = [hybrid_sol.t, hybrid_sol.x(:, i)];
                 this.plot_sliced(hybrid_sol, to_plot)
 
+                if this.auto_subplots 
+                    % Should these settings be conditional?
+                    xlim("tight")
+                    ylim('padded') 
+                end
+                
                 xlabel(this.t_label, "interpreter", this.text_interpreter)
-                this.ylabel(i)
-                this.applyTitle(i)
-                subplot_ndx = subplot_ndx + 1;
                 if this.auto_subplots
                     this.subplots_callback(i);
+                    this.ylabel(i)
+                    this.applyTitle(i)
+                    subplot_ndx = subplot_ndx + 1;
+                else
+                    this.ylabel(1)
+                    this.applyTitle(1)
+                    if ~was_hold_on
+                        hold off
+                    end
                 end
             end 
             
@@ -248,10 +274,17 @@ classdef HybridPlotBuilder < handle
             for i=indices_to_plot
                 if this.auto_subplots
                     subplots(subplot_ndx) = open_subplot(length(indices_to_plot), subplot_ndx); %#ok<AGROW>
+                else
+                    hold on
                 end
                 sliced_x = [hybrid_sol.j, hybrid_sol.x(:, i)];
                 this.plot_sliced(hybrid_sol, sliced_x)
 
+                if this.auto_subplots
+                    xlim("tight")
+                    ylim('padded') 
+                end
+                
                 xlabel(this.j_label, "interpreter", this.text_interpreter)
                 this.ylabel(i)
                 this.applyTitle(i)
@@ -281,6 +314,12 @@ classdef HybridPlotBuilder < handle
                 sliced_x = [hybrid_sol.t, hybrid_sol.j, hybrid_sol.x(:, i)];
                 this.plot_sliced(hybrid_sol, sliced_x)
 
+                if this.auto_subplots
+                    xlim("tight")
+                    ylim('tight') 
+                    % zlim('padded') % Does this make better plots?
+                end
+                
                 xlabel(this.t_label, "interpreter", this.text_interpreter)
                 ylabel(this.j_label, "interpreter", this.text_interpreter)
                 this.zlabel(i)
@@ -332,32 +371,40 @@ classdef HybridPlotBuilder < handle
             % LEGEND Add a legend for each call to builder.plots() while 
             % in the current figure. (Plots in other figures will be
             % skipped).
-
+            lgd_labels = varargin;
+            
             % For the current figure, get all the line plots. 
             plots_in_figure = findall(gcf,'Type','Line');
             
             % For each plot saved in this.plots_for_legend, check whether
             % it is a plot in the current figure.
             plots_for_legend_indices ...
-                    = ismember(this.plots_for_legend,  plots_in_figure);
-            plots_for_this_legend = this.plots_for_legend(plots_for_legend_indices);
-
-            % Print a warning if the number of plots and labels do not
-            % match.
-            warning_msg = "The number of plots (%d) added to the current figure" + ...
-                        " by this HybridPlotBuilder is %s than the number of legend labels provided (%d).";
-            labels = varargin;
-            if length(plots_for_this_legend) < length(labels)
-                warning(warning_msg, length(plots_for_this_legend), "less", length(labels))
-            elseif length(plots_for_this_legend) > length(labels)
-                warning(warning_msg, length(plots_for_this_legend), "more", length(labels))
+                = ismember(this.plots_for_legend,  plots_in_figure);
+            plots_for_this_legend ...
+                = this.plots_for_legend(plots_for_legend_indices);
+            axes_for_this_legend = this.axes_for_legend(plots_for_legend_indices);
+            for ax = unique(this.axes_for_legend)
+                % Add the legend entries for each plot. We truncate the lengths
+                % of the arrays to match so that Matlab does not print a
+                % (rather unhelpful) warning.
+                plots_in_axes = plots_for_this_legend(axes_for_this_legend == ax);
+                m = min(length(plots_in_axes), length(lgd_labels));
+                
+                check_legend_count(plots_in_axes, lgd_labels);
+                
+                if isvalid(ax)
+                    lgd_res = legend(ax, plots_in_axes(1:m), lgd_labels(1:m), ...
+                        "interpreter", this.text_interpreter, ...
+                        'AutoUpdate','off');
+                end
+                if nargout ~= 0
+                    % We only set the output argument if the output of the
+                    % function is used. This prevents the value of lgd_res
+                    % from being printed out if the function call was not
+                    % terminated with a semi-colon.
+                    lgd = lgd_res;
+                end
             end
-
-            % Add the legend entries for each plot. We truncate the lengths
-            % of the arrays to match so that Matlab does not print a
-            % (rather unhelpful) warning.
-            m = min(length(plots_for_this_legend), length(labels));
-            lgd = legend(plots_for_this_legend(1:m), labels(1:m), "interpreter", this.text_interpreter);
         end
     end
 
@@ -535,6 +582,7 @@ classdef HybridPlotBuilder < handle
                                 "MarkerSize", this.jump_start_marker_size, ...
                                 "MarkerEdgeColor", this.jump_color);
             this.plots_for_legend = [this.plots_for_legend, p];
+            this.axes_for_legend = [this.axes_for_legend, gca];
         end
                 
     end
@@ -626,4 +674,28 @@ function sp = open_subplot(subplots_count, index)
         % status to match what was met before 
         hold on
     end
+end
+
+function checkColorArg(color_arg)
+    if ~verLessThan('matlab', '9.9')
+        % The validatecolor function was added in R2020b (v9.9), so we
+        % first check the version to make sure we can call it.
+        if ~validatecolor(color_arg)
+            error("HybridPlotBuilder:InvalidColor", ...
+                "The argument is not recognized as a color.")
+        end
+    end
+    
+end
+       
+function check_legend_count(plots_in_axes, lgd_labels)
+% Print a warning if the number of plots and labels do not
+% match.
+warning_msg = "The number of plots (%d) added to the current axes" + ...
+    " by this HybridPlotBuilder is %s than the number of legend labels provided (%d).";
+if length(plots_in_axes) < length(lgd_labels)
+    warning(warning_msg, length(plots_in_axes), "less", length(lgd_labels))
+elseif length(plots_in_axes) > length(lgd_labels)
+    warning(warning_msg, length(plots_in_axes), "more", length(lgd_labels))
+end
 end

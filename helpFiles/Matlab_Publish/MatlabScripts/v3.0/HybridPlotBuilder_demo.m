@@ -238,6 +238,39 @@ axis equal
 % |HybridPlotBuilder|, so the legend will have two entries. 
 builder.legend("$q = 0$", "$q = 1$");
 
+%% 
+% When using auto-subplots, legends are added to each subplot.
+pb = HybridPlotBuilder();
+pb.plotflows(sol);
+hold on
+pb.flowColor("k").jumpColor("g").slice(1:2).plotflows(sol_3D);
+pb.legend("Plot 1", "Plot 2");
+
+%% 
+% A |HybridPlotBuilder| object can be used to add plots and legends to
+% multiple figures.
+figure()
+pb = HybridPlotBuilder();
+pb.plotflows(sol_3D); % Ignored in second figure
+pb.legend("First Figure"); 
+
+figure()
+pb.slice(1).plotflows(sol); 
+hold on
+pb.flowColor("k").jumpColor("g").slice(2).plotflows(sol);
+pb.legend("Height", "Velocity");% Ignores first figure
+
+%% 
+% Cleared and closed figures are handled gracefully by |legend|.
+figure()
+pb = HybridPlotBuilder();
+pb.plotflows(sol_3D);
+clf
+pb.flowColor("k").plotflows(sol); 
+pb.legend("Plot 1"); % Only one legend because there is only one plot.
+close 
+pb.legend("Only second plot"); % Nothing done.
+
 %% Replacing vs. Adding Plots to a Figure
 % By default, each call to a HybridPlotBuilder plot function overwrites the 
 % previous plots. In the following code, we call |plotflows| twice. The
