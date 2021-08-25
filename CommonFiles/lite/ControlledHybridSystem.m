@@ -4,6 +4,7 @@ classdef (Abstract) ControlledHybridSystem < handle
     properties (Abstract, SetAccess = immutable)
         state_dimension
         control_dimension
+        output_dimension
     end
     
     %%%%%% System Data %%%%%% 
@@ -52,6 +53,10 @@ classdef (Abstract) ControlledHybridSystem < handle
                     g_vals(i, :) = this.jump_map(x_i, u_i, t(i), j(i))';
                 end
             end
+        end
+        
+        function y = output(this, x, u, t, j)
+            y = x;
         end
     end
 

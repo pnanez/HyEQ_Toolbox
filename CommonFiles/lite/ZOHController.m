@@ -7,6 +7,7 @@ classdef ZOHController < ControlledHybridSystem
     properties(SetAccess = immutable)
         state_dimension
         control_dimension
+        output_dimension
     end
     
     properties(SetAccess = immutable, Hidden)
@@ -42,6 +43,10 @@ classdef ZOHController < ControlledHybridSystem
         function D = jump_set_indicator(this, x, ~, ~, ~)
             timer = x(this.timer_index);
             D = timer >= this.sample_time;
+        end
+        
+        function y = output(this, x, u, t, j)
+            y = x(this.zoh_indices);
         end
     end
     

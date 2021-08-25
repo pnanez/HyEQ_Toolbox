@@ -70,6 +70,7 @@ classdef CompoundHybridSystem < HybridSystem
         
         function xdot = flow_map(this, x, t) 
             [xs, js] = this.split(x);
+            ys = this.compute_outputs(xs, t, js);
             % We set xdot to zeros and then fill in the entries
             % corresponding to the state of each subsystem and leave zero
             % the entries corresponding to the j-values.  
@@ -78,7 +79,7 @@ classdef CompoundHybridSystem < HybridSystem
                ss = this.subsystems{i};
                j = js(i);
                
-               u = eval_feedback(this.kappa_C{i}, xs, t, j);
+               u = eval_feedback(this.kappa_C{i}, ys, t, js);
                assert_control_length(length(u), ss.control_dimension, i)
                xdot(this.x_indices{i}) = ss.flow_map(xs{i}, u, t, j);
             end
@@ -86,11 +87,12 @@ classdef CompoundHybridSystem < HybridSystem
 
         function xplus = jump_map(this, x, t)  
             [xs, js] = this.split(x);
+            ys = this.compute_outputs(xs, t, js);
             xplus = NaN(this.state_dimension, 1);
             for i=1:length(this.subsystems)
                ss = this.subsystems{i};
                j = js(i);
-               u = eval_feedback(this.kappa_D{i}, xs, t, j);
+               u = eval_feedback(this.kappa_D{i}, ys, t, js);
                assert_control_length(length(u), ss.control_dimension, i)
                D = ss.jump_set_indicator(xs{i}, u, t, j);
                if ~isscalar(D)
@@ -115,10 +117,11 @@ classdef CompoundHybridSystem < HybridSystem
             % state is in (C union D)).
             C = true; 
             [xs, js] = this.split(x);
+            ys = this.compute_outputs(xs, t, js);
             for i=1:length(this.subsystems)
                ss = this.subsystems{i};
                j = js(i);
-               u = eval_feedback(this.kappa_C{i}, xs, t, j);
+               u = eval_feedback(this.kappa_C{i}, ys, t, js);
                assert_control_length(length(u), ss.control_dimension, i)
                C = ss.flow_set_indicator(xs{i}, u, t, j);
                if ~isscalar(C)
@@ -136,10 +139,11 @@ classdef CompoundHybridSystem < HybridSystem
         function D = jump_set_indicator(this, x, t)
             D = false; 
             [xs, js] = this.split(x);
+            ys = this.compute_outputs(xs, t, js);
             for i=1:length(this.subsystems)
                ss = this.subsystems{i};
                j = js(i);
-               u = eval_feedback(this.kappa_D{i}, xs, t, j);
+               u = eval_feedback(this.kappa_D{i}, ys, t, js);
                assert_control_length(length(u), ss.control_dimension, i)
                D = ss.jump_set_indicator(xs{i}, u, t, j);
                if D
@@ -207,12 +211,13 @@ classdef CompoundHybridSystem < HybridSystem
                    for indices = this.x_indices 
                        xs{end+1} = x(k, indices{1})';
                    end
+                   ys = compute_outputs(this, xs, t, ss_j);
                    if is_jump(k)
                        % u(k, :) = this.kappa_D{i}(xs, t, ss_j)';
-                       u(k, :) = eval_feedback(this.kappa_D{i}, xs, t, ss_j)';
+                       u(k, :) = eval_feedback(this.kappa_D{i}, ys, t, ss_j)';
                    else % is flow
                        % u(k, :) = this.kappa_C{i}(xs, t, ss_j)';
-                       u(k, :) = eval_feedback(this.kappa_C{i}, xs, t, ss_j)';
+                       u(k, :) = eval_feedback(this.kappa_C{i}, ys, t, ss_j)';
                    end
                end
                
@@ -259,30 +264,39 @@ classdef CompoundHybridSystem < HybridSystem
         
         function [xs, js] = split_many(this, x)
             % SPLIT_MANY
-            for i = 1:length(this.subsystems)
+%             xs = NaN(??, ??);
+%             js = NaN(??, ??);
+            for i = 1:this.subsys_n
                 xs(:, this.x_indices{i}) = x(:, this.x_indices{i});
                 js(:, i) = x(:, this.j_index(i));
+            end
+        end
+        
+        function ys = compute_outputs(this, xs, t, js)
+            ys = cell(this.subsys_n, 1);
+            for i = 1:this.subsys_n
+                ys{i} = this.subsystems{i}.output(xs{i}, t, js(i));
             end
         end
     end
 end
 
-function u = eval_feedback(kappa, xs, t, j)
-switch length(xs)
+function u = eval_feedback(kappa, ys, t, j)
+switch length(ys)
     case 1
-        u = kappa(xs{1}, t, j);
+        u = kappa(ys{1}, t, j);
     case 2
-        u = kappa(xs{1}, xs{2}, t, j);
+        u = kappa(ys{1}, ys{2}, t, j);
     case 3
-        u = kappa(xs{1}, xs{2}, xs{3}, t, j);
+        u = kappa(ys{1}, ys{2}, ys{3}, t, j);
     case 4
-        u = kappa(xs{1}, xs{2}, xs{3}, xs{4}, t, j);
+        u = kappa(ys{1}, ys{2}, ys{3}, ys{4}, t, j);
     case 5
-        u = kappa(xs{1}, xs{2}, xs{3}, xs{4}, xs{5}, t, j);
+        u = kappa(ys{1}, ys{2}, ys{3}, ys{4}, ys{5}, t, j);
     case 6
-        u = kappa(xs{1}, xs{2}, xs{3}, xs{4}, xs{5}, xs{6}, t, j);
+        u = kappa(ys{1}, ys{2}, ys{3}, ys{4}, ys{5}, ys{6}, t, j);
     case 7
-        u = kappa(xs{1}, xs{2}, xs{3}, xs{4}, xs{5}, xs{6}, xs{7}, t, j);
+        u = kappa(ys{1}, ys{2}, ys{3}, ys{4}, ys{5}, ys{6}, ys{7}, t, j);
     otherwise
         error("The maximum number of subsystems is seven.");
 end
