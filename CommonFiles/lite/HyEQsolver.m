@@ -261,6 +261,22 @@ while (j < JSPAN(end) && tout(end) < TSPAN(end) && ~progress.cancel)
         will_second_state_flow = second_state_in_C && ~(second_state_in_D && rule == 1);
         if will_second_state_flow || length(t_flow) == 2
             nt = length(t_flow);
+            
+            for i=1:(length(t_flow)-1)
+                % Check if it is possible to flow from current position
+                insideC = C(x_flow(i,:).',t_flow(i),j);
+                insideD = D(x_flow(i,:).',t_flow(i),j);
+                if ~insideC && ~insideD
+                    break
+                end
+                doFlow = insideC && (rule == 2 || (rule == 1 && ~insideD));
+                if ~doFlow
+                    bad_x0 = x_flow(i,:).';
+                    [t_temp, x_temp] = odeX(@(t,x) f(x,t,j),[tout(end) tfinal],xout(end,:).', options);
+                end
+                % assert(doFlow, "Cannot flow at index %d of %d", i, length(t_flow))
+            end
+            
             % We add the new interval of flow to the solution--omitting the
             % first entry because it duplicates the previous entry in the
             % solution.

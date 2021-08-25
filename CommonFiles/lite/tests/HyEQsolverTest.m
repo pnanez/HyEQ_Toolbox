@@ -103,30 +103,33 @@ classdef HyEQsolverTest < matlab.unittest.TestCase
 
             tspan = [0, 100];
             jspan = [0, 1000];
-            x0 = [1e-32; 0];
+%             x0 = [1e-32; 0];
+            load("pathological_bouncing_ball_x0", "bad_x0");
+            x0 = bad_x0;
             f = @(x)[x(2); -gravity];
             g = @(x)[x(1); -bounce_coeff*x(2)];
             C = @(x) x(1) >= 0 || x(2) >= 0;
             D = @(x) x(1) <= 0 && x(2) <= 0;
             [t, j, x] = HyEQsolver(f, g, C, D, ...
                                 x0, tspan, jspan, 1, odeset(), [], [],"silent");
-
+                            
             sol = HybridSolution.fromLegacyData(t, j, x, f, g, C, D, tspan, jspan);
 %             plot_ndx = 200:206;
-%             figure(1)
-%             clf
-%             subplot(3, 1, 1)
-%             plot(plot_ndx, sol.D_vals(plot_ndx,:), 'b*')
-%             hold on
-%             plot(plot_ndx, sol.C_vals(plot_ndx,:), 'sr')
-%             legend("D", "C")
-%             subplot(3, 1, 2)
-%             plot(plot_ndx, sol.t(plot_ndx), "r")
-%             subplot(3, 1, 3)
-%             plot(plot_ndx, sol.j(plot_ndx), "b")
-%             
+            figure(1)
+            clf
+            subplot(3, 1, 1)
+            plot(sol.D_vals, 'b*')
+            hold on
+            plot(sol.C_vals, 'sr')
+            legend("D", "C")
+            subplot(3, 1, 2)
+            plot(sol.t, "r")
+            subplot(3, 1, 3)
+            plot(sol.j, "b")
+            
 %             figure(2)
 %             plotflows(sol)
+%             plot(sol)
             
             verifyHybridSolutionDomain(sol.t, sol.j, sol.C_vals, sol.D_vals)
             testCase.assertGreaterThanOrEqual(x(:, 1), -1e-7)
