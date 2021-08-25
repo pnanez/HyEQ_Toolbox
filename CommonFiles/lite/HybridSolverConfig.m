@@ -5,7 +5,7 @@ classdef HybridSolverConfig < handle
     end
     
     properties(SetAccess = private)
-        ode_options odeset;
+        ode_options;
     
         progressListener HybridProgress = PopupHybridProgress();
     end

@@ -35,6 +35,7 @@ HybridPlotBuilder().plotjumps(sol);
 % The |plotHybridArc| function plots each component of the solution versus
 % hybrid time $(t, j)$.
 HybridPlotBuilder().plotHybridArc(sol);
+
 %%
 % The |plot| function chooses the type of plot based on the number of
 % components. For solutions with two or three components, then |plot|
@@ -49,13 +50,14 @@ HybridPlotBuilder().plot(sol);
 % |plot(sol)|. 
 plot(sol)
 
+%%
 % This approach, although convenient, does not allow any modification of plot
 % appearances. 
 
 %% Choosing Components to Plot
 % For solutions with multiple components, the |slice| function allows for the
 % selection of which components to plot and which order to plot them.
-% We will look at the solution to a 3D system.
+% We will look at the following solution to a 3D system.
 plot(sol_3D)
 view([63.6 28.2]) % Set the view angle.
 
@@ -88,8 +90,6 @@ HybridPlotBuilder().slice(1:2)...
     .jumpEndMarker("o")...
     .jumpEndMarkerSize(10)...
     .plot(sol_3D)
-xlim([-1.1, 1.1])
-ylim([-1.1, 1.1])
 
 %% 
 % To confiugre the the jump markers on both sides of jumps, omit "Start"
@@ -98,7 +98,6 @@ HybridPlotBuilder().slice(1:2)...
     .jumpMarker("s")... % square
     .jumpMarkerSize(12)...
     .plot(sol_3D)
-axis padded
 
 %% 
 % To hide jumps or flows, set the corresponding color to "none." Jump
@@ -240,6 +239,7 @@ builder.legend("$q = 0$", "$q = 1$");
 
 %% 
 % When using auto-subplots, legends are added to each subplot.
+figure()
 pb = HybridPlotBuilder();
 pb.plotflows(sol);
 hold on
@@ -308,7 +308,6 @@ HybridPlotBuilder().plot(sol);
 grid on
 ax = gca;
 ax.YAxisLocation = "right";
-axis padded
 
 %%
 % Plots with multiple subplots can also be configured as described above by
@@ -332,5 +331,4 @@ function apply_plot_settings(component)
     ax.LabelFontSizeMultiplier = 1.8;
     grid on
     grid minor
-    axis padded
 end

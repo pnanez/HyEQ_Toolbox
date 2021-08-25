@@ -1,6 +1,6 @@
 classdef HybridPlotBuilder < handle
 
-    properties(Constant)
+    properties(Constant, Hidden)
         INTERPRETERS = ["none", "tex", "latex"];
     end
 
@@ -33,7 +33,7 @@ classdef HybridPlotBuilder < handle
         timestepsFilter = [];
         max_subplots = 4;
     end
-    properties(Dependent)
+    properties(Dependent, Hidden)
         % Labels that correctly adjust to different text interpreters.
         t_label
         j_label
@@ -217,124 +217,30 @@ classdef HybridPlotBuilder < handle
 
         function plotflows(this, hybrid_sol)
             indices_to_plot = indicesToPlot(this, hybrid_sol);
-            
-            was_hold_on = ishold();
-            if ~was_hold_on
-                % Clear the plot
-                plot(nan, nan);
-            end
-            
-            subplot_ndx = 1;
-            for i=indices_to_plot
-                if this.auto_subplots
-                    subplots(subplot_ndx) = open_subplot(length(indices_to_plot), subplot_ndx); %#ok<AGROW>
-%                     if ~was_hold_on
-%                         % Clear the plot
-%                         plot(nan, nan);
-%                     end
-                else
-                    hold on
-                end
-                
-                to_plot = [hybrid_sol.t, hybrid_sol.x(:, i)];
-                this.plot_sliced(hybrid_sol, to_plot)
-
-                if this.auto_subplots 
-                    % Should these settings be conditional?
-                    xlim("tight")
-                    ylim('padded') 
-                end
-                
-                xlabel(this.t_label, "interpreter", this.text_interpreter)
-                if this.auto_subplots
-                    this.subplots_callback(i);
-                    this.ylabel(i)
-                    this.applyTitle(i)
-                    subplot_ndx = subplot_ndx + 1;
-                else
-                    this.ylabel(1)
-                    this.applyTitle(1)
-                    if ~was_hold_on
-                        hold off
-                    end
-                end
-            end 
-            
-            if this.auto_subplots
-                % Link the x-axes of the subplots so zooming and panning
-                % one subplot effects the others.
-                linkaxes(subplots,'x')
-            end
+                        
+            nplot = length(indices_to_plot);
+            axis1_ids = repmat("t", nplot, 1);
+             
+            this.slice_and_plot(hybrid_sol, axis1_ids, indices_to_plot);
         end
 
         function plotjumps(this, hybrid_sol)
             indices_to_plot = indicesToPlot(this, hybrid_sol);
-
-            subplot_ndx = 1;
-            for i=indices_to_plot
-                if this.auto_subplots
-                    subplots(subplot_ndx) = open_subplot(length(indices_to_plot), subplot_ndx); %#ok<AGROW>
-                else
-                    hold on
-                end
-                sliced_x = [hybrid_sol.j, hybrid_sol.x(:, i)];
-                this.plot_sliced(hybrid_sol, sliced_x)
-
-                if this.auto_subplots
-                    xlim("tight")
-                    ylim('padded') 
-                end
-                
-                xlabel(this.j_label, "interpreter", this.text_interpreter)
-                this.ylabel(i)
-                this.applyTitle(i)
-                if this.auto_subplots
-                   this.subplots_callback(i); 
-                end
-                subplot_ndx = subplot_ndx + 1;
-            end 
-            
-            if this.auto_subplots
-                % Link the x-axes of the subplots so zooming and panning
-                % one subplot effects the others.
-                linkaxes(subplots,'x')
-            end
+                        
+            nplot = length(indices_to_plot);
+            axis1_ids = repmat("j", nplot, 1);
+             
+            this.slice_and_plot(hybrid_sol, axis1_ids, indices_to_plot);
         end
 
         function plotHybridArc(this, hybrid_sol)
             indices_to_plot = indicesToPlot(this, hybrid_sol);
 
-            subplot_ndx = 1;
-            for i=indices_to_plot
-                if this.auto_subplots
-                    subplots(subplot_ndx) = open_subplot(length(indices_to_plot), subplot_ndx); %#ok<AGROW>
-                end           	
-
-                % Prepend t and j, then plot.
-                sliced_x = [hybrid_sol.t, hybrid_sol.j, hybrid_sol.x(:, i)];
-                this.plot_sliced(hybrid_sol, sliced_x)
-
-                if this.auto_subplots
-                    xlim("tight")
-                    ylim('tight') 
-                    % zlim('padded') % Does this make better plots?
-                end
-                
-                xlabel(this.t_label, "interpreter", this.text_interpreter)
-                ylabel(this.j_label, "interpreter", this.text_interpreter)
-                this.zlabel(i)
-                this.applyTitle(i)
-                if this.auto_subplots
-                   this.subplots_callback(); 
-                end
-                subplot_ndx = subplot_ndx + 1;
-            end
-            
-            if this.auto_subplots
-                % Link the subplot axes so that the views are sync'ed.
-                link = linkprop(subplots, {'View', 'XLim', 'YLim'});
-                setappdata(gcf, 'StoreTheLink', link);
-            end
+            nplot = length(indices_to_plot);
+            axis1_ids = repmat("t", nplot, 1);
+            axis2_ids = repmat("j", nplot, 1);
+            axis3_ids = indices_to_plot;
+            slice_and_plot(this, hybrid_sol, axis1_ids, axis2_ids, axis3_ids)
         end
 
         function plot(this, hybrid_sol)
@@ -359,12 +265,11 @@ classdef HybridPlotBuilder < handle
             sliced_x = hybrid_sol.x(:, sliced_indices);
             this.plot_sliced(hybrid_sol, sliced_x)
 
-            this.xlabel(sliced_indices(1))
-            this.ylabel(sliced_indices(2))
-            if dimensions == 3
-                this.zlabel(sliced_indices(3))
-            end
-            this.applyTitle(1) % Use first title entry                  
+            if dimensions == 2
+                configureAxes(this, sliced_indices(1), sliced_indices(2))
+            else % dimensions == 3
+                configureAxes(this, sliced_indices(1), sliced_indices(2), sliced_indices(3))
+            end              
         end
 
         function lgd = legend(this, varargin)
@@ -410,20 +315,120 @@ classdef HybridPlotBuilder < handle
 
     methods(Access = private)
 
-        function plot_sliced(this, hybrid_sol, sliced_x)
+        function configureAxes(this, xaxis_id, yaxis_id, zaxis_id)
+            narginchk(3, 4)
+            %is2D = nargin == 4;
+            is3D = nargin == 4;
+            is_x_a_time_axis = any(strcmp(xaxis_id, ["t", "j"]));
+            is_y_a_time_axis = strcmp(yaxis_id, "j");            
+            first_nontime_axis = 1 + is_x_a_time_axis + is_y_a_time_axis;
+            
+            % Apply labels
+            this.xlabel(xaxis_id)
+            this.ylabel(yaxis_id)
+            if is3D
+                this.zlabel(zaxis_id)
+            end
+            
+            switch first_nontime_axis
+                case 1
+                    this.applyTitle(xaxis_id)
+                case 2
+                    this.applyTitle(yaxis_id)
+                case 3
+                    this.applyTitle(zaxis_id)
+            end
+            
+            % Adjust padding.
+            if is_x_a_time_axis
+               set(gca, 'XLimSpec', 'Tight');
+            else
+                set(gca, 'XLimSpec', 'Padded');
+            end
+            
+            if is_y_a_time_axis
+               set(gca, 'YLimSpec', 'Tight');
+            else
+                set(gca, 'YLimSpec', 'Padded');
+            end
+            
+            % The z-axis never contains t or j, so we don't make it
+            % "tight". Conversely, making it "padded" doesn't improve the
+            % appearance of a 3D plot, so we don't modify the default
+            % behavior.            
+        end
+        
+        function slice_and_plot(this, hybrid_sol, axis1_ids, axis2_ids, axis3_ids)
+            narginchk(4, 5)
+            is2D = nargin == 4;
+            
+            nplot = length(axis1_ids);
+             
+            for sp = 1:nplot
+                if this.auto_subplots
+                    subplots(sp) = open_subplot(nplot, sp); %#ok<AGROW>
+                    was_hold_on = ishold();
+                    if ~was_hold_on
+                        % Clear the plot to emulate "hold off" behavior.
+                        plot(nan, nan);
+                    end
+                    hold on
+                end
+                
+                if is2D
+                    axis3_id = [];
+                    last_id = axis2_ids(sp);
+                else
+                    axis3_id = axis3_ids(sp);
+                    last_id = axis3_ids(sp);
+                end
+                
+                plot_values = create_plot_values(hybrid_sol, axis1_ids(sp), axis2_ids(sp), axis3_id);
+                this.plot_sliced(hybrid_sol, plot_values)
+                
+                if this.auto_subplots
+                    this.configureAxes(axis1_ids(sp), axis2_ids(sp), axis3_id);
+                    this.subplots_callback(last_id);
+                    if ~was_hold_on
+                        hold off
+                    end
+                else
+                    this.configureAxes(axis1_ids(sp), axis2_ids(sp), axis3_id);
+                end
+            end
+            
+            if this.auto_subplots
+                % Link the subplot axes.
+                if is2D
+                    % Link the x-axes of the subplots so zooming and panning
+                    % one subplot effects the others.
+                    linkaxes(subplots,'x')
+                else
+                    if this.auto_subplots
+                        % Link the subplot axes so that the views are sync'ed.
+                        link = linkprop(subplots, {'View', 'XLim', 'YLim'});
+                        setappdata(gcf, 'StoreTheLink', link);
+                    end
+                end
+            end
+            
+        end
+        
+        
+        function plot_sliced(this, hybrid_sol, sliced_plot_values)
 
             if ~isempty(this.timestepsFilter)
-                assert(length(this.timestepsFilter) == size(sliced_x, 1), ...
+                assert(length(this.timestepsFilter) == size(sliced_plot_values, 1), ...
                     "The length(filter)=%d does not match the timesteps=%d in the HybridSolution.", ...
-                    length(this.timestepsFilter), size(sliced_x, 1))
+                    length(this.timestepsFilter), size(sliced_plot_values, 1))
                 % Set entries that don't match the filter to NaN so they are not plotted.
-                sliced_x(~this.timestepsFilter) = NaN;
+                sliced_plot_values(~this.timestepsFilter) = NaN;
             end
             
             flows_x = HybridPlotBuilder.separateFlows(...
-                                    hybrid_sol.t, hybrid_sol.j, sliced_x);
+                                    hybrid_sol.t, hybrid_sol.j, sliced_plot_values);
             [jumps_x, jumps_befores, jumps_afters] ...
-                = HybridPlotBuilder.separateJumps(hybrid_sol.t, hybrid_sol.j, sliced_x);
+                = HybridPlotBuilder.separateJumps(hybrid_sol.t, hybrid_sol.j, sliced_plot_values);
 
             % Add an invisible plot that will show up in the legend.
             % Drawing this point will also clear the plot if 'hold' is off.
@@ -434,7 +439,7 @@ classdef HybridPlotBuilder < handle
             was_hold_on = ishold();
             hold on
 
-            switch size(sliced_x, 2)
+            switch size(sliced_plot_values, 2)
                 case 2
                     this.plotFlow2D(flows_x)
                     this.plotJump2D(jumps_x, jumps_befores, jumps_afters)
@@ -531,6 +536,17 @@ classdef HybridPlotBuilder < handle
         end
         
         function label = createLabel(this, index)
+            
+            if strcmp("t", index)
+                label = this.t_label;
+                return
+            end
+            
+            if strcmp("j", index)
+                label = this.j_label;
+                return
+            end
+            
             if index <= length(this.component_labels)
                 label = this.component_labels(index);  
             else
@@ -674,6 +690,32 @@ function sp = open_subplot(subplots_count, index)
         % status to match what was met before 
         hold on
     end
+end
+
+function plot_values = create_plot_values(sol, xaxis_id, yaxis_id, zaxis_id)
+% CREATE_PLOT_VALUES Create an array containing the values from the corresponding id in each column.
+% xaxis_id can take values "t", "j" or an integer.
+% yaxis_id can take values "j" or an integer.
+% zaxis_id can take value of an integer or an empty set.
+narginchk(4, 4)
+
+    function values = values_from_id(id)
+        if strcmp(id, "t")
+            values = sol.t;
+        elseif strcmp(id, "j")
+            values = sol.j;
+        else
+            values = sol.x(:, id);
+        end
+    end
+
+    xvalues = values_from_id(xaxis_id);
+    yvalues = values_from_id(yaxis_id);
+    % If zaxis_id is empty, then zvalues will be as well, which means the
+    % the plot will be only 2D.
+    zvalues = values_from_id(zaxis_id);
+    plot_values = [xvalues, yvalues, zvalues];
+
 end
 
 function checkColorArg(color_arg)
