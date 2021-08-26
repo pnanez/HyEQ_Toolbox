@@ -288,13 +288,16 @@ classdef HybridPlotBuilder < handle
             plots_for_this_legend ...
                 = this.plots_for_legend(plots_for_legend_indices);
             axes_for_this_legend = this.axes_for_legend(plots_for_legend_indices);
-            for ax = unique(this.axes_for_legend)
+            
+            for ax = unique(axes_for_this_legend)
                 % Add the legend entries for each plot. We truncate the lengths
                 % of the arrays to match so that Matlab does not print a
                 % (rather unhelpful) warning.
                 plots_in_axes = plots_for_this_legend(axes_for_this_legend == ax);
                 m = min(length(plots_in_axes), length(lgd_labels));
                 
+                % Show a warning if the number of plots don't
+                % match the number of labels provided.
                 check_legend_count(plots_in_axes, lgd_labels);
                 
                 if isvalid(ax)

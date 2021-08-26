@@ -51,8 +51,8 @@ HybridPlotBuilder().plot(sol);
 plot(sol)
 
 %%
-% This approach, although convenient, does not allow any modification of plot
-% appearances. 
+% This approach, although convenient, does not allow the modifications of the plot
+% appearances that we describe below. 
 
 %% Choosing Components to Plot
 % For solutions with multiple components, the |slice| function allows for the
@@ -179,7 +179,7 @@ pb.autoSubplots("off")...
     .labels("Label 1", "Label 2")... % Only first label is used.
     .titles("Title 1", "Title 2")... % Only first title is used.
     .plotflows(sol)
-pb.legend("Legend 1", "Legend 2", "Legend 2") % Only first two legend entries are used.
+pb.legend("Legend 1", "Legend 2") % Both two legend entries are used.
 
 %% Filtering Solutions
 % Portions of solutions can be hidden with the |filter| function. In this
@@ -247,22 +247,21 @@ pb.flowColor("k").jumpColor("g").slice(1:2).plotflows(sol_3D);
 pb.legend("Plot 1", "Plot 2");
 
 %% 
-% A |HybridPlotBuilder| object can be used to add plots and legends to
+% A single |HybridPlotBuilder| object can be used to add plots and legends to
 % multiple figures.
 figure()
 pb = HybridPlotBuilder();
 pb.plotflows(sol_3D); % Ignored in second figure
 pb.legend("First Figure"); 
-
+%%
 figure()
-pb.slice(1).plotflows(sol); 
-hold on
-pb.flowColor("k").jumpColor("g").slice(2).plotflows(sol);
-pb.legend("Height", "Velocity");% Ignores first figure
+pb.flowColor("k").jumpColor("g").plotflows(sol); % Still using "pb"
+pb.legend("Second Figure"); % Ignores plot in first figure
 
 %%
 % Plots added to a figure without |HybridPlotBuilder| can be added to
 % tbe legend by passing the output argument of |plot| to |addLegendEntry|.
+figure()
 pb = HybridPlotBuilder();
 pb.plot(sol)
 hold on
@@ -276,8 +275,7 @@ pb.addLegendEntry(plt);
 pb.legend("Hybrid Plot", "A circle")
 
 %% 
-% Cleared and closed figures are handled gracefully by |legend|, but show a
-% warning.
+% Cleared and closed figures are handled gracefully by |legend|.
 figure()
 pb = HybridPlotBuilder();
 pb.plotflows(sol_3D);
