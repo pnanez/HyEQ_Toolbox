@@ -80,7 +80,7 @@ subsystem2 = ExampleControlledHybridSystem();
 %% Create a Compound Hybrid System
 % Now that we have two subsystems, we merely pass these to the
 % |CompoundHybridSystem| constructor to create a coupled system.
-sys = CompoundHybridSystem([subsystem1, subsystem2]);
+sys = CompoundHybridSystem({subsystem1, subsystem2});
 
 %%
 % Next, we set the feedback functions for each subsystem. The functions
@@ -93,9 +93,9 @@ sys.kappa_D
 % sys.kappa_D{1} = @(x1, x2, t, j) 0; 
 % sys.kappa_C{2} = @(x1, x2, t, j) x1(1)-x2(1);   
 % sys.kappa_D{2} = @(x1, x2, t, j) 0;   
-sys.kappa_C
-sys.setContinuousFeedback({@(x1, x2, t, j) -5, @(x1, x2, t, j) x1(1)-x2(1)}); 
-sys.kappa_C
+sys.kappa_C{1} = @(x1, x2, t, j) -5;
+% sys.setContinuousFeedback({, ); 
+sys.kappa_C{2} = @(x1, x2, t, j) x1(1)-x2(1);
 
 %% Compute a solution
 % To compute a solution, we call |solve| on the system, similar to a
@@ -163,7 +163,7 @@ plotflows(sol.subsys_sols{2}.t, sol.subsys_sols{2}.j, sol.subsys_sols{2}.u)
 % The |CompoundHybridSystem| class can also be used with a single subsystem
 % for cases where you want to be able to modify the feedback functions
 % without modifying the code for the system. 
-sys_1 = CompoundHybridSystem(subsystem1);
+sys_1 = CompoundHybridSystem({subsystem1});
 sys_1.kappa_C{1} = @(x1, t, j) -5;   
 sys_1.kappa_D{1} = @(x1, t, j) 0;   
 sol = sys_1.solve({x1_initial}, tspan, jspan);

@@ -9,6 +9,7 @@ classdef HybridSolution < handle
         x0 (1, :) double;
         % Final state
         xf (1, :) double;
+        termination_cause TerminationCause; 
 
         % The duration of each interval of flow.
         flow_lengths (:,1) double; 
@@ -19,28 +20,26 @@ classdef HybridSolution < handle
         jump_count uint32;
     end
     
-    properties(SetAccess = protected)
-        % Values of the flow and jump maps and sets along solution.
-        f_vals (:, :) double;
-        g_vals (:, :) double;
-        C_vals (:, 1) uint8;
-        D_vals (:, 1) uint8; 
-        termination_cause TerminationCause; 
-    end
+%     properties(SetAccess = protected)
+%         % Values of the flow and jump maps and sets along solution.
+%         f_vals (:, :) double;
+%         g_vals (:, :) double;
+%     end
 
     properties(GetAccess = protected, SetAccess = immutable)
         system;
         tspan;
         jspan;
+        C_end;
+        D_end;
     end
 
     methods
-        function this = HybridSolution(system, t, j, x, tspan, jspan)
+        function this = HybridSolution(t, j, x, C_vals, D_vals, tspan, jspan)
             checkVectorSizes(t, j, x);
             assert(t(1) == tspan(1), "t(1)=%f does equal the start of tspan=%s", t(1), mat2str(tspan))
             assert(j(1) == jspan(1), "j(1)=%d does equal the start of jspan=%s", j(1), mat2str(jspan))
-            
-            this.system = system;
+
             this.tspan = tspan;
             this.jspan = jspan;
             this.t = t;
@@ -53,6 +52,12 @@ classdef HybridSolution < handle
             this.jump_count = length(this.jump_times);
             this.flow_lengths = HybridUtils.flowLengths(t, j);
             this.shortest_flow_length = min(this.flow_lengths);
+            
+            this.C_end = C_vals(end);
+            this.D_end = D_vals(end);
+            
+            this.termination_cause = TerminationCause.getCause(...
+                    this.t, this.j, this.x, C_vals, D_vals, this.tspan, this.jspan);
         end
 
         function plot(this, indices)
@@ -87,7 +92,7 @@ classdef HybridSolution < handle
                 .slice(indices)...
                 .plotjumps(this);
         end
-
+        
         function plotHybridArc(this, indices)
             n = size(this.x, 2);
             if ~exist("indices", "var")
@@ -99,38 +104,25 @@ classdef HybridSolution < handle
                 .plotHybridArc(this);
         end
     end
-
+    
     methods
-        function val = get.f_vals(this)
-            if isempty(this.f_vals)
-                generateDependentData(this);
+        
+        function out = evaluateFunction(this, fh, time_indices)
+            assert(isa(fh, "function_handle"), "Second argument must be a function handle.")
+            
+            if ~exist("indices", "var")
+                time_indices = 1:length(this.t);
             end
-            val = this.f_vals;
-        end
-        function val = get.g_vals(this)
-            if isempty(this.g_vals)
-                generateDependentData(this);
+            
+            ndx0 = time_indices(1);
+            val0 = fh(this.x(ndx0), this.t(ndx0), this.j(ndx0));
+            assert(isvector(val0), "Function handle does not return a vector")
+            
+            out = NaN(length(time_indices), length(val0));
+            
+            for k=time_indices
+                out(k, :) = fh(this.x(k, :)', this.t(k), this.j(k))';
             end
-            val = this.g_vals;
-        end
-        function val = get.C_vals(this)
-            if isempty(this.C_vals)
-                generateDependentData(this);
-            end
-            val = this.C_vals;
-        end
-        function val = get.D_vals(this)
-            if isempty(this.D_vals)
-                generateDependentData(this);
-            end
-            val = this.D_vals;
-        end
-        function val = get.termination_cause(this)
-            if isempty(this.D_vals)
-                generateDependentData(this);
-            end
-            val = TerminationCause.getCause(...
-                    this.t, this.j, this.x, this.C_vals, this.D_vals, this.tspan, this.jspan);
         end
     end
     
@@ -145,8 +137,21 @@ classdef HybridSolution < handle
         function hs = fromLegacyData(t, j, x, f, g, C, D, tspan, jspan)
             % fromLegacyData Create a HybridSolution given the input and
             % output arguments of HyEQsolver.
-            sys = HybridSystem(f, g, C, D);
-            hs = HybridSolution(sys, t, j, x, tspan, jspan);
+%             sys = HybridSystem(f, g, C, D);
+            function val_end = evaluate_at_end(fh)
+                switch nargin(fh)
+                    case 1
+                        val_end =  fh(x(end)');
+                    case 2
+                        val_end =  fh(x(end)', t(end));
+                    case 3
+                        val_end =  fh(x(end), t(end), j(end));
+                    otherwise
+                end
+            end
+            C_end = evaluate_at_end(C);
+            D_end = evaluate_at_end(D);
+            hs = HybridSolution(t, j, x, C_end, D_end, tspan, jspan);
         end
     end
 end

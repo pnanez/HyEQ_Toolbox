@@ -18,7 +18,7 @@ classdef HybridSolutionTest < matlab.unittest.TestCase
             g_vals = NaN(5, 1);
             C_vals = NaN(5, 1);
             D_vals = NaN(5, 1);
-            sol = HybridSolution(t, j, x, f_vals, g_vals, C_vals, D_vals, [0, 100], [0, 100]);
+            sol = HybridSolution(t, j, x, C_vals(end), D_vals(end), [0, 100], [0, 100]);
             testCase.assertEqual(sol.jump_times, HybridUtils.jumpTimes(t, j))
         end
 
@@ -30,7 +30,7 @@ classdef HybridSolutionTest < matlab.unittest.TestCase
             g_vals = NaN(7, 1);
             C_vals = NaN(7, 1);
             D_vals = NaN(7, 1);
-            sol = HybridSolution(t, j, x, f_vals, g_vals, C_vals, D_vals, [0, 100], [0, 100]);
+            sol = HybridSolution(t, j, x, C_vals(end), D_vals(end), [0, 100], [0, 100]);
             testCase.assertEqual(sol.flow_lengths, [0.5; 2.5; 1])
             testCase.assertEqual(sol.shortest_flow_length, 0.5)
         end

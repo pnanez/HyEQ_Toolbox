@@ -5,18 +5,13 @@ classdef ControlledHybridSolution < HybridSolution
     end
     
     methods
-        function this = ControlledHybridSolution(system, t, j, x, u, tspan, jspan)
-            this = this@HybridSolution(system, t, j, x, tspan, jspan);
-            assert(size(u, 1) == length(t), "length of u doesn't match t")
+        function this = ControlledHybridSolution(t, j, x, u, C_end, D_end, tspan, jspan)
+            this = this@HybridSolution(t, j, x, C_end, D_end, tspan, jspan);
+            assert(size(u, 1) == length(t), ...
+                "length(u)=%d doesn't match length(t)", ...
+                size(u, 1), length(t))
             this.u = u;
         end
-    end
-    
-    methods(Access = protected)
-       function generateDependentData(this) % Override the superclass method.
-           [this.f_vals, this.g_vals, this.C_vals, this.D_vals] ...
-                    = this.system.generateFGCD(this.t, this.j, this.x, this.u); 
-        end 
     end
 
 end

@@ -31,7 +31,12 @@ classdef (Abstract) ControlledHybridSystem < handle
         function sol = wrap_solution(this, t, j, x, u, tspan, jspan)
             % Override this method in subclasses to use other classes than
             % ControlledHybridSolution.
-            sol = ControlledHybridSolution(this, t, j, x, u, tspan, jspan);
+            x_end = x(end, :)';
+            u_end = u(end, :)';
+            C_end = this.flow_set_indicator(x_end, u_end, t(end), j(end));
+            D_end = this.jump_set_indicator(x_end, u_end, t(end), j(end));
+            
+            sol = ControlledHybridSolution(t, j, x, u, C_end, D_end, tspan, jspan);
         end
         
         function [f_vals, g_vals, C_vals, D_vals] = generateFGCD(this, t, j, x, u)

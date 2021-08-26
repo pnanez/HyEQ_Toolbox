@@ -198,7 +198,7 @@ classdef CompoundHybridSystem < HybridSystem
                ss = this.subsystems{i};
                ss_j = js_all(:, i);
                ss_x = xs_all(:, this.x_indices{i});
-               u = NaN(length(t), ss.control_dimension);
+               ss_u = NaN(length(t), ss.control_dimension);
                
                % Create arrays is_a_ss1_jump_index and is_a_ss2_jump_index,
                % which contain ones at entry where a jump occured in the
@@ -214,10 +214,10 @@ classdef CompoundHybridSystem < HybridSystem
                    ys = compute_outputs(this, xs, t, ss_j);
                    if is_jump(k)
                        % u(k, :) = this.kappa_D{i}(xs, t, ss_j)';
-                       u(k, :) = eval_feedback(this.kappa_D{i}, ys, t, ss_j)';
+                       ss_u(k, :) = eval_feedback(this.kappa_D{i}, ys, t, ss_j)';
                    else % is flow
                        % u(k, :) = this.kappa_C{i}(xs, t, ss_j)';
-                       u(k, :) = eval_feedback(this.kappa_C{i}, ys, t, ss_j)';
+                       ss_u(k, :) = eval_feedback(this.kappa_C{i}, ys, t, ss_j)';
                    end
                end
                
@@ -230,7 +230,7 @@ classdef CompoundHybridSystem < HybridSystem
                ss_jump_count = ss_j(end) - ss_j(1);
                others_jump_count = total_jump_count - ss_jump_count;
                ss_jspan = [jspan(1), jspan(end) - others_jump_count];
-               ss_sols{i} = ss.wrap_solution(t, ss_j, ss_x, u, tspan, ss_jspan); %#ok<AGROW>
+               ss_sols{i} = ss.wrap_solution(t, ss_j, ss_x, ss_u, tspan, ss_jspan); %#ok<AGROW>
             end         
             sol = CompoundHybridSolution(sol, ss_sols, tspan, jspan);
         end
@@ -264,8 +264,12 @@ classdef CompoundHybridSystem < HybridSystem
         
         function [xs, js] = split_many(this, x)
             % SPLIT_MANY
-%             xs = NaN(??, ??);
-%             js = NaN(??, ??);
+            ndxs = cell2mat(this.x_indices);
+            x_cols = max(ndxs) - min(ndxs) + 1;
+            j_cols = length(this.x_indices);
+            rows = size(x, 1);
+            xs = NaN(rows, x_cols);
+            js = NaN(rows, j_cols);
             for i = 1:this.subsys_n
                 xs(:, this.x_indices{i}) = x(:, this.x_indices{i});
                 js(:, i) = x(:, this.j_index(i));

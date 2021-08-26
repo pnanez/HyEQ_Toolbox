@@ -14,8 +14,8 @@ classdef CheckHybridSolutionTest < matlab.unittest.TestCase
             g = @(x) -x;
             x0 = 1;
             [x, f_vals, g_vals] = generateEulerForwardSolution(t, j, x0, f, g);
-            sol = HybridSolution(t, j, x, f_vals, g_vals, C_vals, D_vals, tspan, jspan);
-            checkHybridSolution(sol, priority)
+            sol = HybridSolution(t, j, x, C_vals(end), D_vals(end), tspan, jspan);
+            checkHybridSolution(sol, f_vals, g_vals, C_vals, D_vals, priority)
         end
         
         function testIncorrectFlow(testCase)            
@@ -31,9 +31,11 @@ classdef CheckHybridSolutionTest < matlab.unittest.TestCase
             x0 = 1;
             [x, f_vals, g_vals] = generateEulerForwardSolution(t, j, x0, f, g);
             f_vals = f_vals + 4; % Change the flow map values so they don't match the change in x.
-            sol = HybridSolution(t, j, x, f_vals, g_vals, C_vals, D_vals, tspan, jspan);
+            sol = HybridSolution(t, j, x, C_vals, D_vals, tspan, jspan);
             
-            testCase.verifyError(@() checkHybridSolution(sol, priority), "HybridSolution:IncorrectFlow")
+            testCase.verifyError(...
+                @() checkHybridSolution(sol, f_vals, g_vals, C_vals, D_vals, priority),...
+                "HybridSolution:IncorrectFlow")
         end
         
         function testIncorrectJumps(testCase)            
@@ -49,9 +51,11 @@ classdef CheckHybridSolutionTest < matlab.unittest.TestCase
             x0 = 1;
             [x, f_vals, g_vals] = generateEulerForwardSolution(t, j, x0, f, g);
             g_vals = g_vals + 4; % Change the jump map values so they don't match the change in x.
-            sol = HybridSolution(t, j, x, f_vals, g_vals, C_vals, D_vals, tspan, jspan);
+            sol = HybridSolution(t, j, x, C_vals, D_vals, tspan, jspan);
             
-            testCase.verifyError(@() checkHybridSolution(sol, priority), "HybridSolution:IncorrectJump")
+            testCase.verifyError(...
+                @() checkHybridSolution(sol, f_vals, g_vals, C_vals, D_vals, priority),...
+                "HybridSolution:IncorrectJump")
         end
     end
     

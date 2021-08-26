@@ -2,6 +2,10 @@ function verifyHybridSolutionDomain(t, j, C, D, priority)
 % verifyHybridSolutionDomain Check that the hybrid domain (t, j) is valid for the given flow and jump sets. 
 % This method checks that t increases only if C=1, that j increases
 % only if D=1, and that the priorty is respected in the intersection.
+%
+% WARNING: When using ode45, the solver automatically refines the solution
+% by a factor of four. This can introduce entries in the solution vectors
+% where t increases but x is not in C. 
 
 if ~exist("priority", "var")
     priority = HybridPriority.default();
@@ -35,18 +39,25 @@ for k=1:(length(t)-1)
     end
     if t_increased
         if ~C(k)
-            error(ERR_ID, "t increased outside C at k=%d.", k)
+            % WARNING: When using ode45, the solver automatically refines the solution
+            % by a factor of four. This can cause this error a couple
+            % entries of t in the solution to increase when x is not in C. 
+            error(ERR_ID, "Continuous time t increased outside C at k=%d. " + ...
+                "This error can be (spuriously) caused if 'Refine' option for the ODE " + ...
+                "solver is not equal to 1 (The default for ode45 is 4).", k)
         end
         if D(k) && priority == HybridPriority.JUMP
-            error(ERR_ID, "t increased when j should have increased at k=%d.", k)
+            error(ERR_ID, "Continuous time t increased when j should have increased at k=%d." + ...
+                "This error can be (spuriously) caused if 'Refine' option for the ODE " + ...
+                "solver is not equal to 1 (The default for ode45 is 4).", k)
         end
     end
     if j_increased
         if ~D(k)
-            error(ERR_ID, "j increased outside D at k=%d.", k)
+            error(ERR_ID, "Discrete time j increased outside D at k=%d.", k)
         end
         if C(k) && priority == HybridPriority.FLOW
-            error(ERR_ID, "j increased when t should have increased at k=%d.", k)
+            error(ERR_ID, "Discrete time j increased when t should have increased at k=%d.", k)
         end
     end
 end
