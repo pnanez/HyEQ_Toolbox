@@ -145,7 +145,7 @@ hold on
 hpb.flowColor("k").jumpColor("g")...
     .plotflows(sol.subsys_sols{2});
 
-hpb.legend("$\mathcal H_1$", "$\mathcal H_1$", "$\mathcal H_2$", "$\mathcal H_2$");
+hpb.legend("$\mathcal H_1$", "$\mathcal H_1$");
 
 %%
 % (Note: There is currently an  defect in the placement of legends for subplots, 

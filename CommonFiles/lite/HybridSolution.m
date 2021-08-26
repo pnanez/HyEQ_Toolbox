@@ -19,12 +19,6 @@ classdef HybridSolution < handle
         total_flow_length double;
         jump_count uint32;
     end
-    
-%     properties(SetAccess = protected)
-%         % Values of the flow and jump maps and sets along solution.
-%         f_vals (:, :) double;
-%         g_vals (:, :) double;
-%     end
 
     properties(GetAccess = protected, SetAccess = immutable)
         system;
@@ -114,8 +108,21 @@ classdef HybridSolution < handle
                 time_indices = 1:length(this.t);
             end
             
+            function val_end = evaluate_function(fh, x, t, j)
+                switch nargin(fh)
+                    case 1
+                        val_end =  fh(x);
+                    case 2
+                        val_end =  fh(x, t);
+                    case 3
+                        val_end =  fh(x, t, j);
+                    otherwise
+                        error("Unexpected number of input arguments for function handle")
+                end
+            end
+            
             ndx0 = time_indices(1);
-            val0 = fh(this.x(ndx0), this.t(ndx0), this.j(ndx0));
+            val0 = evaluate_function(fh, this.x(ndx0), this.t(ndx0), this.j(ndx0));
             assert(isvector(val0), "Function handle does not return a vector")
             
             out = NaN(length(time_indices), length(val0));
@@ -123,13 +130,6 @@ classdef HybridSolution < handle
             for k=time_indices
                 out(k, :) = fh(this.x(k, :)', this.t(k), this.j(k))';
             end
-        end
-    end
-    
-    methods(Access = protected)
-        function generateDependentData(this) % This should only be called once.
-           [this.f_vals, this.g_vals, this.C_vals, this.D_vals] ...
-                    = this.system.generateFGCD(this.t, this.j, this.x); 
         end
     end
     
