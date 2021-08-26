@@ -260,8 +260,24 @@ hold on
 pb.flowColor("k").jumpColor("g").slice(2).plotflows(sol);
 pb.legend("Height", "Velocity");% Ignores first figure
 
+%%
+% Plots added to a figure without |HybridPlotBuilder| can be added to
+% tbe legend by passing the output argument of |plot| to |addLegendEntry|.
+pb = HybridPlotBuilder();
+pb.plot(sol)
+hold on
+axis equal
+% Plot a circle.
+theta = linspace(0, 2*pi);
+plt = plot(10*cos(theta), 10*sin(theta), "m");
+% Pass the circle to the plot builder.
+pb.addLegendEntry(plt);
+
+pb.legend("Hybrid Plot", "A circle")
+
 %% 
-% Cleared and closed figures are handled gracefully by |legend|.
+% Cleared and closed figures are handled gracefully by |legend|, but show a
+% warning.
 figure()
 pb = HybridPlotBuilder();
 pb.plotflows(sol_3D);

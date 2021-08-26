@@ -55,8 +55,8 @@ bb_system.hybrid_priority = HybridPriority.JUMP;
 %% Interpret the Solution
 % The return value of the |solve| method is a |HybridSolution| object and contains 
 % various information about the solution.
-
 sol
+
 %% 
 % A description of each HybridSolution property is as follows:
 %

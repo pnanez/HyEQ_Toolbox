@@ -221,7 +221,7 @@ classdef HybridPlotBuilder < handle
             nplot = length(indices_to_plot);
             axis1_ids = repmat("t", nplot, 1);
              
-            this.slice_and_plot(hybrid_sol, axis1_ids, indices_to_plot);
+            this.plot_from_ids(hybrid_sol, axis1_ids, indices_to_plot);
         end
 
         function plotjumps(this, hybrid_sol)
@@ -230,7 +230,7 @@ classdef HybridPlotBuilder < handle
             nplot = length(indices_to_plot);
             axis1_ids = repmat("j", nplot, 1);
              
-            this.slice_and_plot(hybrid_sol, axis1_ids, indices_to_plot);
+            this.plot_from_ids(hybrid_sol, axis1_ids, indices_to_plot);
         end
 
         function plotHybridArc(this, hybrid_sol)
@@ -240,7 +240,7 @@ classdef HybridPlotBuilder < handle
             axis1_ids = repmat("t", nplot, 1);
             axis2_ids = repmat("j", nplot, 1);
             axis3_ids = indices_to_plot;
-            slice_and_plot(this, hybrid_sol, axis1_ids, axis2_ids, axis3_ids)
+            this.plot_from_ids(hybrid_sol, axis1_ids, axis2_ids, axis3_ids)
         end
 
         function plot(this, hybrid_sol)
@@ -311,6 +311,14 @@ classdef HybridPlotBuilder < handle
                 end
             end
         end
+
+        function addLegendEntry(this, plt)
+            % Add an object to include in the legend. 
+            % This function MUST be called while the axes where the object
+            % was plotted is still active.
+            this.plots_for_legend = [this.plots_for_legend, plt];
+            this.axes_for_legend = [this.axes_for_legend, gca()];
+        end
     end
 
     methods(Access = private)
@@ -358,17 +366,27 @@ classdef HybridPlotBuilder < handle
             % behavior.            
         end
         
-        function slice_and_plot(this, hybrid_sol, axis1_ids, axis2_ids, axis3_ids)
+        function plot_from_ids(this, hybrid_sol, axis1_ids, axis2_ids, axis3_ids)
             narginchk(4, 5)
             is2D = nargin == 4;
             
             nplot = length(axis1_ids);
              
+            if ~this.auto_subplots
+                was_hold_on = ishold();
+                if ~was_hold_on
+                    % Clear the plot to emulate "hold off" behavior.
+                    plot(nan, nan);
+                end
+                % Turn on hold so that we can plot multiple components.
+                hold on
+            end
+            
             for sp = 1:nplot
                 if this.auto_subplots
                     subplots(sp) = open_subplot(nplot, sp); %#ok<AGROW>
-                    was_hold_on = ishold();
-                    if ~was_hold_on
+                    was_subplot_hold_on = ishold();
+                    if ~was_subplot_hold_on
                         % Clear the plot to emulate "hold off" behavior.
                         plot(nan, nan);
                     end
@@ -389,7 +407,7 @@ classdef HybridPlotBuilder < handle
                 if this.auto_subplots
                     this.configureAxes(axis1_ids(sp), axis2_ids(sp), axis3_id);
                     this.subplots_callback(last_id);
-                    if ~was_hold_on
+                    if ~was_subplot_hold_on
                         hold off
                     end
                 else
@@ -410,6 +428,10 @@ classdef HybridPlotBuilder < handle
                         setappdata(gcf, 'StoreTheLink', link);
                     end
                 end
+            else
+                if ~was_hold_on
+                    hold off
+                end
             end
             
         end
@@ -429,10 +451,18 @@ classdef HybridPlotBuilder < handle
                                     hybrid_sol.t, hybrid_sol.j, sliced_plot_values);
             [jumps_x, jumps_befores, jumps_afters] ...
                 = HybridPlotBuilder.separateJumps(hybrid_sol.t, hybrid_sol.j, sliced_plot_values);
-
-            % Add an invisible plot that will show up in the legend.
+            
+            % We 'plot' a invisible dummy point (NaN values are not
+            % visible in plots), which provides the line and marker
+            % appearance for the corresponding legend entry.
             % Drawing this point will also clear the plot if 'hold' is off.
-            this.addLegendEntry()
+            plt = plot(nan, nan, "Color", this.flow_color, ...
+                "LineStyle", this.flow_line_style, ...
+                "LineWidth", this.flow_line_width, ...
+                "Marker", this.jump_start_marker, ...
+                "MarkerSize", this.jump_start_marker_size, ...
+                "MarkerEdgeColor", this.jump_color);
+            this.addLegendEntry(plt)
             
             % We have to turn on hold while plotting the hybrid arc, so 
             % we save the current hold state and restore it at the end.
@@ -586,21 +616,7 @@ classdef HybridPlotBuilder < handle
             if index <= length(this.component_titles)
                 title(this.component_titles(index), "interpreter", this.text_interpreter)
             end
-        end
-
-        function addLegendEntry(this)
-            % We 'plot' a invisible dummy point (NaN values are not visible in plots), 
-            % which provides the line and marker appearance for the corresponding legend entry.
-            p = plot(nan, nan, "Color", this.flow_color, ...
-                                "LineStyle", this.flow_line_style, ...
-                                "LineWidth", this.flow_line_width, ...
-                                "Marker", this.jump_start_marker, ...
-                                "MarkerSize", this.jump_start_marker_size, ...
-                                "MarkerEdgeColor", this.jump_color);
-            this.plots_for_legend = [this.plots_for_legend, p];
-            this.axes_for_legend = [this.axes_for_legend, gca];
-        end
-                
+        end         
     end
     
     methods(Static, Hidden)
