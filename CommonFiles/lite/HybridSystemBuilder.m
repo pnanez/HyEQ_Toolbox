@@ -66,8 +66,4 @@ classdef HybridSystemBuilder
             this.priority = HybridPriority.FLOW;
         end
     end
-
-%     properties(Constant, Access = private)
-%         DEFAULT_FLOW_MAP =
-%     end
 end

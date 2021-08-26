@@ -145,6 +145,8 @@ classdef PairHybridSystem < HybridSystem
             
             sol = this.solve@HybridSystem(x0, tspan, jspan, config);
         end
+    end
+    methods(Access = protected)
         
         function [sol, ss1_sol, ss2_sol] = wrap_solution(this, t, j, x, tspan, jspan)
             % Create the HybridSolution object for the compound system.
@@ -197,6 +199,9 @@ classdef PairHybridSystem < HybridSystem
             ss_sols = {ss1_sol, ss2_sol};
             sol = CompoundHybridSolution(sol, ss_sols, tspan, jspan);
         end
+    end
+    
+    methods(Hidden) % Can we make this private?
         
         function [x1, x2, j1, j2] = split(this, x)
             x1 = x(this.x1_indices);

@@ -1,10 +1,9 @@
 classdef HybridUtils
-    %HYBRIDUTILS A collection of functions that are useful for working with
-    %hybrid system.
+% HYBRIDUTILS A collection of functions useful for working with hybrid systems.
 
     methods(Static)
 
-        function [jump_t, jump_j, jump_indices, is_jump] = jumpTimes(t, j)
+        function [jump_t, jump_start_j, jump_start_indices, is_jump_start] = jumpTimes(t, j)
             % JUMPTIMES Takes the t and j vectors output by HyEQsolver to find the time
             % values where jump events occur. Also returns the corresponding values
             % of j, the indices of the events, and an array containing ones in each 
@@ -14,20 +13,20 @@ classdef HybridUtils
 
             if length(t) == 1 % Handle the case of a trivial solution.
                 jump_t = []; 
-                jump_j = [];
-                jump_indices = [];
-                is_jump = 0;
+                jump_start_j = [];
+                jump_start_indices = [];
+                is_jump_start = 0;
                 return;
             end
 
-            is_jump = [diff(j) > 0; 0];
-            jump_indices = find(is_jump);
-            jump_t = t(jump_indices);
-            jump_j = j(jump_indices);
+            is_jump_start = [diff(j) > 0; 0];
+            jump_start_indices = find(is_jump_start);
+            jump_t = t(jump_start_indices);
+            jump_start_j = j(jump_start_indices);
         end
 
         function flow_lengths = flowLengths(t, j)
-            % FLOWLENGTHS Compute the flow lengths (duration between each jump).
+            % FLOWLENGTHS Compute the flow lengths of each interval of flows (i.e., the duration between each jump).
             
             % If the solution ends with an interval of flow, rather
             % than a jump, then we append the length of that last
@@ -81,22 +80,6 @@ classdef HybridUtils
                 cnvg_t = sol.t(cnvg_index);
                 cnvg_j = sol.j(cnvg_index);
             end
-        end
-
-        function plotflows(t, j, x)    
-            n = size(x, 2);
-            for i=1:min(n, 4)
-            	subplot(n, 1, i)
-                plotflows(t, j, x(:, i));
-            end           
-        end
-
-        function plotjumps(t, j, x)
-            n = size(x, 2);
-            for i=1:min(n, 4)
-            	subplot(n, 1, i)
-                plotjumps(t, j, x(:, i));
-            end      
         end
 
         function plotFlowLengths(sol)
@@ -178,22 +161,6 @@ classdef HybridUtils
             end
         end
     end
-end
-
-function x = prepend_entry_to_vector(x, value)
-    first_nonsingleton_dim = find(size(x) > 1);
-    if isempty(first_nonsingleton_dim)
-        first_nonsingleton_dim = 1;
-    end
-    x = cat(first_nonsingleton_dim, value, x);
-end
-
-function x = append_entry_to_vector(x, value)
-    first_nonsingleton_dim = find(size(x) > 1);
-    if isempty(first_nonsingleton_dim)
-        first_nonsingleton_dim = 1;
-    end
-    x = cat(first_nonsingleton_dim, x, value);
 end
 
 function [t, j, x] = remove_duplicate_hybrid_times(t, j, x)

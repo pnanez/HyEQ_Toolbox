@@ -27,7 +27,7 @@ classdef (Abstract) ControlledHybridSystem < handle
         D = jump_set_indicator(this, x, u, t, j)
     end
     
-    methods
+    methods(Access = ?CompoundHybridSystem)
         function sol = wrap_solution(this, t, j, x, u, tspan, jspan)
             % Override this method in subclasses to use other classes than
             % ControlledHybridSolution.
@@ -38,6 +38,10 @@ classdef (Abstract) ControlledHybridSystem < handle
             
             sol = ControlledHybridSolution(t, j, x, u, C_end, D_end, tspan, jspan);
         end
+        
+    end
+
+    methods
         
         function [f_vals, g_vals, C_vals, D_vals] = generateFGCD(this, t, j, x, u)
             % Compute the values of the flow and jump maps and sets at each

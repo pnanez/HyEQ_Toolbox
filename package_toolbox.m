@@ -5,8 +5,7 @@ toolbox_dirs = {'CommonFiles/lite', ...
     'CommonFiles/lite/examples', ...
     'CommonFiles/plottingFunctions', ...
     'CommonFiles/simulinkBased/Library2014b'};
-publish_dirs = {'helpFiles/Matlab_publish'};
-test_dir = "CommonFiles/lite/tests";
+publish_dirs = ["doc", "helpFiles/Matlab_publish", "helpFiles/Matlab_Publish/MatlabScripts/v3.0"];
 
 % Setup path
 for d = toolbox_dirs
@@ -18,10 +17,21 @@ addpath(test_dir)
 nTestsFailed = runTests();
 rmpath(test_dir)
 
-% Make sure we can run the GettingStarted live script.
-run doc/GettingStarted
-
-% TODO: Add publishing of help documents and figures.
+% Publish help files
+for d = publish_dirs
+    
+    addpath(d)
+    root_path = dir(fullfile(d,'*.m'));
+    
+    for i = 1:numel(root_path)
+        f = fullfile(root_path(i).folder, root_path(i).name);
+        outdir = fullfile(root_path(i).folder, "html");
+        assert(isfile(f));
+        publish(f);
+    end
+    
+    rmpath(d)
+end
 
 matlab.addons.toolbox.packageToolbox(projectFile)
 

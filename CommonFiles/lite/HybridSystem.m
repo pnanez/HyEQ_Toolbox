@@ -129,6 +129,9 @@ classdef (Abstract) HybridSystem < handle
             sol = this.wrap_solution(t, j, x, tspan, jspan);
         end
 
+    end
+    
+    methods(Access = protected)
         % Override this function to use other wrappers.
         function sol = wrap_solution(this, t, j, x, tspan, jspan)    
             xf = x(end, :)';
@@ -136,6 +139,10 @@ classdef (Abstract) HybridSystem < handle
             Df = this.jump_set_indicator_3args(xf, t(end), j(end));
             sol = HybridSolution(t, j, x, Cf, Df, tspan, jspan);
         end
+        
+    end
+    
+    methods
         
         function [f_vals, g_vals, C_vals, D_vals] = generateFGCD(this, sol)            
             assert(isa(sol, "HybridSolution"))

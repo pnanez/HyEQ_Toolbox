@@ -73,7 +73,9 @@ classdef PopupHybridProgress < HybridProgress
             delete(this.progressbar)
             this.progressbar = [];
         end
-       
+    end
+    
+    methods(Access = private)
         function openWaitbar(this)
             if isempty(this.progressbar)
                 % If this.progressbar is empty, then it has not been created
@@ -84,10 +86,6 @@ classdef PopupHybridProgress < HybridProgress
                     "Name", "Hybrid Solver Progress", ...
                     "CreateCancelBtn", cancel_callback);
             end
-        end
-        
-        function cancelSolver(this)
-            this.cancel = true;
         end
     end
     

@@ -7,10 +7,10 @@ classdef HybridProgress < handle
     end
 
     properties
-        cancel; % When true, HyEQSolver aborts.
+        cancel_solver; % When true, HyEQSolver aborts.
     end
 
-    properties(Dependent)
+    properties(Dependent, Access = protected)
         t_percent
         j_percent
     end
@@ -20,7 +20,7 @@ classdef HybridProgress < handle
         function init(this, tspan, jspan)
             this.tspan = tspan;
             this.jspan = jspan;
-            this.cancel = false;
+            this.cancel_solver = false;
             this.setBoth(tspan(1), jspan(1));
         end
 
@@ -61,8 +61,16 @@ classdef HybridProgress < handle
                       (this.jspan(2) - this.jspan(1));
         end
 
+    end
+
+    
+    methods(Access = protected)
         function s = j_progress_str(this)
             s = sprintf("j complete: %d in %s", this.j, mat2str(this.jspan));
+        end
+        
+        function cancelSolver(this)
+            this.cancel_solver = true;
         end
 
     end

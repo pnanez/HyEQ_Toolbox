@@ -27,7 +27,7 @@ classdef CompoundHybridSystem < HybridSystem
         kappa_D (:, 1) cell;
     end
     
-    properties(SetAccess = immutable)
+    properties(GetAccess = private, SetAccess = immutable)
         subsystems (:, 1) cell = {}; 
         subsys_n;
     end
@@ -186,7 +186,9 @@ classdef CompoundHybridSystem < HybridSystem
             
             sol = this.solve@HybridSystem(x0, tspan, jspan, config);
         end
-        
+    end
+    
+    methods(Access = protected)
         function sol = wrap_solution(this, t, j, x, tspan, jspan)
             % Create the HybridSolution object for the compound system.
             sol = this.wrap_solution@HybridSystem(t, j, x, tspan, jspan);
@@ -195,43 +197,43 @@ classdef CompoundHybridSystem < HybridSystem
             
             [xs_all, js_all] = this.split_many(x);
             for i=1:length(this.subsystems)
-               ss = this.subsystems{i};
-               ss_j = js_all(:, i);
-               ss_x = xs_all(:, this.x_indices{i});
-               ss_u = NaN(length(t), ss.control_dimension);
-               
-               % Create arrays is_a_ss1_jump_index and is_a_ss2_jump_index,
-               % which contain ones at entry where a jump occured in the
-               % corresponding system.
-               [~, ~, ~, is_jump] = HybridUtils.jumpTimes(t, ss_j);
-               
-               % Compute the input values
-               for k = 1:length(t)
-                   xs = {};
-                   for indices = this.x_indices 
-                       xs{end+1} = x(k, indices{1})';
-                   end
-                   ys = compute_outputs(this, xs, t, ss_j);
-                   if is_jump(k)
-                       % u(k, :) = this.kappa_D{i}(xs, t, ss_j)';
-                       ss_u(k, :) = eval_feedback(this.kappa_D{i}, ys, t, ss_j)';
-                   else % is flow
-                       % u(k, :) = this.kappa_C{i}(xs, t, ss_j)';
-                       ss_u(k, :) = eval_feedback(this.kappa_C{i}, ys, t, ss_j)';
-                   end
-               end
-               
-               % In order to find the TerminationCause for the subsystem
-               % solutions, we need to adjust jspan for each so that we only count
-               % jumps in the appropriate subystem. To this end, we calculate the
-               % number of jumps in each subsystem. The results
-               % are subtracted from the end of jspan to create jspan1 and
-               % jspan2.
-               ss_jump_count = ss_j(end) - ss_j(1);
-               others_jump_count = total_jump_count - ss_jump_count;
-               ss_jspan = [jspan(1), jspan(end) - others_jump_count];
-               ss_sols{i} = ss.wrap_solution(t, ss_j, ss_x, ss_u, tspan, ss_jspan); %#ok<AGROW>
-            end         
+                ss = this.subsystems{i};
+                ss_j = js_all(:, i);
+                ss_x = xs_all(:, this.x_indices{i});
+                ss_u = NaN(length(t), ss.control_dimension);
+                
+                % Create arrays is_a_ss1_jump_index and is_a_ss2_jump_index,
+                % which contain ones at entry where a jump occured in the
+                % corresponding system.
+                [~, ~, ~, is_jump] = HybridUtils.jumpTimes(t, ss_j);
+                
+                % Compute the input values
+                for k = 1:length(t)
+                    xs = {};
+                    for indices = this.x_indices
+                        xs{end+1} = x(k, indices{1})';
+                    end
+                    ys = compute_outputs(this, xs, t, ss_j);
+                    if is_jump(k)
+                        % u(k, :) = this.kappa_D{i}(xs, t, ss_j)';
+                        ss_u(k, :) = eval_feedback(this.kappa_D{i}, ys, t, ss_j)';
+                    else % is flow
+                        % u(k, :) = this.kappa_C{i}(xs, t, ss_j)';
+                        ss_u(k, :) = eval_feedback(this.kappa_C{i}, ys, t, ss_j)';
+                    end
+                end
+                
+                % In order to find the TerminationCause for the subsystem
+                % solutions, we need to adjust jspan for each so that we only count
+                % jumps in the appropriate subystem. To this end, we calculate the
+                % number of jumps in each subsystem. The results
+                % are subtracted from the end of jspan to create jspan1 and
+                % jspan2.
+                ss_jump_count = ss_j(end) - ss_j(1);
+                others_jump_count = total_jump_count - ss_jump_count;
+                ss_jspan = [jspan(1), jspan(end) - others_jump_count];
+                ss_sols{i} = ss.wrap_solution(t, ss_j, ss_x, ss_u, tspan, ss_jspan); %#ok<AGROW>
+            end
             sol = CompoundHybridSolution(sol, ss_sols, tspan, jspan);
         end
     end
