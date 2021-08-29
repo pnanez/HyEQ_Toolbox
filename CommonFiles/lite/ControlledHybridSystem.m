@@ -7,6 +7,10 @@ classdef (Abstract) ControlledHybridSystem < handle
         output_dimension
     end
     
+    properties
+        output = @(x, u, t, j) x;
+    end
+    
     %%%%%% System Data %%%%%% 
     methods(Abstract) 
 
@@ -27,7 +31,7 @@ classdef (Abstract) ControlledHybridSystem < handle
         D = jump_set_indicator(this, x, u, t, j)
     end
     
-    methods(Access = ?CompoundHybridSystem)
+    methods(Hidden)
         function sol = wrap_solution(this, t, j, x, u, tspan, jspan)
             % Override this method in subclasses to use other classes than
             % ControlledHybridSolution.
@@ -62,10 +66,6 @@ classdef (Abstract) ControlledHybridSystem < handle
                     g_vals(i, :) = this.jump_map(x_i, u_i, t(i), j(i))';
                 end
             end
-        end
-        
-        function y = output(this, x, u, t, j)
-            y = x;
         end
     end
 

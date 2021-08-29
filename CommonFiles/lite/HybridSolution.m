@@ -22,8 +22,6 @@ classdef HybridSolution < handle
 
     properties(GetAccess = protected, SetAccess = immutable)
         system;
-        tspan;
-        jspan;
         C_end;
         D_end;
     end
@@ -31,11 +29,6 @@ classdef HybridSolution < handle
     methods
         function this = HybridSolution(t, j, x, C_vals, D_vals, tspan, jspan)
             checkVectorSizes(t, j, x);
-            assert(t(1) == tspan(1), "t(1)=%f does equal the start of tspan=%s", t(1), mat2str(tspan))
-            assert(j(1) == jspan(1), "j(1)=%d does equal the start of jspan=%s", j(1), mat2str(jspan))
-
-            this.tspan = tspan;
-            this.jspan = jspan;
             this.t = t;
             this.j = j;
             this.x = x;
@@ -47,11 +40,16 @@ classdef HybridSolution < handle
             this.flow_lengths = HybridUtils.flowLengths(t, j);
             this.shortest_flow_length = min(this.flow_lengths);
             
-            this.C_end = C_vals(end);
-            this.D_end = D_vals(end);
-            
-            this.termination_cause = TerminationCause.getCause(...
-                    this.t, this.j, this.x, C_vals, D_vals, this.tspan, this.jspan);
+            if nargin == 7
+                assert(t(1) == tspan(1), "t(1)=%f does equal the start of tspan=%s", t(1), mat2str(tspan))
+                assert(j(1) == jspan(1), "j(1)=%d does equal the start of jspan=%s", j(1), mat2str(jspan))
+                
+                this.C_end = C_vals(end);
+                this.D_end = D_vals(end);
+                
+                this.termination_cause = TerminationCause.getCause(...
+                    this.t, this.j, this.x, C_vals, D_vals, tspan, jspan);
+            end
         end
 
         function plot(this, indices)
@@ -111,11 +109,11 @@ classdef HybridSolution < handle
             function val_end = evaluate_function(fh, x, t, j)
                 switch nargin(fh)
                     case 1
-                        val_end =  fh(x);
+                        val_end = fh(x);
                     case 2
-                        val_end =  fh(x, t);
+                        val_end = fh(x, t);
                     case 3
-                        val_end =  fh(x, t, j);
+                        val_end = fh(x, t, j);
                     otherwise
                         error("Unexpected number of input arguments for function handle")
                 end
@@ -128,7 +126,7 @@ classdef HybridSolution < handle
             out = NaN(length(time_indices), length(val0));
             
             for k=time_indices
-                out(k, :) = fh(this.x(k, :)', this.t(k), this.j(k))';
+                out(k, :) = evaluate_function(fh, this.x(k, :)', this.t(k), this.j(k))';
             end
         end
     end

@@ -12,7 +12,7 @@ classdef PairHybridSystem < HybridSystem
 %%% subsystems jump separately of each other, so we maintain separate discrete 
 %%% times).
 
-    properties(SetAccess = immutable)
+    properties(GetAccess = private, SetAccess = immutable)
         subsystem1 ControlledHybridSystem = DummyControlledHybridSystem()
         subsystem2 ControlledHybridSystem = DummyControlledHybridSystem()
         
@@ -64,6 +64,32 @@ classdef PairHybridSystem < HybridSystem
            obj.j1_index = n1 + n2 + 1;
            obj.j2_index = n1 + n2 + 2;
            obj.state_dimension = n1 + n2 + 2;
+        end
+    
+        function setContinuousFeedback(this, subsys, kappa_C)
+            ndx = subsys_arg_to_ndx(this, subsys);
+            switch ndx
+                case 1
+                    this.kappa_1C = kappa_C;
+                case 2
+                    this.kappa_2C = kappa_C;
+            end            
+        end
+    
+        function setDiscreteFeedback(this, subsys, kappa_D)
+            ndx = subsys_arg_to_ndx(this, subsys);
+            switch ndx
+                case 1
+                    this.kappa_1D = kappa_D;
+                case 2
+                    this.kappa_2D = kappa_D;
+            end
+        end
+    
+        function setFeedback(this, subsys, kappa)
+            ndx = subsys_arg_to_ndx(this, subsys);
+            this.setContinuousFeedback(ndx, kappa);
+            this.setDiscreteFeedback(ndx, kappa);
         end
     end
     
@@ -230,6 +256,26 @@ classdef PairHybridSystem < HybridSystem
                 error("Unexpected size: %s", mat2str(size(x)))
             end
         end
+
+        function ndx = subsys_arg_to_ndx(this, subsys)
+            if isa(subsys, "ControlledHybridSystem")
+                ndx = this.get_subsystem_index(subsys);
+                if isempty(ndx)
+                    error("Argument was not a subsystem in this system.")
+                end
+            elseif isnumeric(subsys) 
+                % Don't use isinteger here because Matlab interprets
+                % literal numbers in code, such as "2", as doubles.
+                ndx = subsys;
+            else
+                error("Arguement must be either a ControlledHybridSystem object or a integer");
+            end
+        end
+        
+        function ndx = get_subsystem_index(this, subsystem)
+            ndx = find(subsystem == [this.subsystem1, this.subsystem2]);
+        end
+        
     end
 end
 

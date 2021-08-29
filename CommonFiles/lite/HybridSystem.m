@@ -149,6 +149,12 @@ classdef (Abstract) HybridSystem < handle
             j = sol.j;
             x = sol.x;
             
+            if ~isempty(this.state_dimension)
+                assert(this.state_dimension == size(x, 2), ...
+                    "Expected length of x to be %d, instead was %d",...
+                    this.state_dimension, size(x, 2))
+            end
+            
             % Compute the values of the flow and jump maps and sets at each
             % point in the solution trajectory.
             f_vals = NaN(size(x));
@@ -169,7 +175,7 @@ classdef (Abstract) HybridSystem < handle
         end
     end
 
-    properties(SetAccess = private)
+    properties(SetAccess = private, Hidden)
         % It can be difficult to work with generic HybridSystem objects
         % because the functions have an undetermined number of arguments.
         % Additionally, we cannot pass the function handles @this.jump_map,

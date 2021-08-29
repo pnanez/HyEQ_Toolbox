@@ -73,6 +73,10 @@ classdef PopupHybridProgress < HybridProgress
             delete(this.progressbar)
             this.progressbar = [];
         end
+        
+        function delete(this)
+            this.done();
+        end
     end
     
     methods(Access = private)

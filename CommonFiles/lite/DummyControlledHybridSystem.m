@@ -4,6 +4,7 @@ classdef DummyControlledHybridSystem < ControlledHybridSystem
     properties (SetAccess = immutable) 
         state_dimension = 1;
         control_dimension = 1;
+        output_dimension = 1;
     end
     
     %%%%%% System Data %%%%%% 

@@ -1,4 +1,4 @@
-%% How to Create and Simulate Systems of Two Interlinked Hybrid Systems with Inputs
+%% How to Create and Simulate Multiple Interlinked Hybrid Systems
 %% Mathematical Formulation
 % In this document, we demonstrate how to use the Hybrid Equations Toolbox
 % to simulate multiple interlinked hybrid systems. 
@@ -80,22 +80,20 @@ subsystem2 = ExampleControlledHybridSystem();
 %% Create a Compound Hybrid System
 % Now that we have two subsystems, we merely pass these to the
 % |CompoundHybridSystem| constructor to create a coupled system.
-sys = CompoundHybridSystem({subsystem1, subsystem2});
+sys = CompoundHybridSystem(subsystem1, subsystem2);
 
 %%
-% Next, we set the feedback functions for each subsystem. The functions
-% |kappa_1C| and |kappa_1D| generate the input for subsystem1 during flows
-% and jumps, respectively, and |kappa_2C| and |kappa_2D| do the same for
-% subsystem 2. 
-sys.kappa_D
-% sys.setContinuousFeedback({@(x1, x2, t, j) -5, @(x1, x2, t, j) x1(1)-x2(1)}); 
-% sys.kappa_C{1} = @(x1, x2, t, j) -5;
-% sys.kappa_D{1} = @(x1, x2, t, j) 0; 
-% sys.kappa_C{2} = @(x1, x2, t, j) x1(1)-x2(1);   
-% sys.kappa_D{2} = @(x1, x2, t, j) 0;   
-sys.kappa_C{1} = @(x1, x2, t, j) -5;
-% sys.setContinuousFeedback({, ); 
-sys.kappa_C{2} = @(x1, x2, t, j) x1(1)-x2(1);
+% Next, we set the feedback functions for each subsystem. The continuous
+% feedback functions generate the input for the respective subsystem during
+% flows and the discrete feedback generates the input at jumps. 
+  
+sys.setContinuousFeedback(1, @(x1, x2, t, j) -5);
+sys.setContinuousFeedback(2, @(x1, x2, t, j) x1(1)-x2(1));
+
+%%
+% The display function prints useful information regarding the connections
+% between the subsystems.
+disp(sys)
 
 %% Compute a solution
 % To compute a solution, we call |solve| on the system, similar to a
@@ -151,19 +149,18 @@ hpb.legend("$\mathcal H_1$", "$\mathcal H_1$");
 % (Note: There is currently an  defect in the placement of legends for subplots, 
 % so the legends for all subplots are placed in the first one.)
 
-%% Plotting Control
-% Developing easy ways to plot the control signal is still under
-% development, but for now you can simply pass the t, j, and u from the
+%% Plotting Control Signal
+% We are still developing easy ways to plot the control signal, but for now
+% you can simply pass the t, j, and u from the 
 % subystem solutions to |plotflows|.
-figure()
-plotflows(sol.subsys_sols{2}.t, sol.subsys_sols{2}.j, sol.subsys_sols{2}.u)
-
+subsol = sol.subsys_sols{2};
+HybridPlotBuilder().plotflows(subsol.t, subsol.j, subsol.u)
 
 %% Single System
 % The |CompoundHybridSystem| class can also be used with a single subsystem
 % for cases where you want to be able to modify the feedback functions
 % without modifying the code for the system. 
-sys_1 = CompoundHybridSystem({subsystem1});
-sys_1.kappa_C{1} = @(x1, t, j) -5;   
-sys_1.kappa_D{1} = @(x1, t, j) 0;   
+sys_1 = CompoundHybridSystem(subsystem1);
+sys_1.setContinuousFeedback(1, @(x1, t, j) -5);   
+sys_1.setDiscreteFeedback(1, @(x1, t, j) 0);   
 sol = sys_1.solve({x1_initial}, tspan, jspan);

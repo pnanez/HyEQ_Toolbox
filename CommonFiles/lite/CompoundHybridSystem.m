@@ -12,29 +12,17 @@ classdef CompoundHybridSystem < HybridSystem
 %%% the first subsystem, j2 is the discrete time for the second subsystem,
 %%% and so on. (The subsystems jump separately of each other, so we
 %%% maintain separate discrete times).
-
-    properties
-        % Feedback function for each subsystem during flows. 
-        % Each entry must be set to a function handle with a signiture matching 
-        %    u = kappa_C(x1, x2, ..., xN, t, j)
-        % where N is the number of subsystems.
-        kappa_C (:, 1) cell;
-        
-        % Feedback functions for each subsystem at jumps. 
-        % Each entry must be set to a function handle with a signiture matching 
-        %    u = kappa_D(x1, x2, ..., xN, t, j)
-        % where N is the number of subsystems.
-        kappa_D (:, 1) cell;
-    end
     
-    properties(GetAccess = private, SetAccess = immutable)
+    properties(SetAccess = immutable)
         subsystems (:, 1) cell = {}; 
-        subsys_n;
     end
     
     properties(GetAccess = private, SetAccess = immutable) 
         % The following properties are private because they might change in
-        % future implementaitons. 
+        % future implementations. 
+        
+        % Number of subsystems
+        subsys_n;
         
         % Indicies within the compound state of subsystem1's state 
         x_indices cell
@@ -42,9 +30,26 @@ classdef CompoundHybridSystem < HybridSystem
         j_index (:, 1) int32 
     end
     
+    properties(Access = private)
+        % Feedback function for each subsystem during flows. 
+        % Each entry must be set to a function handle with a signiture matching 
+        %    u = kappa_C(x1, x2, ..., xN, t, j)
+        % where N is the number of subsystems.
+        kappa_C
+        
+        % Feedback functions for each subsystem at jumps.
+        % Each entry must be set to a function handle with a signiture matching
+        %    u = kappa_D(x1, x2, ..., xN, t, j)
+        % where N is the number of subsystems.
+        kappa_D
+    end
+    
     methods
-        function obj = CompoundHybridSystem(subsystems) % Constructor
+        function obj = CompoundHybridSystem(varargin) % Constructor
            obj = obj@HybridSystem();
+           subsystems = varargin;
+           assert(isa(subsystems{1}, "ControlledHybridSystem"))
+           assert(isscalar(subsystems{1}), "Input arguments must be scalars.")
            obj.subsystems = subsystems;
            subsys_n = length(subsystems);
            obj.subsys_n = subsys_n;
@@ -64,6 +69,45 @@ classdef CompoundHybridSystem < HybridSystem
            obj.kappa_C = generate_default_feedbacks(subsystems);
            obj.kappa_D = generate_default_feedbacks(subsystems);
         end
+    
+        function setContinuousFeedback(this, subsys, kappa_C)
+            ndx = subsys_arg_to_ndx(this, subsys);
+            this.kappa_C{ndx} = kappa_C;
+        end
+    
+        function setDiscreteFeedback(this, subsys, kappa_D)
+            ndx = subsys_arg_to_ndx(this, subsys);
+            this.kappa_D{ndx} = kappa_D;
+        end
+    
+        function setFeedback(this, subsys, kappa)
+            ndx = subsys_arg_to_ndx(this, subsys);
+            this.kappa_C{ndx} = kappa;
+            this.kappa_D{ndx} = kappa;
+        end
+        
+        function disp(this)
+            disp("CompoundHybridSystem:")
+            subsys_prefix = "├";
+            prop_prefix = "│";
+            for i = 1:this.subsys_n
+                ss = this.subsystems{i};
+                fprintf("%s Subsystem %d: %s\n", subsys_prefix, i, class(ss))
+                fprintf("%s \tContinuous feedback: %s\n", prop_prefix, func2str(this.kappa_C{i}))
+                fprintf("%s \t  Discrete feedback: %s\n", prop_prefix, func2str(this.kappa_D{i}))
+                fprintf("%s \t             Output: y%d=%s\n", prop_prefix, i, func2str(ss.output))
+                fprintf("%s \t         Dimensions: ", prop_prefix)
+                fprintf("State=%d, Input=%d, Output=%d\n", ...
+                    ss.state_dimension, ss.control_dimension, ss.output_dimension)
+                if i == this.subsys_n-1
+                    subsys_prefix = "└";
+                    prop_prefix = " ";
+                end
+            end
+            
+            
+        end
+    
     end
     
     methods(Sealed)
@@ -106,6 +150,7 @@ classdef CompoundHybridSystem < HybridSystem
                    xplus_i = xs{i};
                    jplus_i = j;
                end
+               assert_state_length(length(xplus_i), ss.state_dimension, i)
                xplus(this.x_indices{i}) = xplus_i;
                xplus(this.j_index(i)) = jplus_i;
             end
@@ -168,7 +213,7 @@ classdef CompoundHybridSystem < HybridSystem
             % so track the jumps for each in the last components of the 
             % compound state).
             assert(iscell(xs_0), "xs_0 must be a cell array")
-            assert(length(xs_0) == this.subsys_n, "Wrong number of initial states")
+            assert(length(xs_0) == this.subsys_n, "Wrong number of initial states. Expected=%d, actual=%d", this.subsys_n, length(xs_0))
             for i=1:this.subsys_n
                 ss_dim = this.subsystems{i}.state_dimension;
                 assert(all(size(xs_0{i}) == [ss_dim, 1]), ...
@@ -284,6 +329,25 @@ classdef CompoundHybridSystem < HybridSystem
                 ys{i} = this.subsystems{i}.output(xs{i}, t, js(i));
             end
         end
+
+        function ndx = subsys_arg_to_ndx(this, subsys)
+            if isa(subsys, "ControlledHybridSystem")
+                ndx = this.get_subsystem_index(subsys);
+                if isempty(ndx)
+                    error("Argument was not a subsystem in this system.")
+                end
+            elseif isnumeric(subsys) 
+                % Don't use isinteger here because Matlab interprets
+                % literal numbers in code, such as "2", as doubles.
+                ndx = subsys;
+            else
+                error("Argument must be either a ControlledHybridSystem object or an integer");
+            end
+        end
+        
+        function ndx = get_subsystem_index(this, subsystem)
+            ndx = find(cellfun(@(x)x == subsystem,this.subsystems));
+        end
     end
 end
 
@@ -312,7 +376,7 @@ function kappas = generate_default_feedbacks(subsystems)
 
 sys_count = length(subsystems);
 kappas = cell(sys_count, 1);
-args_fmt = join(repmat("x%d", sys_count, 1), ", ");
+args_fmt = join(repmat("y%d", sys_count, 1), ", ");
 feedback_arugments_string = sprintf(args_fmt, 1:sys_count);
 for i = 1:sys_count
     n = subsystems{i}.control_dimension;
@@ -322,9 +386,20 @@ end
 
 end
 
-function assert_control_length(u_length, subsys_control_dimension, sys_ndx)
-assert(u_length == subsys_control_dimension, ...
-   "Input is wrong size for system %d. Expected=%d, actual=%d.", ...
-   sys_ndx, subsys_control_dimension, u_length)
+function assert_control_length(u_length, subsys_input_dimension, sys_ndx)
+if ~(u_length == subsys_input_dimension)
+    err_id = 'CompoundHybridSystem:DoesNotMatchInputDimension';
+    msg = sprintf("Vector does not match input dimension for system %d. Expected=%d, actual=%d.", ...
+        sys_ndx, subsys_input_dimension, u_length);
+    throwAsCaller(MException(err_id,msg))
+end
+end
 
+function assert_state_length(x_length, subsys_state_dimension, sys_ndx)
+if ~(x_length == subsys_state_dimension)
+    err_id = 'CompoundHybridSystem:DoesNotMatchStateDimension';
+    msg = sprintf("Vector does not match state dimension for system %d. Expected=%d, actual=%d.", ...
+        sys_ndx, subsys_state_dimension, x_length);
+    throwAsCaller(MException(err_id,msg))    
+end
 end
