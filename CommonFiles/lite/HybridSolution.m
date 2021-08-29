@@ -120,7 +120,7 @@ classdef HybridSolution < handle
             end
             
             ndx0 = time_indices(1);
-            val0 = evaluate_function(fh, this.x(ndx0), this.t(ndx0), this.j(ndx0));
+            val0 = evaluate_function(fh, this.x(ndx0, :)', this.t(ndx0), this.j(ndx0))';
             assert(isvector(val0), "Function handle does not return a vector")
             
             out = NaN(length(time_indices), length(val0));

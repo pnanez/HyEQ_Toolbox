@@ -215,7 +215,9 @@ classdef HybridPlotBuilder < handle
             this.text_interpreter = interpreter;
         end
 
-        function plotflows(this, hybrid_sol)
+        function plotflows(this, varargin)
+            hybrid_sol = hybrid.internal.convert_varargin_to_solution_obj(varargin);
+            
             indices_to_plot = indicesToPlot(this, hybrid_sol);
                         
             nplot = length(indices_to_plot);
@@ -224,7 +226,8 @@ classdef HybridPlotBuilder < handle
             this.plot_from_ids(hybrid_sol, axis1_ids, indices_to_plot);
         end
 
-        function plotjumps(this, hybrid_sol)
+        function plotjumps(this, varargin)
+            hybrid_sol = hybrid.internal.convert_varargin_to_solution_obj(varargin);
             indices_to_plot = indicesToPlot(this, hybrid_sol);
                         
             nplot = length(indices_to_plot);
@@ -233,7 +236,8 @@ classdef HybridPlotBuilder < handle
             this.plot_from_ids(hybrid_sol, axis1_ids, indices_to_plot);
         end
 
-        function plotHybridArc(this, hybrid_sol)
+        function plotHybridArc(this, varargin)
+            hybrid_sol = hybrid.internal.convert_varargin_to_solution_obj(varargin);
             indices_to_plot = indicesToPlot(this, hybrid_sol);
 
             nplot = length(indices_to_plot);
@@ -243,7 +247,7 @@ classdef HybridPlotBuilder < handle
             this.plot_from_ids(hybrid_sol, axis1_ids, axis2_ids, axis3_ids)
         end
 
-        function plot(this, hybrid_sol)
+        function plot(this, varargin)
             % PLOT Plot the hybrid solution in an intelligent way.
             % The output of depends on the dimension of the system 
             % (or the number of components selected with 'slice()'). 
@@ -252,6 +256,7 @@ classdef HybridPlotBuilder < handle
             % - 2D: a 2D phase plot
             % - 3D: a 3D phase plot
             % - 4D+: a set of 1D subplots generated using plotflows.
+            hybrid_sol = hybrid.internal.convert_varargin_to_solution_obj(varargin);
             sliced_indices = indicesToPlot(this, hybrid_sol);
             dimensions = length(sliced_indices);
             
@@ -450,10 +455,10 @@ classdef HybridPlotBuilder < handle
                 sliced_plot_values(~this.timestepsFilter) = NaN;
             end
             
-            flows_x = HybridPlotBuilder.separateFlows(...
+            flows_x = hybrid.internal.separateFlowsWithNaN(...
                                     hybrid_sol.t, hybrid_sol.j, sliced_plot_values);
             [jumps_x, jumps_befores, jumps_afters] ...
-                = HybridPlotBuilder.separateJumps(hybrid_sol.t, hybrid_sol.j, sliced_plot_values);
+                = hybrid.internal.separateJumpsWithNaN(hybrid_sol.t, hybrid_sol.j, sliced_plot_values);
             
             % We 'plot' a invisible dummy point (NaN values are not
             % visible in plots), which provides the line and marker
@@ -621,82 +626,6 @@ classdef HybridPlotBuilder < handle
             end
         end         
     end
-    
-    methods(Static, Hidden)
-       
-        function flows_x = separateFlows(t, j, x)
-            [~, ~, ~, is_jump] = HybridUtils.jumpTimes(t, j);
-            
-            if length(t) <= 1
-                flows_x = [];
-                return
-            end
-
-            % Modify is_jump by prepending a 1 and setting the last entry
-            % to 1. These changes emulate 'virtual' jumps immediately prior
-            % to and after the given hybrid time domain.
-            is_jump = [1; is_jump(1:(end-1)); 1];
-            
-            % Everywhere in the domain where the previous entry was a jump
-            % and the next entry is not is the start of an interval of
-            % flow.
-            is_start_of_flow = diff(is_jump) == -1;
-            
-            % Similarly, everywhere in the domain where the previous entry
-            % was not a jump and the next entry is a jump, is the end of
-            % an interval of flow.
-            is_end_of_flow = diff(is_jump) == 1;
-            
-            start_of_flow_ndxs = find(is_start_of_flow);
-            end_of_flow_ndxs = find(is_end_of_flow);
-            
-            n_flows = sum(is_start_of_flow);
-            n_interior_flow_boundaries = n_flows - 1;
-            n_flow_entries = sum(end_of_flow_ndxs - start_of_flow_ndxs + 1);
-            
-            % Create an array to hold the values with NaN padding between
-            % flows.
-            flows_x = NaN(n_flow_entries+n_interior_flow_boundaries, size(x, 2));
-            
-            % out_start_ndx tracks the starting index for the output array.
-            out_start_ndx = 1;
-            for i = 1:n_flows
-                start_ndx = start_of_flow_ndxs(i);
-                end_ndx = end_of_flow_ndxs(i);
-                ndx_count = end_ndx - start_ndx + 1;
-                
-                in_ndxs = start_ndx:end_ndx;
-                out_ndxs = out_start_ndx:(out_start_ndx + ndx_count - 1);
-                flows_x(out_ndxs, :) = x(in_ndxs, :);
-                
-                out_start_ndx = out_start_ndx + ndx_count + 1;
-            end
-        end
-        
-        function [jumps_x, jumps_befores, jumps_afters] = separateJumps(t, j, x)
-            [~, ~, jump_indices] = HybridUtils.jumpTimes(t, j);
-
-            jump_count = length(jump_indices);
-            
-            % Create an array to hold the values with NaN padding between
-            % flows.
-            n = size(x, 2);
-            jumps_befores = NaN(3*jump_count, n);
-            jumps_afters = NaN(3*jump_count, n);
-            jumps_x = NaN(3*jump_count, n);
-
-            for i=1:jump_count
-                jump_ndx = jump_indices(i);
-                offset = 3*(i-1);
-                jumps_befores(1 + offset, :) = x(jump_ndx, :);
-                if jump_ndx < size(x, 1)
-                    jumps_afters(1 + offset, :) = x(jump_ndx+1, :);
-                end 
-            end
-            jumps_x(1:3:end, :) = jumps_befores(1:3:end, :);
-            jumps_x(2:3:end, :) = jumps_afters(1:3:end, :);
-        end 
-    end
 end
         
 %%% Local functions %%%
@@ -710,6 +639,7 @@ function sp = open_subplot(subplots_count, index)
         hold on
     end
 end
+
 
 function plot_values = create_plot_values(sol, xaxis_id, yaxis_id, zaxis_id)
 % CREATE_PLOT_VALUES Create an array containing the values from the corresponding id in each column.
