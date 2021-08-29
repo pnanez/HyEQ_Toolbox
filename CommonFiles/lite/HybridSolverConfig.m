@@ -2,6 +2,8 @@ classdef HybridSolverConfig < handle
 
     properties
         ode_solver string = "ode45";
+        hybrid_priority = HybridPriority.JUMP;
+        mass_matrix = [];
     end
     
     properties(SetAccess = private)
@@ -53,6 +55,14 @@ classdef HybridSolverConfig < handle
                 error("The 'ode15i' solver is not supported");
             end
             this.ode_solver = ode_solver;
+        end
+
+        function this = jumpPriority(this)
+            this.hybrid_priority = HybridPriority.JUMP;
+        end
+
+        function this = flowPriority(this)
+            this.hybrid_priority = HybridPriority.FLOW;
         end
 
         function this = RelTol(this, relTol)

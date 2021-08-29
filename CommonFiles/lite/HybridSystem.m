@@ -1,9 +1,6 @@
 classdef (Abstract) HybridSystem < handle
 
     properties
-        hybrid_priority = HybridPriority.JUMP;
-        mass_matrix = [];
-
         % State dimension is an optional property. If set, additional error
         % checking is enabled.
         state_dimension;
@@ -121,8 +118,9 @@ classdef (Abstract) HybridSystem < handle
                                    this.flow_set_indicator_3args, ...
                                    this.jump_set_indicator_3args, ...
                                    x0, tspan, jspan, ...
-                                   this.hybrid_priority, config.ode_options, ...
-                                   config.ode_solver, this.mass_matrix, config.progressListener);
+                                   config.hybrid_priority, config.ode_options, ...
+                                   config.ode_solver, config.mass_matrix, ...
+                                   config.progressListener);
                         
             % Wrap solution in HybridSolution class (or another class if
             % the function wrap_solution is overriden).

@@ -40,18 +40,6 @@ tspan = [0, 30];
 jspan = [0, 30];
 sol = bb_system.solve(x0, tspan, jspan);
 
-%%
-% By default, the hybrid solver gives precedence to jumps when the solution
-% is in the intersection of the flow and jump sets. This can be changed by
-% setting the |hybrid_priority| property to one of the enumeration values
-% in |HybridPriority|.
-bb_system.hybrid_priority = HybridPriority.FLOW;
-
-%%
-% This creates incorrect behavior for this system, however, so we reset the priority to jumps:
-bb_system.hybrid_priority = HybridPriority.JUMP;
-
-
 %% Interpret the Solution
 % The return value of the |solve| method is a |HybridSolution| object and contains 
 % various information about the solution.
@@ -97,6 +85,14 @@ sol
 % the default behavior):
 config = HybridSolverConfig();
 bb_system.solve(x0, tspan, jspan, config);
+
+%%
+% By default, the hybrid solver gives precedence to jumps when the solution
+% is in the intersection of the flow and jump sets. This can be changed by
+% setting the |hybrid_priority| property to one of the enumeration values
+% in |HybridPriority|.
+config.hybrid_priority = HybridPriority.FLOW;
+config.hybrid_priority = HybridPriority.JUMP;
 
 %% 
 % The ODE solver and options can be modified in |config|. The functions 

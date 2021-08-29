@@ -14,7 +14,6 @@ classdef HybridSystemBuilder
         jump_map_handle = @(x) 0;
         flow_set_indicator_handle = @(x) 0;
         jump_set_indicator_handle = @(x) 0;
-        priority = HybridPriority.JUMP; % Matches default for HyEQsolver.
     end
 
     methods 
@@ -23,7 +22,6 @@ classdef HybridSystemBuilder
                                            this.jump_map_handle, ...
                                            this.flow_set_indicator_handle, ...
                                            this.jump_set_indicator_handle);
-            hybridSystem.hybrid_priority = this.priority;
         end
 
         function this = flowMap(this, flow_map_handle)
@@ -56,14 +54,6 @@ classdef HybridSystemBuilder
 
         function this = D(this, jump_set_indicator_handle)
             this.jump_set_indicator_handle = jump_set_indicator_handle;
-        end
-
-        function this = jumpPriority(this)
-            this.priority = HybridPriority.JUMP;
-        end
-
-        function this = flowPriority(this)
-            this.priority = HybridPriority.FLOW;
         end
     end
 end

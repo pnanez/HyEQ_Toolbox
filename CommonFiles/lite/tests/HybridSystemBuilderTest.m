@@ -50,11 +50,11 @@ classdef HybridSystemBuilderTest < matlab.unittest.TestCase
         function testJumpPriority(testCase)
             builder = HybridSystemBuilder() ...
                             .flowSetIndicator(@(x) 1) ...
-                            .jumpSetIndicator(@(x) 1) ...
-                            .jumpPriority();
+                            .jumpSetIndicator(@(x) 1);
 
             system = builder.build();
-            sol = system.solve(12, [0, 100], [1, 5], "silent");
+            config = HybridSolverConfig("silent").jumpPriority();
+            sol = system.solve(12, [0, 100], [1, 5], config);
 
             testCase.assertEqual(sol.t(end), 0);
             testCase.assertEqual(sol.j(end), 5);
@@ -64,13 +64,13 @@ classdef HybridSystemBuilderTest < matlab.unittest.TestCase
             builder = HybridSystemBuilder() ...
                             .flowMap(@(x) 1)...
                             .flowSetIndicator(@(x) 1) ...
-                            .jumpSetIndicator(@(x) 1) ...
-                            .flowPriority();
+                            .jumpSetIndicator(@(x) 1);
             system = builder.build();
             
             tspan = [0, 100];
             jspan = [1, 5];
-            sol = system.solve(12, tspan, jspan, "silent");
+            config = HybridSolverConfig("silent").flowPriority();
+            sol = system.solve(12, tspan, jspan, config);
 
             testCase.assertEqual(sol.t(end), 100);
             testCase.assertEqual(sol.j(end), jspan(1));
