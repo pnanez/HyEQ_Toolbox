@@ -17,7 +17,7 @@ classdef ExampleControlledHybridSystem < ControlledHybridSystem
         end
 
         function xplus = jump_map(this, x, u, t, j) 
-            xplus = [x(1); -this.bounce_coef*x(2)];
+            xplus = [x(1); -this.bounce_coef*x(2) + u];
         end 
 
         function C = flow_set_indicator(this, x, u, t, j)

@@ -8,7 +8,7 @@ classdef (Abstract) ControlledHybridSystem < handle
     end
     
     properties
-        output = @(x, u, t, j) x;
+        output = @(x) x;
     end
     
     %%%%%% System Data %%%%%% 

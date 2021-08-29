@@ -2,7 +2,7 @@ function nFailed = runTests()
 testFiles = what("tests");
 testFiles = testFiles.m(endsWith(testFiles.m, "Test.m"));
 
-results = runtests(testFiles, "Strict", 1);
+results = runtests(testFiles, "Strict", true);
 
 nFailed = 0;
 for i = 1:length(results)

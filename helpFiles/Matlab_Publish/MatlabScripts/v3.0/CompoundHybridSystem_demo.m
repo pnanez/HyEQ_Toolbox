@@ -86,13 +86,13 @@ sys = CompoundHybridSystem(subsystem1, subsystem2);
 % Next, we set the feedback functions for each subsystem. The continuous
 % feedback functions generate the input for the respective subsystem during
 % flows and the discrete feedback generates the input at jumps. 
-  
 sys.setContinuousFeedback(1, @(x1, x2, t, j) -5);
 sys.setContinuousFeedback(2, @(x1, x2, t, j) x1(1)-x2(1));
-
+sys.setDiscreteFeedback(1, @(x1, x2, t, j) x1(1));
 %%
 % The display function prints useful information regarding the connections
-% between the subsystems.
+% between the subsystems. Note that by default, feedback functions return a
+% zero vector of the appropriate size.
 disp(sys)
 
 %% Compute a solution
@@ -145,16 +145,12 @@ hpb.flowColor("k").jumpColor("g")...
 
 hpb.legend("$\mathcal H_1$", "$\mathcal H_1$");
 
-%%
-% (Note: There is currently an  defect in the placement of legends for subplots, 
-% so the legends for all subplots are placed in the first one.)
-
 %% Plotting Control Signal
 % We are still developing easy ways to plot the control signal, but for now
 % you can simply pass the t, j, and u from the 
 % subystem solutions to |plotflows|.
 subsol = sol.subsys_sols{2};
-HybridPlotBuilder().plotflows(subsol.t, subsol.j, subsol.u)
+HybridPlotBuilder().plotflows(subsol, subsol.u)
 
 %% Single System
 % The |CompoundHybridSystem| class can also be used with a single subsystem

@@ -1,38 +1,45 @@
 close all
 
+do_publish = false;
+do_tests = false;
+do_package = false;
+
 projectFile = 'HybridEquationsToolbox.prj';
 toolbox_dirs = {'CommonFiles/lite', ...
     'CommonFiles/lite/examples', ...
     'CommonFiles/plottingFunctions', ...
     'CommonFiles/simulinkBased/Library2014b'};
 publish_dirs = ["doc", "helpFiles/Matlab_publish", "helpFiles/Matlab_Publish/MatlabScripts/v3.0"];
-
+test_dir = "CommonFiles/lite/tests";
 % Setup path
 for d = toolbox_dirs
     addpath(d{1})
 end
 
-% Run Tests
-addpath(test_dir)
-nTestsFailed = runTests();
-rmpath(test_dir)
-
-% Publish help files
-for d = publish_dirs
-    
-    addpath(d)
-    root_path = dir(fullfile(d,'*.m'));
-    
-    for i = 1:numel(root_path)
-        f = fullfile(root_path(i).folder, root_path(i).name);
-        outdir = fullfile(root_path(i).folder, "html");
-        assert(isfile(f));
-        publish(f);
-    end
-    
-    rmpath(d)
+if do_tests
+    % Run Tests
+    addpath(test_dir)
+    nTestsFailed = runTests();
+    rmpath(test_dir)
 end
 
+if do_publish
+    % Publish help files
+    for d = publish_dirs
+        
+        addpath(d)
+        root_path = dir(fullfile(d,'*.m'));
+        
+        for i = 1:numel(root_path)
+            f = fullfile(root_path(i).folder, root_path(i).name);
+            outdir = fullfile(root_path(i).folder, "html");
+            assert(isfile(f));
+            publish(f);
+        end
+        
+        rmpath(d)
+    end
+end
 matlab.addons.toolbox.packageToolbox(projectFile)
 
 % Cleanup path

@@ -24,7 +24,7 @@ classdef CompoundHybridSystem < HybridSystem
         % Number of subsystems
         subsys_n;
         
-        % Indicies within the compound state of subsystem1's state 
+        % Indicies within the compound state of each subsystem's state 
         x_indices cell
         % Index within the compound state of subsystem1's discrete time.
         j_index (:, 1) int32 
@@ -47,9 +47,7 @@ classdef CompoundHybridSystem < HybridSystem
     methods
         function obj = CompoundHybridSystem(varargin) % Constructor
            obj = obj@HybridSystem();
-           subsystems = varargin;
-           assert(isa(subsystems{1}, "ControlledHybridSystem"))
-           assert(isscalar(subsystems{1}), "Input arguments must be scalars.")
+           subsystems = split_constructor_varagin(varargin);
            obj.subsystems = subsystems;
            subsys_n = length(subsystems);
            obj.subsys_n = subsys_n;
@@ -72,22 +70,25 @@ classdef CompoundHybridSystem < HybridSystem
     
         function setContinuousFeedback(this, subsys, kappa_C)
             ndx = subsys_arg_to_ndx(this, subsys);
+            this.check_feedback(kappa_C)
             this.kappa_C{ndx} = kappa_C;
         end
     
         function setDiscreteFeedback(this, subsys, kappa_D)
             ndx = subsys_arg_to_ndx(this, subsys);
+            this.check_feedback(kappa_D)
             this.kappa_D{ndx} = kappa_D;
         end
     
         function setFeedback(this, subsys, kappa)
             ndx = subsys_arg_to_ndx(this, subsys);
+            this.check_feedback(kappa)
             this.kappa_C{ndx} = kappa;
             this.kappa_D{ndx} = kappa;
         end
         
         function disp(this)
-            disp("CompoundHybridSystem:")
+            disp(class(this) + ":")
             subsys_prefix = "├";
             prop_prefix = "│";
             for i = 1:this.subsys_n
@@ -114,7 +115,7 @@ classdef CompoundHybridSystem < HybridSystem
         
         function xdot = flow_map(this, x, t) 
             [xs, js] = this.split(x);
-            ys = this.compute_outputs(xs, t, js);
+            ys = this.compute_outputs(xs);
             % We set xdot to zeros and then fill in the entries
             % corresponding to the state of each subsystem and leave zero
             % the entries corresponding to the j-values.  
@@ -131,7 +132,7 @@ classdef CompoundHybridSystem < HybridSystem
 
         function xplus = jump_map(this, x, t)  
             [xs, js] = this.split(x);
-            ys = this.compute_outputs(xs, t, js);
+            ys = this.compute_outputs(xs);
             xplus = NaN(this.state_dimension, 1);
             for i=1:length(this.subsystems)
                ss = this.subsystems{i};
@@ -162,7 +163,7 @@ classdef CompoundHybridSystem < HybridSystem
             % state is in (C union D)).
             C = true; 
             [xs, js] = this.split(x);
-            ys = this.compute_outputs(xs, t, js);
+            ys = this.compute_outputs(xs);
             for i=1:length(this.subsystems)
                ss = this.subsystems{i};
                j = js(i);
@@ -184,7 +185,7 @@ classdef CompoundHybridSystem < HybridSystem
         function D = jump_set_indicator(this, x, t)
             D = false; 
             [xs, js] = this.split(x);
-            ys = this.compute_outputs(xs, t, js);
+            ys = this.compute_outputs(xs);
             for i=1:length(this.subsystems)
                ss = this.subsystems{i};
                j = js(i);
@@ -212,8 +213,17 @@ classdef CompoundHybridSystem < HybridSystem
             % the compound state. (The subsystems can jump at separate times, 
             % so track the jumps for each in the last components of the 
             % compound state).
-            assert(iscell(xs_0), "xs_0 must be a cell array")
-            assert(length(xs_0) == this.subsys_n, "Wrong number of initial states. Expected=%d, actual=%d", this.subsys_n, length(xs_0))
+            if ~iscell(xs_0)
+                error("CompoundHybridSystem:InitialStateNotCell", ...
+                    "Initial states xs_0 was a %s instead of a cell array.", ...
+                    class(xs_0))
+            end
+            
+            if length(xs_0) ~= this.subsys_n
+                error("CompoundHybridSystem:WrongNumberOfInitialStates", ...
+                    "Wrong number of initial states. Expected=%d, actual=%d", ...
+                    this.subsys_n, length(xs_0))
+            end
             for i=1:this.subsys_n
                 ss_dim = this.subsystems{i}.state_dimension;
                 assert(all(size(xs_0{i}) == [ss_dim, 1]), ...
@@ -227,6 +237,12 @@ classdef CompoundHybridSystem < HybridSystem
             
             if ~exist("config", "var")
                 config = HybridSolverConfig();
+            end
+            
+            if config.hybrid_priority == HybridPriority.FLOW
+                warning("CompoundHybridSystem:FlowPriorityNotSupported", "Using CompoundHybridSystems with FLOW priority is not reccomended. " + ...
+                    "When two subsystems are in their respective jump sets and one of them leaves " +...
+                    "its flow set, then the state of both will jump, violating flow priority.")
             end
             
             sol = this.solve@HybridSystem(x0, tspan, jspan, config);
@@ -258,7 +274,7 @@ classdef CompoundHybridSystem < HybridSystem
                     for indices = this.x_indices
                         xs{end+1} = x(k, indices{1})';
                     end
-                    ys = compute_outputs(this, xs, t, ss_j);
+                    ys = compute_outputs(this, xs);
                     if is_jump(k)
                         % u(k, :) = this.kappa_D{i}(xs, t, ss_j)';
                         ss_u(k, :) = eval_feedback(this.kappa_D{i}, ys, t, ss_j)';
@@ -323,10 +339,10 @@ classdef CompoundHybridSystem < HybridSystem
             end
         end
         
-        function ys = compute_outputs(this, xs, t, js)
+        function ys = compute_outputs(this, xs)
             ys = cell(this.subsys_n, 1);
             for i = 1:this.subsys_n
-                ys{i} = this.subsystems{i}.output(xs{i}, t, js(i));
+                ys{i} = this.subsystems{i}.output(xs{i});
             end
         end
 
@@ -348,7 +364,27 @@ classdef CompoundHybridSystem < HybridSystem
         function ndx = get_subsystem_index(this, subsystem)
             ndx = find(cellfun(@(x)x == subsystem,this.subsystems));
         end
+        
+        function check_feedback(this, kappa)
+            nargs = nargin(kappa);
+            expected_nargs = this.subsys_n + 2;
+            if nargs ~= expected_nargs
+               error("CompoundHybridSystem:WrongNumberFeedbackInputArgs", ...
+                   "Wrong number of input arguments. Expected=%d, actual=%d.",...
+                   expected_nargs, nargs) 
+            end
+        end
     end
+end
+
+function subsystems = split_constructor_varagin(varargin_cell)
+subsystems = varargin_cell;
+for i = 1:length(subsystems)
+    assert(isa(subsystems{i}, "ControlledHybridSystem"), ...
+        "subsystem{%d} was a %s instead of a ControlledHybridSystem", ...
+        i, class(subsystems{i}))
+    assert(isscalar(subsystems{i}), "Input arguments must be scalars.")
+end
 end
 
 function u = eval_feedback(kappa, ys, t, j)

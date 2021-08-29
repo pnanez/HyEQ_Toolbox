@@ -248,11 +248,11 @@ classdef (Abstract) HybridSystem < handle
         end
 
         function assert_functions_can_be_evaluated_at_point(this, x, t, j)
-            assert_function_can_be_evaluated(this.flow_map_3args, x, t, j)
-            assert_function_can_be_evaluated(this.jump_map_3args, x, t, j)
-            assert_function_can_be_evaluated(this.flow_set_indicator_3args, x, t, j)
-            assert_function_can_be_evaluated(this.jump_set_indicator_3args, x, t, j)
-        end   
+            assert_function_can_be_evaluated(this.flow_map_3args, x, t, j, "flow_map")
+            assert_function_can_be_evaluated(this.jump_map_3args, x, t, j, "jump_map")
+            assert_function_can_be_evaluated(this.flow_set_indicator_3args, x, t, j, "flow_set_indicator")
+            assert_function_can_be_evaluated(this.jump_set_indicator_3args, x, t, j, "jump_set_indicator")
+        end
 
         function nargs = implementated_nargs(this, function_name)
             % For abstract methods, we cannot use the function nargin to
@@ -267,11 +267,14 @@ classdef (Abstract) HybridSystem < handle
     end
 end
 
-function assert_function_can_be_evaluated(func_handl, x, t, j)
+function assert_function_can_be_evaluated(func_handl, x, t, j, function_name)
     try
         func_handl(x, t, j);
-    catch e
-        warning("Could not evaluate '%s'=%s at x0=%s, t=%0.2f, j=%d.", char(func_handl), mat2str(x), t, j)
+    catch e        
+        cause = MException("HybridSystem:CannotEvaluateFunction", ...
+            "Could not evaluate '%s' at x0=%s, t=%0.2f, j=%d.", ...
+            function_name, mat2str(x), t, j);
+        e = e.addCause(cause);
         rethrow(e)
     end
 end

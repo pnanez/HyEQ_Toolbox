@@ -19,11 +19,15 @@ classdef ZOHController < ControlledHybridSystem
     methods
         function obj = ZOHController(zoh_dim, sample_time)
             obj.sample_time = sample_time;
+            zoh_dim = int32(zoh_dim);
             obj.zoh_dim = zoh_dim;
             obj.zoh_indices = 1:zoh_dim;
             obj.timer_index = zoh_dim + 1;
             obj.state_dimension = zoh_dim + 1;
             obj.control_dimension = zoh_dim;
+            obj.output_dimension = zoh_dim;
+            
+            obj.output = @(x) x(this.zoh_indices);
         end
         
         function xdot = flow_map(this, ~, ~, ~, ~)  
@@ -43,10 +47,6 @@ classdef ZOHController < ControlledHybridSystem
         function D = jump_set_indicator(this, x, ~, ~, ~)
             timer = x(this.timer_index);
             D = timer >= this.sample_time;
-        end
-        
-        function y = output(this, x, u, t, j)
-            y = x(this.zoh_indices);
         end
     end
     
