@@ -71,17 +71,20 @@ classdef CompoundHybridSystem < HybridSystem
         function setContinuousFeedback(this, subsys, kappa_C)
             ndx = subsys_arg_to_ndx(this, subsys);
             this.check_feedback(kappa_C)
+            warn_if_input_dim_zero(this, ndx, "setContinuousFeedback")
             this.kappa_C{ndx} = kappa_C;
         end
     
         function setDiscreteFeedback(this, subsys, kappa_D)
             ndx = subsys_arg_to_ndx(this, subsys);
+            warn_if_input_dim_zero(this, ndx, "setDiscreteFeedback")
             this.check_feedback(kappa_D)
             this.kappa_D{ndx} = kappa_D;
         end
     
         function setFeedback(this, subsys, kappa)
             ndx = subsys_arg_to_ndx(this, subsys);
+            warn_if_input_dim_zero(this, ndx, "setFeedback")
             this.check_feedback(kappa)
             this.kappa_C{ndx} = kappa;
             this.kappa_D{ndx} = kappa;
@@ -226,9 +229,11 @@ classdef CompoundHybridSystem < HybridSystem
             end
             for i=1:this.subsys_n
                 ss_dim = this.subsystems{i}.state_dimension;
-                assert(all(size(xs_0{i}) == [ss_dim, 1]), ...
-                    "System %d has state dimension %d but the initial value had shape %s.",...
+                if any((size(xs_0{i}) ~= [ss_dim, 1]))
+                    error("CompoundHybridSystem:WrongNumberOfInitialStates",...
+                        "System %d has state dimension %d but the initial value had shape %s.",...
                     i, ss_dim, mat2str(size(xs_0{i})));
+                end
             end
             xs_0 = cat(1, xs_0{:});
             js_0 = jspan(1)*ones(length(this.subsystems), 1);
@@ -354,7 +359,7 @@ classdef CompoundHybridSystem < HybridSystem
                 end
             elseif isnumeric(subsys) 
                 % Don't use isinteger here because Matlab interprets
-                % literal numbers in code, such as "2", as doubles.
+                % literal numbers in code (such as "2") as doubles.
                 ndx = subsys;
             else
                 error("Argument must be either a ControlledHybridSystem object or an integer");
@@ -437,5 +442,13 @@ if ~(x_length == subsys_state_dimension)
     msg = sprintf("Vector does not match state dimension for system %d. Expected=%d, actual=%d.", ...
         sys_ndx, subsys_state_dimension, x_length);
     throwAsCaller(MException(err_id,msg))    
+end
+end
+
+function warn_if_input_dim_zero(this, ndx, function_name)
+if this.subsystems{ndx}.input_dimension == 0
+    warning("CompoundHybridSystem:SystemHasNoInputs", ...
+        "%s() was called for subsystem %d, but this system does not have input.", ...
+        function_name, ndx)
 end
 end

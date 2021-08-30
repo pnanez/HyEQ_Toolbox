@@ -127,12 +127,13 @@ classdef CompoundHybridSystemTest < matlab.unittest.TestCase
         
         function testInitialStatesWrongSize(testCase)
                                   % Size of: (u, x, y)
-            sub = MockControlledHybridSystem(1, 1, 1);
-            sys = CompoundHybridSystem(sub);
+            sub1 = MockControlledHybridSystem(1, 1, 1);
+            sub2 = MockControlledHybridSystem(1, 1, 1);
+            sys = CompoundHybridSystem(sub1, sub2);
             tspan = [0, 10];
             jspan = [0,  2];
             config = HybridSolverConfig("silent");
-            testCase.verifyError(@() sys.solve({1, 2, 3}, tspan, jspan, config), ...
+            testCase.verifyError(@() sys.solve({1, [1; 2]}, tspan, jspan, config), ...
                 "CompoundHybridSystem:WrongNumberOfInitialStates");            
         end
         
@@ -164,6 +165,18 @@ classdef CompoundHybridSystemTest < matlab.unittest.TestCase
             sys.setContinuousFeedback(1, @(x1, t, j) zeros(2, 1));
             testCase.verifyError(@() sys.solve({1}, [0, 10], [0, 10]), ...
                "CompoundHybridSystem:DoesNotMatchInputDimension");
+        end
+        
+        function testWarningWhenSetFeedbackForSystemWithNoInputs(testCase)
+            % i.e. @(y1, y2, t, j) instead of @(y1, y2, y3, t, j).
+            sub = MockControlledHybridSystem(0, 1, 1);
+            sys = CompoundHybridSystem(sub);
+            testCase.verifyWarning(@() sys.setContinuousFeedback(1, @(x1, t, j) []), ...
+               "CompoundHybridSystem:SystemHasNoInputs");
+            testCase.verifyWarning(@() sys.setDiscreteFeedback(1, @(x1, t, j) []), ...
+               "CompoundHybridSystem:SystemHasNoInputs");
+            testCase.verifyWarning(@() sys.setFeedback(1, @(x1, t, j) []), ...
+               "CompoundHybridSystem:SystemHasNoInputs");
         end
         
     end
