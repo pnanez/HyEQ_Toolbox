@@ -3,7 +3,7 @@ classdef ExampleControlledHybridSystem < ControlledHybridSystem
     properties(SetAccess = immutable)
         % Define the abstract properties from ControlledHybridSystem.
         state_dimension = 2
-        control_dimension = 1
+        input_dimension = 1
         output_dimension = 2;
     end
     

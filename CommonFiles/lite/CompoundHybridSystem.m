@@ -99,7 +99,7 @@ classdef CompoundHybridSystem < HybridSystem
                 fprintf("%s \t             Output: y%d=%s\n", prop_prefix, i, func2str(ss.output))
                 fprintf("%s \t         Dimensions: ", prop_prefix)
                 fprintf("State=%d, Input=%d, Output=%d\n", ...
-                    ss.state_dimension, ss.control_dimension, ss.output_dimension)
+                    ss.state_dimension, ss.input_dimension, ss.output_dimension)
                 if i == this.subsys_n-1
                     subsys_prefix = "└";
                     prop_prefix = " ";
@@ -125,7 +125,7 @@ classdef CompoundHybridSystem < HybridSystem
                j = js(i);
                
                u = eval_feedback(this.kappa_C{i}, ys, t, js);
-               assert_control_length(length(u), ss.control_dimension, i)
+               assert_control_length(length(u), ss.input_dimension, i)
                xdot(this.x_indices{i}) = ss.flow_map(xs{i}, u, t, j);
             end
         end 
@@ -138,7 +138,7 @@ classdef CompoundHybridSystem < HybridSystem
                ss = this.subsystems{i};
                j = js(i);
                u = eval_feedback(this.kappa_D{i}, ys, t, js);
-               assert_control_length(length(u), ss.control_dimension, i)
+               assert_control_length(length(u), ss.input_dimension, i)
                D = ss.jump_set_indicator(xs{i}, u, t, j);
                if ~isscalar(D)
                    error("CompoundHybridSystem:InvalidFunction", ...
@@ -168,7 +168,7 @@ classdef CompoundHybridSystem < HybridSystem
                ss = this.subsystems{i};
                j = js(i);
                u = eval_feedback(this.kappa_C{i}, ys, t, js);
-               assert_control_length(length(u), ss.control_dimension, i)
+               assert_control_length(length(u), ss.input_dimension, i)
                C = ss.flow_set_indicator(xs{i}, u, t, j);
                if ~isscalar(C)
                    error("CompoundHybridSystem:InvalidFunction", ...
@@ -190,7 +190,7 @@ classdef CompoundHybridSystem < HybridSystem
                ss = this.subsystems{i};
                j = js(i);
                u = eval_feedback(this.kappa_D{i}, ys, t, js);
-               assert_control_length(length(u), ss.control_dimension, i)
+               assert_control_length(length(u), ss.input_dimension, i)
                D = ss.jump_set_indicator(xs{i}, u, t, j);
                if D
                    % If any of the subsystems are in their jump set,
@@ -261,7 +261,7 @@ classdef CompoundHybridSystem < HybridSystem
                 ss = this.subsystems{i};
                 ss_j = js_all(:, i);
                 ss_x = xs_all(:, this.x_indices{i});
-                ss_u = NaN(length(t), ss.control_dimension);
+                ss_u = NaN(length(t), ss.input_dimension);
                 
                 % Create arrays is_a_ss1_jump_index and is_a_ss2_jump_index,
                 % which contain ones at entry where a jump occured in the
@@ -415,7 +415,7 @@ kappas = cell(sys_count, 1);
 args_fmt = join(repmat("y%d", sys_count, 1), ", ");
 feedback_arugments_string = sprintf(args_fmt, 1:sys_count);
 for i = 1:sys_count
-    n = subsystems{i}.control_dimension;
+    n = subsystems{i}.input_dimension;
     kappa_eval_string = sprintf("kappas{i} = @("+feedback_arugments_string+", t, j) zeros(%d, 1);", n);
     eval(kappa_eval_string);
 end

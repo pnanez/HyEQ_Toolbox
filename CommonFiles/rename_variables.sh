@@ -1,0 +1,1 @@
+find . -type f -name "*.m*" -exec sed -i 's/control_dimension/input_dimension/g' {} +

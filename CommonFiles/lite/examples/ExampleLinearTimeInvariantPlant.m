@@ -2,7 +2,7 @@ classdef ExampleLinearTimeInvariantPlant < ControlledHybridSystem
 
     properties 
         state_dimension
-        control_dimension
+        input_dimension
         A
         B
     end
@@ -14,7 +14,7 @@ classdef ExampleLinearTimeInvariantPlant < ControlledHybridSystem
             assert(size(A, 1) == size(B, 1), "The heights of A and B must match!")
             assert(size(A, 1) == size(A, 2), "Matrix A must be square!")
             this.state_dimension = size(A, 1);
-            this.control_dimension = size(B, 2);
+            this.input_dimension = size(B, 2);
             
             if ~exist("C", "var")
                 assert(~exist("D", "var"))

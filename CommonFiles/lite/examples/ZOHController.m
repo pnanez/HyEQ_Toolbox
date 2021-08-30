@@ -6,7 +6,7 @@ classdef ZOHController < ControlledHybridSystem
     
     properties(SetAccess = immutable)
         state_dimension
-        control_dimension
+        input_dimension
         output_dimension
     end
     
@@ -24,7 +24,7 @@ classdef ZOHController < ControlledHybridSystem
             obj.zoh_indices = 1:zoh_dim;
             obj.timer_index = zoh_dim + 1;
             obj.state_dimension = zoh_dim + 1;
-            obj.control_dimension = zoh_dim;
+            obj.input_dimension = zoh_dim;
             obj.output_dimension = zoh_dim;
             
             obj.output = @(x) x(this.zoh_indices);

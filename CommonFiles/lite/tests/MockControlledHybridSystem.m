@@ -2,7 +2,7 @@ classdef MockControlledHybridSystem < ControlledHybridSystem
     
     properties(SetAccess = immutable)
         state_dimension
-        control_dimension
+        input_dimension
         output_dimension
     end
     
@@ -14,7 +14,7 @@ classdef MockControlledHybridSystem < ControlledHybridSystem
     %%%%%% System Data %%%%%% 
     methods
         function obj = MockControlledHybridSystem(input_dimension, state_dimension, output_dimension)
-            obj.control_dimension = input_dimension;
+            obj.input_dimension = input_dimension;
             obj.state_dimension = state_dimension;
             obj.output_dimension = output_dimension;
         end
@@ -44,7 +44,7 @@ classdef MockControlledHybridSystem < ControlledHybridSystem
     methods(Access = private)
         function checkXU(this, x, u)
             assert(length(x) == this.state_dimension)
-            assert(length(u) == this.control_dimension)
+            assert(length(u) == this.input_dimension)
         end
     end
     

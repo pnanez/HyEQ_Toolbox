@@ -14,7 +14,7 @@ system = SystemWithZOH(plant, kappa, sample_time);
 z0 = rand([plant.state_dimension,1]);
 v0 = 5;
 q0 = 0;
-zoh0 = zeros(plant.control_dimension, 1);
+zoh0 = zeros(plant.input_dimension, 1);
 tau0 = Inf;
 
 x0 = [z0; zoh0; tau0];

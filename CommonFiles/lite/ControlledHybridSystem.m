@@ -3,7 +3,7 @@ classdef (Abstract) ControlledHybridSystem < handle
 %%% hybrid system that depends on an input, u. 
     properties (Abstract, SetAccess = immutable)
         state_dimension
-        control_dimension
+        input_dimension
         output_dimension
     end
     

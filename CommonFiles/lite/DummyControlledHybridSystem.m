@@ -3,7 +3,7 @@ classdef DummyControlledHybridSystem < ControlledHybridSystem
 %%% hybrid system that depends on an input, u. 
     properties (SetAccess = immutable) 
         state_dimension = 1;
-        control_dimension = 1;
+        input_dimension = 1;
         output_dimension = 1;
     end
     

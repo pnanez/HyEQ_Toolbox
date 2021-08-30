@@ -2,7 +2,7 @@ classdef LinearControlledHybridSystem < ControlledHybridSystem
     
     properties(SetAccess = immutable)
         state_dimension
-        control_dimension
+        input_dimension
         output_dimension
         A_c
         B_c
@@ -44,7 +44,7 @@ classdef LinearControlledHybridSystem < ControlledHybridSystem
             m = size(B_c, 2);
             p = n; % Update this when we have an output matrix.
             obj.state_dimension = n;
-            obj.control_dimension = m;
+            obj.input_dimension = m;
             obj.output_dimension = p;
             % Check state matrices
             % assert(size(A_c, 1) == n, "A_c has wrong number of rows.") always true.

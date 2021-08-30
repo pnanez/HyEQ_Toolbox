@@ -182,8 +182,8 @@ classdef PairHybridSystem < HybridSystem
             ss1 = this.subsystem1;
             ss2 = this.subsystem2;
             [x1, x2, j1, j2] = this.split_many(x);
-            u1 = NaN(length(t), ss1.control_dimension);
-            u2 = NaN(length(t), ss2.control_dimension);
+            u1 = NaN(length(t), ss1.input_dimension);
+            u2 = NaN(length(t), ss2.input_dimension);
             
             % Create arrays is_a_ss1_jump_index and is_a_ss2_jump_index,
             % which contain ones at entry where a jump occured in the
