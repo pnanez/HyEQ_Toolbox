@@ -1,4 +1,4 @@
-classdef ExampleLinearTimeInvariantPlant < ControlledHybridSystem
+classdef ExampleLinearTimeInvariantPlant < HybridSubsystem
 
     properties 
         state_dimension
@@ -28,19 +28,19 @@ classdef ExampleLinearTimeInvariantPlant < ControlledHybridSystem
             this.B = B;
         end
         
-        function xdot = flow_map(this, x, u, ~, ~)  
+        function xdot = flowMap(this, x, u, ~, ~)  
             xdot = this.A * x + this.B * u;
         end
         
-        function xplus = jump_map(~, x, ~, ~, ~)  
+        function xplus = jumpMap(~, x, ~, ~, ~)  
             xplus = x;
         end
         
-        function C = flow_set_indicator(this, x, u, t, j)  %#ok<INUSD>
+        function C = flowSetIndicator(this, x, u, t, j)  %#ok<INUSD>
             C = 1;
         end
 
-        function D = jump_set_indicator(this, x, u, t, j) %#ok<INUSD>
+        function D = jumpSetIndicator(this, x, u, t, j) %#ok<INUSD>
             D = 0;
         end
     end

@@ -10,50 +10,50 @@ classdef HybridSystemBuilder
     % system = builder.build();
 
     properties(Access = private)
-        flow_map_handle = @(x) 0;
-        jump_map_handle = @(x) 0;
-        flow_set_indicator_handle = @(x) 0;
-        jump_set_indicator_handle = @(x) 0;
+        flowMap_handle = @(x) 0;
+        jumpMap_handle = @(x) 0;
+        flowSetIndicator_handle = @(x) 0;
+        jumpSetIndicator_handle = @(x) 0;
     end
 
     methods 
         function hybridSystem = build(this)
-            hybridSystem = EZHybridSystem(this.flow_map_handle, ...
-                                           this.jump_map_handle, ...
-                                           this.flow_set_indicator_handle, ...
-                                           this.jump_set_indicator_handle);
+            hybridSystem = EZHybridSystem(this.flowMap_handle, ...
+                                           this.jumpMap_handle, ...
+                                           this.flowSetIndicator_handle, ...
+                                           this.jumpSetIndicator_handle);
         end
 
-        function this = flowMap(this, flow_map_handle)
-            this.flow_map_handle = flow_map_handle;
+        function this = flowMap(this, flowMap_handle)
+            this.flowMap_handle = flowMap_handle;
         end
 
-        function this = f(this, flow_map_handle)
-            this.flow_map_handle = flow_map_handle;
+        function this = f(this, flowMap_handle)
+            this.flowMap_handle = flowMap_handle;
         end
 
-        function this = jumpMap(this, jump_map_handle)
-            this.jump_map_handle = jump_map_handle;
+        function this = jumpMap(this, jumpMap_handle)
+            this.jumpMap_handle = jumpMap_handle;
         end
 
-        function this = g(this, jump_map_handle)
-            this.jump_map_handle = jump_map_handle;
+        function this = g(this, jumpMap_handle)
+            this.jumpMap_handle = jumpMap_handle;
         end
 
-        function this = flowSetIndicator(this, flow_set_indicator_handle)
-            this.flow_set_indicator_handle = flow_set_indicator_handle;
+        function this = flowSetIndicator(this, flowSetIndicator_handle)
+            this.flowSetIndicator_handle = flowSetIndicator_handle;
         end
 
-        function this = C(this, flow_set_indicator_handle)
-            this.flow_set_indicator_handle = flow_set_indicator_handle;
+        function this = C(this, flowSetIndicator_handle)
+            this.flowSetIndicator_handle = flowSetIndicator_handle;
         end
 
-        function this = jumpSetIndicator(this, jump_set_indicator_handle)
-            this.jump_set_indicator_handle = jump_set_indicator_handle;
+        function this = jumpSetIndicator(this, jumpSetIndicator_handle)
+            this.jumpSetIndicator_handle = jumpSetIndicator_handle;
         end
 
-        function this = D(this, jump_set_indicator_handle)
-            this.jump_set_indicator_handle = jump_set_indicator_handle;
+        function this = D(this, jumpSetIndicator_handle)
+            this.jumpSetIndicator_handle = jumpSetIndicator_handle;
         end
     end
 end

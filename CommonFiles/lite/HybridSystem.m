@@ -16,39 +16,39 @@ classdef (Abstract) HybridSystem < handle
         % the end of the line.
 
         % In a concrete implemention of the HybridSystem class, the 
-        % flow_map function must be implemented with one of the following 
-        % signatures: flow_map(this, x, t, j), flow_map(this, x, t)
-        % or flow_map(this, x). 
-        xdot = flow_map(this, x, t, j)  
+        % flowMap function must be implemented with one of the following 
+        % signatures: flowMap(this, x, t, j), flowMap(this, x, t)
+        % or flowMap(this, x). 
+        xdot = flowMap(this, x, t, j)  
 
         % In a concrete implemention of the HybridSystem class, the 
-        % jump_map function must be implemented with one of the following 
-        % signatures: jump_map(this, x, t, j), jump_map(this, x, t)
-        % or jump_map(this, x). 
-        xplus = jump_map(this, x, t, j)  
+        % jumpMap function must be implemented with one of the following 
+        % signatures: jumpMap(this, x, t, j), jumpMap(this, x, t)
+        % or jumpMap(this, x). 
+        xplus = jumpMap(this, x, t, j)  
 
         % In a concrete implemention of the HybridSystem class, the 
-        % flow_set_indicator function must be implemented with one of the 
-        % following signatures: flow_set_indicator(this, x, t, j), 
-        % flow_set_indicator(this, x, t) or flow_set_indicator(this, x). 
-        C = flow_set_indicator(this, x, t, j) 
+        % flowSetIndicator function must be implemented with one of the 
+        % following signatures: flowSetIndicator(this, x, t, j), 
+        % flowSetIndicator(this, x, t) or flowSetIndicator(this, x). 
+        C = flowSetIndicator(this, x, t, j) 
 
         % In a concrete implemention of the HybridSystem class, the 
-        % jump_set_indicator function must be implemented with one of the 
-        % following signatures: jump_set_indicator(this, x, t, j), 
-        % jump_set_indicator(this, x, t) or jump_set_indicator(this, x). 
-        D = jump_set_indicator(this, x, t, j)
+        % jumpSetIndicator function must be implemented with one of the 
+        % following signatures: jumpSetIndicator(this, x, t, j), 
+        % jumpSetIndicator(this, x, t) or jumpSetIndicator(this, x). 
+        D = jumpSetIndicator(this, x, t, j)
     end
 
     methods
         function this = HybridSystem()
             % WARNING: Don't reference function handles for 
-            % "@this.flow_map," "@this.jump_map," etc. in the constructor, it does
+            % "@this.flowMap," "@this.jumpMap," etc. in the constructor, it does
             % not work as expected. It appears to store a reference to this
             % as it is at this point, in its unconstructed state.
             
-            names = {'flow_map', 'jump_map', ...
-                      'flow_set_indicator', 'jump_set_indicator'};            
+            names = {'flowMap', 'jumpMap', ...
+                      'flowSetIndicator', 'jumpSetIndicator'};            
             mc = metaclass(this);
             for iName = 1:length(names)        
                 name = names{iName};
@@ -113,10 +113,10 @@ classdef (Abstract) HybridSystem < handle
             this.assert_functions_can_be_evaluated_at_point(x0, tspan(1), jspan(1));           
 
             % Compute solution
-            [t, j, x] = HyEQsolver(this.flow_map_3args, ...
-                                   this.jump_map_3args, ...
-                                   this.flow_set_indicator_3args, ...
-                                   this.jump_set_indicator_3args, ...
+            [t, j, x] = HyEQsolver(this.flowMap_3args, ...
+                                   this.jumpMap_3args, ...
+                                   this.flowSetIndicator_3args, ...
+                                   this.jumpSetIndicator_3args, ...
                                    x0, tspan, jspan, ...
                                    config.hybrid_priority, config.ode_options, ...
                                    config.ode_solver, config.mass_matrix, ...
@@ -133,8 +133,8 @@ classdef (Abstract) HybridSystem < handle
         % Override this function to use other wrappers.
         function sol = wrap_solution(this, t, j, x, tspan, jspan)    
             xf = x(end, :)';
-            Cf = this.flow_set_indicator_3args(xf, t(end), j(end));
-            Df = this.jump_set_indicator_3args(xf, t(end), j(end));
+            Cf = this.flowSetIndicator_3args(xf, t(end), j(end));
+            Df = this.jumpSetIndicator_3args(xf, t(end), j(end));
             sol = HybridSolution(t, j, x, Cf, Df, tspan, jspan);
         end
         
@@ -163,13 +163,13 @@ classdef (Abstract) HybridSystem < handle
             D_vals = NaN(size(t));
             for i=1:length(t)
                 x_curr = x(i, :)';
-                C_vals(i) = this.flow_set_indicator_3args(x_curr, t(i), j(i));
-                D_vals(i) = this.jump_set_indicator_3args(x_curr, t(i), j(i));
+                C_vals(i) = this.flowSetIndicator_3args(x_curr, t(i), j(i));
+                D_vals(i) = this.jumpSetIndicator_3args(x_curr, t(i), j(i));
                 if C_vals(i) % Only evaluate flow map in the flow set.
-                    f_vals(i, :) = this.flow_map_3args(x_curr, t(i), j(i))';
+                    f_vals(i, :) = this.flowMap_3args(x_curr, t(i), j(i))';
                 end
                 if D_vals(i) % Only evaluate jump map in the jump set.
-                    g_vals(i, :) = this.jump_map_3args(x_curr, t(i), j(i))';
+                    g_vals(i, :) = this.jumpMap_3args(x_curr, t(i), j(i))';
                 end
             end
         end
@@ -178,54 +178,54 @@ classdef (Abstract) HybridSystem < handle
     properties(SetAccess = private, Hidden)
         % It can be difficult to work with generic HybridSystem objects
         % because the functions have an undetermined number of arguments.
-        % Additionally, we cannot pass the function handles @this.jump_map,
-        % @this.jump_map, etc. directly to HyEQsolver because each is a
+        % Additionally, we cannot pass the function handles @this.jumpMap,
+        % @this.jumpMap, etc. directly to HyEQsolver because each is a
         % function of one extra argument (the reference to "this" object.)
         % Thus, we construct function handles with with three arguments 
         % "x, t, j" (the "this" argument is removed).
-        flow_map_3args
-        jump_map_3args
-        flow_set_indicator_3args
-        jump_set_indicator_3args
+        flowMap_3args
+        jumpMap_3args
+        flowSetIndicator_3args
+        jumpSetIndicator_3args
     end
 
     methods % Define getters for "<function name>_3arg" functions
-        function value = get.flow_map_3args(this)
-            if(isempty(this.flow_map_3args))
-                % If flow_map_3args has not yet been constructed,
+        function value = get.flowMap_3args(this)
+            if(isempty(this.flowMap_3args))
+                % If flowMap_3args has not yet been constructed,
                 % then we use convert_to_3_args to do so.
-                this.flow_map_3args = this.convert_to_3_args(@this.flow_map, "flow_map");
+                this.flowMap_3args = this.convert_to_3_args(@this.flowMap, "flowMap");
             end
-            value = this.flow_map_3args;
+            value = this.flowMap_3args;
         end
         
-        function value = get.jump_map_3args(this)
-            if isempty(this.jump_map_3args)
-                % If jump_map_3args has not yet been constructed,
+        function value = get.jumpMap_3args(this)
+            if isempty(this.jumpMap_3args)
+                % If jumpMap_3args has not yet been constructed,
                 % then we use convert_to_3_args to do so.
-                this.jump_map_3args = this.convert_to_3_args(@this.jump_map, "jump_map");
+                this.jumpMap_3args = this.convert_to_3_args(@this.jumpMap, "jumpMap");
             end
-            value = this.jump_map_3args;
+            value = this.jumpMap_3args;
         end
         
-        function value = get.flow_set_indicator_3args(this)
-            if isempty(this.flow_set_indicator_3args)
-                % If flow_set_indicator_3args has not yet been 
+        function value = get.flowSetIndicator_3args(this)
+            if isempty(this.flowSetIndicator_3args)
+                % If flowSetIndicator_3args has not yet been 
                 % constructed, then we use convert_to_3_args to do so.
-                this.flow_set_indicator_3args ...
-                    = this.convert_to_3_args(@this.flow_set_indicator, "flow_set_indicator");
+                this.flowSetIndicator_3args ...
+                    = this.convert_to_3_args(@this.flowSetIndicator, "flowSetIndicator");
             end
-            value = this.flow_set_indicator_3args;
+            value = this.flowSetIndicator_3args;
         end
         
-        function value = get.jump_set_indicator_3args(this)
-            if isempty(this.jump_set_indicator_3args)
-                % If jump_set_indicator_3args has not yet been 
+        function value = get.jumpSetIndicator_3args(this)
+            if isempty(this.jumpSetIndicator_3args)
+                % If jumpSetIndicator_3args has not yet been 
                 % constructed, then we use convert_to_3_args to do so.
-                this.jump_set_indicator_3args ...
-                    = this.convert_to_3_args(@this.jump_set_indicator, "jump_set_indicator");
+                this.jumpSetIndicator_3args ...
+                    = this.convert_to_3_args(@this.jumpSetIndicator, "jumpSetIndicator");
             end
-            value = this.jump_set_indicator_3args;
+            value = this.jumpSetIndicator_3args;
         end
     end
 
@@ -248,10 +248,10 @@ classdef (Abstract) HybridSystem < handle
         end
 
         function assert_functions_can_be_evaluated_at_point(this, x, t, j)
-            assert_function_can_be_evaluated(this.flow_map_3args, x, t, j, "flow_map")
-            assert_function_can_be_evaluated(this.jump_map_3args, x, t, j, "jump_map")
-            assert_function_can_be_evaluated(this.flow_set_indicator_3args, x, t, j, "flow_set_indicator")
-            assert_function_can_be_evaluated(this.jump_set_indicator_3args, x, t, j, "jump_set_indicator")
+            assert_function_can_be_evaluated(this.flowMap_3args, x, t, j, "flowMap")
+            assert_function_can_be_evaluated(this.jumpMap_3args, x, t, j, "jumpMap")
+            assert_function_can_be_evaluated(this.flowSetIndicator_3args, x, t, j, "flowSetIndicator")
+            assert_function_can_be_evaluated(this.jumpSetIndicator_3args, x, t, j, "jumpSetIndicator")
         end
 
         function nargs = implementated_nargs(this, function_name)

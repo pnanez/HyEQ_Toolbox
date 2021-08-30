@@ -1,4 +1,4 @@
-classdef LinearControlledHybridSystem < ControlledHybridSystem
+classdef LinearHybridSubsystem < HybridSubsystem
     
     properties(SetAccess = immutable)
         state_dimension
@@ -23,7 +23,7 @@ classdef LinearControlledHybridSystem < ControlledHybridSystem
     
     %%%%%% System Data %%%%%% 
     methods
-        function obj = LinearControlledHybridSystem(...
+        function obj = LinearHybridSubsystem(...
                 A_c, B_c, ...
                 A_d, B_d, ...
                 C_indicator, D_indicator)
@@ -76,17 +76,17 @@ classdef LinearControlledHybridSystem < ControlledHybridSystem
 %             end
         end
             
-        % The jump_map function must be implemented with the following 
+        % The jumpMap function must be implemented with the following 
         % signature (t and j cannot be ommited)
-        function xdot = flow_map(this, x, u, t, j)
+        function xdot = flowMap(this, x, u, t, j)
             xdot = this.A_c * x + this.B_c * u;
         end
 
-        function xplus = jump_map(this, x, u, t, j) 
+        function xplus = jumpMap(this, x, u, t, j) 
             xplus = this.A_d * x + this.B_d * u;
         end 
 
-        function C = flow_set_indicator(this, x, u, t, j) 
+        function C = flowSetIndicator(this, x, u, t, j) 
             C = this.C_indicator(x, u, t, j);
             
 %             if this.no_discrete
@@ -96,7 +96,7 @@ classdef LinearControlledHybridSystem < ControlledHybridSystem
 %             end
         end
 
-        function D = jump_set_indicator(this, x, u, t, j)
+        function D = jumpSetIndicator(this, x, u, t, j)
             D = this.D_indicator(x, u, t, j);
 %             if this.no_discrete
 %                 D = 0;

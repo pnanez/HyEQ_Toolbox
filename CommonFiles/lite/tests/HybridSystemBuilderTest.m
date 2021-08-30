@@ -28,10 +28,10 @@ classdef HybridSystemBuilderTest < matlab.unittest.TestCase
 
             % Test the output for the functions for various state values.
             for x=linspace(-10, 10, 23)
-                testCase.assertEqual(system.flow_map(x, NaN, NaN), f(x));
-                testCase.assertEqual(system.jump_map(x, NaN, NaN), g(x));
-                testCase.assertEqual(system.flow_set_indicator(x, NaN, NaN), C_ind(x));
-                testCase.assertEqual(system.jump_set_indicator(x, NaN, NaN), D_ind(x));
+                testCase.assertEqual(system.flowMap(x, NaN, NaN), f(x));
+                testCase.assertEqual(system.jumpMap(x, NaN, NaN), g(x));
+                testCase.assertEqual(system.flowSetIndicator(x, NaN, NaN), C_ind(x));
+                testCase.assertEqual(system.jumpSetIndicator(x, NaN, NaN), D_ind(x));
             end
         end
 

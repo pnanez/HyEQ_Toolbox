@@ -1,7 +1,7 @@
-classdef ExampleControlledHybridSystem < ControlledHybridSystem
+classdef ExampleHybridSubsystem < HybridSubsystem
     
     properties(SetAccess = immutable)
-        % Define the abstract properties from ControlledHybridSystem.
+        % Define the abstract properties from HybridSubsystem.
         state_dimension = 2
         input_dimension = 1
         output_dimension = 2;
@@ -12,19 +12,19 @@ classdef ExampleControlledHybridSystem < ControlledHybridSystem
     end
     
     methods
-        function xdot = flow_map(~, x, u, ~, ~)  
+        function xdot = flowMap(~, x, u, ~, ~)  
             xdot = [x(2); u];
         end
 
-        function xplus = jump_map(this, x, u, t, j) 
+        function xplus = jumpMap(this, x, u, t, j) 
             xplus = [x(1); -this.bounce_coef*x(2) + u];
         end 
 
-        function C = flow_set_indicator(this, x, u, t, j)
+        function C = flowSetIndicator(this, x, u, t, j)
             C = 1;
         end 
 
-        function D = jump_set_indicator(this, x, u, t, j)
+        function D = jumpSetIndicator(this, x, u, t, j)
             D = x(1) <= 0 && x(2) <= 0;
         end
     end

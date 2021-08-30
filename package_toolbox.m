@@ -1,8 +1,8 @@
 close all
 
-do_publish = false;
-do_tests = false;
-do_package = false;
+do_publish = true;
+do_tests = true;
+do_package = true;
 
 projectFile = 'HybridEquationsToolbox.prj';
 toolbox_dirs = {'CommonFiles/lite', ...
@@ -21,6 +21,8 @@ if do_tests
     addpath(test_dir)
     nTestsFailed = runTests();
     rmpath(test_dir)
+else
+    nTestsFailed = -1;
 end
 
 if do_publish

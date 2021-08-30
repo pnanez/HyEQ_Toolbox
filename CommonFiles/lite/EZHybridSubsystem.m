@@ -1,4 +1,4 @@
-classdef EZControlledHybridSystem < ControlledHybridSystem
+classdef EZHybridSubsystem < HybridSubsystem
     
     properties(SetAccess = immutable)
         state_dimension
@@ -11,7 +11,7 @@ classdef EZControlledHybridSystem < ControlledHybridSystem
     end
     
     methods
-        function obj = EZControlledHybridSystem(f, g, C_indicator, D_indicator, output,...
+        function obj = EZHybridSubsystem(f, g, C_indicator, D_indicator, output,...
                 input_dim, state_dim, output_dim)
             obj.f = f;
             obj.g = g;
@@ -23,19 +23,19 @@ classdef EZControlledHybridSystem < ControlledHybridSystem
             obj.output_dimension = output_dim;
         end
             
-        function xdot = flow_map(this, x, u, t, j)
+        function xdot = flowMap(this, x, u, t, j)
             xdot = this.f(x, u, t, j);
         end
 
-        function xplus = jump_map(this, x, u, t, j) 
+        function xplus = jumpMap(this, x, u, t, j) 
             xplus = this.g(x, u, t, j);
         end 
 
-        function C = flow_set_indicator(this, x, u, t, j) 
+        function C = flowSetIndicator(this, x, u, t, j) 
             C = this.C_indicator(x, u, t, j);
         end
 
-        function D = jump_set_indicator(this, x, u, t, j)
+        function D = jumpSetIndicator(this, x, u, t, j)
             D = this.D_indicator(x, u, t, j);
         end
     end

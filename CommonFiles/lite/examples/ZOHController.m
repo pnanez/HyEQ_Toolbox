@@ -1,4 +1,4 @@
-classdef ZOHController < ControlledHybridSystem
+classdef ZOHController < HybridSubsystem
 
     properties
         sample_time;
@@ -30,21 +30,21 @@ classdef ZOHController < ControlledHybridSystem
             obj.output = @(x) x(obj.zoh_indices);
         end
         
-        function xdot = flow_map(this, ~, ~, ~, ~)  
+        function xdot = flowMap(this, ~, ~, ~, ~)  
             zoh_dot = zeros(this.zoh_dim, 1);
             xdot = [zoh_dot; 1];
         end
 
-        function xplus = jump_map(~, ~, u, ~, ~) 
+        function xplus = jumpMap(~, ~, u, ~, ~) 
             zoh = u;
             xplus = [zoh; 0];
         end
 
-        function C = flow_set_indicator(this, x, u, t, j)  %#ok<INUSD>
+        function C = flowSetIndicator(this, x, u, t, j)  %#ok<INUSD>
             C = 1;
         end
 
-        function D = jump_set_indicator(this, x, ~, ~, ~)
+        function D = jumpSetIndicator(this, x, ~, ~, ~)
             timer = x(this.timer_index);
             D = timer >= this.sample_time;
         end

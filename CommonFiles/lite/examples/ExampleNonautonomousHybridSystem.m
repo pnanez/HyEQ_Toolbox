@@ -3,19 +3,19 @@ classdef ExampleNonautonomousHybridSystem < HybridSystem
  % Sanfelice, and Teel.
 
     methods
-        function xdot = flow_map(this, x, t, j) %#ok<INUSL>
+        function xdot = flowMap(this, x, t, j) %#ok<INUSL>
             xdot = j;
         end
 
-        function xplus = jump_map(this, x, t) %#ok<INUSL>
+        function xplus = jumpMap(this, x, t) %#ok<INUSL>
             xplus = 0;        
         end
 
-        function C = flow_set_indicator(this, x) %#ok<INUSD> 
+        function C = flowSetIndicator(this, x) %#ok<INUSD> 
             C = 1;
         end
 
-        function D = jump_set_indicator(this, x, t) %#ok<INUSL>
+        function D = jumpSetIndicator(this, x, t) %#ok<INUSL>
             D = x >= 1+t/2;
         end
 

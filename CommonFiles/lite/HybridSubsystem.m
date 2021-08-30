@@ -1,5 +1,5 @@
-classdef (Abstract) ControlledHybridSystem < handle
-%%% The ControlledHybridSystem class allows for the construction of a
+classdef (Abstract) HybridSubsystem < handle
+%%% The HybridSubsystem class allows for the construction of a
 %%% hybrid system that depends on an input, u. 
     properties (Abstract, SetAccess = immutable)
         state_dimension
@@ -14,33 +14,33 @@ classdef (Abstract) ControlledHybridSystem < handle
     %%%%%% System Data %%%%%% 
     methods(Abstract) 
 
-        % The jump_map function must be implemented with the following 
+        % The jumpMap function must be implemented with the following 
         % signature (t and j cannot be ommited)
-        xdot = flow_map(this, x, u, t, j)  
+        xdot = flowMap(this, x, u, t, j)  
 
-        % The jump_map function must be implemented with the following 
+        % The jumpMap function must be implemented with the following 
         % signature (t and j cannot be ommited)
-        xplus = jump_map(this, x, u, t, j)  
+        xplus = jumpMap(this, x, u, t, j)  
 
-        % The jump_map function must be implemented with the following 
+        % The jumpMap function must be implemented with the following 
         % signature (t and j cannot be ommited)
-        C = flow_set_indicator(this, x, u, t, j) 
+        C = flowSetIndicator(this, x, u, t, j) 
 
-        % The jump_map function must be implemented with the following 
+        % The jumpMap function must be implemented with the following 
         % signature (t and j cannot be ommited)
-        D = jump_set_indicator(this, x, u, t, j)
+        D = jumpSetIndicator(this, x, u, t, j)
     end
     
     methods(Hidden)
         function sol = wrap_solution(this, t, j, x, u, tspan, jspan)
             % Override this method in subclasses to use other classes than
-            % ControlledHybridSolution.
+            % HybridSolutionWithInput.
             x_end = x(end, :)';
             u_end = u(end, :)';
-            C_end = this.flow_set_indicator(x_end, u_end, t(end), j(end));
-            D_end = this.jump_set_indicator(x_end, u_end, t(end), j(end));
+            C_end = this.flowSetIndicator(x_end, u_end, t(end), j(end));
+            D_end = this.jumpSetIndicator(x_end, u_end, t(end), j(end));
             
-            sol = ControlledHybridSolution(t, j, x, u, C_end, D_end, tspan, jspan);
+            sol = HybridSolutionWithInput(t, j, x, u, C_end, D_end, tspan, jspan);
         end
         
     end
@@ -57,13 +57,13 @@ classdef (Abstract) ControlledHybridSystem < handle
             for i=1:length(t)
                 x_i = x(i, :)';
                 u_i = u(i, :)';
-                C_vals(i) = this.flow_set_indicator(x_i, u_i, t(i), j(i));
-                D_vals(i) = this.jump_set_indicator(x_i, u_i, t(i), j(i));
+                C_vals(i) = this.flowSetIndicator(x_i, u_i, t(i), j(i));
+                D_vals(i) = this.jumpSetIndicator(x_i, u_i, t(i), j(i));
                 if C_vals(i) % Only evaluate flow map in the flow set.
-                    f_vals(i, :) = this.flow_map(x_i, u_i, t(i), j(i))';
+                    f_vals(i, :) = this.flowMap(x_i, u_i, t(i), j(i))';
                 end
                 if D_vals(i) % Only evaluate jump map in the jump set.
-                    g_vals(i, :) = this.jump_map(x_i, u_i, t(i), j(i))';
+                    g_vals(i, :) = this.jumpMap(x_i, u_i, t(i), j(i))';
                 end
             end
         end

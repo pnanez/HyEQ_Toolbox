@@ -11,8 +11,8 @@
 % subclass of the |HybridSystem| class, 
 % which means it inherits all the methods and properties of that class. Next, 
 % we define several variables in the |properties| block and functions in the |methods| 
-% block. Every subclass of |HybridSystem| must define the |flow_map, jump_map, flow_set_indicator,| 
-% and |jump_set_indicator| functions. The indicator functions should return |1| 
+% block. Every subclass of |HybridSystem| must define the |flowMap, jumpMap, flowSetIndicator,| 
+% and |jumpSetIndicator| functions. The indicator functions should return |1| 
 % inside their respective sets and |0| otherwise.
 % 
 % Notice that the first argument in each of the functions is |this|. The |this|

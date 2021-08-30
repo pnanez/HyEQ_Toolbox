@@ -3,20 +3,20 @@ classdef Example2DHybridSystem < HybridSystem
  % Sanfelice, and Teel.
 
     methods
-        function xdot = flow_map(this, x) %#ok<INUSL>
+        function xdot = flowMap(this, x) %#ok<INUSL>
             xdot = [x(2); -x(1)];
         end
 
 
-        function xplus = jump_map(this, x) %#ok<INUSL> 
+        function xplus = jumpMap(this, x) %#ok<INUSL> 
             xplus = [x(2); -x(1)];        
         end
 
-        function C = flow_set_indicator(this, x) %#ok<INUSL> 
+        function C = flowSetIndicator(this, x) %#ok<INUSL> 
             C = x(2) >= 0;
         end
 
-        function D = jump_set_indicator(this, x) %#ok<INUSL>
+        function D = jumpSetIndicator(this, x) %#ok<INUSL>
             D = x(2) <= 0;
         end
 

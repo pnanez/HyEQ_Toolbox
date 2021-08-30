@@ -1,4 +1,4 @@
-%% How to Create and Simulate Multiple Interlinked Hybrid Systems
+%% Create and Simulate Multiple Interlinked Hybrid Systems
 %% Mathematical Formulation
 % In this document, we demonstrate how to use the Hybrid Equations Toolbox
 % to simulate multiple interlinked hybrid systems. 
@@ -65,17 +65,17 @@
 
 %% Implement a Controlled Hybrid System in MATLAB
 % To create a compound system of two hybrid subsystems, we first write subclasses of
-% the |ControlledHybridSystem| class. In the following example, we
-% will use |ExampleControlledHybridSystem|, which is a bouncing ball-like
+% the |HybridSubsystem| class. In the following example, we
+% will use |ExampleHybridSubsystem|, which is a bouncing ball-like
 % system, except that gravity is not constant, rather it is controlled by
 % the input. 
 % 
-% <include>ExampleControlledHybridSystem.m</include>
+% <include>ExampleHybridSubsystem.m</include>
 %
 % Then, we can create two instances (here they happen to both be the same class, 
 % but they will generally be different classes):
-subsystem1 = ExampleControlledHybridSystem();
-subsystem2 = ExampleControlledHybridSystem();
+subsystem1 = ExampleHybridSubsystem();
+subsystem2 = ExampleHybridSubsystem();
 
 %% Create a Compound Hybrid System
 % Now that we have two subsystems, we merely pass these to the
@@ -164,7 +164,7 @@ sol_1 = sys_1.solve({x1_initial}, tspan, jspan);
 %% Example: Zero-order Hold
 % As a case study in creating an compound system, consider the following
 % example. First, we create a linear time-invariant plant. The class
-% |LinearTimeInvariantSystem| is a subclass of |ControlledHybridSystem|.
+% |LinearTimeInvariantSystem| is a subclass of |HybridSubsystem|.
 A_c = [0, 1; -1, 0];
 B_c = [0; 1];
 plant = hybrid.systems.LinearTimeInvariantSystem(A_c, B_c);

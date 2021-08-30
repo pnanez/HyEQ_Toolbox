@@ -5,19 +5,19 @@ classdef DummyHybridSystem < HybridSystem
 
     methods 
         
-        function xdot = flow_map(this, x, t, j)  %#ok<*INUSD> (Surpress warnings in this file)
+        function xdot = flowMap(this, x, t, j)  %#ok<*INUSD> (Surpress warnings in this file)
             
         end
 
-        function xplus = jump_map(this, x, t, j)  
+        function xplus = jumpMap(this, x, t, j)  
             
         end
 
-        function C = flow_set_indicator(this, x, t, j) 
+        function C = flowSetIndicator(this, x, t, j) 
         
         end
         
-        function D = jump_set_indicator(this, x, t, j)
+        function D = jumpSetIndicator(this, x, t, j)
             
         end
     end

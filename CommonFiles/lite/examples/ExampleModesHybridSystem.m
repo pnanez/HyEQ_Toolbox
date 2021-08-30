@@ -9,7 +9,7 @@ classdef ExampleModesHybridSystem < HybridSystem
     end
 
     methods
-        function xdot = flow_map(this, x)
+        function xdot = flowMap(this, x)
             z = x(1:2);
             q = x(3);
             switch q
@@ -20,17 +20,17 @@ classdef ExampleModesHybridSystem < HybridSystem
             end
         end
 
-        function xplus = jump_map(this, x) %#ok<INUSL> 
+        function xplus = jumpMap(this, x) %#ok<INUSL> 
             z = x(1:2);
             q = x(3);
             xplus = [z; 1-q]; 
         end
 
-        function C = flow_set_indicator(this, x) %#ok<INUSD> 
+        function C = flowSetIndicator(this, x) %#ok<INUSD> 
             C = 1;
         end
 
-        function D = jump_set_indicator(this, x) %#ok<INUSL>
+        function D = jumpSetIndicator(this, x) %#ok<INUSL>
             z = x(1:2);
             q = x(3);
             switch q

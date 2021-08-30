@@ -1,4 +1,4 @@
-classdef MockControlledHybridSystem < ControlledHybridSystem
+classdef MockHybridSubsystem < HybridSubsystem
     
     properties(SetAccess = immutable)
         state_dimension
@@ -13,29 +13,29 @@ classdef MockControlledHybridSystem < ControlledHybridSystem
     
     %%%%%% System Data %%%%%% 
     methods
-        function obj = MockControlledHybridSystem(input_dimension, state_dimension, output_dimension)
+        function obj = MockHybridSubsystem(input_dimension, state_dimension, output_dimension)
             obj.input_dimension = input_dimension;
             obj.state_dimension = state_dimension;
             obj.output_dimension = output_dimension;
         end
             
-        % The jump_map function must be implemented with the following 
+        % The jumpMap function must be implemented with the following 
         % signature (t and j cannot be ommited)
-        function xdot = flow_map(this, x, u, t, j)
+        function xdot = flowMap(this, x, u, t, j)
             xdot = zeros(this.state_dimension, 1);
         end
 
-        function xplus = jump_map(this, x, u, t, j) 
+        function xplus = jumpMap(this, x, u, t, j) 
             this.checkXU(x, u)
             xplus = x;
         end 
 
-        function C = flow_set_indicator(this, x, u, t, j)
+        function C = flowSetIndicator(this, x, u, t, j)
             this.checkXU(x, u)
             C = this.C_indicator(x, u, t, j);
         end
 
-        function D = jump_set_indicator(this, x, u, t, j)
+        function D = jumpSetIndicator(this, x, u, t, j)
             this.checkXU(x, u)
             D = this.D_indicator(x, u, t, j);
         end

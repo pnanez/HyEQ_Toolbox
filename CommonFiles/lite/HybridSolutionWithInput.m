@@ -1,11 +1,11 @@
-classdef ControlledHybridSolution < HybridSolution
+classdef HybridSolutionWithInput < HybridSolution
 
     properties(SetAccess = immutable)
         u (:, :) double;
     end
     
     methods
-        function this = ControlledHybridSolution(t, j, x, u, C_end, D_end, tspan, jspan)
+        function this = HybridSolutionWithInput(t, j, x, u, C_end, D_end, tspan, jspan)
             this = this@HybridSolution(t, j, x, C_end, D_end, tspan, jspan);
             assert(size(u, 1) == length(t), ...
                 "length(u)=%d doesn't match length(t)", ...

@@ -23,8 +23,8 @@ classdef EZHybridSystem < HybridSystem
 %
 % WARNING: Although the function handles passed to the constructor 
 % have variable numbers of arguments, the EZHybridSystem implements 
-% the abstract HybridSytem functions flow_map, jump_map, flow_set_indicator,
-% jump_set_indicator with the four arguments "(this, x, t, j)". 
+% the abstract HybridSytem functions flowMap, jumpMap, flowSetIndicator,
+% jumpSetIndicator with the four arguments "(this, x, t, j)". 
 %
 % There are several noteworthy drawbacks to EZHybridSystem: 
 %     1. For complicated systems, the EZHybridSystem syntax is 
@@ -38,39 +38,39 @@ classdef EZHybridSystem < HybridSystem
 % HybridSystem (see the documentation of HybridSystem for details).
 
     properties(GetAccess = private, SetAccess = immutable)
-        flow_map_handle;
-        jump_map_handle;
-        flow_set_indicator_handle;
-        jump_set_indicator_handle;
+        flowMap_handle;
+        jumpMap_handle;
+        flowSetIndicator_handle;
+        jumpSetIndicator_handle;
     end
 
     methods
-        function this = EZHybridSystem(flow_map_handle, jump_map_handle, ...
-                        flow_set_indicator_handle, jump_set_indicator_handle)
-            check_function_handle(flow_map_handle)
-            check_function_handle(jump_map_handle)
-            check_function_handle(flow_set_indicator_handle)
-            check_function_handle(jump_set_indicator_handle)
-            this.flow_map_handle = flow_map_handle;
-            this.jump_map_handle = jump_map_handle;
-            this.flow_set_indicator_handle = flow_set_indicator_handle;
-            this.jump_set_indicator_handle = jump_set_indicator_handle;
+        function this = EZHybridSystem(flowMap_handle, jumpMap_handle, ...
+                        flowSetIndicator_handle, jumpSetIndicator_handle)
+            check_function_handle(flowMap_handle)
+            check_function_handle(jumpMap_handle)
+            check_function_handle(flowSetIndicator_handle)
+            check_function_handle(jumpSetIndicator_handle)
+            this.flowMap_handle = flowMap_handle;
+            this.jumpMap_handle = jumpMap_handle;
+            this.flowSetIndicator_handle = flowSetIndicator_handle;
+            this.jumpSetIndicator_handle = jumpSetIndicator_handle;
         end
 
-        function xdot = flow_map(this, x, t, j)
-            xdot = evaluate_with_correct_args(this.flow_map_handle, x, t, j);
+        function xdot = flowMap(this, x, t, j)
+            xdot = evaluate_with_correct_args(this.flowMap_handle, x, t, j);
         end
 
-        function x_plus = jump_map(this, x, t, j)
-            x_plus = evaluate_with_correct_args(this.jump_map_handle, x, t, j);
+        function x_plus = jumpMap(this, x, t, j)
+            x_plus = evaluate_with_correct_args(this.jumpMap_handle, x, t, j);
         end
         
-        function C = flow_set_indicator(this, x, t, j)
-            C = evaluate_with_correct_args(this.flow_set_indicator_handle, x, t, j);
+        function C = flowSetIndicator(this, x, t, j)
+            C = evaluate_with_correct_args(this.flowSetIndicator_handle, x, t, j);
         end
 
-        function D = jump_set_indicator(this, x, t, j)
-            D = evaluate_with_correct_args(this.jump_set_indicator_handle, x, t, j);
+        function D = jumpSetIndicator(this, x, t, j)
+            D = evaluate_with_correct_args(this.jumpSetIndicator_handle, x, t, j);
         end
     end
 
