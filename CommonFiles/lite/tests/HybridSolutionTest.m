@@ -6,6 +6,18 @@ classdef HybridSolutionTest < matlab.unittest.TestCase
 
     methods (Test)
 
+        function testWithoutOptionalArguments(testCase)
+            n = 5;
+            t = linspace(0, 10, n)';
+            j = (1:n)';
+            x = rand(n, 3);
+            sol = HybridSolution(t, j, x);
+            testCase.assertEqual(sol.t, t)
+            testCase.assertEqual(sol.j, j)
+            testCase.assertEqual(sol.x, x)
+            testCase.assertEqual(sol.termination_cause, TerminationCause.UNDETERMINED)
+        end
+        
         %%%%%%%%%%%%%%%% Test jump_times and flow_lengths %%%%%%%%%%%%%%%%%
         % Thorough testing of jump time and flow length calculations are in
         % jumpTimesTest.m and flowLengthTest.m. The tests here simply
@@ -13,12 +25,8 @@ classdef HybridSolutionTest < matlab.unittest.TestCase
         function testJumpTimes(testCase)
             t = linspace(0, 12, 5)'; % Not important
             j = [0; 1; 1; 1; 2]; % Jump at indices 1 and 4.
-            x      = NaN(5, 1); % Not important
-            f_vals = NaN(5, 1);
-            g_vals = NaN(5, 1);
-            C_vals = NaN(5, 1);
-            D_vals = NaN(5, 1);
-            sol = HybridSolution(t, j, x, C_vals(end), D_vals(end), [0, 100], [0, 100]);
+            x = NaN(5, 1); % Not important
+            sol = HybridSolution(t, j, x);
             testCase.assertEqual(sol.jump_times, HybridUtils.jumpTimes(t, j))
         end
 
@@ -26,16 +34,10 @@ classdef HybridSolutionTest < matlab.unittest.TestCase
             t = [0; 0.5; 0.5; 2; 3; 3; 4];
             j = [0;   0;   1; 1; 1; 2; 2];
             x = NaN(7, 1); % Not important
-            f_vals = NaN(7, 1);
-            g_vals = NaN(7, 1);
-            C_vals = NaN(7, 1);
-            D_vals = NaN(7, 1);
-            sol = HybridSolution(t, j, x, C_vals(end), D_vals(end), [0, 100], [0, 100]);
+            sol = HybridSolution(t, j, x);
             testCase.assertEqual(sol.flow_lengths, [0.5; 2.5; 1])
             testCase.assertEqual(sol.shortest_flow_length, 0.5)
         end
-
-        %%%%%%%%%%%%%%%% Test Data Validation %%%%%%%%%%%%%%%%%
 
         function testInconsistenVectorLengths(testCase)
             % We define vectors that are all the same length...
@@ -57,9 +59,9 @@ classdef HybridSolutionTest < matlab.unittest.TestCase
             j = zeros(3, 1); 
             x = zeros(3, 1);
              % ...then transpose t and j one at a time to make them row vectors.
-            testCase.verifyError(@()HybridSolution(testCase.dummySystem, t', j, x, [0, 100], [0, 100]), ...
+            testCase.verifyError(@()HybridSolution(t', j, x, [0, 100], [0, 100]), ...
                     'HybridSolution:WrongShape')
-            testCase.verifyError(@()HybridSolution(testCase.dummySystem, t, j', x, [0, 100], [0, 100]), ...
+            testCase.verifyError(@()HybridSolution(t, j', x, [0, 100], [0, 100]), ...
                     'HybridSolution:WrongShape')
         end
 

@@ -1,8 +1,8 @@
 %% Creating plots with HybridPlotBuilder
 %% Setup
 % The |HybridPlotBuilder| class provides an easy and configurable way to plot 
-% hybrid solutions. To use in examples, we first create solutions to a 2D
-% system and a 3D system.
+% hybrid solutions. We first create several solutions that are used in
+% subsequent examples.
 system = ExampleBouncingBallHybridSystem();
 system_3D = Example3DHybridSystem();
 config = HybridSolverConfig("Refine", 15); % "Refine" option makes the plots smoother.
@@ -62,8 +62,7 @@ view([63.6 28.2]) % Set the view angle.
 
 %%
 % We plot only the first two components by passing the array.
-% [1, 2] to |slice| (The same result can be achieved using the abbreviation |plot(sol_3D,
-% [1,2])|).
+% [1, 2] to |slice|.
 HybridPlotBuilder().slice([1,2]).plot(sol_3D);
 
 %% 
@@ -71,22 +70,23 @@ HybridPlotBuilder().slice([1,2]).plot(sol_3D);
 HybridPlotBuilder().slice([2,1]).plot(sol_3D);
 
 %% Ploting Other Values
-% To plot a series of values other than the state, pass the desired
-% values along with t, and j to the plotting function of choice.
-[~, ~, ~, D] = system.generateFGCD(sol);
-HybridPlotBuilder().plotjumps(sol.t, sol.j, D)
+% To plot a series of values other than the state, pass t, j, and the
+% desired values to the plotting function of choice.
+HybridPlotBuilder().slice(1).plotflows(sol.t, sol.j, -sol.x)
+title("Negative Height")
 
 %% 
 % Rather then referencing sol.t and sol.j, the solution object can be
 % passed to the plotting function, along with the plot values. The time
 % values from |sol| are then used.
-HybridPlotBuilder().plotjumps(sol, D)
+HybridPlotBuilder().slice(1).plotflows(sol, -sol.x)
+title("Negative Height")
 
 %% 
 % Alternatively, a function can be evaluated along the solution and plotted
 % as follows. The evaluation of the funciton is done via the function
 % |HybridSolution.evluateFunction()|.
-HybridPlotBuilder().plotflows(sol, @(x) -x(1)); % Can also be @(x, t) or @(x, t, j).
+HybridPlotBuilder().plotflows(sol, @(x) -x(1)); % Can also use @(x, t) or @(x, t, j).
 
 %% Customizing Plot Appearance
 % The following functions modify the appearance of flows.

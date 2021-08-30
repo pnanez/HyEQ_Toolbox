@@ -35,8 +35,7 @@ classdef ExampleLinearTimeInvariantPlant < ControlledHybridSystem
         function xplus = jump_map(~, x, ~, ~, ~)  
             xplus = x;
         end
-
-
+        
         function C = flow_set_indicator(this, x, u, t, j)  %#ok<INUSD>
             C = 1;
         end

@@ -64,7 +64,7 @@ classdef TerminationCauseTest < matlab.unittest.TestCase
             C = 0;
             D = 1;
             cause = TerminationCause.getCause(t, j, x, C, D, [0, 100], [0, 100]);
-            testCase.assertEqual(cause, TerminationCause.NO_CAUSE)
+            testCase.assertEqual(cause, TerminationCause.CANCELED)
         end
 
         function testInFlowSetThenNoCause(testCase)
@@ -74,7 +74,37 @@ classdef TerminationCauseTest < matlab.unittest.TestCase
             C = 1;
             D = 0;
             cause = TerminationCause.getCause(t, j, x, C, D, [0, 100], [0, 100]);
-            testCase.assertEqual(cause, TerminationCause.NO_CAUSE)
+            testCase.assertEqual(cause, TerminationCause.CANCELED)
+        end
+
+        function testNoJspanAndInFlowOrJumpSetsThenUndetermined(testCase)
+            t = linspace(0, 2, 3)'; 
+            j = [0; 1; 2]; 
+            x = [0; 1; 3];
+            C = 1;
+            D = 0;
+            cause = TerminationCause.getCause(t, j, x, C, D, [0, 100]);
+            testCase.assertEqual(cause, TerminationCause.UNDETERMINED)
+        end
+
+        function testNoJspanAndNotInFlowOrJumpSets(testCase)
+            t = linspace(0, 2, 3)'; 
+            j = [0; 1; 2]; 
+            x = [0; 1; 3];
+            C = 0;
+            D = 0;
+            cause = TerminationCause.getCause(t, j, x, C, D);
+            testCase.assertEqual(cause, TerminationCause.STATE_NOT_IN_C_UNION_D)
+        end
+
+        function testNotInFlowSetAndNowJspanThenUndetermined(testCase)
+            t = linspace(0, 2, 3)'; 
+            j = [0; 1; 2]; 
+            x = [0; 1; 3];
+            C = 1;
+            D = 0;
+            cause = TerminationCause.getCause(t, j, x, C, D, [0, 100]);
+            testCase.assertEqual(cause, TerminationCause.UNDETERMINED)
         end
 
     end

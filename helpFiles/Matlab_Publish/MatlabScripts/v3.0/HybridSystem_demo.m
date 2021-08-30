@@ -53,14 +53,6 @@ sol
 % * |x|: The state vector of the solution.
 % * |x0|: The initial state of the solution.
 % * |xf|: The final state of the solution.
-% * |f_vals|: The value of the flow map at each point along the solution.
-% * |g_vals|: The value of the jump map at each point along the solution.
-% * |C_vals|: The value of the flow set indicator function at each point
-% along the solution. When the solution is in the flow set, |C_vals| has a
-% value of |1|, otherwise it is |0|.
-% * |D_vals|: The value of the jump set indicator function at each point
-% along the solution. When the solution is in the jump set, |D_vals| has a
-% value of |1|, otherwise it is |0|.
 % * |flow_lengths|: the durations of each interval of flow.
 % * |jump_times|: the continuous times when each jump occured.
 % * |shortest_flow_length|: the length of the shortest interval of flow.
@@ -75,10 +67,18 @@ sol
 % * |STATE_NOT_IN_C_UNION_D|  
 % * |T_REACHED_END_OF_TSPAN| 
 % * |J_REACHED_END_OF_JSPAN|
-% * |NO_CAUSE| (the only expected reason for this to occur is if the solver
-% is canceled).
+% * |CANCELED|
+% * |UNDETERMINED| (Only occurs if the optional arguments C, D, tspan, jspan
+% are ommitted)
 %
 
+%% Evaluating a Function Along a Solution
+% It is frequently desirable to evaluate a function at each point along the
+% solution. This functionality is provided by the method |evaluateFunction|
+% in |HybridSolution|.
+f = @(x) norm(x);
+x_norm = sol.evaluateFunction(f);
+HybridPlotBuilder().plot(sol, x_norm)
 %% Configuration Options
 % To configure the ODE solver and progress updates, create a
 % |HybridSolverConfig| object and pass it to |solve| as follows (this reproduces 

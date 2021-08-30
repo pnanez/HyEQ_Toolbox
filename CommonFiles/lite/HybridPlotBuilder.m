@@ -441,7 +441,6 @@ classdef HybridPlotBuilder < handle
                     hold off
                 end
             end
-            
         end
         
         

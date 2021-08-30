@@ -55,7 +55,7 @@ classdef CompoundHybridSystem < HybridSystem
            for i = 1:subsys_n
                ss = subsystems{i} ;
                ss_n = ss.state_dimension;
-               obj.x_indices{i} = ndx : (ndx + ss_n - 1);
+               obj.x_indices{i} = int32(ndx : (ndx + ss_n - 1));
                ndx = ndx + ss_n;
            end
            for i = 1:subsys_n
@@ -94,10 +94,10 @@ classdef CompoundHybridSystem < HybridSystem
             for i = 1:this.subsys_n
                 ss = this.subsystems{i};
                 fprintf("%s Subsystem %d: %s\n", subsys_prefix, i, class(ss))
-                fprintf("%s \tContinuous feedback: %s\n", prop_prefix, func2str(this.kappa_C{i}))
-                fprintf("%s \t  Discrete feedback: %s\n", prop_prefix, func2str(this.kappa_D{i}))
-                fprintf("%s \t             Output: y%d=%s\n", prop_prefix, i, func2str(ss.output))
-                fprintf("%s \t         Dimensions: ", prop_prefix)
+                fprintf("%s \t\tContinuous feedback: %s\n", prop_prefix, func2str(this.kappa_C{i}))
+                fprintf("%s \t\t  Discrete feedback: %s\n", prop_prefix, func2str(this.kappa_D{i}))
+                fprintf("%s \t\t             Output: y%d=%s\n", prop_prefix, i, func2str(ss.output))
+                fprintf("%s \t\t         Dimensions: ", prop_prefix)
                 fprintf("State=%d, Input=%d, Output=%d\n", ...
                     ss.state_dimension, ss.input_dimension, ss.output_dimension)
                 if i == this.subsys_n-1

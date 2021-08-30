@@ -27,7 +27,7 @@ classdef ZOHController < ControlledHybridSystem
             obj.input_dimension = zoh_dim;
             obj.output_dimension = zoh_dim;
             
-            obj.output = @(x) x(this.zoh_indices);
+            obj.output = @(x) x(obj.zoh_indices);
         end
         
         function xdot = flow_map(this, ~, ~, ~, ~)  

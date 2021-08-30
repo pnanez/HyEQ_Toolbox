@@ -13,9 +13,8 @@ classdef TerminationCause
       STATE_NOT_IN_C_UNION_D("Solution left the flow and jump sets.")
       T_REACHED_END_OF_TSPAN("Continuous time t reached the end of tspan.")
       J_REACHED_END_OF_JSPAN("Discrete time j reached the end of jspan.")
-        
-      % Exceptional values:
-      NO_CAUSE("The cause of termination was not identified (possibly canceled)!")
+      CANCELED("The solver was canceled.")
+      UNDETERMINED("Insufficient information provided to determine cause of termination.")
    end
 
     methods(Static)
@@ -30,18 +29,30 @@ classdef TerminationCause
             elseif any(isnan(x_final)) 
                 cause = TerminationCause.STATE_IS_NAN;
                 return;
-            elseif t(end) >= tspan(end)
-                cause = TerminationCause.T_REACHED_END_OF_TSPAN;
-                return;
-            elseif j(end) >= jspan(end)
-                cause = TerminationCause.J_REACHED_END_OF_JSPAN;
-                return;
-            elseif ~C_vals(end) && ~D_vals(end)
+            end
+            if nargin == 7
+                if t(end) >= tspan(end)
+                    cause = TerminationCause.T_REACHED_END_OF_TSPAN;
+                    return;
+                elseif j(end) >= jspan(end)
+                    cause = TerminationCause.J_REACHED_END_OF_JSPAN;
+                    return;
+                end
+            end
+            if nargin >= 5 && ~C_vals(end) && ~D_vals(end)
                 cause = TerminationCause.STATE_NOT_IN_C_UNION_D;
+                return
+            end
+            if nargin == 7
+                % If there are no other reasons that the solution
+                % terminated, then it must have been canceled (or there is
+                % a defect).
+                cause = TerminationCause.CANCELED;
+                return
             else
-                % UNKNOWN REASON
-                % warning("The TerminationCause unexpectedly could not be identified.")
-                cause = TerminationCause.NO_CAUSE; 
+                % Not enough arguments to determine cause of termination.
+                cause = TerminationCause.UNDETERMINED;
+                return
             end
         end
     end

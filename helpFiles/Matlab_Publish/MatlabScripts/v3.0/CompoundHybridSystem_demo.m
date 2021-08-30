@@ -159,4 +159,32 @@ HybridPlotBuilder().plotflows(subsol, subsol.u)
 sys_1 = CompoundHybridSystem(subsystem1);
 sys_1.setContinuousFeedback(1, @(x1, t, j) -5);   
 sys_1.setDiscreteFeedback(1, @(x1, t, j) 0);   
-sol = sys_1.solve({x1_initial}, tspan, jspan);
+sol_1 = sys_1.solve({x1_initial}, tspan, jspan);
+
+%% Example: Zero-order Hold
+% As a case study in creating an compound system, consider the following
+% example. First, we create a linear time-invariant plant. The class
+% |LinearTimeInvariantSystem| is a subclass of |ControlledHybridSystem|.
+A_c = [0, 1; -1, 0];
+B_c = [0; 1];
+plant = hybrid.systems.LinearTimeInvariantSystem(A_c, B_c);
+     
+% Create a linear feedback for the plant that asymptotically stabilizes the
+% origin of the closed loop system.
+K = [0, -2];
+
+%% 
+% Next, we create a zero-order hold subsystem. 
+zoh_dim = plant.input_dimension;
+sample_time = 0.3;
+zoh = ZOHController(zoh_dim, sample_time);
+
+sys_withzoh = CompoundHybridSystem(plant, zoh);
+sys_withzoh.setContinuousFeedback(plant, @(y_plant, y_zoh, t, j) y_zoh );
+sys_withzoh.setDiscreteFeedback(zoh, @(y_plant, y_zoh, t, j) K * y_plant );
+disp(sys_withzoh);
+
+%% 
+sol = sys_withzoh.solve({[10; 0], [0; zoh.sample_time]}, [0, 10], [0, 100]);
+HybridPlotBuilder().slice(1:3).labels("$x_1$", "$x_2$", "$u_{ZOH}$")...
+    .plotflows(sol)
