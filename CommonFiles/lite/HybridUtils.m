@@ -3,52 +3,6 @@ classdef HybridUtils
 
     methods(Static)
 
-        function [jump_t, jump_start_j, jump_start_indices, is_jump_start] = jumpTimes(t, j)
-            % JUMPTIMES Takes the t and j vectors output by HyEQsolver to find the time
-            % values where jump events occur. Also returns the corresponding values
-            % of j, the indices of the events, and an array containing ones in each 
-            % entry where a jump did occured and a zero otherwise.
-            assert(length(t) == length(j), "length(t)=%d ~= length(j)=%d", length(t), length(j))
-            assert(~isempty(t), "t and j are empty")
-
-            if length(t) == 1 % Handle the case of a trivial solution.
-                jump_t = []; 
-                jump_start_j = [];
-                jump_start_indices = [];
-                is_jump_start = 0;
-                return;
-            end
-
-            is_jump_start = [diff(j) > 0; 0];
-            jump_start_indices = find(is_jump_start);
-            jump_t = t(jump_start_indices);
-            jump_start_j = j(jump_start_indices);
-        end
-
-        function flow_lengths = flowLengths(t, j)
-            % FLOWLENGTHS Compute the flow lengths of each interval of flows (i.e., the duration between each jump).
-            
-            % If the solution ends with an interval of flow, rather
-            % than a jump, then we append the length of that last
-            % interval of flow to the flow lengths. We calculate the minimum
-            % flow length before appending the last interval of flow in case
-            % that last interval happens to be shorter than the minimum. 
-
-            jump_times = HybridUtils.jumpTimes(t, j);
-            flow_lengths = diff([0; jump_times]);
-
-            % Unless there was a jump at the final time, we append the
-            % length of the final interval of flow to the flow lengths. If
-            % there weren't any jumps, then this interval is the entire
-            % length of t(end) - t(1), otherwise it is 
-            % t(end) - jump_times(end).
-            if isempty(jump_times)
-                flow_lengths(end+1) = t(end) - t(1);
-            elseif(jump_times(end) ~= t(end))
-                flow_lengths(end+1) = t(end) - jump_times(end);
-            end
-        end
-
         function t_end = timeOfNonconvergence(sol, dist_function, tol)
             % Truncate the solution to the time where the solution has not
             % yet converged.
@@ -80,57 +34,6 @@ classdef HybridUtils
                 cnvg_t = sol.t(cnvg_index);
                 cnvg_j = sol.j(cnvg_index);
             end
-        end
-
-        function plotFlowLengths(sol)
-            values = sol.flow_lengths;
-            indices = 1:length(values);
-            semilogy(indices, values, "b*");
-            % xlim([0, indices(end) + 2])
-            hold on
-            title("Lengths of Intervals of Flow")
-            xlabel("$j$", "interpreter", "latex")
-            ylabel("$\Delta t$", "interpreter", "latex")
-            
-            % Only draw ticks at (at most) 12 of the indices.
-            xtickindices = floor(indices(1):length(indices)/12:indices(end));
-            xtickindices = unique([xtickindices, indices(end)]); % Add tick at last index.
-            if length(xtickindices) == 1
-                xtickindices = [xtickindices-1, xtickindices];
-            end
-            xticks(xtickindices)
-
-            % Set the x-axis limits
-            indices_span = indices(end) - indices(1);
-            x_padding = 0.03 * (indices_span + 1); % 3-percent on each side.
-            xlim([indices(1) - x_padding, indices(end) + x_padding])
-                        
-            % Zero values are not displayed in semilog plots, but flows
-            % of length zero correspond to instaneous jumping, which is 
-            % important information to display, so we mark zero values in 
-            % a different color at the bottom of the plot.
-            zero_indices = values == 0;
-            if all(~zero_indices)
-                % No nonzero values to display.
-                padding_multiple = 1.1;
-                ylim([min(values)/padding_multiple, padding_multiple*max(values)]);
-                return
-            end
-
-            if any(~zero_indices)
-                % If any of the values are nonzero, we want to preserve the
-                % scaling of the plot (more or less), so we place markers
-                % for zeros at half the minimum value.
-                smallest_nonzero = min(values(~zero_indices));
-                zero_display_value = smallest_nonzero / 2;
-            else
-                zero_display_value = eps;
-            end
-            semilogy(indices(zero_indices), zero_display_value, "r*");
-            
-            ylim([zero_display_value, 1.5*max(values)]);
-            
-            legend("Nonzero values", "Zero values")
         end
 
         function [t_interp, j_interp, x_interp] = interpolateHybridArc(t, j, x, steps_per_interval)

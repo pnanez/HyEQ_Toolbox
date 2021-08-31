@@ -86,8 +86,8 @@ sys = CompoundHybridSystem(subsystem1, subsystem2);
 % Next, we set the feedback functions for each subsystem. The continuous
 % feedback functions generate the input for the respective subsystem during
 % flows and the discrete feedback generates the input at jumps.
-sys.setDiscreteFeedback(1, @(y1, y2) y1(1)); 
-sys.setContinuousFeedback(2, @(y1, y2) y1(1)-y2(1));
+sys.setJumpInput(1, @(y1, y2) y1(1)); 
+sys.setFlowInput(2, @(y1, y2) y1(1)-y2(1));
 
 %% 
 % The feedback functions must have $N$, $N+1$, or $N+2$ input arguments,
@@ -99,7 +99,7 @@ sys.setContinuousFeedback(2, @(y1, y2) y1(1)-y2(1));
 % 
 % For example, we can make downward acceleration ("gravity") of the first
 % ball decrease every time it bounces with the following feedback:
-sys.setContinuousFeedback(1, @(y1, y2, t, j) -9.8/(j+1));
+sys.setFlowInput(1, @(y1, y2, t, j) -9.8/(j+1));
 
 
 %%
@@ -130,7 +130,7 @@ sol
 % components reached zero.
 HybridPlotBuilder()...
     .labels("$h_1$", "$v_1$", "$h_2$", "$v_2$")...
-    .slice(1:4).plotflows(sol);
+    .slice(1:4).plotFlows(sol);
 
 %% 
 % Now, we may want the solutions of the two subsystems separately. 
@@ -151,27 +151,27 @@ figure()
 hpb = HybridPlotBuilder()...
     .labels("$h$", "$v$")...
     .titles("Height", "Velocity");
-hpb.plotflows(sol.subsys_sols{1});
+hpb.plotFlows(sol.subsys_sols{1});
 hold on
 hpb.flowColor("k").jumpColor("g")...
-    .plotflows(sol.subsys_sols{2});
+    .plotFlows(sol.subsys_sols{2});
 
 hpb.legend("$\mathcal H_1$", "$\mathcal H_1$");
 
 %% Plotting Control Signal
 % We are still developing easy ways to plot the control signal, but for now
 % you can simply pass the t, j, and u from the 
-% subystem solutions to |plotflows|.
+% subystem solutions to |plotFlows|.
 subsol = sol.subsys_sols{2};
-HybridPlotBuilder().plotflows(subsol, subsol.u)
+HybridPlotBuilder().plotFlows(subsol, subsol.u)
 
 %% Single System
 % The |CompoundHybridSystem| class can also be used with a single subsystem
 % for cases where you want to be able to modify the feedback functions
 % without modifying the code for the system. 
 sys_1 = CompoundHybridSystem(subsystem1);
-sys_1.setContinuousFeedback(1, @(y1, t, j) -5);   
-sys_1.setDiscreteFeedback(1, @(y1, t, j) 0);   
+sys_1.setFlowInput(1, @(y1, t, j) -5);   
+sys_1.setJumpInput(1, @(y1, t, j) 0);   
 sol_1 = sys_1.solve({x1_initial}, tspan, jspan);
 
 %% Example: Zero-order Hold
@@ -201,8 +201,8 @@ cl_sys = CompoundHybridSystem(plant, zoh);
 % Set inputs functions for |plant| and |zoh|. The first argument of the
 % set*Feedback functions can either be the index of the subsystem within
 % the |CompoundSystem| or a reference to the subsystem itself.
-cl_sys.setContinuousFeedback(plant, @(y_plant, y_zoh, t, j) y_zoh );
-cl_sys.setDiscreteFeedback(zoh, @(y_plant, y_zoh, t, j) K * y_plant );
+cl_sys.setFlowInput(plant, @(y_plant, y_zoh, t, j) y_zoh );
+cl_sys.setJumpInput(zoh, @(y_plant, y_zoh, t, j) K * y_plant );
 
 %% 
 % Print the system to check that everything is connected as expected.
@@ -212,4 +212,4 @@ disp(cl_sys);
 % Finally, simulate and plot.
 sol = cl_sys.solve({[10; 0], [0; zoh.sample_time]}, [0, 10], [0, 100]);
 HybridPlotBuilder().slice(1:3).labels("$x_1$", "$x_2$", "$u_{ZOH}$")...
-    .plotflows(sol)
+    .plotFlows(sol)

@@ -34,10 +34,10 @@ classdef HybridSolution < handle
             this.x = x;
             this.x0 = x(1,:)';
             this.xf = x(end,:)';
-            this.jump_times = HybridUtils.jumpTimes(t, j);
+            this.jump_times = hybrid.internal.jumpTimes(t, j);
             this.total_flow_length = t(end) - t(1);
             this.jump_count = length(this.jump_times);
-            this.flow_lengths = HybridUtils.flowLengths(t, j);
+            this.flow_lengths = hybrid.internal.flowLengths(t, j);
             this.shortest_flow_length = min(this.flow_lengths);
             
             if nargin == 7
@@ -59,17 +59,38 @@ classdef HybridSolution < handle
             HybridPlotBuilder().plot(this);
         end
 
+        function plotFlows(this)
+            HybridPlotBuilder().plotFlows(this);
+        end
+
+        function plotJumps(this)
+            HybridPlotBuilder().plotJumps(this);
+        end
+        
+        function plotHybrid(this)
+            HybridPlotBuilder().plotHybrid(this);
+        end
+        
+    end
+    
+    methods(Hidden)
         function plotflows(this)
-            HybridPlotBuilder().plotflows(this);
+            warning("Please use the plotFlows function instead of plotflow.")
+            this.plotFlows(this);
         end
 
         function plotjumps(this)
-            HybridPlotBuilder().plotjumps(this);
+            warning("Please use the plotJumps function instead of plotjumps.")
+            this.plotJumps();
         end
         
         function plotHybridArc(this)
-            HybridPlotBuilder().plotHybridArc(this);
+            warning("Please use the plotHybrid function instead of plotHybridArc.")
+            this.plotHybrid();
         end
+    end
+    
+    methods
         
         function out = evaluateFunction(this, func_hand, time_indices)
             % EVALUATEFUNCTION Evaluate a function handle at each point along the solution.

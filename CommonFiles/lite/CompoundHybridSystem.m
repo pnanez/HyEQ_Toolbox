@@ -74,23 +74,26 @@ classdef CompoundHybridSystem < HybridSystem
            obj.kappa_D = generate_default_feedbacks(subsystems);
         end
     
-        function setContinuousFeedback(this, subsys, kappa_C)
+        function setFlowInput(this, subsys, kappa_C)
+            % SETFLOWINPUT Set the input function for flows for the given subsystem.
             ndx = subsys_arg_to_ndx(this, subsys);
             this.check_feedback(kappa_C)
-            warn_if_input_dim_zero(this, ndx, "setContinuousFeedback")
+            warn_if_input_dim_zero(this, ndx, "setFlowInput")
             this.kappa_C{ndx} = kappa_C;
         end
     
-        function setDiscreteFeedback(this, subsys, kappa_D)
+        function setJumpInput(this, subsys, kappa_D)
+            % SETJUMPINPUT Set the input function for jumps for the given subsystem.
             ndx = subsys_arg_to_ndx(this, subsys);
-            warn_if_input_dim_zero(this, ndx, "setDiscreteFeedback")
+            warn_if_input_dim_zero(this, ndx, "setJumpInput")
             this.check_feedback(kappa_D)
             this.kappa_D{ndx} = kappa_D;
         end
     
-        function setFeedback(this, subsys, kappa)
+        function setInput(this, subsys, kappa)
+            % SETINPUT Set the input function for jumps and flows for the given subsystem.
             ndx = subsys_arg_to_ndx(this, subsys);
-            warn_if_input_dim_zero(this, ndx, "setFeedback")
+            warn_if_input_dim_zero(this, ndx, "setInput")
             this.check_feedback(kappa)
             this.kappa_C{ndx} = kappa;
             this.kappa_D{ndx} = kappa;
@@ -279,7 +282,7 @@ classdef CompoundHybridSystem < HybridSystem
                 % Create arrays is_a_ss1_jump_index and is_a_ss2_jump_index,
                 % which contain ones at entry where a jump occured in the
                 % corresponding system.
-                [~, ~, ~, is_jump] = HybridUtils.jumpTimes(t, ss_j);
+                [~, ~, ~, is_jump] = hybrid.internal.jumpTimes(t, ss_j);
                 
                 % Compute the input values
                 for k = 1:length(t)

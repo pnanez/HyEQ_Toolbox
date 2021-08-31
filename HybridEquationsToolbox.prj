@@ -1,13 +1,13 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
   <configuration build-checksum="2946357043" file="C:\Users\pwintz\code\hybrid-toolbox\HybridEquationsToolbox.prj" location="C:\Users\pwintz\code\hybrid-toolbox" name="HybridEquationsToolbox" target="target.toolbox" target-name="Package Toolbox">
     <param.appname>Hybrid Equations Toolbox</param.appname>
-    <param.authnamewatermark>Hybrid Systems Laboratory, UCSC</param.authnamewatermark>
+    <param.authnamewatermark />
     <param.email>pwintz@ucsc.edu</param.email>
-    <param.company>UC, Santa Cruz</param.company>
+    <param.company>Hybrid System Laboratory at UC, Santa Cruz</param.company>
     <param.summary />
     <param.description />
     <param.screenshot />
-    <param.version>3.0.0.10</param.version>
+    <param.version>3.0.0.11</param.version>
     <param.output>${PROJECT_ROOT}\Hybrid Equations Toolbox.mltbx</param.output>
     <param.products.name />
     <param.products.id />
@@ -23,6 +23,10 @@
 install.m
 makeinstall.rc
 package_toolbox.m
+InspectClasses.m
+temp.m
+readme.rtf
+configure_development_path.m
 .git*
 % A single file in a subfolder of the toolbox folder:
 % example/.svn
@@ -92,6 +96,7 @@ package_toolbox.m
     <param.additional.sw.mac.url />
     <param.additional.sw.linux.url />
     <unset>
+      <param.authnamewatermark />
       <param.summary />
       <param.description />
       <param.screenshot />
@@ -129,14 +134,13 @@ package_toolbox.m
     <fileset.rootfiles>
       <file>${PROJECT_ROOT}\buildsearchdb.m</file>
       <file>${PROJECT_ROOT}\CommonFiles</file>
-      <file>${PROJECT_ROOT}\Contents.m</file>
       <file>${PROJECT_ROOT}\demos.xml</file>
       <file>${PROJECT_ROOT}\doc</file>
       <file>${PROJECT_ROOT}\Examples</file>
       <file>${PROJECT_ROOT}\helpFiles</file>
       <file>${PROJECT_ROOT}\HyEQ_Toolbox_v204.pdf</file>
       <file>${PROJECT_ROOT}\info.xml</file>
-      <file>${PROJECT_ROOT}\readme.rtf</file>
+      <file>${PROJECT_ROOT}\rename_variables.sh</file>
     </fileset.rootfiles>
     <fileset.depfun.included />
     <fileset.depfun.excluded>

@@ -1,5 +1,5 @@
 function [jumps_x, jumps_befores, jumps_afters] = separateJumpsWithNaN(t, j, x)
-[~, ~, jump_indices] = HybridUtils.jumpTimes(t, j);
+[~, ~, jump_indices] = hybrid.internal.jumpTimes(t, j);
 
 jump_count = length(jump_indices);
 

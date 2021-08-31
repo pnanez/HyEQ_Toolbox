@@ -23,7 +23,7 @@ jspan = [0 300];
 
 sol = system.solve(x0, tspan, jspan);
 
-HybridPlotBuilder().slice(1:4).plotflows(sol);
+HybridPlotBuilder().slice(1:4).plotFlows(sol);
 % figure()
 % HybridPlotBuilder().labels("$u_1$", "$u_2$")...
-%     .slice(1:2).plotflows(sol.subsystem2_sol);
+%     .slice(1:2).plotFlows(sol.subsystem2_sol);

@@ -27,7 +27,7 @@ classdef HybridSolutionTest < matlab.unittest.TestCase
             j = [0; 1; 1; 1; 2]; % Jump at indices 1 and 4.
             x = NaN(5, 1); % Not important
             sol = HybridSolution(t, j, x);
-            testCase.assertEqual(sol.jump_times, HybridUtils.jumpTimes(t, j))
+            testCase.assertEqual(sol.jump_times, hybrid.internal.jumpTimes(t, j))
         end
 
         function testFlowLengths(testCase)

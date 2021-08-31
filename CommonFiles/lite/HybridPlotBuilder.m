@@ -253,16 +253,16 @@ classdef HybridPlotBuilder < handle
             % The output of depends on the dimension of the system 
             % (or the number of components selected with 'slice()'). 
             % The output is as follows: 
-            % - 1D: a 1D plot generated using plotflows
+            % - 1D: a 1D plot generated using plotFlows
             % - 2D: a 2D phase plot
             % - 3D: a 3D phase plot
-            % - 4D+: a set of 1D subplots generated using plotflows.
+            % - 4D+: a set of 1D subplots generated using plotFlows.
             hybrid_sol = hybrid.internal.convert_varargin_to_solution_obj(varargin);
             sliced_indices = indicesToPlot(this, hybrid_sol);
             dimensions = length(sliced_indices);
             
             if dimensions ~= 2 && dimensions ~= 3
-                this.plotflows(hybrid_sol)
+                this.plotFlows(hybrid_sol)
                 return
             end
             if this.auto_subplots
@@ -334,18 +334,18 @@ classdef HybridPlotBuilder < handle
         % The following functions are provided to help users transition
         % from v2.04 to v3.0.
         
-        function plotflows(this, varargin)
-            % Same as plotFlows. Please use that function instead.
+        function plotflows(this, varargin)            
+            warning("Please use the plotFlows function instead of plotflows.")
             this.plotFlows(varargin{:});
         end
 
         function plotjumps(this, varargin)
-            % Same as plotjumps. Please use that function instead.
+            warning("Please use the plotJumps function instead of plotjumps.")
             this.plotJumps(varargin{:});
         end
 
         function plotHybridArc(this, varargin)
-            % Same as plotHybrid. Please use that function instead.
+            warning("Please use the plotHybrid function instead of plotHybridArc.")
             this.plotHybrid(varargin{:});
         end 
     end

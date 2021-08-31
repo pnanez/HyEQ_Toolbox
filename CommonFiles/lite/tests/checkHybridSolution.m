@@ -24,7 +24,7 @@ function checkHybridSolution(sol, f_vals, g_vals, C_vals, D_vals, priority)
             mat2str(size(sol.x)), mat2str(size(g_vals)))
     end
     
-    [~, ~, ~, is_jump] = HybridUtils.jumpTimes(sol.t, sol.j);
+    [~, ~, ~, is_jump] = hybrid.internal.jumpTimes(sol.t, sol.j);
     for i = 1:(length(sol.t)-1)
         x = sol.x(i, :)';
         x_next = sol.x(i+1, :)';

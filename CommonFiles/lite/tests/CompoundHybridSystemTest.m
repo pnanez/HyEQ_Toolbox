@@ -7,8 +7,8 @@ classdef CompoundHybridSystemTest < matlab.unittest.TestCase
             sub1 = MockHybridSubsystem(1, 1, 1);
             sub2 = MockHybridSubsystem(1, 1, 1);
             sys = CompoundHybridSystem(sub1, sub2);
-            sys.setContinuousFeedback(sub1, @(y1, y2, t, j) 4);
-            sys.setContinuousFeedback(sub2, @(y1, y2, t, j) 4);
+            sys.setFlowInput(sub1, @(y1, y2, t, j) 4);
+            sys.setFlowInput(sub2, @(y1, y2, t, j) 4);
             tspan = [0, 10];
             jspan = [0, 10];
             sys.solve({1, 2}, tspan, jspan)
@@ -20,12 +20,12 @@ classdef CompoundHybridSystemTest < matlab.unittest.TestCase
             sub2 = MockHybridSubsystem(2, 1, 3);
             sub3 = MockHybridSubsystem(3, 1, 1);
             sys = CompoundHybridSystem(sub1, sub2, sub3);
-            sys.setContinuousFeedback(sub1, @(y1, y2, y3, t, j) 4);
-            sys.setContinuousFeedback(sub2, @(y1, y2, y3, t, j) ones(2, 1));
-            sys.setContinuousFeedback(sub3, @(y1, y2, y3, t, j) 3*ones(3, 1));
-            sys.setDiscreteFeedback(sub1, @(y1, y2, y3, t, j) 4);
-            sys.setDiscreteFeedback(sub2, @(y1, y2, y3, t, j) ones(2, 1));
-            sys.setDiscreteFeedback(sub3, @(y1, y2, y3, t, j) 3*ones(3, 1));
+            sys.setFlowInput(sub1, @(y1, y2, y3, t, j) 4);
+            sys.setFlowInput(sub2, @(y1, y2, y3, t, j) ones(2, 1));
+            sys.setFlowInput(sub3, @(y1, y2, y3, t, j) 3*ones(3, 1));
+            sys.setJumpInput(sub1, @(y1, y2, y3, t, j) 4);
+            sys.setJumpInput(sub2, @(y1, y2, y3, t, j) ones(2, 1));
+            sys.setJumpInput(sub3, @(y1, y2, y3, t, j) 3*ones(3, 1));
             tspan = [0, 10];
             jspan = [0, 10];
             sol = sys.solve({1, 2, 3}, tspan, jspan);
@@ -77,22 +77,26 @@ classdef CompoundHybridSystemTest < matlab.unittest.TestCase
                 "CompoundHybridSystem:FlowPriorityNotSupported")
         end
         
-        function testFlowsWhenAllSubsystemsInFlowSetAndFlowPriority(testCase)
-                           % Size of: (u, x, y)
-            sub1 = MockHybridSubsystem(1, 1, 1);
-            sub2 = MockHybridSubsystem(1, 1, 1);
-            sys = CompoundHybridSystem(sub1, sub2);
-            sub1.D_indicator = @(x, u, t, j) 1;
-            sub2.D_indicator = @(x, u, t, j) 1;
-            tspan = [0, 10];
-            jspan = [0,  2];
-            warning('off',"CompoundHybridSystem:FlowPriorityNotSupported")
-            config = HybridSolverConfig("silent").flowPriority();
-            sol = sys.solve({0, 0}, tspan, jspan, config);
-            testCase.assertEmpty(sol.jump_times)
-            testCase.assertEqual(sol.t(end), tspan(end), 'AbsTol', 1e-6)
-            warning('on',"CompoundHybridSystem:FlowPriorityNotSupported")
-        end
+%         % This test is disabled because it is testing unsupported
+%         % functionallity, namely using flow priority with
+%         CompoundHybridSystem, and turning off warnings was causing the
+%         testFlowPriorityWarning test to fail intermittently.
+%         function testFlowsWhenAllSubsystemsInFlowSetAndFlowPriority(testCase)
+%                            % Size of: (u, x, y)
+%             sub1 = MockHybridSubsystem(1, 1, 1);
+%             sub2 = MockHybridSubsystem(1, 1, 1);
+%             sys = CompoundHybridSystem(sub1, sub2);
+%             sub1.D_indicator = @(x, u, t, j) 1;
+%             sub2.D_indicator = @(x, u, t, j) 1;
+%             tspan = [0, 10];
+%             jspan = [0,  2];
+%             warning('off',"CompoundHybridSystem:FlowPriorityNotSupported")
+%             config = HybridSolverConfig("silent").flowPriority();
+%             sol = sys.solve({0, 0}, tspan, jspan, config);
+%             testCase.assertEmpty(sol.jump_times)
+%             testCase.assertEqual(sol.t(end), tspan(end), 'AbsTol', 1e-6)
+%             warning('on',"CompoundHybridSystem:FlowPriorityNotSupported")
+%         end
         
         function testJumpsWhenAnySubsystemsNotInFlowSetAndFlowPriority(testCase)
             % This test case fails because CompoundHybridSystem cannot
@@ -154,19 +158,19 @@ classdef CompoundHybridSystemTest < matlab.unittest.TestCase
             sub1 = MockHybridSubsystem(1, 1, 1);
             sub2 = MockHybridSubsystem(1, 1, 1);
             sys = CompoundHybridSystem(sub1, sub2);
-            testCase.verifyError(@() sys.setContinuousFeedback(1, @(y1) y1), ...
+            testCase.verifyError(@() sys.setFlowInput(1, @(y1) y1), ...
                 "CompoundHybridSystem:WrongNumberFeedbackInputArgs")
-            sys.setContinuousFeedback(1, @(y1, y2) y1)
-            sys.setContinuousFeedback(1, @(y1, y2, t) y1)
-            sys.setContinuousFeedback(1, @(y1, y2, t, j) y1)
-            testCase.verifyError(@() sys.setContinuousFeedback(1, @(y1, y2, t, j, extra) y1), ...
+            sys.setFlowInput(1, @(y1, y2) y1)
+            sys.setFlowInput(1, @(y1, y2, t) y1)
+            sys.setFlowInput(1, @(y1, y2, t, j) y1)
+            testCase.verifyError(@() sys.setFlowInput(1, @(y1, y2, t, j, extra) y1), ...
                 "CompoundHybridSystem:WrongNumberFeedbackInputArgs")
         end
         
         function testFeedbackOutVectorWrongSize(testCase)
             sub = MockHybridSubsystem(1, 1, 1);
             sys = CompoundHybridSystem(sub);
-            sys.setContinuousFeedback(1, @(x1, t, j) zeros(2, 1));
+            sys.setFlowInput(1, @(x1, t, j) zeros(2, 1));
             testCase.verifyError(@() sys.solve({1}, [0, 10], [0, 10]), ...
                "CompoundHybridSystem:DoesNotMatchInputDimension");
         end
@@ -174,11 +178,11 @@ classdef CompoundHybridSystemTest < matlab.unittest.TestCase
         function testWarningWhenSetFeedbackForSystemWithNoInputs(testCase)
             sub = MockHybridSubsystem(0, 1, 1);
             sys = CompoundHybridSystem(sub);
-            testCase.verifyWarning(@() sys.setContinuousFeedback(1, @(x1, t, j) []), ...
+            testCase.verifyWarning(@() sys.setFlowInput(1, @(x1, t, j) []), ...
                "CompoundHybridSystem:SystemHasNoInputs");
-            testCase.verifyWarning(@() sys.setDiscreteFeedback(1, @(x1, t, j) []), ...
+            testCase.verifyWarning(@() sys.setJumpInput(1, @(x1, t, j) []), ...
                "CompoundHybridSystem:SystemHasNoInputs");
-            testCase.verifyWarning(@() sys.setFeedback(1, @(x1, t, j) []), ...
+            testCase.verifyWarning(@() sys.setInput(1, @(x1, t, j) []), ...
                "CompoundHybridSystem:SystemHasNoInputs");
         end
         

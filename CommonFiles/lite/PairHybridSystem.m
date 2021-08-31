@@ -66,7 +66,7 @@ classdef PairHybridSystem < HybridSystem
            obj.state_dimension = n1 + n2 + 2;
         end
     
-        function setContinuousFeedback(this, subsys, kappa_C)
+        function setFlowInput(this, subsys, kappa_C)
             ndx = subsys_arg_to_ndx(this, subsys);
             switch ndx
                 case 1
@@ -76,7 +76,7 @@ classdef PairHybridSystem < HybridSystem
             end            
         end
     
-        function setDiscreteFeedback(this, subsys, kappa_D)
+        function setJumpInput(this, subsys, kappa_D)
             ndx = subsys_arg_to_ndx(this, subsys);
             switch ndx
                 case 1
@@ -86,10 +86,10 @@ classdef PairHybridSystem < HybridSystem
             end
         end
     
-        function setFeedback(this, subsys, kappa)
+        function setInput(this, subsys, kappa)
             ndx = subsys_arg_to_ndx(this, subsys);
-            this.setContinuousFeedback(ndx, kappa);
-            this.setDiscreteFeedback(ndx, kappa);
+            this.setFlowInput(ndx, kappa);
+            this.setJumpInput(ndx, kappa);
         end
     end
     
@@ -188,8 +188,8 @@ classdef PairHybridSystem < HybridSystem
             % Create arrays is_a_ss1_jump_index and is_a_ss2_jump_index,
             % which contain ones at entry where a jump occured in the
             % corresponding system.
-            [~, ~, ss1_jump_indices] = HybridUtils.jumpTimes(t, j1);
-            [~, ~, ss2_jump_indices] = HybridUtils.jumpTimes(t, j2);
+            [~, ~, ss1_jump_indices] = hybrid.internal.jumpTimes(t, j1);
+            [~, ~, ss2_jump_indices] = hybrid.internal.jumpTimes(t, j2);
             is_a_ss1_jump_index = ismember(1:length(t), ss1_jump_indices);
             is_a_ss2_jump_index = ismember(1:length(t), ss2_jump_indices);
             

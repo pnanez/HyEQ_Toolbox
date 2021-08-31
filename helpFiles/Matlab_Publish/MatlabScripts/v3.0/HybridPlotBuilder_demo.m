@@ -85,7 +85,7 @@ title("Negative Height")
 %% 
 % Alternatively, a function can be evaluated along the solution and plotted
 % as follows. The evaluation of the funciton is done via the function
-% |HybridSolution.evluateFunction()|.
+% |HybridSolution.evaluateFunction()|.
 HybridPlotBuilder().plotFlows(sol, @(x) -x(1)); % Can also use @(x, t) or @(x, t, j).
 
 %% Customizing Plot Appearance

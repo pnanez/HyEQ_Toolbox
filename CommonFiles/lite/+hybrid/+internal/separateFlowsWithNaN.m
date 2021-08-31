@@ -1,5 +1,5 @@
 function flows_x = separateFlowsWithNaN(t, j, x)
-[~, ~, ~, is_jump] = HybridUtils.jumpTimes(t, j);
+[~, ~, ~, is_jump] = hybrid.internal.jumpTimes(t, j);
 
 if length(t) <= 1
     flows_x = [];
