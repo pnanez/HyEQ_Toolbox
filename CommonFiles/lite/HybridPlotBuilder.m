@@ -215,7 +215,8 @@ classdef HybridPlotBuilder < handle
             this.text_interpreter = interpreter;
         end
 
-        function plotflows(this, varargin)
+        function plotFlows(this, varargin)
+            % Plot values vs. continuous time.
             hybrid_sol = hybrid.internal.convert_varargin_to_solution_obj(varargin);
             
             indices_to_plot = indicesToPlot(this, hybrid_sol);
@@ -226,7 +227,7 @@ classdef HybridPlotBuilder < handle
             this.plot_from_ids(hybrid_sol, axis1_ids, indices_to_plot);
         end
 
-        function plotjumps(this, varargin)
+        function plotJumps(this, varargin)
             hybrid_sol = hybrid.internal.convert_varargin_to_solution_obj(varargin);
             indices_to_plot = indicesToPlot(this, hybrid_sol);
                         
@@ -236,7 +237,7 @@ classdef HybridPlotBuilder < handle
             this.plot_from_ids(hybrid_sol, axis1_ids, indices_to_plot);
         end
 
-        function plotHybridArc(this, varargin)
+        function plotHybrid(this, varargin)
             hybrid_sol = hybrid.internal.convert_varargin_to_solution_obj(varargin);
             indices_to_plot = indicesToPlot(this, hybrid_sol);
 
@@ -329,6 +330,26 @@ classdef HybridPlotBuilder < handle
         end
     end
 
+    methods(Hidden)
+        % The following functions are provided to help users transition
+        % from v2.04 to v3.0.
+        
+        function plotflows(this, varargin)
+            % Same as plotFlows. Please use that function instead.
+            this.plotFlows(varargin{:});
+        end
+
+        function plotjumps(this, varargin)
+            % Same as plotjumps. Please use that function instead.
+            this.plotJumps(varargin{:});
+        end
+
+        function plotHybridArc(this, varargin)
+            % Same as plotHybrid. Please use that function instead.
+            this.plotHybrid(varargin{:});
+        end 
+    end
+    
     methods(Access = private)
 
         function configureAxes(this, xaxis_id, yaxis_id, zaxis_id)

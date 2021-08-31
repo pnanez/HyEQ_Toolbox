@@ -41,6 +41,7 @@ if do_publish
         
         rmpath(d)
     end
+    close all
 end
 matlab.addons.toolbox.packageToolbox(projectFile)
 
