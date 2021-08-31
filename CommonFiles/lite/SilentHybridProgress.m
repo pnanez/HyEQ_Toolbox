@@ -4,11 +4,6 @@ classdef SilentHybridProgress < HybridProgress
         function update(this) %#ok<MANU>
             % Do nothing
         end
-
-        function done(this) %#ok<MANU>
-            % Do nothing
-        end
-
     end
     
 end

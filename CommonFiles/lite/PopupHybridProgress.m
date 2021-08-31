@@ -19,9 +19,11 @@ classdef PopupHybridProgress < HybridProgress
         last_update_t;
         last_update_j;
     end
+    properties(Hidden)
+        update_count = 0;
+    end
     
     methods 
-
         function init(this, tspan, jspan)
             % Creating the waitbar is slow, so we wait to initialize it 
             % until a time of at least min_delay seconds has passed. This
@@ -33,6 +35,7 @@ classdef PopupHybridProgress < HybridProgress
             this.last_update_tic = tic();
             this.last_update_t = -Inf;
             this.last_update_j = -Inf;
+            this.update_count = 0;
             init@HybridProgress(this, tspan, jspan);
         end
 
@@ -58,6 +61,7 @@ classdef PopupHybridProgress < HybridProgress
                 this.last_update_t = round_t;
                 this.last_update_j = this.j;
                 this.last_update_tic = tic();
+                this.update_count = this.update_count+1;
             end
         end
 

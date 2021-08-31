@@ -4,10 +4,17 @@ classdef HybridProgress < handle
         jspan (1, 2)
         t (1,1) double
         j (1,1)
+        is_cancel_solver; % When true, HyEQSolver aborts.
     end
 
-    properties
-        cancel_solver; % When true, HyEQSolver aborts.
+    methods(Abstract)
+        update(this)     
+    end 
+    
+    methods
+        function done(this) 
+            % Override this method to cleanup progress display.
+        end
     end
 
     properties(Dependent, Access = protected)
@@ -15,23 +22,14 @@ classdef HybridProgress < handle
         j_percent
     end
     
-    methods 
-
+    methods(Hidden)
         function init(this, tspan, jspan)
             this.tspan = tspan;
             this.jspan = jspan;
-            this.cancel_solver = false;
+            this.is_cancel_solver = false;
             this.setBoth(tspan(1), jspan(1));
         end
 
-    end 
-
-    methods(Abstract)
-        update(this) 
-        done(this)    
-    end 
-
-    methods
         function setT(this, t)
             assert(~isempty(t), "t was empty.")
             % Sometimes ode solvers return several time steps at a time,
@@ -50,7 +48,9 @@ classdef HybridProgress < handle
             this.j = j;
             this.update();
         end
-        
+    end
+    
+    methods
         function val = get.t_percent(this)
             val = (this.t - this.tspan(1)) / ...
                       (this.tspan(2) - this.tspan(1));
@@ -63,14 +63,13 @@ classdef HybridProgress < handle
 
     end
 
-    
     methods(Access = protected)
         function s = j_progress_str(this)
             s = sprintf("j complete: %d in %s", this.j, mat2str(this.jspan));
         end
         
         function cancelSolver(this)
-            this.cancel_solver = true;
+            this.is_cancel_solver = true;
         end
 
     end

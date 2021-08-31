@@ -216,18 +216,17 @@ end
 
 progress.init(TSPAN, JSPAN);
 function stop = ODE_callback(t, ~, flag)
-    stop = progress.cancel_solver;
     if isempty(flag) % Only update if not 'init' or 'done'   
         progress.setT(t);
-        return
-    end     
+    end
+    stop = progress.is_cancel_solver;     
 end
 
 % Configure the progress bar to automatically close when the 'cleanup'
 % object is destroyed (e.g., when the function exits, throws an error, etc.)
 cleanup = onCleanup(@progress.done);
 
-while (j < JSPAN(end) && tout(end) < TSPAN(end) && ~progress.cancel_solver)
+while (j < JSPAN(end) && tout(end) < TSPAN(end) && ~progress.is_cancel_solver)
     options = odeset(options,'Events',@(t,x) zeroevents(x,t,j,C,D,rule));
     
     % Check if it is possible to flow from current position
