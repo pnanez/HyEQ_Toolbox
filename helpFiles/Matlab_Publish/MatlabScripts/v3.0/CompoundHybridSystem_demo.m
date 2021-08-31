@@ -85,10 +85,23 @@ sys = CompoundHybridSystem(subsystem1, subsystem2);
 %%
 % Next, we set the feedback functions for each subsystem. The continuous
 % feedback functions generate the input for the respective subsystem during
-% flows and the discrete feedback generates the input at jumps. 
-sys.setContinuousFeedback(1, @(x1, x2, t, j) -5);
-sys.setContinuousFeedback(2, @(x1, x2, t, j) x1(1)-x2(1));
-sys.setDiscreteFeedback(1, @(x1, x2, t, j) x1(1));
+% flows and the discrete feedback generates the input at jumps.
+sys.setDiscreteFeedback(1, @(y1, y2) y1(1)); 
+sys.setContinuousFeedback(2, @(y1, y2) y1(1)-y2(1));
+
+%% 
+% The feedback functions must have $N$, $N+1$, or $N+2$ input arguments,
+% where $N$ is the number of subsystems. The first $N$ arguments are passed
+% the output values of each corresponding subsystem, and, if present, the
+% $N+1$ argument is passed the continuous time |t| for the compound system
+% (same as the subsystem), and the $N+2$ argument is passed the discrete
+% time |j| _for that subsystem._ 
+% 
+% For example, we can make downward acceleration ("gravity") of the first
+% ball decrease every time it bounces with the following feedback:
+sys.setContinuousFeedback(1, @(y1, y2, t, j) -9.8/(j+1));
+
+
 %%
 % The display function prints useful information regarding the connections
 % between the subsystems. Note that by default, feedback functions return a
@@ -157,8 +170,8 @@ HybridPlotBuilder().plotflows(subsol, subsol.u)
 % for cases where you want to be able to modify the feedback functions
 % without modifying the code for the system. 
 sys_1 = CompoundHybridSystem(subsystem1);
-sys_1.setContinuousFeedback(1, @(x1, t, j) -5);   
-sys_1.setDiscreteFeedback(1, @(x1, t, j) 0);   
+sys_1.setContinuousFeedback(1, @(y1, t, j) -5);   
+sys_1.setDiscreteFeedback(1, @(y1, t, j) 0);   
 sol_1 = sys_1.solve({x1_initial}, tspan, jspan);
 
 %% Example: Zero-order Hold
@@ -179,12 +192,24 @@ zoh_dim = plant.input_dimension;
 sample_time = 0.3;
 zoh = ZOHController(zoh_dim, sample_time);
 
-sys_withzoh = CompoundHybridSystem(plant, zoh);
-sys_withzoh.setContinuousFeedback(plant, @(y_plant, y_zoh, t, j) y_zoh );
-sys_withzoh.setDiscreteFeedback(zoh, @(y_plant, y_zoh, t, j) K * y_plant );
-disp(sys_withzoh);
+%% 
+% Pass the plant and ZOH subsystems to |CopoundHybridSystem| to create the
+% closed-loop system.
+cl_sys = CompoundHybridSystem(plant, zoh);
+
+%%
+% Set inputs functions for |plant| and |zoh|. The first argument of the
+% set*Feedback functions can either be the index of the subsystem within
+% the |CompoundSystem| or a reference to the subsystem itself.
+cl_sys.setContinuousFeedback(plant, @(y_plant, y_zoh, t, j) y_zoh );
+cl_sys.setDiscreteFeedback(zoh, @(y_plant, y_zoh, t, j) K * y_plant );
 
 %% 
-sol = sys_withzoh.solve({[10; 0], [0; zoh.sample_time]}, [0, 10], [0, 100]);
+% Print the system to check that everything is connected as expected.
+disp(cl_sys);
+
+%% 
+% Finally, simulate and plot.
+sol = cl_sys.solve({[10; 0], [0; zoh.sample_time]}, [0, 10], [0, 100]);
 HybridPlotBuilder().slice(1:3).labels("$x_1$", "$x_2$", "$u_{ZOH}$")...
     .plotflows(sol)

@@ -10,7 +10,7 @@ classdef CompoundHybridSystem < HybridSystem
 %%% where x1 is the state vector for the first subsystem, x2 is the state
 %%% vector for the second subsystem, etc., and j1 is the discrete time for
 %%% the first subsystem, j2 is the discrete time for the second subsystem,
-%%% and so on. (The subsystems jump separately of each other, so we
+%%% and so on. (The subsystems can jump separately of each other, so we
 %%% maintain separate discrete times).
     
     properties(SetAccess = immutable)
@@ -32,13 +32,19 @@ classdef CompoundHybridSystem < HybridSystem
     
     properties(Access = private)
         % Feedback function for each subsystem during flows. 
-        % Each entry must be set to a function handle with a signiture matching 
+        % Each entry must be set to a function handle with a signiture
+        % matching one of the following signitures:
+        %    u = kappa_C(x1, x2, ..., xN)
+        %    u = kappa_C(x1, x2, ..., xN, t)
         %    u = kappa_C(x1, x2, ..., xN, t, j)
         % where N is the number of subsystems.
         kappa_C
         
         % Feedback functions for each subsystem at jumps.
-        % Each entry must be set to a function handle with a signiture matching
+        % Each entry must be set to a function handle with a signiture
+        % matching one of the following signitures:
+        %    u = kappa_D(x1, x2, ..., xN)
+        %    u = kappa_D(x1, x2, ..., xN, t)
         %    u = kappa_D(x1, x2, ..., xN, t, j)
         % where N is the number of subsystems.
         kappa_D
@@ -127,7 +133,7 @@ classdef CompoundHybridSystem < HybridSystem
                ss = this.subsystems{i};
                j = js(i);
                
-               u = eval_feedback(this.kappa_C{i}, ys, t, js);
+               u = eval_feedback(this.kappa_C{i}, ys, t, j);
                assert_control_length(length(u), ss.input_dimension, i)
                xdot(this.x_indices{i}) = ss.flowMap(xs{i}, u, t, j);
             end
@@ -140,7 +146,7 @@ classdef CompoundHybridSystem < HybridSystem
             for i=1:length(this.subsystems)
                ss = this.subsystems{i};
                j = js(i);
-               u = eval_feedback(this.kappa_D{i}, ys, t, js);
+               u = eval_feedback(this.kappa_D{i}, ys, t, j);
                assert_control_length(length(u), ss.input_dimension, i)
                D = ss.jumpSetIndicator(xs{i}, u, t, j);
                if ~isscalar(D)
@@ -170,7 +176,7 @@ classdef CompoundHybridSystem < HybridSystem
             for i=1:length(this.subsystems)
                ss = this.subsystems{i};
                j = js(i);
-               u = eval_feedback(this.kappa_C{i}, ys, t, js);
+               u = eval_feedback(this.kappa_C{i}, ys, t, j);
                assert_control_length(length(u), ss.input_dimension, i)
                C = ss.flowSetIndicator(xs{i}, u, t, j);
                if ~isscalar(C)
@@ -192,7 +198,7 @@ classdef CompoundHybridSystem < HybridSystem
             for i=1:length(this.subsystems)
                ss = this.subsystems{i};
                j = js(i);
-               u = eval_feedback(this.kappa_D{i}, ys, t, js);
+               u = eval_feedback(this.kappa_D{i}, ys, t, j);
                assert_control_length(length(u), ss.input_dimension, i)
                D = ss.jumpSetIndicator(xs{i}, u, t, j);
                if D
@@ -242,6 +248,8 @@ classdef CompoundHybridSystem < HybridSystem
             
             if ~exist("config", "var")
                 config = HybridSolverConfig();
+            elseif strcmp(config, "silent")
+                config = HybridSolverConfig("silent");
             end
             
             if config.hybrid_priority == HybridPriority.FLOW
@@ -282,10 +290,10 @@ classdef CompoundHybridSystem < HybridSystem
                     ys = compute_outputs(this, xs);
                     if is_jump(k)
                         % u(k, :) = this.kappa_D{i}(xs, t, ss_j)';
-                        ss_u(k, :) = eval_feedback(this.kappa_D{i}, ys, t, ss_j)';
+                        ss_u(k, :) = eval_feedback(this.kappa_D{i}, ys, t(k), ss_j(k))';
                     else % is flow
                         % u(k, :) = this.kappa_C{i}(xs, t, ss_j)';
-                        ss_u(k, :) = eval_feedback(this.kappa_C{i}, ys, t, ss_j)';
+                        ss_u(k, :) = eval_feedback(this.kappa_C{i}, ys, t(k), ss_j(k))';
                     end
                 end
                 
@@ -372,11 +380,11 @@ classdef CompoundHybridSystem < HybridSystem
         
         function check_feedback(this, kappa)
             nargs = nargin(kappa);
-            expected_nargs = this.subsys_n + 2;
-            if nargs ~= expected_nargs
+            is_wrong_nargs = nargs > this.subsys_n + 2 || nargs < this.subsys_n;
+            if is_wrong_nargs
                error("CompoundHybridSystem:WrongNumberFeedbackInputArgs", ...
-                   "Wrong number of input arguments. Expected=%d, actual=%d.",...
-                   expected_nargs, nargs) 
+                   "Wrong number of input arguments. Expected=%d, %d, or %d, actual=%d.",...
+                   this.subsys_n, this.subsys_n + 1, this.subsys_n + 2, nargs) 
             end
         end
     end
@@ -393,23 +401,15 @@ end
 end
 
 function u = eval_feedback(kappa, ys, t, j)
-switch length(ys)
-    case 1
-        u = kappa(ys{1}, t, j);
-    case 2
-        u = kappa(ys{1}, ys{2}, t, j);
-    case 3
-        u = kappa(ys{1}, ys{2}, ys{3}, t, j);
-    case 4
-        u = kappa(ys{1}, ys{2}, ys{3}, ys{4}, t, j);
-    case 5
-        u = kappa(ys{1}, ys{2}, ys{3}, ys{4}, ys{5}, t, j);
-    case 6
-        u = kappa(ys{1}, ys{2}, ys{3}, ys{4}, ys{5}, ys{6}, t, j);
-    case 7
-        u = kappa(ys{1}, ys{2}, ys{3}, ys{4}, ys{5}, ys{6}, ys{7}, t, j);
-    otherwise
-        error("The maximum number of subsystems is seven.");
+assert(isscalar(t), "t is not a scalar")
+assert(isscalar(j), "j is not a scalar")
+switch nargin(kappa)
+    case length(ys)
+        u = kappa(ys{:});
+    case length(ys) + 1
+        u = kappa(ys{:}, t);
+    case length(ys) + 2
+        u = kappa(ys{:}, t, j);
 end
 end
 

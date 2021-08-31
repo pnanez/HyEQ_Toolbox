@@ -148,13 +148,18 @@ classdef CompoundHybridSystemTest < matlab.unittest.TestCase
                 "CompoundHybridSystem:InitialStateNotCell");    
         end
         
-        function testWrongNumberOfContinuousFeedbackInputArguments(testCase)
+        function testNumberOfContinuousFeedbackInputArguments(testCase)
             % i.e. @(y1, y2, t, j) instead of @(y1, y2, y3, t, j).
                            % Size of: (u, x, y)
             sub1 = MockHybridSubsystem(1, 1, 1);
             sub2 = MockHybridSubsystem(1, 1, 1);
             sys = CompoundHybridSystem(sub1, sub2);
-            testCase.verifyError(@() sys.setContinuousFeedback(1, @(y1, t, j) y1), ...
+            testCase.verifyError(@() sys.setContinuousFeedback(1, @(y1) y1), ...
+                "CompoundHybridSystem:WrongNumberFeedbackInputArgs")
+            sys.setContinuousFeedback(1, @(y1, y2) y1)
+            sys.setContinuousFeedback(1, @(y1, y2, t) y1)
+            sys.setContinuousFeedback(1, @(y1, y2, t, j) y1)
+            testCase.verifyError(@() sys.setContinuousFeedback(1, @(y1, y2, t, j, extra) y1), ...
                 "CompoundHybridSystem:WrongNumberFeedbackInputArgs")
         end
         
