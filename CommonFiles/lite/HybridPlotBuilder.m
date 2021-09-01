@@ -25,7 +25,13 @@ classdef HybridPlotBuilder < handle
         % Subplots
         auto_subplots logical = true;
         subplots_callback function_handle = @(component) disp('');
+        
+        % Extra label config
+        t_label % Defaults to value of 'default_t_label'
+        j_label % Defaults to value of 'default_j_label'
+        label_format % Defaults to value of 'default_label_format'
     end
+    
     properties(Access = private)
         plots_for_legend = [];
         axes_for_legend = [];
@@ -33,13 +39,16 @@ classdef HybridPlotBuilder < handle
         timestepsFilter = [];
         max_subplots = 4;
     end
-    properties(Dependent, Hidden)
+    
+    properties(Dependent, Access = private)
         % Labels that correctly adjust to different text interpreters.
-        t_label
-        j_label
+        default_t_label
+        default_j_label
+        default_label_format
     end
+    
     methods
-        function value = get.t_label(this)
+        function value = get.default_t_label(this)
             if strcmp(this.text_interpreter, "none")
                 value = "t"; % No formatting
             elseif strcmp(this.text_interpreter, "tex")
@@ -52,7 +61,7 @@ classdef HybridPlotBuilder < handle
             end
         end
 
-        function value = get.j_label(this)
+        function value = get.default_j_label(this)
             if strcmp(this.text_interpreter, "none")
                 value = "j"; % No formatting
             elseif strcmp(this.text_interpreter, "tex")
@@ -62,6 +71,19 @@ classdef HybridPlotBuilder < handle
             else
                 error("text interpreter '%s' unrecognized",... 
                             this.text_interpreter);
+            end
+        end
+        
+        function fmt = get.default_label_format(this)
+            if strcmp(this.text_interpreter, "none")
+                fmt = "x_%d"; % No formatting
+            elseif strcmp(this.text_interpreter, "tex")
+                fmt = "x_{%d}";
+            elseif strcmp(this.text_interpreter, "latex")
+                fmt = "$x_{%d}$";
+            else
+                error("text interpreter '%s' unrecognized",...
+                    this.text_interpreter);
             end
         end
     end
@@ -79,6 +101,18 @@ classdef HybridPlotBuilder < handle
 
         function this = labels(this, varargin)
             this.component_labels = varargin;
+        end
+
+        function this = xLabelFormat(this, label_format)
+            this.label_format = label_format;
+        end
+
+        function this = tLabel(this, t_label)
+            this.t_label = t_label;
+        end
+
+        function this = jLabel(this, j_label)
+            this.j_label = j_label;
         end
 
         function this = flowColor(this, color)
@@ -463,8 +497,7 @@ classdef HybridPlotBuilder < handle
                 end
             end
         end
-        
-        
+
         function plot_sliced(this, hybrid_sol, sliced_plot_values)
 
             if ~isempty(this.timestepsFilter)
@@ -594,7 +627,6 @@ classdef HybridPlotBuilder < handle
         end
         
         function label = createLabel(this, index)
-            
             if strcmp("t", index)
                 label = this.t_label;
                 return
@@ -608,16 +640,7 @@ classdef HybridPlotBuilder < handle
             if index <= length(this.component_labels)
                 label = this.component_labels(index);  
             else
-                if strcmp(this.text_interpreter, "none")
-                    fmt = "x_%d"; % No formatting
-                elseif strcmp(this.text_interpreter, "tex")
-                    fmt = "x_{%d}";
-                elseif strcmp(this.text_interpreter, "latex")
-                    fmt = "$x_{%d}$";
-                else
-                    error("text interpreter '%s' unrecognized",... 
-                                this.text_interpreter);
-                end
+                fmt = this.label_format;
                 label = sprintf(fmt, index);
             end
         end
@@ -645,6 +668,32 @@ classdef HybridPlotBuilder < handle
                 title(this.component_titles(index), "interpreter", this.text_interpreter)
             end
         end         
+    end
+    
+    methods
+        function val = get.t_label(this)
+            if isempty(this.t_label)
+                val = this.default_t_label;
+            else
+                val = this.t_label;
+            end
+        end
+        
+        function val = get.j_label(this)
+            if isempty(this.j_label)
+                val = this.default_j_label;
+            else
+                val = this.j_label;
+            end
+        end
+        
+        function val = get.label_format(this)
+            if isempty(this.label_format)
+                val = this.default_label_format;
+            else
+                val = this.label_format;
+            end
+        end
     end
 end
         

@@ -139,7 +139,7 @@ HybridPlotBuilder()...
 % As the names suggest, these contain the solutions of the subsystems. 
 % Looking at the solution for subystem1, we see all the data from |HybridSolution|
 % along with a new property |u| that contains the input to |subsystem1| that 
-% generated this solution:% 
+% generated this solution:
 sol.subsys_sols{1}
 
 %% 
