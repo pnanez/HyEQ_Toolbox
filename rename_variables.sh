@@ -5,7 +5,7 @@ function rename() {
         return
     fi
     echo "Renaming $1 to $2"
-    find . -type f -name "*.m*" -exec sed -i "s/$1/$2/g" {} +
+    find . -type f -name "*.m*" -exec sed -i '' -e "s/$1/$2/g" {} +
 }
 
 rename control_dimension input_dimension
