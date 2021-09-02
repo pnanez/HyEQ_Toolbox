@@ -1,10 +1,11 @@
-classdef Firefly < HybridSubsystem
+classdef FireflySubsystem < HybridSubsystem
     
 % Adapted from Simulink example by Ricardo Sanfelice.
     
     properties (SetAccess = immutable) 
         state_dimension = 1;
         input_dimension = 1;
+        output_dimension = 1;
         e = 0.3;
     end
     
@@ -27,7 +28,7 @@ classdef Firefly < HybridSubsystem
         end 
 
         function C = flowSetIndicator(this, tau, u, t, j) 
-            if ((tau > 0) && (tau < 1)) || ((u > 0) && (u <= 1))  % flow condition
+            if ((tau >= 0) && (tau <= 1)) || ((u > 0) && (u <= 1))  % flow condition
                 C = 1;  % report flow
             else
                 C = 0;  % do not report flow
@@ -35,9 +36,7 @@ classdef Firefly < HybridSubsystem
         end
 
         function D = jumpSetIndicator(this, tau, u, t, j)
-            other_large = u >= 1;
-            this_large = tau >= 1;
-            if other_large || this_large % jump condition
+            if tau >= 1 || u >= 1 % jump condition
                 D = 1;  % report jump
             else
                 D = 0;  % do not report jump

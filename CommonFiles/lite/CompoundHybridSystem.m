@@ -121,10 +121,7 @@ classdef CompoundHybridSystem < HybridSystem
                     prop_prefix = " ";
                 end
             end
-            
-            
         end
-    
     end
     
     methods(Sealed)
@@ -373,14 +370,18 @@ classdef CompoundHybridSystem < HybridSystem
             if isa(subsys, "HybridSubsystem")
                 ndx = this.get_subsystem_index(subsys);
                 if isempty(ndx)
-                    error("Argument was not a subsystem in this system.")
+                    e = MException("CompoundHybridSystem:NotASubsystem", ...
+                        "Argument was not a subsystem in this system.");
+                    throwAsCaller(e);
                 end
             elseif isnumeric(subsys) 
                 % Don't use isinteger here because Matlab interprets
                 % literal numbers in code (such as "2") as doubles.
                 ndx = subsys;
             else
-                error("Argument must be either a HybridSubsystem object or an integer");
+                e = MException("CompoundHybridSystem:InvalidArgument", ...
+                    "Argument must be either a HybridSubsystem object or an integer");
+                throwAsCaller(e);
             end
         end
         
@@ -404,10 +405,17 @@ end
 function subsystems = split_constructor_varagin(varargin_cell)
 subsystems = varargin_cell;
 for i = 1:length(subsystems)
-    assert(isa(subsystems{i}, "HybridSubsystem"), ...
-        "subsystem{%d} was a %s instead of a HybridSubsystem", ...
-        i, class(subsystems{i}))
-    assert(isscalar(subsystems{i}), "Input arguments must be scalars.")
+    if ~isa(subsystems{i}, "HybridSubsystem")
+        e = MException("CompoundArgument:InvalidConstructorArgs", ...
+            "subsystem{%d} was a %s instead of a HybridSubsystem", ...
+            i, class(subsystems{i}));
+        throwAsCaller(e);
+    end
+    if ~isscalar(subsystems{i})
+        e = MException("CompoundArgument:InvalidConstructorArgs", ...
+            "Each constructor argument must be a scalar. Instead argument %d had size %s.", i, mat2str(size(subsystems{i})));
+        throwAsCaller(e);
+    end
 end
 end
 

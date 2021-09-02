@@ -386,7 +386,6 @@ classdef HybridPlotBuilder < handle
                         "FontSize", this.label_size, ...
                         'AutoUpdate','off');
                 end
-                lgd.Location = 'best';
                 
                 if nargout == 0
                     % We clear 'lgd' if the output of the
