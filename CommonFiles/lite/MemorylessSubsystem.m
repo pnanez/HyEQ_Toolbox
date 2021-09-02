@@ -12,7 +12,9 @@ classdef MemorylessSubsystem < HybridSubsystem
             obj.output_dimension = output_dimension;
             obj.output = output;
         end
-        
+    end
+    
+    methods(Sealed)
         function xdot = flowMap(this, x, u, t, j)   %#ok<INUSD>
            xdot = []; 
         end

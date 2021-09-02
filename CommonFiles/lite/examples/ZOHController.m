@@ -48,6 +48,10 @@ classdef ZOHController < HybridSubsystem
             timer = x(this.timer_index);
             D = timer >= this.sample_time;
         end
+        
+        function x0 = initial(this)
+            x0 = [zeros(this.input_dimension, 1); this.sample_time];
+        end
     end
     
 end

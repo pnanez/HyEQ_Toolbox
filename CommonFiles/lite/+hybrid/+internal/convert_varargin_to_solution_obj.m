@@ -22,8 +22,14 @@ switch length(varargin_cell)
     otherwise
         error("Expected 1, 2, or 3 arguments.")
 end
-assert(length(t) == length(j));
-assert(length(t) == size(values, 1));
+if length(t) ~= length(j)
+    e = MException("HybridToolbox:MismatchedSizes", "length(t)=%d ~= length(j)=%d", length(t), length(j));
+    throwAsCaller(e)
+end
+if length(t) ~= size(values, 1)
+    e = MException("HybridToolbox:MismatchedSizes", "length(t)=%d ~= size(values, 1)=%d", length(t), size(values, 1));
+    throwAsCaller(e)
+end
 hybrid_sol = HybridSolution(t, j, values);
 
 end

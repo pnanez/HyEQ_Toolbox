@@ -108,13 +108,15 @@ classdef HybridSolution < handle
             % The argument "time_indices" is optional. If supplied, the
             % function is evaluated only at the indices specificed and the
             % "out" vector matches the legnth of "time_indices." 
-            assert(isa(func_hand, "function_handle"), "The 'func_hand' argument must be a function handle.")
+            assert(isa(func_hand, "function_handle"), ...
+                "The 'func_hand' argument must be a function_handle. Instead it was %s.", class(func_hand))
             
             if ~exist("indices", "var")
                 time_indices = 1:length(this.t);
             end
             
             if isempty(time_indices) 
+                out = [];
                 return
             end
             
@@ -145,7 +147,8 @@ classdef HybridSolution < handle
     end
 end
 
-% Local functions %
+%%%% Local functions %%%%
+
 function val_end = evaluate_function(fh, x, t, j)
 switch nargin(fh)
     case 1
@@ -155,31 +158,35 @@ switch nargin(fh)
     case 3
         val_end = fh(x, t, j);
     otherwise
-        error("Function handle must have 1, 2, or 3 arguments. Instead %s had %d",...
+        error("Function handle must have 1, 2, or 3 arguments. Instead %s had %d.",...
             func2str(fh), nargin(fh))
 end
 end
 
 function checkVectorSizes(t, j, x)
     if size(t, 2) ~= 1
-        error('HybridSolution:WrongShape', ...
-            "The vector t must be a column vector. Instead its shape was %s", ...
+        e = MException('HybridSolution:WrongShape', ...
+            "The vector t must be a column vector. Instead its shape was %s.", ...
             mat2str(size(t)));
+        throwAsCaller(e);
     end
     if size(j, 2) ~= 1
-        error('HybridSolution:WrongShape', ...
-            "The vector j must be a column vector. Instead its shape was %s", ...
+        e = MException('HybridSolution:WrongShape', ...
+            "The vector j must be a column vector. Instead its shape was %s.", ...
             mat2str(size(j)));
+        throwAsCaller(e);
     end
     if size(t, 1) ~= size(j, 1)
-        error('HybridSolution:WrongShape', ...
+        e = MException('HybridSolution:WrongShape', ...
             "The length(t)=%d and length(j)=%d must match.", ...
             size(t, 1), size(j, 1));
+        throwAsCaller(e);
     end
     if size(t, 1) ~= size(x, 1)
-        error('HybridSolution:WrongShape', ...
+        e = MException('HybridSolution:WrongShape', ...
             "The length(t)=%d and length(x)=%d must match.", ...
             size(t, 1), size(x, 1));
+        throwAsCaller(e);
     end
 end
 

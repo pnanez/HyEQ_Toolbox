@@ -3,20 +3,36 @@ classdef HybridPlotBuilder < handle
     properties(Constant, Hidden)
         INTERPRETERS = ["none", "tex", "latex"];
     end
+    
+    properties(Constant)
+        % To reset the defaults, clear all instances of HybridPlotBuilder,
+        % then call "clear HybridPlotBuilder". (To do both at once, "clear all", 
+        % if you don't mind deleting all other variables)
+        default_values = hybrid.internal.HybridPlotBuilderDefaults()
+    end
 
+    methods(Static)
+        function d = defaults()
+            d = HybridPlotBuilder.default_values;
+        end
+    end
+    
     properties(SetAccess = private)
         % Text
         component_titles;
         component_labels; 
-        text_interpreter = "latex";
+        title_interpreter;
+        label_interpreter;
+        title_size;
+        label_size;
 
         % Plots
         flow_color = "b";
         flow_line_style string = "-";
-        flow_line_width double = 0.5;
+        flow_line_width double = NaN;
         jump_color = "r";
         jump_line_style string = "--";
-        jump_line_width double = 0.5;
+        jump_line_width double = NaN;
         jump_start_marker string = ".";
         jump_start_marker_size double = 6;
         jump_end_marker string = "*";
@@ -49,41 +65,41 @@ classdef HybridPlotBuilder < handle
     
     methods
         function value = get.default_t_label(this)
-            if strcmp(this.text_interpreter, "none")
+            if strcmp(this.label_interpreter, "none")
                 value = "t"; % No formatting
-            elseif strcmp(this.text_interpreter, "tex")
+            elseif strcmp(this.label_interpreter, "tex")
                 value = "t";
-            elseif strcmp(this.text_interpreter, "latex")
+            elseif strcmp(this.label_interpreter, "latex")
                 value = "$t$";
             else
                 error("text interpreter '%s' unrecognized",... 
-                            this.text_interpreter);
+                            this.label_interpreter);
             end
         end
 
         function value = get.default_j_label(this)
-            if strcmp(this.text_interpreter, "none")
+            if strcmp(this.label_interpreter, "none")
                 value = "j"; % No formatting
-            elseif strcmp(this.text_interpreter, "tex")
+            elseif strcmp(this.label_interpreter, "tex")
                 value = "j";
-            elseif strcmp(this.text_interpreter, "latex")
+            elseif strcmp(this.label_interpreter, "latex")
                 value = "$j$";
             else
                 error("text interpreter '%s' unrecognized",... 
-                            this.text_interpreter);
+                            this.label_interpreter);
             end
         end
         
         function fmt = get.default_label_format(this)
-            if strcmp(this.text_interpreter, "none")
+            if strcmp(this.label_interpreter, "none")
                 fmt = "x_%d"; % No formatting
-            elseif strcmp(this.text_interpreter, "tex")
+            elseif strcmp(this.label_interpreter, "tex")
                 fmt = "x_{%d}";
-            elseif strcmp(this.text_interpreter, "latex")
+            elseif strcmp(this.label_interpreter, "latex")
                 fmt = "$x_{%d}$";
             else
                 error("text interpreter '%s' unrecognized",...
-                    this.text_interpreter);
+                    this.label_interpreter);
             end
         end
     end
@@ -246,10 +262,10 @@ classdef HybridPlotBuilder < handle
         function this = textInterpreter(this, interpreter)
             is_valid = ismember(interpreter,HybridPlotBuilder.INTERPRETERS);
             assert(is_valid, "'%s' is not a valid value. Use one of these values: 'none' | 'tex' | 'latex'.", interpreter)
-            this.text_interpreter = interpreter;
+            this.title_interpreter = interpreter;
         end
 
-        function plotFlows(this, varargin)
+        function this = plotFlows(this, varargin)
             % Plot values vs. continuous time.
             hybrid_sol = hybrid.internal.convert_varargin_to_solution_obj(varargin);
             
@@ -259,9 +275,15 @@ classdef HybridPlotBuilder < handle
             axis1_ids = repmat("t", nplot, 1);
              
             this.plot_from_ids(hybrid_sol, axis1_ids, indices_to_plot);
+            
+            if nargout == 0
+                % Prevent output if function is not terminated with a
+                % semicolon.
+                clear this
+            end
         end
 
-        function plotJumps(this, varargin)
+        function this = plotJumps(this, varargin)
             hybrid_sol = hybrid.internal.convert_varargin_to_solution_obj(varargin);
             indices_to_plot = indicesToPlot(this, hybrid_sol);
                         
@@ -269,9 +291,15 @@ classdef HybridPlotBuilder < handle
             axis1_ids = repmat("j", nplot, 1);
              
             this.plot_from_ids(hybrid_sol, axis1_ids, indices_to_plot);
+            
+            if nargout == 0
+                % Prevent output if function is not terminated with a
+                % semicolon.
+                clear this
+            end
         end
 
-        function plotHybrid(this, varargin)
+        function this = plotHybrid(this, varargin)
             hybrid_sol = hybrid.internal.convert_varargin_to_solution_obj(varargin);
             indices_to_plot = indicesToPlot(this, hybrid_sol);
 
@@ -280,9 +308,15 @@ classdef HybridPlotBuilder < handle
             axis2_ids = repmat("j", nplot, 1);
             axis3_ids = indices_to_plot;
             this.plot_from_ids(hybrid_sol, axis1_ids, axis2_ids, axis3_ids)
+            
+            if nargout == 0
+                % Prevent output if function is not terminated with a
+                % semicolon.
+                clear this
+            end
         end
 
-        function plot(this, varargin)
+        function this = plot(this, varargin)
             % PLOT Plot the hybrid solution in an intelligent way.
             % The output of depends on the dimension of the system 
             % (or the number of components selected with 'slice()'). 
@@ -309,7 +343,13 @@ classdef HybridPlotBuilder < handle
                 configureAxes(this, sliced_indices(1), sliced_indices(2))
             else % dimensions == 3
                 configureAxes(this, sliced_indices(1), sliced_indices(2), sliced_indices(3))
-            end              
+            end    
+            
+            if nargout == 0
+                % Prevent output if function is not terminated with a
+                % semicolon.
+                clear this
+            end          
         end
 
         function lgd = legend(this, varargin)
@@ -341,16 +381,19 @@ classdef HybridPlotBuilder < handle
                 check_legend_count(plots_in_axes, lgd_labels);
                 
                 if isvalid(ax)
-                    lgd_res = legend(ax, plots_in_axes(1:m), lgd_labels(1:m), ...
-                        "interpreter", this.text_interpreter, ...
+                    lgd = legend(ax, plots_in_axes(1:m), lgd_labels(1:m), ...
+                        "interpreter", this.label_interpreter, ...
+                        "FontSize", this.label_size, ...
                         'AutoUpdate','off');
                 end
-                if nargout ~= 0
-                    % We only set the output argument if the output of the
-                    % function is used. This prevents the value of lgd_res
+                lgd.Location = 'best';
+                
+                if nargout == 0
+                    % We clear 'lgd' if the output of the
+                    % function is unused. This prevents the value 
                     % from being printed out if the function call was not
                     % terminated with a semi-colon.
-                    lgd = lgd_res;
+                    clear lgd;
                 end
             end
         end
@@ -648,24 +691,26 @@ classdef HybridPlotBuilder < handle
         function xlabel(this, index)
             % xlabel Add a label to the x-axis for the component at 'index'.
             label = this.createLabel(index);
-            xlabel(label, "interpreter", this.text_interpreter)
+            xlabel(label, "interpreter", this.label_interpreter, "FontSize", this.label_size)
         end
 
         function ylabel(this, index)
             % ylabel Add a label to the y-axis for the component at 'index'.
             label = this.createLabel(index);
-            ylabel(label, "interpreter", this.text_interpreter)
+            ylabel(label, "interpreter", this.label_interpreter, "FontSize", this.label_size)
         end
 
         function zlabel(this, index)
             % zlabel Add a label to the z-axis for the component at 'index'.
             label = this.createLabel(index);
-            zlabel(label, "interpreter", this.text_interpreter)
+            zlabel(label, "interpreter", this.label_interpreter, "FontSize", this.label_size)
         end
 
         function applyTitle(this, index)
             if index <= length(this.component_titles)
-                title(this.component_titles(index), "interpreter", this.text_interpreter)
+                title(this.component_titles(index), ...
+                    "interpreter", this.title_interpreter, ...
+                    "FontSize", this.title_size)
             end
         end         
     end
@@ -693,6 +738,54 @@ classdef HybridPlotBuilder < handle
             else
                 val = this.label_format;
             end
+        end
+        
+        function val = get.label_size(this)
+           if isempty(this.label_size)
+               val = this.defaults.label_size;
+           else
+               val = this.label_size;
+           end
+        end
+        
+        function val = get.title_size(this)
+           if isempty(this.title_size)
+               val = this.defaults.title_size;
+           else
+               val = this.title_size;
+           end
+        end
+        
+        function val = get.label_interpreter(this)
+           if isempty(this.label_interpreter)
+               val = this.defaults.label_interpreter;
+           else
+               val = this.label_interpreter;
+           end
+        end
+        
+        function val = get.title_interpreter(this)
+           if isempty(this.title_interpreter)
+               val = this.defaults.title_interpreter;
+           else
+               val = this.title_interpreter;
+           end
+        end
+        
+        function val = get.flow_line_width(this)
+           if isnan(this.flow_line_width)
+               val = this.defaults.flow_line_width;
+           else
+               val = this.flow_line_width;
+           end
+        end
+        
+        function val = get.jump_line_width(this)
+           if isnan(this.jump_line_width)
+               val = this.defaults.jump_line_width;
+           else
+               val = this.jump_line_width;
+           end
         end
     end
 end

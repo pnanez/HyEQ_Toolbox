@@ -230,22 +230,25 @@ classdef CompoundHybridSystem < HybridSystem
             % so track the jumps for each in the last components of the 
             % compound state).
             if ~iscell(xs_0)
-                error("CompoundHybridSystem:InitialStateNotCell", ...
+                e = MException("CompoundHybridSystem:InitialStateNotCell", ...
                     "Initial states xs_0 was a %s instead of a cell array.", ...
-                    class(xs_0))
+                    class(xs_0));
+                throwAsCaller(e);
             end
             
             if length(xs_0) ~= this.subsys_n
-                error("CompoundHybridSystem:WrongNumberOfInitialStates", ...
+                e = MException("CompoundHybridSystem:WrongNumberOfInitialStates", ...
                     "Wrong number of initial states. Expected=%d, actual=%d", ...
-                    this.subsys_n, length(xs_0))
+                    this.subsys_n, length(xs_0));
+                throwAsCaller(e);
             end
             for i=1:this.subsys_n
                 ss_dim = this.subsystems{i}.state_dimension;
-                if any((size(xs_0{i}) ~= [ss_dim, 1]))
-                    error("CompoundHybridSystem:WrongNumberOfInitialStates",...
-                        "System %d has state dimension %d but the initial value had shape %s.",...
-                    i, ss_dim, mat2str(size(xs_0{i})));
+                if any((size(xs_0{i}) ~= [ss_dim, 1])) && ~(ss_dim == 0 && size(xs_0{i}, 1) == 0)
+                    e = MException("CompoundHybridSystem:WrongNumberOfInitialStates",...
+                        "Mismatched initial state size. System %d has state dimension %d but the initial value had shape %s.",...
+                        i, ss_dim, mat2str(size(xs_0{i})));
+                    throwAsCaller(e);
                 end
             end
             xs_0 = cat(1, xs_0{:});
@@ -389,9 +392,10 @@ classdef CompoundHybridSystem < HybridSystem
             nargs = nargin(kappa);
             is_wrong_nargs = nargs > this.subsys_n + 2 || nargs < this.subsys_n;
             if is_wrong_nargs
-               error("CompoundHybridSystem:WrongNumberFeedbackInputArgs", ...
+               e = MException("CompoundHybridSystem:WrongNumberFeedbackInputArgs", ...
                    "Wrong number of input arguments. Expected=%d, %d, or %d, actual=%d.",...
-                   this.subsys_n, this.subsys_n + 1, this.subsys_n + 2, nargs) 
+                   this.subsys_n, this.subsys_n + 1, this.subsys_n + 2, nargs);
+               throwAsCaller(e);
             end
         end
     end
