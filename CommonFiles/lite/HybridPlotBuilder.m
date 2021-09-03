@@ -4,16 +4,20 @@ classdef HybridPlotBuilder < handle
         INTERPRETERS = ["none", "tex", "latex"];
     end
     
-    properties(Constant)
+    properties(Constant, Access = private)
         % To reset the defaults, clear all instances of HybridPlotBuilder,
         % then call "clear HybridPlotBuilder". (To do both at once, "clear all", 
         % if you don't mind deleting all other variables)
-        default_values = hybrid.internal.HybridPlotBuilderDefaults()
+        defaults = hybrid.internal.HybridPlotBuilderDefaults()
     end
 
     methods(Static)
-        function d = defaults()
-            d = HybridPlotBuilder.default_values;
+        function setDefault(key, value)
+            HybridPlotBuilder.defaults.set(key, value);
+        end
+        
+        function resetDefaults()
+            HybridPlotBuilder.defaults.reset();
         end
     end
     
@@ -21,6 +25,8 @@ classdef HybridPlotBuilder < handle
         % Text
         component_titles;
         component_labels; 
+        single_title;
+        single_label;
         title_interpreter;
         label_interpreter;
         title_size;
@@ -107,16 +113,33 @@ classdef HybridPlotBuilder < handle
     methods
 
         function this = title(this, title)
-            assert(length(title) == 1, "For setting multiple titles, use titles()")
-            this.component_titles = title;
+            title = string(title); % Convert char arrays to string.
+            if length(title) > 1
+                e = MException("HybridPlotBuilder:InvalidArgument", ...
+                    "For setting multiple titles, use titles()");
+                throwAsCaller(e);
+            end
+            this.titles(title);
         end
         
         function this = titles(this, varargin)
             this.component_titles = varargin;
+            this.single_title = varargin{1};
+        end
+
+        function this = label(this, label)
+            label = string(label); % Convert char arrays to string.
+            if length(label) > 1
+                e = MException("HybridPlotBuilder:InvalidArgument", ...
+                    "For setting multiple labels, use labels()");
+                throwAsCaller(e);
+            end
+            this.labels(label);
         end
 
         function this = labels(this, varargin)
             this.component_labels = varargin;
+            this.single_label = varargin{1};
         end
 
         function this = xLabelFormat(this, label_format)
@@ -259,10 +282,31 @@ classdef HybridPlotBuilder < handle
            this.subplots_callback = callback;
         end
         
-        function this = textInterpreter(this, interpreter)
-            is_valid = ismember(interpreter,HybridPlotBuilder.INTERPRETERS);
-            assert(is_valid, "'%s' is not a valid value. Use one of these values: 'none' | 'tex' | 'latex'.", interpreter)
+        function this = titleInterpreter(this, interpreter)
+            % Set the text interpreter used in titles. 
+            if ~ismember(interpreter,HybridPlotBuilder.INTERPRETERS)
+            	e = MException("HybridPlotBuilder:InvalidArgument", ...
+                    "'%s' is not a valid value. Use one of these values: 'none' | 'tex' | 'latex'.", ...
+                    interpreter);
+                throwAsCaller(e)
+            end
             this.title_interpreter = interpreter;
+        end
+        
+        function this = labelInterpreter(this, interpreter)
+            % Set the text interpreter used in labels and legend entries. 
+            if ~ismember(interpreter,HybridPlotBuilder.INTERPRETERS)
+            	e = MException("HybridPlotBuilder:InvalidArgument", ...
+                    "'%s' is not a valid value. Use one of these values: 'none' | 'tex' | 'latex'.", ...
+                    interpreter);
+                throwAsCaller(e)
+            end
+            this.label_interpreter = interpreter;
+        end
+        
+        function this = textInterpreter(this, interpreter)
+            this.titleInterpreter(interpreter);
+            this.labelInterpreter(interpreter);
         end
 
         function this = plotFlows(this, varargin)
@@ -279,7 +323,7 @@ classdef HybridPlotBuilder < handle
             if nargout == 0
                 % Prevent output if function is not terminated with a
                 % semicolon.
-                clear this
+                clearvars this
             end
         end
 
@@ -442,14 +486,29 @@ classdef HybridPlotBuilder < handle
             if is3D
                 this.zlabel(zaxis_id)
             end
+            if ~this.auto_subplots
+                switch first_nontime_axis
+                    % If the first nontime axis is 1, then the plot is a 2D
+                    % or 3D phase plot, so the component labels should be
+                    % used.
+                    case 2
+                        this.ylabel('single')
+                    case 3
+                        this.zlabel('single')
+                end 
+            end
             
-            switch first_nontime_axis
-                case 1
-                    this.applyTitle(xaxis_id)
-                case 2
-                    this.applyTitle(yaxis_id)
-                case 3
-                    this.applyTitle(zaxis_id)
+            if this.auto_subplots
+                switch first_nontime_axis
+                    case 1
+                        this.applyTitle(xaxis_id)
+                    case 2
+                        this.applyTitle(yaxis_id)
+                    case 3
+                        this.applyTitle(zaxis_id)
+                end
+            else
+                this.applyTitle('single')
             end
             
             % Adjust padding.
@@ -509,14 +568,13 @@ classdef HybridPlotBuilder < handle
                 plot_values = create_plot_values(hybrid_sol, axis1_ids(sp), axis2_ids(sp), axis3_id);
                 this.plot_sliced(hybrid_sol, plot_values)
                 
+                
+                this.configureAxes(axis1_ids(sp), axis2_ids(sp), axis3_id);
                 if this.auto_subplots
-                    this.configureAxes(axis1_ids(sp), axis2_ids(sp), axis3_id);
                     this.subplots_callback(last_id);
                     if ~was_subplot_hold_on
                         hold off
                     end
-                else
-                    this.configureAxes(axis1_ids(sp), axis2_ids(sp), axis3_id);
                 end
             end
             
@@ -672,13 +730,14 @@ classdef HybridPlotBuilder < handle
             if strcmp("t", index)
                 label = this.t_label;
                 return
-            end
-            
-            if strcmp("j", index)
+            elseif strcmp("j", index)
                 label = this.j_label;
                 return
+            elseif strcmp('single', index)
+                label = this.single_label;
+                return;
             end
-            
+
             if index <= length(this.component_labels)
                 label = this.component_labels(index);  
             else
@@ -706,11 +765,17 @@ classdef HybridPlotBuilder < handle
         end
 
         function applyTitle(this, index)
-            if index <= length(this.component_titles)
-                title(this.component_titles(index), ...
+            if strcmp('single', index)
+                title_string = this.single_title;
+            elseif index <= length(this.component_titles)
+                title_string = this.component_titles(index);
+            else
+                % No title
+                return
+            end
+            title(title_string, ...
                     "interpreter", this.title_interpreter, ...
                     "FontSize", this.title_size)
-            end
         end         
     end
     
@@ -741,7 +806,7 @@ classdef HybridPlotBuilder < handle
         
         function val = get.label_size(this)
            if isempty(this.label_size)
-               val = this.defaults.label_size;
+               val = HybridPlotBuilder.defaults.label_size;
            else
                val = this.label_size;
            end
@@ -749,7 +814,7 @@ classdef HybridPlotBuilder < handle
         
         function val = get.title_size(this)
            if isempty(this.title_size)
-               val = this.defaults.title_size;
+               val = HybridPlotBuilder.defaults.title_size;
            else
                val = this.title_size;
            end
@@ -757,7 +822,7 @@ classdef HybridPlotBuilder < handle
         
         function val = get.label_interpreter(this)
            if isempty(this.label_interpreter)
-               val = this.defaults.label_interpreter;
+               val = HybridPlotBuilder.defaults.label_interpreter;
            else
                val = this.label_interpreter;
            end
@@ -765,7 +830,7 @@ classdef HybridPlotBuilder < handle
         
         function val = get.title_interpreter(this)
            if isempty(this.title_interpreter)
-               val = this.defaults.title_interpreter;
+               val = HybridPlotBuilder.defaults.title_interpreter;
            else
                val = this.title_interpreter;
            end
@@ -773,7 +838,7 @@ classdef HybridPlotBuilder < handle
         
         function val = get.flow_line_width(this)
            if isnan(this.flow_line_width)
-               val = this.defaults.flow_line_width;
+               val = HybridPlotBuilder.defaults.flow_line_width;
            else
                val = this.flow_line_width;
            end
@@ -781,7 +846,7 @@ classdef HybridPlotBuilder < handle
         
         function val = get.jump_line_width(this)
            if isnan(this.jump_line_width)
-               val = this.defaults.jump_line_width;
+               val = HybridPlotBuilder.defaults.jump_line_width;
            else
                val = this.jump_line_width;
            end
