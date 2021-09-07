@@ -11,7 +11,9 @@ classdef CompoundHybridSystemTest < matlab.unittest.TestCase
             sys.setFlowInput(sub2, @(y1, y2, t, j) 4);
             tspan = [0, 10];
             jspan = [0, 10];
-            sys.solve({1, 2}, tspan, jspan)
+            sol = sys.solve({1, 2}, tspan, jspan);
+            testCase.assertLength(sol.subsys_sols, 2)
+            testCase.assertLength(sol.x(1, :), 2+2);
         end
        
         function testThreeSubsystemsOfDifferentSizes(testCase)

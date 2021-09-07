@@ -25,8 +25,10 @@ classdef HybridPlotBuilder < handle
         % Text
         component_titles;
         component_labels; 
+        component_legend_labels; 
         single_title;
         single_label;
+        single_legend_label;
         title_interpreter;
         label_interpreter;
         title_size;
@@ -138,8 +140,13 @@ classdef HybridPlotBuilder < handle
         end
 
         function this = labels(this, varargin)
-            this.component_labels = varargin;
-            this.single_label = varargin{1};
+            labels = string(varargin);
+            this.component_labels = labels;
+            if ~isempty(labels)
+                this.single_label = labels(1);
+            else 
+                this.single_label = [];
+            end
         end
 
         function this = xLabelFormat(this, label_format)
@@ -154,6 +161,23 @@ classdef HybridPlotBuilder < handle
             this.j_label = j_label;
         end
 
+        function this = legend(this, varargin)
+            for i = 1:length(varargin)
+                % Convert empty entries to empty strings.
+                if isempty(varargin{i})
+                    varargin{i} = "";
+                end
+            end
+            
+            labels = string(varargin);
+            this.component_legend_labels = labels;
+            if ~isempty(labels)
+                this.single_legend_label = labels(1);
+            else 
+                this.single_legend_label = [];
+            end
+        end
+        
         function this = flowColor(this, color)
             % FLOWCOLOR Set the color of flow lines.
             this.flow_color = color;
@@ -381,12 +405,13 @@ classdef HybridPlotBuilder < handle
                 subplot(1, 1, 1) % Reset to only one subplot
             end
             sliced_x = hybrid_sol.x(:, sliced_indices);
-            this.plot_sliced(hybrid_sol, sliced_x)
+%             this.getLegend
+            this.plot_sliced(hybrid_sol, sliced_x, 'single')
 
             if dimensions == 2
-                configureAxes(this, sliced_indices(1), sliced_indices(2))
+                this.configureAxes(sliced_indices(1), sliced_indices(2))
             else % dimensions == 3
-                configureAxes(this, sliced_indices(1), sliced_indices(2), sliced_indices(3))
+                this.configureAxes(sliced_indices(1), sliced_indices(2), sliced_indices(3))
             end    
             
             if nargout == 0
@@ -396,11 +421,10 @@ classdef HybridPlotBuilder < handle
             end          
         end
 
-        function lgd = legend(this, varargin)
+        function lgd = display_legend(this)
             % LEGEND Add a legend for each call to builder.plots() while 
             % in the current figure. (Plots in other figures will be
             % skipped).
-            lgd_labels = varargin;
             
             % For the current figure, get all the line plots. 
             plots_in_figure = findall(gcf,'Type','Line');
@@ -413,19 +437,25 @@ classdef HybridPlotBuilder < handle
                 = this.plots_for_legend(plots_for_legend_indices);
             axes_for_this_legend = this.axes_for_legend(plots_for_legend_indices);
             
+            if isempty(axes_for_this_legend) 
+                % Calling unique on an empty array creates a 0x1 array,
+                % which causes the for-loop below to execute once with
+                % ax=[]. This return statement prevents that.
+                return 
+            end
             for ax = unique(axes_for_this_legend)
                 % Add the legend entries for each plot. We truncate the lengths
                 % of the arrays to match so that Matlab does not print a
                 % (rather unhelpful) warning.
                 plots_in_axes = plots_for_this_legend(axes_for_this_legend == ax);
-                m = min(length(plots_in_axes), length(lgd_labels));
+%                 m = min(length(plots_in_axes), length(lgd_labels));
                 
                 % Show a warning if the number of plots don't
                 % match the number of labels provided.
-                check_legend_count(plots_in_axes, lgd_labels);
+                % check_legend_count(plots_in_axes, lgd_labels);
                 
                 if isvalid(ax)
-                    lgd = legend(ax, plots_in_axes(1:m), lgd_labels(1:m), ...
+                    lgd = legend(ax, plots_in_axes, ...
                         "interpreter", this.label_interpreter, ...
                         "FontSize", this.label_size, ...
                         'AutoUpdate','off');
@@ -441,12 +471,17 @@ classdef HybridPlotBuilder < handle
             end
         end
 
-        function addLegendEntry(this, plt)
+        function addLegendEntry(this, plt, name)
             % Add an object to include in the legend. 
             % This function MUST be called while the axes where the object
             % was plotted is still active.
+            if isempty(name) || strcmp("", name)
+                return
+            end
+            plt.DisplayName = name;
             this.plots_for_legend = [this.plots_for_legend, plt];
             this.axes_for_legend = [this.axes_for_legend, gca()];
+            this.display_legend();
         end
     end
 
@@ -527,7 +562,9 @@ classdef HybridPlotBuilder < handle
             % The z-axis never contains t or j, so we don't make it
             % "tight". Conversely, making it "padded" doesn't improve the
             % appearance of a 3D plot, so we don't modify the default
-            % behavior.            
+            % behavior.         
+            
+            this.display_legend();
         end
         
         function plot_from_ids(this, hybrid_sol, axis1_ids, axis2_ids, axis3_ids)
@@ -566,7 +603,7 @@ classdef HybridPlotBuilder < handle
                 end
                 
                 plot_values = create_plot_values(hybrid_sol, axis1_ids(sp), axis2_ids(sp), axis3_id);
-                this.plot_sliced(hybrid_sol, plot_values)
+                this.plot_sliced(hybrid_sol, plot_values, last_id)
                 
                 
                 this.configureAxes(axis1_ids(sp), axis2_ids(sp), axis3_id);
@@ -598,7 +635,7 @@ classdef HybridPlotBuilder < handle
             end
         end
 
-        function plot_sliced(this, hybrid_sol, sliced_plot_values)
+        function plot_sliced(this, hybrid_sol, sliced_plot_values, legend_id)
 
             if ~isempty(this.timestepsFilter)
                 assert(length(this.timestepsFilter) == size(sliced_plot_values, 1), ...
@@ -623,7 +660,12 @@ classdef HybridPlotBuilder < handle
                 "Marker", this.jump_start_marker, ...
                 "MarkerSize", this.jump_start_marker_size, ...
                 "MarkerEdgeColor", this.jump_color);
-            this.addLegendEntry(plt)
+            if this.auto_subplots
+                legend_label = this.createLegendLabel(legend_id);
+            else
+                legend_label = this.createLegendLabel('single');
+            end
+            this.addLegendEntry(plt, legend_label)
             
             % We have to turn on hold while plotting the hybrid arc, so 
             % we save the current hold state and restore it at the end.
@@ -642,7 +684,7 @@ classdef HybridPlotBuilder < handle
                     error("HybridPlotBuilder:WrongNumberOfComponents", ...
                         "The plot_sliced method can only plot in 2D and 3D.")
             end
-            
+                        
             % Turn off 'hold' if it was off at the beginning of this
             % function.
             if ~was_hold_on
@@ -743,6 +785,19 @@ classdef HybridPlotBuilder < handle
             else
                 fmt = this.label_format;
                 label = sprintf(fmt, index);
+            end
+        end
+        
+        function label = createLegendLabel(this, index)
+            if strcmp("single", index)
+                label = this.single_legend_label;
+                return
+            end
+
+            if index <= length(this.component_legend_labels)
+                label = this.component_legend_labels(index);  
+            else
+                label = [];
             end
         end
         
@@ -865,7 +920,6 @@ function sp = open_subplot(subplots_count, index)
         hold on
     end
 end
-
 
 function plot_values = create_plot_values(sol, xaxis_id, yaxis_id, zaxis_id)
 % CREATE_PLOT_VALUES Create an array containing the values from the corresponding id in each column.

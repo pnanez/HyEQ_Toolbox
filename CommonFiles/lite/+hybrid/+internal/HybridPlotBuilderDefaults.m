@@ -35,7 +35,9 @@ classdef HybridPlotBuilderDefaults < handle
             elseif strcmp("jump line width", key)
                 this.jump_line_width = value;
             else
-                error("Key=%s not recognized", key)
+                e = MException("HybridPlotBuilderDefaults:UnknownKey", ...
+                    "Key=%s not recognized", key);
+                throwAsCaller(e);
             end
         end
         
