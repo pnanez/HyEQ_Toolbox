@@ -2,7 +2,8 @@ classdef HybridProgressTest < matlab.unittest.TestCase
 
     methods (Test)
         
-        function testTimeSpans(testCase)    
+        function testTimeSpans(testCase)
+            import hybrid.tests.internal.*  
             hp = AutoCancelHybridProgress();
             sys = ExampleBouncingBallHybridSystem();
             config = HybridSolverConfig().progress(hp);
@@ -14,7 +15,8 @@ classdef HybridProgressTest < matlab.unittest.TestCase
             testCase.assertEqual(hp.jspan, jspan);
         end
         
-        function testCancelDuringFlow(testCase)    
+        function testCancelDuringFlow(testCase)
+            import hybrid.tests.internal.*  
             hp = AutoCancelHybridProgress();
             hp.t_cancel = 3.0;
             hp.j_cancel = Inf;
@@ -31,6 +33,7 @@ classdef HybridProgressTest < matlab.unittest.TestCase
         end
         
         function testCancelAtJump(testCase)
+            import hybrid.tests.internal.*
             hp = AutoCancelHybridProgress();
             hp.t_cancel = Inf;
             hp.j_cancel = 3;
@@ -45,6 +48,7 @@ classdef HybridProgressTest < matlab.unittest.TestCase
             testCase.assertEqual(sol.termination_cause, TerminationCause.CANCELED)
         end
         function testNoCancel(testCase)
+            import hybrid.tests.internal.*
             hp = AutoCancelHybridProgress();
             hp.t_cancel = Inf;
             hp.j_cancel = Inf;

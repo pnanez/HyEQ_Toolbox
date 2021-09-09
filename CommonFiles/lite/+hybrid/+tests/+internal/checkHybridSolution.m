@@ -1,5 +1,6 @@
 function checkHybridSolution(sol, f_vals, g_vals, C_vals, D_vals, priority)
 
+    import hybrid.tests.internal.*
     % Flow error tolerance (We allow a large tolerance because we use a
     % first-order approximation of dxdt).
     f_tol = 1e-1; 

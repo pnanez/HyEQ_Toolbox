@@ -96,6 +96,7 @@ classdef HyEQsolverTest < matlab.unittest.TestCase
         end
 
         function testBouncingBallStaysAboveGround(testCase)
+            import hybrid.tests.internal.*
             bounce_coeff = 0.9;
             gravity = 9.8;
             
@@ -113,24 +114,6 @@ classdef HyEQsolverTest < matlab.unittest.TestCase
                             
             sol = HybridSolution.fromLegacyData(t, j, x, C, D, tspan, jspan);
             [~, ~, C_vals, D_vals] = HybridSystem(f, g, C, D).generateFGCD(sol);
-
-%             indices = 1:length(t);
-%             
-%             figure(1)
-%             clf
-%             subplot(3, 1, 1)
-%             plot(indices, D_vals(indices), 'b*')
-%             hold on
-%             plot(indices, C_vals(indices), 'sr')
-%             legend("D", "C")
-%             subplot(3, 1, 2)
-%             plot(indices, sol.t(indices), "r")
-%             title("Continuous Time")
-%             ylabel("t")
-%             subplot(3, 1, 3)
-%             plot(indices, sol.j(indices), "b")
-%             title("Discrete Time")
-%             ylabel("j")
 
             verifyHybridSolutionDomain(sol.t, sol.j, C_vals, D_vals)
             testCase.assertGreaterThanOrEqual(x(:, 1), -1e-7)
@@ -179,11 +162,23 @@ classdef HyEQsolverTest < matlab.unittest.TestCase
             x0 = [1; 0];
             verifySolver(f, g, C, D, x0, tspan, jspan)
         end
+        
+        function testMixedArgFunctions(testCase) %#ok<MANU>
+            f = @(x, t) x - t;
+            g = @(x, t, j) 0.1*x + sin(j)*cos(t);
+            C = @(x) norm(x) <= 2;
+            D = @(x, t) t * norm(x) >= 2;
+            tspan = [0, 10];
+            jspan = [0, 10];
+            x0 = [1; 0];
+            verifySolver(f, g, C, D, x0, tspan, jspan)
+        end
     end
     
 end
 
 function verifySolver(f, g, C, D, x0, tspan, jspan, priority)
+import hybrid.tests.internal.*
 if ~exist("priority", "var")
     priority = HybridPriority.default();
 end

@@ -3,6 +3,7 @@ classdef CompoundHybridSystemTest < matlab.unittest.TestCase
     methods (Test)
        
         function testTwo1x1Subsystems(testCase)
+            import hybrid.tests.internal.*
                            % Size of: (u, x, y)
             sub1 = MockHybridSubsystem(1, 1, 1);
             sub2 = MockHybridSubsystem(1, 1, 1);
@@ -17,6 +18,7 @@ classdef CompoundHybridSystemTest < matlab.unittest.TestCase
         end
        
         function testThreeSubsystemsOfDifferentSizes(testCase)
+            import hybrid.tests.internal.*
                            % Size of: (u, x, y)
             sub1 = MockHybridSubsystem(1, 1, 2);
             sub2 = MockHybridSubsystem(2, 1, 3);
@@ -37,6 +39,7 @@ classdef CompoundHybridSystemTest < matlab.unittest.TestCase
         end
        
         function testJumpsWhenAnySubsystemInJumpSet(testCase)
+            import hybrid.tests.internal.*
                            % Size of: (u, x, y)
             sub1 = MockHybridSubsystem(1, 1, 1);
             sub2 = MockHybridSubsystem(1, 1, 1);
@@ -52,6 +55,7 @@ classdef CompoundHybridSystemTest < matlab.unittest.TestCase
         end
        
         function testAllSubsystemsJumpWhenAllInJumpSet(testCase)
+            import hybrid.tests.internal.*
                            % Size of: (u, x, y)
             sub1 = MockHybridSubsystem(1, 1, 1);
             sub2 = MockHybridSubsystem(1, 1, 1);
@@ -69,6 +73,7 @@ classdef CompoundHybridSystemTest < matlab.unittest.TestCase
         end
         
         function testFlowPriorityWarning(testCase)
+            import hybrid.tests.internal.*
                           % Size of: (u, x, y)
             sub = MockHybridSubsystem(1, 1, 1);
             sys = CompoundHybridSystem(sub);
@@ -101,6 +106,7 @@ classdef CompoundHybridSystemTest < matlab.unittest.TestCase
 %         end
         
         function testJumpsWhenAnySubsystemsNotInFlowSetAndFlowPriority(testCase)
+            import hybrid.tests.internal.*
             % This test case fails because CompoundHybridSystem cannot
             % correctly handle flow priority when one subsystem is in C \ D
             % and another is in C \cap D.
@@ -121,6 +127,7 @@ classdef CompoundHybridSystemTest < matlab.unittest.TestCase
         end
         
         function testWrongNumberOfInitialStates(testCase)
+            import hybrid.tests.internal.*
                           % Size of: (u, x, y)
             sub = MockHybridSubsystem(1, 1, 1);
             sys = CompoundHybridSystem(sub);
@@ -132,6 +139,7 @@ classdef CompoundHybridSystemTest < matlab.unittest.TestCase
         end
         
         function testInitialStatesWrongSize(testCase)
+            import hybrid.tests.internal.*
                            % Size of: (u, x, y)
             sub1 = MockHybridSubsystem(1, 1, 1);
             sub2 = MockHybridSubsystem(1, 1, 1);
@@ -144,6 +152,7 @@ classdef CompoundHybridSystemTest < matlab.unittest.TestCase
         end
         
         function testInitialStatesNotCellArray(testCase)
+            import hybrid.tests.internal.*
                                   % Size of: (u, x, y)
             sub = MockHybridSubsystem(1, 1, 1);
             sys = CompoundHybridSystem(sub);
@@ -154,22 +163,24 @@ classdef CompoundHybridSystemTest < matlab.unittest.TestCase
                 "CompoundHybridSystem:InitialStateNotCell");    
         end
         
-        function testNumberOfContinuousFeedbackInputArguments(testCase)
+        function testNumberOfContinuousInputArguments(testCase)
+            import hybrid.tests.internal.*
             % i.e. @(y1, y2, t, j) instead of @(y1, y2, y3, t, j).
                            % Size of: (u, x, y)
             sub1 = MockHybridSubsystem(1, 1, 1);
             sub2 = MockHybridSubsystem(1, 1, 1);
             sys = CompoundHybridSystem(sub1, sub2);
             testCase.verifyError(@() sys.setFlowInput(1, @(y1) y1), ...
-                "CompoundHybridSystem:WrongNumberFeedbackInputArgs")
+                "CompoundHybridSystem:WrongNumberInputArgs")
             sys.setFlowInput(1, @(y1, y2) y1)
             sys.setFlowInput(1, @(y1, y2, t) y1)
             sys.setFlowInput(1, @(y1, y2, t, j) y1)
             testCase.verifyError(@() sys.setFlowInput(1, @(y1, y2, t, j, extra) y1), ...
-                "CompoundHybridSystem:WrongNumberFeedbackInputArgs")
+                "CompoundHybridSystem:WrongNumberInputArgs")
         end
         
-        function testFeedbackOutVectorWrongSize(testCase)
+        function testInputOutVectorWrongSize(testCase)
+            import hybrid.tests.internal.*
             sub = MockHybridSubsystem(1, 1, 1);
             sys = CompoundHybridSystem(sub);
             sys.setFlowInput(1, @(x1, t, j) zeros(2, 1));
@@ -177,7 +188,8 @@ classdef CompoundHybridSystemTest < matlab.unittest.TestCase
                "CompoundHybridSystem:DoesNotMatchInputDimension");
         end
         
-        function testWarningWhenSetFeedbackForSystemWithNoInputs(testCase)
+        function testWarningWhenSetInputForSystemWithNoInputs(testCase)
+            import hybrid.tests.internal.*
             sub = MockHybridSubsystem(0, 1, 1);
             sys = CompoundHybridSystem(sub);
             testCase.verifyWarning(@() sys.setFlowInput(1, @(x1, t, j) []), ...

@@ -6,6 +6,7 @@ classdef VerifyHybridSolutionDomainTest < matlab.unittest.TestCase
     methods (Test)
                
         function testCorrectDomaInEmptyJumpSet(testCase)
+            import hybrid.tests.internal.*
             n = 5;
             t = linspace(0, pi, n)';
             j = zeros(n, 1);
@@ -18,6 +19,7 @@ classdef VerifyHybridSolutionDomainTest < matlab.unittest.TestCase
         end
         
         function testCorrectDomaInEmptyFlowSet(testCase)
+            import hybrid.tests.internal.*
             n = 5;
             t = zeros(n,1);
             j = 1:n;
@@ -30,6 +32,7 @@ classdef VerifyHybridSolutionDomainTest < matlab.unittest.TestCase
         end
         
         function testVerifyOneJump(testCase)
+            import hybrid.tests.internal.*
             n1 = 5;
             n2 = 8;
             n = n1+n2;
@@ -58,6 +61,7 @@ classdef VerifyHybridSolutionDomainTest < matlab.unittest.TestCase
         end
                 
         function testVerifyNoJumps(testCase)
+            import hybrid.tests.internal.*
             n = 5;
             n1 = 2; % used for erroneous jumps.
             t = linspace(0, pi, 5)';
@@ -90,6 +94,7 @@ classdef VerifyHybridSolutionDomainTest < matlab.unittest.TestCase
         end
         
         function testIncorrectFlowOutsideJumpAndFlowSet(testCase)
+            import hybrid.tests.internal.*
             n = 5;
             t = linspace(0, pi, 5)';
             j = zeros(n, 1);
@@ -103,6 +108,7 @@ classdef VerifyHybridSolutionDomainTest < matlab.unittest.TestCase
         end
         
         function testIncorrectFlowWhenJumpPriority(testCase)
+            import hybrid.tests.internal.*
             n = 5;
             t = linspace(0, pi, 5)';
             j = zeros(n, 1);

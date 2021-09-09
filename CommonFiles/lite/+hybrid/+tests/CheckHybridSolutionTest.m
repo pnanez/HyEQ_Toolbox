@@ -3,6 +3,7 @@ classdef CheckHybridSolutionTest < matlab.unittest.TestCase
     methods (Test)
        
         function testCorrectSolution(testCase)            
+            import hybrid.tests.internal.*
             dt = 0.1;
             C_vals = [1, 1, 0, 0]';
             D_vals = [1, 0, 1, 0]';
@@ -18,7 +19,8 @@ classdef CheckHybridSolutionTest < matlab.unittest.TestCase
             checkHybridSolution(sol, f_vals, g_vals, C_vals, D_vals, priority)
         end
         
-        function testIncorrectFlow(testCase)            
+        function testIncorrectFlow(testCase)    
+            import hybrid.tests.internal.*        
             dt = 0.1;
             C_vals = [1, 1, 0, 0]';
             D_vals = [1, 0, 1, 0]';
@@ -38,7 +40,8 @@ classdef CheckHybridSolutionTest < matlab.unittest.TestCase
                 "HybridSolution:IncorrectFlow")
         end
         
-        function testIncorrectJumps(testCase)            
+        function testIncorrectJumps(testCase) 
+            import hybrid.tests.internal.*           
             dt = 0.1;
             C_vals = [1, 1, 0, 0]';
             D_vals = [1, 0, 1, 0]';
