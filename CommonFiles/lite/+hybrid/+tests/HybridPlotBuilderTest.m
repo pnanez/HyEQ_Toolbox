@@ -195,7 +195,7 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             testCase.assumeFail("Incomplete")
         end
         
-        function testSetStateLabelFormat (testCase)
+        function testSetStateLabelFormat(testCase)
             % Rename
             testCase.assumeFail("Incomplete")
         end
@@ -204,16 +204,142 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             testCase.assumeFail("Incomplete")
         end
         
-        function testLegend(testCase)
-            testCase.assumeFail("Incomplete")
+        function testSingleLegend(testCase)
+            HybridPlotBuilder()...
+                .legend("A legend")...
+                .plotFlows(testCase.sol_1);
+            testCase.assertLegendLabels("A legend")
         end
         
-        function testTooManyLegendEntries(testCase)
-            testCase.assumeFail("Incomplete")
+        function testLegendsInTwoSubplots(testCase)
+            HybridPlotBuilder()...
+                .legend("Subplot 1", "Subplot 2")...
+                .plotFlows(testCase.sol_2);
+            testCase.assertLegendLabels("Subplot 1", "Subplot 2");
+        end
+        
+        function testTwoLegendsInTwoSubplots(testCase)
+            pb = HybridPlotBuilder();
+            pb.legend("Subplot 1.1", "Subplot 2.1")...
+                .plotFlows(testCase.sol_2);
+            hold on
+            pb.legend("Subplot 1.2", "Subplot 2.2")...
+                .plotFlows(testCase.sol_2);
+            testCase.assertLegendLabels(["Subplot 1.1","Subplot 1.2"],...
+                                        ["Subplot 2.1","Subplot 2.2"]);
+        end
+        
+        function testTwoLegendsInOneSubplot(testCase)
+            pb = HybridPlotBuilder();
+            pb.legend("Legend 1")...
+                .plotFlows(testCase.sol_1);
+            hold on
+            pb.legend("Legend 2")...
+                .plotFlows(testCase.sol_1);
+            testCase.assertLegendLabels(["Legend 1", "Legend 2"])
+        end
+        
+        function testMultipleLegendsIn3DPlot(testCase)
+            pb = HybridPlotBuilder();
+            pb.legend("Plot 1")...
+                .plot(testCase.sol_3);
+            hold on
+            pb.legend("Plot 2")...
+                .plot(testCase.sol_3);
+            testCase.assertLegendLabels(["Plot 1", "Plot 2"])
+        end
+        
+        function testLegendWithoutHold(testCase)
+            pb = HybridPlotBuilder();
+            pb.legend("Plot 1")...
+                .plot(testCase.sol_3);
+            hold off
+            pb.legend("Plot 2")...
+                .plot(testCase.sol_2);
+            testCase.assertLegendLabels("Plot 2")
+        end
+        
+        function testTooManyLegendLabelsInPlotFlows(testCase)
+            HybridPlotBuilder().legend("Subplot 1", "Subplot 2", "Subplot 3")...
+                .plotJumps(testCase.sol_2);
+            testCase.assertLegendLabels("Subplot 1", "Subplot 2")
+        end
+        
+        function testWarnTooManyLegendLabelsInPlotFlows(testCase)
+            testCase.assumeFail("Not yet implemented")
+            pb = HybridPlotBuilder().legend("Subplot 1", "Subplot 2", "Subplot 3");
+            testCase.verifyWarning(@() pb.plotJumps(testCase.sol_2), "");
+        end
+        
+        function testTooManyLegendLabelsInPhasePlot(testCase)
+            HybridPlotBuilder().legend("Subplot 1", "Subplot 2")...
+                .plot(testCase.sol_2);
+            testCase.assertLegendLabels("Subplot 1")
+        end
+        
+        function testWarnTooManyLegendLabelsInPhasePlot(testCase)
+            testCase.assumeFail("Not yet implemented")
+            pb = HybridPlotBuilder().legend("Subplot 1", "Subplot 2");
+            testCase.verifyWarning(@() pb.plot(testCase.sol_2), "");
         end
         
         function testTooFewLegendEntries(testCase)
-            testCase.assumeFail("Incomplete")
+            pb = HybridPlotBuilder().legend("Subplot 1");
+            pb.plotJumps(testCase.sol_2);
+            testCase.assertLegendLabels("Subplot 1", "")
+        end
+        
+        function testWarnTooFewLegendEntries(testCase)
+            testCase.assumeFail("Not yet implemented")
+            pb = HybridPlotBuilder().legend("Subplot 1");
+            fh = @() pb.plotJumps(testCase.sol_2);
+            testCase.verifyWarning(@() fh, "");
+        end
+        
+        function testAddLegendEntry(testCase)
+            pb = HybridPlotBuilder().legend("Subplot 1", "Subplot 2");
+            pb.plotJumps(testCase.sol_2);
+            hold on
+            plt = plot([1, 5], [0, 8]);
+            pb.addLegendEntry(plt, "Another plot") % in subplot 2.
+            testCase.assertLegendLabels("Subplot 1", ["Subplot 2", "Another plot"])
+        end
+        
+        function testPlotConfig(testCase)
+            callback_inargs = {};
+            function config(component_ndx)
+                callback_inargs{end+1} = component_ndx;
+            end
+            
+            HybridPlotBuilder().configurePlots(@config)...
+                .slice([1, 3])...
+                .plotFlows(testCase.sol_3);
+            testCase.assertEqual(callback_inargs, {1, 3});
+        end
+        
+        function testPlotConfigNoAutoSubplots(testCase)
+            callback_inargs = {};
+            function config(component_ndx)
+                callback_inargs{end+1} = component_ndx;
+            end
+            
+            HybridPlotBuilder().autoSubplots("off")...
+                .configurePlots(@config)...
+                .slice([3, 2])...
+                .plotFlows(testCase.sol_3);
+            testCase.assertEqual(callback_inargs, {3, 2});
+        end
+        
+        function testPlotConfigForPlotFunction(testCase)
+            callback_inargs = [];
+            function config(component_ndxs)
+                assert(isempty(callback_inargs), "Should only be called once!")
+                callback_inargs = component_ndxs;
+            end
+            HybridPlotBuilder()...
+                .configurePlots(@config)...
+                .plot(testCase.sol_3);
+            testCase.assertEqual(callback_inargs, 1:3);
         end
         
         function testHoldOnMaintained(testCase)
@@ -221,10 +347,6 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         end
         
         function testHoldOffMaintained(testCase)
-            testCase.assumeFail("Incomplete")
-        end
-        
-        function testAddLegendEntry(testCase)
             testCase.assumeFail("Incomplete")
         end
         
@@ -293,39 +415,54 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         end
         
         function assert2DSubplots(this)
-            nrows = subplotCount(gcf());
-            for n = 1:nrows
-                if nrows == 1
-                    sp = gca();
-                else
-                    sp = subplot(nrows, 1, n);
-                end
-                this.assertTrue(is2D(sp));
-            end
+            forEachSubplot(@(sp, ndx) this.assertTrue(is2D(sp)))
         end
+
         
         function assert3DSubplots(this)
-            nrows = subplotCount(gcf());
-            for n = 1:nrows
-                if nrows == 1
-                    sp = gca();
+            forEachSubplot(@(sp, ndx) this.assertTrue(is3D(sp)))
+        end
+        
+        function assertLegendLabels(this, varargin)
+            labels = varargin;
+            function checkLabels(sp, ndx)
+                expected_labels = labels{ndx};
+                lgd = sp.Legend;
+                if isa(lgd, "matlab.graphics.GraphicsPlaceholder")
+                    actual = '';
                 else
-                    sp = subplot(nrows, 1, n);
+                    actual = char(lgd.String(:));
                 end
-                this.assertTrue(is3D(sp));
+                
+                expected = char(expected_labels(:));
+                this.assertEqual(actual, expected);
             end
+            forEachSubplot(@checkLabels);
         end
     end
 end
 
-function [nrows, ncols] = subplotCount(h)
-N = length(h.Children);
+function [nrows, ncols] = subplotCount(fig_hand)
+subplots = findobj(fig_hand,'type','axes');
+N = length(subplots);
 for n = 1:N
-    pos1(n) = h.Children(n).Position(1); %#ok<*AGROW>
-    pos2(n) = h.Children(n).Position(2);
+    pos1(n) = subplots(n).Position(1); %#ok<*AGROW>
+    pos2(n) = subplots(n).Position(2);
 end
 ncols = numel(unique(pos1));
 nrows= numel(unique(pos2));
+end   
+
+function forEachSubplot(callback)
+nrows = subplotCount(gcf());
+for i = 1:nrows
+    if nrows == 1
+        sp = gca();
+    else
+        sp = subplot(nrows, 1, i);
+    end
+    callback(sp, i)
+end
 end
 
 function v = is2D(ax)

@@ -10,17 +10,13 @@ toolbox_dirs = {'CommonFiles/lite', ...
     'CommonFiles/plottingFunctions', ...
     'CommonFiles/simulinkBased/Library2014b'};
 publish_dirs = ["doc", "helpFiles/Matlab_publish", "helpFiles/Matlab_Publish/MatlabScripts/v3.0"];
-test_dir = "CommonFiles/lite/tests";
 % Setup path
 for d = toolbox_dirs
     addpath(d{1})
 end
 
 if do_tests
-    % Run Tests
-    addpath(test_dir)
-    nTestsFailed = runTests();
-    rmpath(test_dir)
+    nTestsFailed = hybrid.tests.run();
 else
     nTestsFailed = -1;
 end

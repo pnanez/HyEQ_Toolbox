@@ -48,7 +48,7 @@ classdef HybridPlotBuilder < handle
         
         % Subplots
         auto_subplots logical = true;
-        subplots_callback function_handle = @(component) disp('');
+        plots_callback function_handle = @(component) disp('');
         
         % Extra label config
         t_label % Defaults to value of 'default_t_label'
@@ -57,9 +57,11 @@ classdef HybridPlotBuilder < handle
     end
     
     properties(Access = private)
+        % Legend options
+        legend_options
         plots_for_legend = [];
         axes_for_legend = [];
-        component_indices uint32 = [];
+        component_indices = [];
         timestepsFilter = [];
         max_subplots = 4;
     end
@@ -162,14 +164,24 @@ classdef HybridPlotBuilder < handle
         end
 
         function this = legend(this, varargin)
-            for i = 1:length(varargin)
+            if ~isempty(varargin) && iscell(varargin{1})
+                labels = varargin{1};
+                varargin(1) = []; % delete first entry.
+                this.legend_options = varargin;
+            else
+                labels = varargin;
+                this.legend_options = {};
+            end
+            for i = 1:length(labels)
                 % Convert empty entries to empty strings.
-                if isempty(varargin{i})
-                    varargin{i} = "";
+                if isempty(labels{i})
+                    labels{i} = "";
+                else
+                    labels{i} = string(labels{i});
                 end
             end
+            labels = string(labels);
             
-            labels = string(varargin);
             this.component_legend_labels = labels;
             if ~isempty(labels)
                 this.single_legend_label = labels(1);
@@ -302,8 +314,8 @@ classdef HybridPlotBuilder < handle
             this.auto_subplots = logical(auto_subplots);
         end
         
-        function this = configureSubplots(this, callback)
-           this.subplots_callback = callback;
+        function this = configurePlots(this, plots_callback)
+           this.plots_callback = plots_callback;
         end
         
         function this = titleInterpreter(this, interpreter)
@@ -413,62 +425,13 @@ classdef HybridPlotBuilder < handle
             else % dimensions == 3
                 this.configureAxes(sliced_indices(1), sliced_indices(2), sliced_indices(3))
             end    
+            this.plots_callback(sliced_indices);
             
             if nargout == 0
                 % Prevent output if function is not terminated with a
                 % semicolon.
                 clear this
             end          
-        end
-
-        function lgd = display_legend(this)
-            % LEGEND Add a legend for each call to builder.plots() while 
-            % in the current figure. (Plots in other figures will be
-            % skipped).
-            
-            % For the current figure, get all the line plots. 
-            plots_in_figure = findall(gcf,'Type','Line');
-            
-            % For each plot saved in this.plots_for_legend, check whether
-            % it is a plot in the current figure.
-            plots_for_legend_indices ...
-                = ismember(this.plots_for_legend,  plots_in_figure);
-            plots_for_this_legend ...
-                = this.plots_for_legend(plots_for_legend_indices);
-            axes_for_this_legend = this.axes_for_legend(plots_for_legend_indices);
-            
-            if isempty(axes_for_this_legend) 
-                % Calling unique on an empty array creates a 0x1 array,
-                % which causes the for-loop below to execute once with
-                % ax=[]. This return statement prevents that.
-                return 
-            end
-            for ax = unique(axes_for_this_legend)
-                % Add the legend entries for each plot. We truncate the lengths
-                % of the arrays to match so that Matlab does not print a
-                % (rather unhelpful) warning.
-                plots_in_axes = plots_for_this_legend(axes_for_this_legend == ax);
-%                 m = min(length(plots_in_axes), length(lgd_labels));
-                
-                % Show a warning if the number of plots don't
-                % match the number of labels provided.
-                % check_legend_count(plots_in_axes, lgd_labels);
-                
-                if isvalid(ax)
-                    lgd = legend(ax, plots_in_axes, ...
-                        "interpreter", this.label_interpreter, ...
-                        "FontSize", this.label_size, ...
-                        'AutoUpdate','off');
-                end
-                
-                if nargout == 0
-                    % We clear 'lgd' if the output of the
-                    % function is unused. This prevents the value 
-                    % from being printed out if the function call was not
-                    % terminated with a semi-colon.
-                    clear lgd;
-                end
-            end
         end
 
         function addLegendEntry(this, plt, name)
@@ -548,15 +511,27 @@ classdef HybridPlotBuilder < handle
             
             % Adjust padding.
             if is_x_a_time_axis
-               set(gca, 'XLimSpec', 'Tight');
+                % Make the plot limits 'tight'
+                xlim([-inf, inf])
             else
-                set(gca, 'XLimSpec', 'Padded');
+                try
+                    % Not supported by all versions of Matlab.
+                    set(gca, 'XLimitMethod', 'Padded');
+                catch
+                    % Ignore
+                end
             end
             
             if is_y_a_time_axis
-               set(gca, 'YLimSpec', 'Tight');
+                % Make the plot limits 'tight'
+                ylim([-inf, inf])
             else
-                set(gca, 'YLimSpec', 'Padded');
+                try
+                    % Not supported by all versions of Matlab.
+                    set(gca, 'YLimitMethod', 'Padded');
+                catch 
+                    % Ignore
+                end
             end
             
             % The z-axis never contains t or j, so we don't make it
@@ -604,15 +579,14 @@ classdef HybridPlotBuilder < handle
                 
                 plot_values = create_plot_values(hybrid_sol, axis1_ids(sp), axis2_ids(sp), axis3_id);
                 this.plot_sliced(hybrid_sol, plot_values, last_id)
-                
-                
+                   
                 this.configureAxes(axis1_ids(sp), axis2_ids(sp), axis3_id);
                 if this.auto_subplots
-                    this.subplots_callback(last_id);
                     if ~was_subplot_hold_on
                         hold off
                     end
                 end
+                this.plots_callback(last_id);
             end
             
             if this.auto_subplots
@@ -660,11 +634,7 @@ classdef HybridPlotBuilder < handle
                 "Marker", this.jump_start_marker, ...
                 "MarkerSize", this.jump_start_marker_size, ...
                 "MarkerEdgeColor", this.jump_color);
-            if this.auto_subplots
-                legend_label = this.createLegendLabel(legend_id);
-            else
-                legend_label = this.createLegendLabel('single');
-            end
+            legend_label = this.createLegendLabel(legend_id);
             this.addLegendEntry(plt, legend_label)
             
             % We have to turn on hold while plotting the hybrid arc, so 
@@ -766,6 +736,57 @@ classdef HybridPlotBuilder < handle
                 'Color', this.jump_color, ...
                 'Marker', this.jump_end_marker, ...
                 'MarkerSize', this.jump_end_marker_size)
+        end
+        
+        function lgd = display_legend(this)
+            % LEGEND Add a legend for each call to builder.plots() while 
+            % in the current figure. (Plots in other figures will be
+            % skipped).
+            
+            % For the current figure, get all the line plots. 
+            plots_in_figure = findall(gcf,'Type','Line');
+            
+            % For each plot saved in this.plots_for_legend, check whether
+            % it is a plot in the current figure.
+            plots_for_legend_indices ...
+                = ismember(this.plots_for_legend,  plots_in_figure);
+            plots_for_this_legend ...
+                = this.plots_for_legend(plots_for_legend_indices);
+            axes_for_this_legend = this.axes_for_legend(plots_for_legend_indices);
+            
+            if isempty(axes_for_this_legend) 
+                % Calling unique on an empty array creates a 0x1 array,
+                % which causes the for-loop below to execute once with
+                % ax=[]. This return statement prevents that.
+                return 
+            end
+            for ax = unique(axes_for_this_legend)
+                % Add the legend entries for each plot. We truncate the lengths
+                % of the arrays to match so that Matlab does not print a
+                % (rather unhelpful) warning.
+                plots_in_axes = plots_for_this_legend(axes_for_this_legend == ax);
+%                 m = min(length(plots_in_axes), length(lgd_labels));
+                
+                % Show a warning if the number of plots don't
+                % match the number of labels provided.
+                % check_legend_count(plots_in_axes, lgd_labels);
+                
+                if isvalid(ax)
+                    lgd = legend(ax, plots_in_axes, ...
+                        "Interpreter", this.label_interpreter, ...
+                        "FontSize", this.label_size, ...
+                        'AutoUpdate','off', ...
+                        this.legend_options{:});
+                end
+                
+                if nargout == 0
+                    % We clear 'lgd' if the output of the
+                    % function is unused. This prevents the value 
+                    % from being printed out if the function call was not
+                    % terminated with a semi-colon.
+                    clear lgd;
+                end
+            end
         end
         
         function label = createLabel(this, index)

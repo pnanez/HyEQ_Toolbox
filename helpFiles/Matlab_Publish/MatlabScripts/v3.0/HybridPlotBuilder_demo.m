@@ -100,7 +100,7 @@ HybridPlotBuilder().slice(1)...
 %% 
 % Similarly, we can change the appearance of jumps.
 HybridPlotBuilder().slice(1:2)...
-    .jumpColor("m")...
+    .jumpColor("m")... % magenta
     .jumpLineWidth(1)...
     .jumpLineStyle("-.")...
     .jumpStartMarker("+")...
@@ -131,7 +131,8 @@ HybridPlotBuilder().slice(2)...
 title("Start of Each Jump") % An alternative way to add titles is shown below.
 
 %% Component Labels
-% Plot labels are set component-wise. In the bouncing ball system, the first
+% Plot labels are set component-wise (as opposed to subplot-wise). 
+% In the bouncing ball system, the first
 % component is height and the second is velocity, so we will add the labels
 % $h$ and $v$. |HybridPlotBuilder| automatically adds labels for $t$ and $j$.
 HybridPlotBuilder()...
@@ -180,13 +181,15 @@ HybridPlotBuilder().title("Phase Plot").plot(sol)
 %% 
 % The default interpreter for text is |latex| and can be changed by calling
 % |titleInterpreter()| or |labelInterpreter()|. Use one of these values:
-% |none| | |tex| | |latex|. The default labels automatically adjust there
-% formatting to match the label interpreter.
+% |none| | |tex| | |latex|. The default labels automatically change to
+% match the label interpreter.
 HybridPlotBuilder()...
     .titleInterpreter("none")...
     .labelInterpreter("tex")...
-    .title("My title x_1 $x_1$") ...
-    .labels("z_1", "$z_2$")... % Unlike 'latex', do not put dollar signs around math.
+    .titles("'tex' is used for labels",...
+            "In 'tex', dollar signs do not indicate a switch to math mode", ...
+            "default label is formatted to match interpreter") ...
+    .labels("z_1", "$z_2$")... % only two labels provided.
     .plotFlows(sol_3D)
 
 %% Automatic Subplots
@@ -212,6 +215,18 @@ pb.autoSubplots("off")...
     .titles("Title 1", "Title 2")... % Only first title is used.
     .legend("Legend 1", "Legend 2")... % Both two legend entries are used.
     .plotFlows(sol)
+
+%%
+% Legend options can be set simlar to the MATLAB legend function. 
+clf
+HybridPlotBuilder()...
+    .legend({'h', 'v'}, "Location", "southeast")...
+    .plotFlows(sol);
+
+%%
+% The above method applies the same settings to the legends in all subplots. 
+% To modify legend options on a subplot basis, use the |configureSubplots|
+% function described below.
 
 %% Filtering Solutions
 % Portions of solutions can be hidden with the |filter| function. In this
@@ -264,6 +279,13 @@ builder.flowColor("black") ...
 axis padded
 axis equal
 
+%%
+is_falling = sol.x(:, 2) < 0;
+pb = HybridPlotBuilder();
+pb.filter(is_falling).plotFlows(sol);
+hold on
+pb.filter(~is_falling).flowColor("k").plotFlows(sol);
+
 %% Legends
 % Next, we add a legend to the previous plot. 
 % The |plot| function is called on a single instance of
@@ -303,9 +325,9 @@ hold on
 axis equal
 % Plot a circle.
 theta = linspace(0, 2*pi);
-plt = plot(10*cos(theta), 10*sin(theta), "m");
+plt = plot(10*cos(theta), 10*sin(theta), "magenta");
 % Pass the circle to the plot builder.
-pb.addLegendEntry(plt, "A circle");
+pb.addLegendEntry(plt, "Circle");
 
 %% Replacing vs. Adding Plots to a Figure
 % By default, each call to a HybridPlotBuilder plot function overwrites the 
@@ -381,7 +403,8 @@ ax.YAxisLocation = "right";
 % argument, which is set to the index of the state component for the active
 % subplot. 
 HybridPlotBuilder()...
-    .configureSubplots(@apply_plot_settings)...
+    .legend("A", "B")...
+    .configurePlots(@apply_plot_settings)...
     .plotFlows(sol);
 
 function apply_plot_settings(component)
@@ -389,7 +412,13 @@ function apply_plot_settings(component)
     subtitle('An Insightful Subtitle','FontAngle','italic')
     ax = gca;
     ax.GridLineStyle = '--';
-    ax.LabelFontSizeMultiplier = 1.8;
+    % Set the location of the legend in each plot to different positions.
+    switch component 
+        case 1
+            ax.Legend.Location = "northeast";
+        case 2
+            ax.Legend.Location = "southeast";
+    end
     grid on
     grid minor
 end

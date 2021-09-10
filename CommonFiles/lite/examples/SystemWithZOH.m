@@ -1,9 +1,9 @@
 classdef SystemWithZOH < CompoundHybridSystem
          
     methods  
-        function obj = SystemWithZOH(plant, kappa, sample_time)
+        function obj = SystemWithZOH(plant, sample_time)
             zoh_dim = plant.input_dimension;
-            zoh_controller = ZOHController(zoh_dim, kappa, sample_time);
+            zoh_controller = ZOHController(zoh_dim, sample_time);
             obj = obj@CompoundHybridSystem(plant, zoh_controller);
         end
         
