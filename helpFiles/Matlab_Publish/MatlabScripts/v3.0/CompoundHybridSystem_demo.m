@@ -101,12 +101,36 @@ sys.setFlowInput(2, @(y1, y2) y1(1)-y2(1));
 % ball decrease every time it bounces with the following feedback:
 sys.setFlowInput(1, @(y1, y2, t, j) -9.8/(j+1));
 
-
 %%
 % The display function prints useful information regarding the connections
 % between the subsystems. Note that by default, feedback functions return a
 % zero vector of the appropriate size.
 disp(sys)
+
+%% Alternative ways to reference subsystems to set input functions
+% In addition to referencing subsystems by their index number, they can
+% also be referenced by passing the subsystem object.
+% Thus, the command |sys.setJumpInput(1, @(y1, y2) y1(1));| can be replaced
+% by 
+sys.setJumpInput(subsystem1, @(y1, y2) y1(1)); 
+
+%%
+% Additionally, we can provide names for each subsystem. In which case, 
+% we can use the names when setting inputs.
+% Note: If any subsystem are named, then all the subsystems must be named.
+sys_named = CompoundHybridSystem("Plant", subsystem1, "Controller", subsystem2);
+
+%% 
+% Then the following three lines are equivalent:
+sys_named.setFlowInput(1, @(y1, y2) -y2);
+sys_named.setFlowInput(subsystem1, @(y1, y2) -y2);
+sys_named.setFlowInput("Plant", @(y1, y2) y2);
+
+%%
+% The names of systems are also
+% displayed when |disp| is called on a |CompoundHybridSystem|, to help with
+% debugging.
+disp(sys_named)
 
 %% Compute a solution
 % To compute a solution, we call |solve| on the system, similar to a

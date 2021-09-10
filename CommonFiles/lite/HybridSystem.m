@@ -97,8 +97,16 @@ classdef (Abstract) HybridSystem < handle
             if ~exist('jspan', 'var')
                jspan = [0, 10]; 
             end
-            assert(length(tspan) == 2, "tspan must be an array of two values in the form [tstart, tend]")
-            assert(length(jspan) == 2, "jspan must be an array of two values in the form [jstart, jend]")
+            if length(tspan) ~= 2
+                e = MException("HybridSystem:InvalidArgs", ...
+                    "tspan must be an array of two values in the form [tstart, tend]");
+                throwAsCaller(e);
+            end
+            if length(jspan) ~= 2
+                e = MException("HybridSystem:InvalidArgs", ...
+                    "jspan must be an array of two values in the form [jstart, jend]");
+                throwAsCaller(e);
+            end
             if ~exist('config', 'var')
                 config = HybridSolverConfig();
             elseif strcmp(config, "silent")

@@ -14,7 +14,7 @@ classdef CompoundHybridSystem < HybridSystem
 %%% maintain separate discrete times).
     
     properties(SetAccess = immutable)
-        subsystems (:, 1) cell = {}; 
+        subsystems hybrid.internal.SubsystemList; 
     end
     
     properties(GetAccess = private, SetAccess = immutable) 
@@ -53,13 +53,13 @@ classdef CompoundHybridSystem < HybridSystem
     methods
         function obj = CompoundHybridSystem(varargin) % Constructor
            obj = obj@HybridSystem();
-           subsystems = split_constructor_varagin(varargin);
+           subsystems = hybrid.internal.SubsystemList(varargin{:});
            obj.subsystems = subsystems;
            subsys_n = length(subsystems);
            obj.subsys_n = subsys_n;
            ndx = 1; % Start index for ith subsystem state variable.
            for i = 1:subsys_n
-               ss = subsystems{i} ;
+               ss = subsystems.get(i) ;
                ss_n = ss.state_dimension;
                obj.x_indices{i} = int32(ndx : (ndx + ss_n - 1));
                ndx = ndx + ss_n;
@@ -74,25 +74,25 @@ classdef CompoundHybridSystem < HybridSystem
            obj.kappa_D = generate_default_feedbacks(subsystems);
         end
     
-        function setFlowInput(this, subsys, kappa_C)
+        function setFlowInput(this, subsys_id, kappa_C)
             % SETFLOWINPUT Set the input function for flows for the given subsystem.
-            ndx = subsys_arg_to_ndx(this, subsys);
+            ndx = this.subsystems.getIndex(subsys_id);
             this.check_feedback(kappa_C)
             warn_if_input_dim_zero(this, ndx, "setFlowInput")
             this.kappa_C{ndx} = kappa_C;
         end
     
-        function setJumpInput(this, subsys, kappa_D)
+        function setJumpInput(this, subsys_id, kappa_D)
             % SETJUMPINPUT Set the input function for jumps for the given subsystem.
-            ndx = subsys_arg_to_ndx(this, subsys);
+            ndx = this.subsystems.getIndex(subsys_id);
             warn_if_input_dim_zero(this, ndx, "setJumpInput")
             this.check_feedback(kappa_D)
             this.kappa_D{ndx} = kappa_D;
         end
     
-        function setInput(this, subsys, kappa)
+        function setInput(this, subsys_id, kappa)
             % SETINPUT Set the input function for jumps and flows for the given subsystem.
-            ndx = subsys_arg_to_ndx(this, subsys);
+            ndx = this.subsystems.getIndex(subsys_id);
             warn_if_input_dim_zero(this, ndx, "setInput")
             this.check_feedback(kappa)
             this.kappa_C{ndx} = kappa;
@@ -104,8 +104,13 @@ classdef CompoundHybridSystem < HybridSystem
             subsys_prefix = "├";
             prop_prefix = "│";
             for i = 1:this.subsys_n
-                ss = this.subsystems{i};
-                fprintf("%s Subsystem %d: %s\n", subsys_prefix, i, class(ss))
+                ss = this.subsystems.get(i);
+                if this.subsystems.has_names
+                    name = this.subsystems.getName(i);
+                    fprintf('%s Subsystem %d: "%s" (%s)\n', subsys_prefix, i, name, class(ss))
+                else
+                    fprintf('%s Subsystem %d: (%s)\n', subsys_prefix, i, class(ss))
+                end
                 if isequal(this.kappa_C{i}, this.kappa_D{i})
                     fprintf("%s \t\t      Input: %s\n", prop_prefix, func2str(this.kappa_D{i}))
                 else
@@ -134,7 +139,7 @@ classdef CompoundHybridSystem < HybridSystem
             % the entries corresponding to the j-values.  
             xdot = zeros(this.state_dimension, 1); 
             for i=1:length(this.subsystems)
-               ss = this.subsystems{i};
+               ss = this.subsystems.get(i);
                j = js(i);
                
                u = eval_feedback(this.kappa_C{i}, ys, t, j);
@@ -148,7 +153,7 @@ classdef CompoundHybridSystem < HybridSystem
             ys = this.compute_outputs(xs);
             xplus = NaN(this.state_dimension, 1);
             for i=1:length(this.subsystems)
-               ss = this.subsystems{i};
+               ss = this.subsystems.get(i);
                j = js(i);
                u = eval_feedback(this.kappa_D{i}, ys, t, j);
                assert_control_length(length(u), ss.input_dimension, i)
@@ -178,7 +183,7 @@ classdef CompoundHybridSystem < HybridSystem
             [xs, js] = this.split(x);
             ys = this.compute_outputs(xs);
             for i=1:length(this.subsystems)
-               ss = this.subsystems{i};
+               ss = this.subsystems.get(i);
                j = js(i);
                u = eval_feedback(this.kappa_C{i}, ys, t, j);
                assert_control_length(length(u), ss.input_dimension, i)
@@ -200,7 +205,7 @@ classdef CompoundHybridSystem < HybridSystem
             [xs, js] = this.split(x);
             ys = this.compute_outputs(xs);
             for i=1:length(this.subsystems)
-               ss = this.subsystems{i};
+               ss = this.subsystems.get(i);
                j = js(i);
                u = eval_feedback(this.kappa_D{i}, ys, t, j);
                assert_control_length(length(u), ss.input_dimension, i)
@@ -240,7 +245,7 @@ classdef CompoundHybridSystem < HybridSystem
                 throwAsCaller(e);
             end
             for i=1:this.subsys_n
-                ss_dim = this.subsystems{i}.state_dimension;
+                ss_dim = this.subsystems.get(i).state_dimension;
                 if any((size(xs_0{i}) ~= [ss_dim, 1])) && ~(ss_dim == 0 && size(xs_0{i}, 1) == 0)
                     e = MException("CompoundHybridSystem:WrongNumberOfInitialStates",...
                         "Mismatched initial state size. System %d has state dimension %d but the initial value had shape %s.",...
@@ -260,7 +265,8 @@ classdef CompoundHybridSystem < HybridSystem
             end
             
             if config.hybrid_priority == HybridPriority.FLOW
-                warning("CompoundHybridSystem:FlowPriorityNotSupported", "Using CompoundHybridSystems with FLOW priority is not reccomended. " + ...
+                warning("CompoundHybridSystem:FlowPriorityNotSupported", ...
+                    "Using CompoundHybridSystems with FLOW priority is not reccomended. " + ...
                     "When two subsystems are in their respective jump sets and one of them leaves " +...
                     "its flow set, then the state of both will jump, violating flow priority.")
             end
@@ -278,7 +284,7 @@ classdef CompoundHybridSystem < HybridSystem
             
             [xs_all, js_all] = this.split_many(x);
             for i=1:length(this.subsystems)
-                ss = this.subsystems{i};
+                ss = this.subsystems.get(i);
                 ss_j = js_all(:, i);
                 ss_x = xs_all(:, this.x_indices{i});
                 ss_u = NaN(length(t), ss.input_dimension);
@@ -362,31 +368,8 @@ classdef CompoundHybridSystem < HybridSystem
         function ys = compute_outputs(this, xs)
             ys = cell(this.subsys_n, 1);
             for i = 1:this.subsys_n
-                ys{i} = this.subsystems{i}.output(xs{i});
+                ys{i} = this.subsystems.get(i).output(xs{i});
             end
-        end
-
-        function ndx = subsys_arg_to_ndx(this, subsys)
-            if isa(subsys, "HybridSubsystem")
-                ndx = this.get_subsystem_index(subsys);
-                if isempty(ndx)
-                    e = MException("CompoundHybridSystem:NotASubsystem", ...
-                        "Argument was not a subsystem in this system.");
-                    throwAsCaller(e);
-                end
-            elseif isnumeric(subsys) 
-                % Don't use isinteger here because Matlab interprets
-                % literal numbers in code (such as "2") as doubles.
-                ndx = subsys;
-            else
-                e = MException("CompoundHybridSystem:InvalidArgument", ...
-                    "Argument must be either a HybridSubsystem object or an integer");
-                throwAsCaller(e);
-            end
-        end
-        
-        function ndx = get_subsystem_index(this, subsystem)
-            ndx = find(cellfun(@(x)x == subsystem,this.subsystems));
         end
         
         function check_feedback(this, kappa)
@@ -400,23 +383,6 @@ classdef CompoundHybridSystem < HybridSystem
             end
         end
     end
-end
-
-function subsystems = split_constructor_varagin(varargin_cell)
-subsystems = varargin_cell;
-for i = 1:length(subsystems)
-    if ~isa(subsystems{i}, "HybridSubsystem")
-        e = MException("CompoundArgument:InvalidConstructorArgs", ...
-            "subsystem{%d} was a %s instead of a HybridSubsystem", ...
-            i, class(subsystems{i}));
-        throwAsCaller(e);
-    end
-    if ~isscalar(subsystems{i})
-        e = MException("CompoundArgument:InvalidConstructorArgs", ...
-            "Each constructor argument must be a scalar. Instead argument %d had size %s.", i, mat2str(size(subsystems{i})));
-        throwAsCaller(e);
-    end
-end
 end
 
 function u = eval_feedback(kappa, ys, t, j)
@@ -439,7 +405,8 @@ kappas = cell(sys_count, 1);
 args_fmt = join(repmat("y%d", sys_count, 1), ", ");
 feedback_arugments_string = sprintf(args_fmt, 1:sys_count);
 for i = 1:sys_count
-    n = subsystems{i}.input_dimension;
+    ss = subsystems.get(i);
+    n = ss.input_dimension;
     kappa_eval_string = sprintf("kappas{i} = @("+feedback_arugments_string+", t, j) zeros(%d, 1);", n);
     eval(kappa_eval_string);
 end
@@ -465,7 +432,7 @@ end
 end
 
 function warn_if_input_dim_zero(this, ndx, function_name)
-if this.subsystems{ndx}.input_dimension == 0
+if this.subsystems.get(ndx).input_dimension == 0
     warning("CompoundHybridSystem:SystemHasNoInputs", ...
         "%s() was called for subsystem %d, but this system does not have input.", ...
         function_name, ndx)
