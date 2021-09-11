@@ -5,13 +5,13 @@
 
 clc
 inspectClass("HybridSystem")
-inspectClass("CompoundHybridSystem")
+inspectClass("CompositeHybridSystem")
 inspectClass("HybridSubsystem")
 inspectClass("PairHybridSystem")
 
 inspectClass("HybridSolution")
 inspectClass("HybridSolutionWithInput")
-inspectClass("CompoundHybridSolution")
+inspectClass("CompositeHybridSolution")
 
 inspectClass("HybridPlotBuilder")
 % inspectClass("HybridPriority")

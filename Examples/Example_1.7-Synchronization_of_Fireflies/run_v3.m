@@ -1,6 +1,6 @@
 % Configure system
 ff = FireflySubsystem();
-sys = CompoundHybridSystem(ff, ff);
+sys = CompositeHybridSystem(ff, ff);
 sys.setInput(1, @(x1, x2) x2);
 sys.setInput(2, @(x1, x2) x1);
 

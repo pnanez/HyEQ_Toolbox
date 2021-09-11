@@ -223,7 +223,7 @@ classdef PairHybridSystem < HybridSystem
             ss2_sol = this.subsystem2.wrap_solution(t, j2, x2, u2, tspan, jspan2);
             
             ss_sols = {ss1_sol, ss2_sol};
-            sol = CompoundHybridSolution(sol, ss_sols, tspan, jspan);
+            sol = CompositeHybridSolution(sol, ss_sols, tspan, jspan);
         end
     end
     

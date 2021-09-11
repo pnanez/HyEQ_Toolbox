@@ -62,14 +62,14 @@ classdef SubsystemsListTest < matlab.unittest.TestCase
             sub2 = MockHybridSubsystem(1, 1, 1);
             subsystems = hybrid.internal.SubsystemList(sub1, sub2);
             testCase.verifyError(@() subsystems.get("sub 1"), ...
-                "CompoundHybridSystem:NoNamesProvided");
+                "CompositeHybridSystem:NoNamesProvided");
         end
 
         function testErrorNotNameOrSubsystemInConstructor(testCase)
             import hybrid.tests.internal.*
             sub1 = MockHybridSubsystem(1, 1, 1);
             testCase.verifyError(@() hybrid.internal.SubsystemList(1, sub1), ...
-                "CompoundHybridSystem:UnexpectedType");
+                "CompositeHybridSystem:UnexpectedType");
         end
 
         function testErrorNameWithoutSubsystemInConstructor(testCase)
@@ -81,7 +81,7 @@ classdef SubsystemsListTest < matlab.unittest.TestCase
 
         function testErrorNameWithNonSubsystemInConstructor(testCase)
             fh = @() hybrid.internal.SubsystemList("sub 1", "sub 2");
-            testCase.verifyError(fh, "CompoundHybridSystem:UnexpectedType");
+            testCase.verifyError(fh, "CompositeHybridSystem:UnexpectedType");
         end
 
         function testErrorNonuniqueName(testCase)
@@ -90,7 +90,7 @@ classdef SubsystemsListTest < matlab.unittest.TestCase
             sub2 = MockHybridSubsystem(1, 1, 1);
             fh = @() hybrid.internal.SubsystemList("sub 1", sub1, ...
                                                    "sub 1", sub2);
-            testCase.verifyError(fh, "CompoundHybridSystem:DuplicateName");
+            testCase.verifyError(fh, "CompositeHybridSystem:DuplicateName");
         end
 
     end

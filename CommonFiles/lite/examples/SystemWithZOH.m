@@ -1,10 +1,10 @@
-classdef SystemWithZOH < CompoundHybridSystem
+classdef SystemWithZOH < CompositeHybridSystem
          
     methods  
         function obj = SystemWithZOH(plant, sample_time)
             zoh_dim = plant.input_dimension;
             zoh_controller = ZOHController(zoh_dim, sample_time);
-            obj = obj@CompoundHybridSystem(plant, zoh_controller);
+            obj = obj@CompositeHybridSystem(plant, zoh_controller);
         end
         
         function u_1C = kappa_1C(this, ~, x2)

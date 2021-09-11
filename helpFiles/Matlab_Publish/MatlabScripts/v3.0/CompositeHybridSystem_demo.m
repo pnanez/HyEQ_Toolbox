@@ -27,13 +27,13 @@
 % $u_2 = \kappa_{2C}(x_1, x_2)$ when $x_2 \in C'_2$; and 
 % $u_2 = \kappa_{2D}(x_1, x_2)$ when $x_2 \in D'_2$. 
 %
-% We now define the compound system $\tilde H$ that consists of subsystems 
+% We now define the composite system $\tilde H$ that is the composition of subsystems 
 % $\mathcal H_1$ and $\mathcal H_2.$ The state $\tilde x$ of $\tilde H$ is the
 % concatenation of $x_1$ and $x_2$ along with two natural numbers $j_1$ and $j_2$
 % that track the discrete times of the subsystems (since they can jump at
 % different times). That is, $\tilde x = (x_1, x_2, j_1, j_2).$ 
 % We want the system to flow whenever both subsystems are in their respective 
-% flow sets and to jump whenever either is in their jump set, and priority
+% flow sets and to jump whenever either is in their jump set. Priority
 % is given to jumps.
 % Thus, we use the flow set $\tilde C := C_1' \times C_2',$ and the jump set 
 % $\tilde D = (D_1'\times \mathcal X_2) \bigcup (\mathcal X_1 \times D_2').$
@@ -63,8 +63,8 @@
 %       j_1 \\ 
 %       j_2 + 1 \end{array}\right].$$
 
-%% Implement a Controlled Hybrid System in MATLAB
-% To create a compound system of two hybrid subsystems, we first write subclasses of
+%% Implement a Hybrid Subsystem
+% To create a composition of two hybrid subsystems, we first write subclasses of
 % the |HybridSubsystem| class. In the following example, we
 % will use |ExampleHybridSubsystem|, which is a bouncing ball-like
 % system, except that gravity is not constant, rather it is controlled by
@@ -77,10 +77,10 @@
 subsystem1 = ExampleHybridSubsystem();
 subsystem2 = ExampleHybridSubsystem();
 
-%% Create a Compound Hybrid System
+%% Create a Composite Hybrid System
 % Now that we have two subsystems, we merely pass these to the
-% |CompoundHybridSystem| constructor to create a coupled system.
-sys = CompoundHybridSystem(subsystem1, subsystem2);
+% |CompositeHybridSystem| constructor to create a coupled system.
+sys = CompositeHybridSystem(subsystem1, subsystem2);
 
 %%
 % Next, we set the feedback functions for each subsystem. The continuous
@@ -93,8 +93,8 @@ sys.setFlowInput(2, @(y1, y2) y1(1)-y2(1));
 % The feedback functions must have $N$, $N+1$, or $N+2$ input arguments,
 % where $N$ is the number of subsystems. The first $N$ arguments are passed
 % the output values of each corresponding subsystem, and, if present, the
-% $N+1$ argument is passed the continuous time |t| for the compound system
-% (same as the subsystem), and the $N+2$ argument is passed the discrete
+% $N+1$ argument is passed the continuous time |t| for the composite system
+% (same as the subsystems), and the $N+2$ argument is passed the discrete
 % time |j| _for that subsystem._ 
 % 
 % For example, we can make downward acceleration ("gravity") of the first
@@ -117,8 +117,8 @@ sys.setJumpInput(subsystem1, @(y1, y2) y1(1));
 %%
 % Additionally, we can provide names for each subsystem. In which case, 
 % we can use the names when setting inputs.
-% Note: If any subsystem are named, then all the subsystems must be named.
-sys_named = CompoundHybridSystem("Plant", subsystem1, "Controller", subsystem2);
+% If any subsystem are named, then all the subsystems must be named.
+sys_named = CompositeHybridSystem("Plant", subsystem1, "Controller", subsystem2);
 
 %% 
 % Then the following three lines are equivalent:
@@ -128,7 +128,7 @@ sys_named.setFlowInput("Plant", @(y1, y2) y2);
 
 %%
 % The names of systems are also
-% displayed when |disp| is called on a |CompoundHybridSystem|, to help with
+% displayed when |disp| is called on a |CompositeHybridSystem|, to help with
 % debugging.
 disp(sys_named)
 
@@ -136,7 +136,7 @@ disp(sys_named)
 % To compute a solution, we call |solve| on the system, similar to a
 % standard |HybridSystem|, but the first two arguments are the initial
 % states of the two subsystems (rather than passing the concatenated
-% compound state). The solve function handles the necessary concatenation
+% composite state). The solve function handles the necessary concatenation
 % of the states and appends the discrete time variables |j1| and |j2|.
 x1_initial = [10;  0];
 x2_initial = [ 0; 10];
@@ -145,7 +145,7 @@ jspan = [0, 30];
 sol = sys.solve({x1_initial; x2_initial}, tspan, jspan);
 
 %% Interpret and Plot the Solution
-% The |solve| function returns a |CompoundHybridSolution| object that contains all the
+% The |solve| function returns a |CompositeHybridSolution| object that contains all the
 % information from |HybridSolution|.
 sol
 
@@ -158,7 +158,7 @@ HybridPlotBuilder()...
 
 %% 
 % Now, we may want the solutions of the two subsystems separately. 
-% The |CompoundHybridSolution| object contains two additional properties not 
+% The |CompositeHybridSolution| object contains two additional properties not 
 % defined in the |HybridSolution| class: |subsystem1_sol| and |subsystem2_sol|.
 % As the names suggest, these contain the solutions of the subsystems. 
 % Looking at the solution for subystem1, we see all the data from |HybridSolution|
@@ -190,18 +190,18 @@ subsol = sol.subsys_sols{2};
 HybridPlotBuilder().plotFlows(subsol, subsol.u)
 
 %% Single System
-% The |CompoundHybridSystem| class can also be used with a single subsystem
+% The |CompositeHybridSystem| class can also be used with a single subsystem
 % for cases where you want to be able to modify the feedback functions
 % without modifying the code for the system. 
-sys_1 = CompoundHybridSystem(subsystem1);
+sys_1 = CompositeHybridSystem(subsystem1);
 sys_1.setFlowInput(1, @(y1, t, j) -5);   
 sys_1.setJumpInput(1, @(y1, t, j) 0);   
 sol_1 = sys_1.solve({x1_initial}, tspan, jspan);
 
 %% Example: Zero-order Hold
-% As a case study in creating an compound system, consider the following
-% example. First, we create a linear time-invariant plant. The class
-% |LinearTimeInvariantSystem| is a subclass of |HybridSubsystem|.
+% As a case study in creating a composition of hybrid systems, consider the
+% following % example. First, we create a linear time-invariant plant. The
+% class |LinearTimeInvariantSystem| is a subclass of |HybridSubsystem|.
 A_c = [0, 1; -1, 0];
 B_c = [0; 1];
 plant = hybrid.systems.LinearTimeInvariantSystem(A_c, B_c);
@@ -219,12 +219,12 @@ zoh = ZOHController(zoh_dim, sample_time);
 %% 
 % Pass the plant and ZOH subsystems to |CopoundHybridSystem| to create the
 % closed-loop system.
-cl_sys = CompoundHybridSystem(plant, zoh);
+cl_sys = CompositeHybridSystem(plant, zoh);
 
 %%
 % Set inputs functions for |plant| and |zoh|. The first argument of the
 % set*Feedback functions can either be the index of the subsystem within
-% the |CompoundSystem| or a reference to the subsystem itself.
+% the |CompositeSystem| or a reference to the subsystem itself.
 cl_sys.setFlowInput(plant, @(y_plant, y_zoh, t, j) y_zoh );
 cl_sys.setJumpInput(zoh, @(y_plant, y_zoh, t, j) K * y_plant );
 
