@@ -206,9 +206,12 @@ A_c = [0, 1; -1, 0];
 B_c = [0; 1];
 plant = hybrid.systems.LinearTimeInvariantSystem(A_c, B_c);
      
+
 % Create a linear feedback for the plant that asymptotically stabilizes the
 % origin of the closed loop system.
 K = [0, -2];
+
+controller = hybrid.systems.MemorylessSubsystem(2, 1, @(x, u) K*u);
 
 %% 
 % Next, we create a zero-order hold subsystem. 
@@ -219,14 +222,15 @@ zoh = ZOHController(zoh_dim, sample_time);
 %% 
 % Pass the plant and ZOH subsystems to |CopoundHybridSystem| to create the
 % closed-loop system.
-cl_sys = CompositeHybridSystem(plant, zoh);
+cl_sys = CompositeHybridSystem(plant, controller, zoh);
 
 %%
 % Set inputs functions for |plant| and |zoh|. The first argument of the
 % set*Feedback functions can either be the index of the subsystem within
 % the |CompositeSystem| or a reference to the subsystem itself.
-cl_sys.setFlowInput(plant, @(y_plant, y_zoh, t, j) y_zoh );
-cl_sys.setJumpInput(zoh, @(y_plant, y_zoh, t, j) K * y_plant );
+cl_sys.setInput(plant, @(~, ~, y_zoh) y_zoh);
+cl_sys.setInput(controller, @(y_plant, ~, ~) y_plant);
+cl_sys.setInput(zoh, @(~, y_controller, ~) y_controller );
 
 %% 
 % Print the system to check that everything is connected as expected.
@@ -234,6 +238,6 @@ disp(cl_sys);
 
 %% 
 % Finally, simulate and plot.
-sol = cl_sys.solve({[10; 0], [0; zoh.sample_time]}, [0, 10], [0, 100]);
+sol = cl_sys.solve({[10; 0], [], [0; zoh.sample_time]}, [0, 10], [0, 100]);
 HybridPlotBuilder().slice(1:3).labels("$x_1$", "$x_2$", "$u_{ZOH}$")...
     .plotFlows(sol)

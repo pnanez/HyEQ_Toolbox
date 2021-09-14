@@ -1,13 +1,13 @@
 classdef (Abstract) HybridSubsystem < handle
 %%% The HybridSubsystem class allows for the construction of a
-%%% hybrid system that depends on an input, u. 
+%%% hybrid system that depends on an input. 
     properties (Abstract, SetAccess = immutable)
         state_dimension
         input_dimension
         output_dimension
     end
     
-    properties
+    properties(SetObservable)
         output = @(x) x;
     end
     

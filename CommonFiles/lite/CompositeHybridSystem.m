@@ -10,8 +10,8 @@ classdef CompositeHybridSystem < HybridSystem
 %%% where x1 is the state vector for the first subsystem, x2 is the state
 %%% vector for the second subsystem, etc., and j1 is the discrete time for
 %%% the first subsystem, j2 is the discrete time for the second subsystem,
-%%% and so on. (The subsystems can jump separately of each other, so we
-%%% maintain separate discrete times).
+%%% and so on. (The subsystems can jump separately of each other, so each has
+%%% its own discrete time).
     
     properties(SetAccess = immutable)
         subsystems hybrid.internal.SubsystemList; 
@@ -48,6 +48,11 @@ classdef CompositeHybridSystem < HybridSystem
         %    u = kappa_D(x1, x2, ..., xN, t, j)
         % where N is the number of subsystems.
         kappa_D
+        
+        outputs
+        
+        sorted_names_flows
+        sorted_names_jumps
     end
     
     methods
@@ -62,6 +67,10 @@ classdef CompositeHybridSystem < HybridSystem
                ss = subsystems.get(i) ;
                ss_n = ss.state_dimension;
                obj.x_indices{i} = uint32(ndx : (ndx + ss_n - 1));
+               
+               % We use a listener to update the list of outputs each time the
+               % output of a subsystem changes.
+               addlistener(ss, 'output', 'PostSet', @obj.updateOutputsList);
                ndx = ndx + ss_n;
            end
            for i = 1:subsys_n
@@ -72,10 +81,15 @@ classdef CompositeHybridSystem < HybridSystem
            
            obj.kappa_C = generate_default_feedbacks(subsystems);
            obj.kappa_D = generate_default_feedbacks(subsystems);
+           
+           obj.updateOutputsList()
         end
-    
+        
         function setFlowInput(this, subsys_id, kappa_C)
-            % SETFLOWINPUT Set the input function for flows for the given subsystem.
+            % SETFLOWINPUT Set the input function during flows for the given subsystem.
+            % 'subsys_id' can be the index of the subsystem, the subsystem
+            % object itself, or subsystem names (if names were passed to the
+            % constructor).
             ndx = this.subsystems.getIndex(subsys_id);
             this.check_feedback(kappa_C)
             warn_if_input_dim_zero(this, ndx, "setFlowInput")
@@ -83,7 +97,10 @@ classdef CompositeHybridSystem < HybridSystem
         end
     
         function setJumpInput(this, subsys_id, kappa_D)
-            % SETJUMPINPUT Set the input function for jumps for the given subsystem.
+            % SETJUMPINPUT Set the input function at jumps for the given subsystem.
+            % 'subsys_id' can be the index of the subsystem, the subsystem
+            % object itself, or subsystem names (if names were passed to the
+            % constructor).
             ndx = this.subsystems.getIndex(subsys_id);
             warn_if_input_dim_zero(this, ndx, "setJumpInput")
             this.check_feedback(kappa_D)
@@ -91,7 +108,10 @@ classdef CompositeHybridSystem < HybridSystem
         end
     
         function setInput(this, subsys_id, kappa)
-            % SETINPUT Set the input function for jumps and flows for the given subsystem.
+            % SETINPUT Set the input function during jumps and flows for the given subsystem.
+            % 'subsys_id' can be the index of the subsystem, the subsystem
+            % object itself, or subsystem names (if names were passed to the
+            % constructor).
             ndx = this.subsystems.getIndex(subsys_id);
             warn_if_input_dim_zero(this, ndx, "setInput")
             this.check_feedback(kappa)
@@ -104,6 +124,10 @@ classdef CompositeHybridSystem < HybridSystem
             subsys_prefix = "├";
             prop_prefix = "│";
             for i = 1:this.subsys_n
+                if i == this.subsys_n
+                    subsys_prefix = "└";
+                    prop_prefix = " ";
+                end
                 ss = this.subsystems.get(i);
                 if this.subsystems.has_names
                     name = this.subsystems.getName(i);
@@ -121,10 +145,6 @@ classdef CompositeHybridSystem < HybridSystem
                 fprintf("%s \t\t Dimensions: ", prop_prefix)
                 fprintf("State=%d, Input=%d, Output=%d\n", ...
                     ss.state_dimension, ss.input_dimension, ss.output_dimension)
-                if i == this.subsys_n-1
-                    subsys_prefix = "└";
-                    prop_prefix = " ";
-                end
             end
         end
     end
@@ -133,16 +153,16 @@ classdef CompositeHybridSystem < HybridSystem
         
         function xdot = flowMap(this, x, t) 
             [xs, js] = this.split(x);
-            ys = this.compute_outputs(xs);
             % We set xdot to zeros and then fill in the entries
             % corresponding to the state of each subsystem and leave zero
             % the entries corresponding to the j-values.  
             xdot = zeros(this.state_dimension, 1); 
+            us = hybrid.internal.evaluateInOrder(this.sorted_names_flows, ...
+                                        this.kappa_C, this.outputs, xs, t, js);
             for i=1:length(this.subsystems)
                ss = this.subsystems.get(i);
+               u = us{i};
                j = js(i);
-               
-               u = eval_feedback(this.kappa_C{i}, ys, t, j);
                assert_control_length(length(u), ss.input_dimension, i)
                xdot(this.x_indices{i}) = ss.flowMap(xs{i}, u, t, j);
             end
@@ -150,14 +170,15 @@ classdef CompositeHybridSystem < HybridSystem
 
         function xplus = jumpMap(this, x, t)  
             [xs, js] = this.split(x);
-            ys = this.compute_outputs(xs);
             xplus = NaN(this.state_dimension, 1);
+            us = hybrid.internal.evaluateInOrder(this.sorted_names_jumps, ...
+                                        this.kappa_D, this.outputs, xs, t, js);
             for i=1:length(this.subsystems)
                ss = this.subsystems.get(i);
+               u = us{i};
                j = js(i);
-               u = eval_feedback(this.kappa_D{i}, ys, t, j);
                assert_control_length(length(u), ss.input_dimension, i)
-               D = ss.jumpSetIndicator(xs{i}, u, t, j);
+               D = ss.jumpSetIndicator(xs{i}, u, t, js(i));
                if ~isscalar(D)
                    error("CompositeHybridSystem:InvalidFunction", ...
                        "The jump set indicator function for system %d returned an array.", i)
@@ -181,11 +202,12 @@ classdef CompositeHybridSystem < HybridSystem
             % state is in (C union D)).
             C = true; 
             [xs, js] = this.split(x);
-            ys = this.compute_outputs(xs);
+            us = hybrid.internal.evaluateInOrder(this.sorted_names_flows, ...
+                                        this.kappa_C, this.outputs, xs, t, js);
             for i=1:length(this.subsystems)
                ss = this.subsystems.get(i);
+               u = us{i};
                j = js(i);
-               u = eval_feedback(this.kappa_C{i}, ys, t, j);
                assert_control_length(length(u), ss.input_dimension, i)
                C = ss.flowSetIndicator(xs{i}, u, t, j);
                if ~isscalar(C)
@@ -203,11 +225,12 @@ classdef CompositeHybridSystem < HybridSystem
         function D = jumpSetIndicator(this, x, t)
             D = false; 
             [xs, js] = this.split(x);
-            ys = this.compute_outputs(xs);
+            us = hybrid.internal.evaluateInOrder(this.sorted_names_jumps, ...
+                                        this.kappa_D, this.outputs, xs, t, js);
             for i=1:length(this.subsystems)
                ss = this.subsystems.get(i);
+               u = us{i};
                j = js(i);
-               u = eval_feedback(this.kappa_D{i}, ys, t, j);
                assert_control_length(length(u), ss.input_dimension, i)
                D = ss.jumpSetIndicator(xs{i}, u, t, j);
                if D
@@ -248,7 +271,8 @@ classdef CompositeHybridSystem < HybridSystem
                 ss_dim = this.subsystems.get(i).state_dimension;
                 if any((size(xs_0{i}) ~= [ss_dim, 1])) && ~(ss_dim == 0 && size(xs_0{i}, 1) == 0)
                     e = MException("CompositeHybridSystem:WrongNumberOfInitialStates",...
-                        "Mismatched initial state size. System %d has state dimension %d but the initial value had shape %s.",...
+                        "Mismatched initial state size. System %d has state dimension %d " + ... 
+                        "but the initial value had shape %s.",...
                         i, ss_dim, mat2str(size(xs_0{i})));
                     throwAsCaller(e);
                 end
@@ -270,20 +294,36 @@ classdef CompositeHybridSystem < HybridSystem
                     "When two subsystems are in their respective jump sets and one of them leaves " +...
                     "its flow set, then the state of both will jump, violating flow priority.")
             end
-            
+            this.updateEvaluationOrder();
             sol = this.solve@HybridSystem(x0, tspan, jspan, config);
         end
     end
     
     methods(Access = protected)
         function sol = wrap_solution(this, t, j, x, tspan, jspan)
+            import hybrid.internal.*
             % Create the HybridSolution object for the composite system.
             sol = this.wrap_solution@HybridSystem(t, j, x, tspan, jspan);
             
             total_jump_count = j(end) - j(1);
             
             [xs_all, js_all] = this.split_many(x);
-            for i=1:length(this.subsystems)
+            us_jump = {};
+            us_flow = {};
+            % Compute the input values
+            for k = 1:length(t)
+                js = [];
+                xs = {};
+                for i = 1:this.subsys_n
+                    xs{end+1} = xs_all(k, this.x_indices{i})'; %#ok<AGROW>
+                    js(end+1) = js_all(k, i); %#ok<AGROW>
+                end
+                us_jump{k} = evaluateInOrder(this.sorted_names_jumps, ...
+                    this.kappa_D, this.outputs, xs, t(k), js); %#ok<AGROW>
+                us_flow{k} = evaluateInOrder(this.sorted_names_flows, ...
+                    this.kappa_C, this.outputs, xs, t(k), js); %#ok<AGROW>
+            end
+            for i = 1:this.subsys_n
                 ss = this.subsystems.get(i);
                 ss_j = js_all(:, i);
                 ss_x = xs_all(:, this.x_indices{i});
@@ -294,19 +334,13 @@ classdef CompositeHybridSystem < HybridSystem
                 % corresponding system.
                 [~, ~, ~, is_jump] = hybrid.internal.jumpTimes(t, ss_j);
                 
-                % Compute the input values
                 for k = 1:length(t)
-                    xs = {};
-                    for indices = this.x_indices
-                        xs{end+1} = x(k, indices{1})';
-                    end
-                    ys = compute_outputs(this, xs);
                     if is_jump(k)
-                        % u(k, :) = this.kappa_D{i}(xs, t, ss_j)';
-                        ss_u(k, :) = eval_feedback(this.kappa_D{i}, ys, t(k), ss_j(k))';
+                        us_k_jump = us_jump{k};
+                        ss_u(k, :) = us_k_jump{i}';
                     else % is flow
-                        % u(k, :) = this.kappa_C{i}(xs, t, ss_j)';
-                        ss_u(k, :) = eval_feedback(this.kappa_C{i}, ys, t(k), ss_j(k))';
+                        us_k_flow = us_flow{k};
+                        ss_u(k, :) = us_k_flow{i}';
                     end
                 end
                 
@@ -326,6 +360,19 @@ classdef CompositeHybridSystem < HybridSystem
     end
 
     methods(Access = private)
+            
+        function updateOutputsList(this, ~, ~)
+            for i = 1:this.subsys_n
+               this.outputs{i} = this.subsystems.get(i).output;
+            end
+            this.updateEvaluationOrder();
+        end
+        
+        function updateEvaluationOrder(this)
+            import hybrid.internal.*
+            this.sorted_names_flows = sortInputAndOutputFunctionNames(this.kappa_C, this.outputs);
+            this.sorted_names_jumps = sortInputAndOutputFunctionNames(this.kappa_D, this.outputs);
+        end
         
         function [xs, js] = split(this, x)
             % SPLIT Split a full state vector into a cell array containing
@@ -365,13 +412,6 @@ classdef CompositeHybridSystem < HybridSystem
             end
         end
         
-        function ys = compute_outputs(this, xs)
-            ys = cell(this.subsys_n, 1);
-            for i = 1:this.subsys_n
-                ys{i} = this.subsystems.get(i).output(xs{i});
-            end
-        end
-        
         function check_feedback(this, kappa)
             nargs = nargin(kappa);
             is_wrong_nargs = nargs > this.subsys_n + 2 || nargs < this.subsys_n;
@@ -384,17 +424,15 @@ classdef CompositeHybridSystem < HybridSystem
         end
     end
 end
-
-function u = eval_feedback(kappa, ys, t, j)
-assert(isscalar(t), "t is not a scalar")
-assert(isscalar(j), "j is not a scalar")
-switch nargin(kappa)
-    case length(ys)
-        u = kappa(ys{:});
-    case length(ys) + 1
-        u = kappa(ys{:}, t);
-    case length(ys) + 2
-        u = kappa(ys{:}, t, j);
+        
+function check_output(h)
+nargs = nargin(h);
+is_wrong_nargs = nargs > 3 || nargs < 1;
+if is_wrong_nargs
+    e = MException("CompositeHybridSystem:OutputWrongNumberArgsIn", ...
+        "Given output function has wrong number of arguments. Expected=1, 2, or 3, actual=%d.",...
+        nargs);
+    throwAsCaller(e);
 end
 end
 
@@ -402,12 +440,12 @@ function kappas = generate_default_feedbacks(subsystems)
 
 sys_count = length(subsystems);
 kappas = cell(sys_count, 1);
-args_fmt = join(repmat("y%d", sys_count, 1), ", ");
+args_fmt = join(repmat("~", sys_count, 1), ", ");
 feedback_arugments_string = sprintf(args_fmt, 1:sys_count);
 for i = 1:sys_count
     ss = subsystems.get(i);
     n = ss.input_dimension;
-    kappa_eval_string = sprintf("kappas{i} = @("+feedback_arugments_string+", t, j) zeros(%d, 1);", n);
+    kappa_eval_string = sprintf("kappas{i} = @("+feedback_arugments_string+") zeros(%d, 1);", n);
     eval(kappa_eval_string);
 end
 

@@ -3,7 +3,7 @@ classdef SystemWithZOH < CompositeHybridSystem
     methods  
         function obj = SystemWithZOH(plant, sample_time)
             zoh_dim = plant.input_dimension;
-            zoh_controller = ZOHController(zoh_dim, sample_time);
+            zoh_controller = ZeroOrderHold(zoh_dim, sample_time);
             obj = obj@CompositeHybridSystem(plant, zoh_controller);
         end
         

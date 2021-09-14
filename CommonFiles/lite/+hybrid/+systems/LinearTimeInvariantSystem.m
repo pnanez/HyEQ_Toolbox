@@ -22,6 +22,9 @@ classdef LinearTimeInvariantSystem < HybridSubsystem
             end
             if ~exist("D", "var")
                 D = zeros(size(C, 1), size(B, 2));
+                obj.output = @(x) C * x;
+            else
+                obj.output = @(x, u) C * x + D * u; 
             end     
             obj.state_dimension = size(A, 1);
             obj.input_dimension = size(B, 2);
@@ -30,7 +33,7 @@ classdef LinearTimeInvariantSystem < HybridSubsystem
             obj.B = B;
             obj.C = C;
             obj.D = D;
-            obj.output = @(x) C * x; %  + D * u; 
+            
         end
             
         % The jumpMap function must be implemented with the following 
