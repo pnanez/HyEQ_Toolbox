@@ -13,7 +13,7 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
             tspan = [0, 10];
             jspan = [0, 10];
             sol = sys.solve({1, 2}, tspan, jspan);
-            testCase.assertLength(sol.subsys_sols, 2)
+            testCase.assertLength(sol, 2)
             testCase.assertLength(sol.x(1, :), 2+2);
         end
        
@@ -33,7 +33,7 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
             tspan = [0, 10];
             jspan = [0, 10];
             sol = sys.solve({1, 2, 3}, tspan, jspan);
-            testCase.assertLength(sol.subsys_sols, 3)
+            testCase.assertLength(sol, 3)
             testCase.assertLength(sol.x(1, :), ...
                 sub1.state_dimension+sub2.state_dimension+sub3.state_dimension+3);
         end
@@ -50,8 +50,8 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
             jspan = [0, 2];
             sol = sys.solve({0, 0}, tspan, jspan);
             testCase.assertEqual(sol.jump_times, [1; 2], 'AbsTol', 1e-6)
-            testCase.assertEqual(sol.subsys_sols{1}.jump_times, [1; 2], 'AbsTol', 1e-6)
-            testCase.assertEmpty(sol.subsys_sols{2}.jump_times)
+            testCase.assertEqual(sol(1).jump_times, [1; 2], 'AbsTol', 1e-6)
+            testCase.assertEmpty(sol(2).jump_times)
         end
        
         function testAllSubsystemsJumpWhenAllInJumpSet(testCase)
@@ -68,8 +68,8 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
             
             expected_jumps = [1; 2];
             testCase.assertEqual(sol.jump_times, expected_jumps, 'AbsTol', 1e-6)
-            testCase.assertEqual(sol.subsys_sols{1}.jump_times, expected_jumps, 'AbsTol', 1e-6)
-            testCase.assertEqual(sol.subsys_sols{2}.jump_times, expected_jumps, 'AbsTol', 1e-6)
+            testCase.assertEqual(sol(1).jump_times, expected_jumps, 'AbsTol', 1e-6)
+            testCase.assertEqual(sol(2).jump_times, expected_jumps, 'AbsTol', 1e-6)
         end
         
         function testFlowPriorityWarning(testCase)
@@ -122,8 +122,8 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
             sol = sys.solve({0, 0}, tspan, jspan, config);
             expected_jumps = 2.0;
             testCase.assertEqual(sol.jump_times, expected_jumps, 'AbsTol', 1e-6)
-            testCase.assertEqual(sol.subsys_sols{1}.jump_times, expected_jumps, 'AbsTol', 1e-6)
-            testCase.assertEmpty(sol.subsys_sols{2}.jump_times) % Fails
+            testCase.assertEqual(sol(1).jump_times, expected_jumps, 'AbsTol', 1e-6)
+            testCase.assertEmpty(sol(2).jump_times) % Fails
         end
         
         function testWrongNumberOfInitialStates(testCase)
@@ -198,6 +198,33 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
                "CompositeHybridSystem:SystemHasNoInputs");
             testCase.verifyWarning(@() sys.setInput(1, @(x1, t, j) []), ...
                "CompositeHybridSystem:SystemHasNoInputs");
+        end
+        
+        function testSubsystemNames(testCase)
+            import hybrid.tests.internal.*
+                           % Size of: (u, x, y)
+            sub1 = MockHybridSubsystem(1, 1, 1);
+            sub2 = MockHybridSubsystem(1, 1, 1);
+            sys = CompositeHybridSystem("sub 1", sub1, "sub 2", sub2);
+            
+            kappa_C1 = @(y1, y2, t, j) 4;
+            kappa_D1 = @(y1, y2, t, j) 12;
+            sys.setFlowInput("sub 1", kappa_C1);
+            sys.setJumpInput("sub 1", kappa_D1);
+            
+            kappa_2 = @(y1, y2, t, j) 5;
+            sys.setInput("sub 2", kappa_2);
+            
+            testCase.assertEqual(sys.getFlowInput(1), kappa_C1)
+            testCase.assertEqual(sys.getJumpInput(sub1), kappa_D1)
+            testCase.assertEqual(sys.getFlowInput(2), kappa_2)
+            testCase.assertEqual(sys.getJumpInput("sub 2"), kappa_2)
+            
+            sol = sys.solve({1, 2}, [0, 10], [0, 10]);
+            
+            testCase.assertEqual(sol(1), sol("sub 1"))
+            testCase.assertEqual(sol(sub2), sol("sub 2"))
+            testCase.assertNotEqual(sol("sub 1"), sol("sub 2"))
         end
         
     end

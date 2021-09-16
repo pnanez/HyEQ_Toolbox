@@ -71,6 +71,7 @@ classdef CompositeHybridSystem < HybridSystem
                % We use a listener to update the list of outputs each time the
                % output of a subsystem changes.
                addlistener(ss, 'output', 'PostSet', @obj.updateOutputsList);
+               assert(~isempty(ss_n), "State dimension for subsystem %d has not been set", i);
                ndx = ndx + ss_n;
            end
            for i = 1:subsys_n
@@ -95,6 +96,15 @@ classdef CompositeHybridSystem < HybridSystem
             warn_if_input_dim_zero(this, ndx, "setFlowInput")
             this.kappa_C{ndx} = kappa_C;
         end
+        
+        function kappa_C = getFlowInput(this, subsys_id)
+            % GETFLOWINPUT Get the input function during flows for the given subsystem.
+            % 'subsys_id' can be the index of the subsystem, the subsystem
+            % object itself, or subsystem names (if names were passed to the
+            % constructor).
+            ndx = this.subsystems.getIndex(subsys_id);
+            kappa_C = this.kappa_C{ndx};
+        end
     
         function setJumpInput(this, subsys_id, kappa_D)
             % SETJUMPINPUT Set the input function at jumps for the given subsystem.
@@ -105,6 +115,15 @@ classdef CompositeHybridSystem < HybridSystem
             warn_if_input_dim_zero(this, ndx, "setJumpInput")
             this.check_feedback(kappa_D)
             this.kappa_D{ndx} = kappa_D;
+        end
+        
+        function kappa_D = getJumpInput(this, subsys_id)
+            % GETJUMPINPUT Get the input function at jumps for the given subsystem.
+            % 'subsys_id' can be the index of the subsystem, the subsystem
+            % object itself, or subsystem names (if names were passed to the
+            % constructor).
+            ndx = this.subsystems.getIndex(subsys_id);
+            kappa_D = this.kappa_D{ndx};
         end
     
         function setInput(this, subsys_id, kappa)
@@ -355,7 +374,7 @@ classdef CompositeHybridSystem < HybridSystem
                 ss_jspan = [jspan(1), jspan(end) - others_jump_count];
                 ss_sols{i} = ss.wrap_solution(t, ss_j, ss_x, ss_u, tspan, ss_jspan); %#ok<AGROW>
             end
-            sol = CompositeHybridSolution(sol, ss_sols, tspan, jspan);
+            sol = CompositeHybridSolution(sol, ss_sols, tspan, jspan, this.subsystems);
         end
     end
 

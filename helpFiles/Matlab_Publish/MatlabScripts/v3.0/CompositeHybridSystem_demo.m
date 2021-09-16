@@ -1,21 +1,22 @@
 %% Create and Simulate Multiple Interlinked Hybrid Systems
 %% Mathematical Formulation
-% In this document, we demonstrate how to use the Hybrid Equations Toolbox
-% to simulate multiple interlinked hybrid systems. 
+% In this document, we demonstrate how to simulate multiple interlinked hybrid systems. 
 % Consider the controlled hybrid systems $\mathcal H_1$ and $\mathcal H_2$ with 
-% data $(f_1, g_1, C_1, D_1)$ and $(f_2, g_2, C_2, D_2)$ with state spaces 
+% data $(f_1, g_1, C_1, D_1)$ and $(f_2, g_2, C_2, D_2)$ and state spaces 
 % $\mathcal X_1$ and $\mathcal X_2.$ Let $x_1 \in \mathcal X_1$ and $x_2 \in \mathcal X_2.$
-% Then dynamics of $\mathcal H_1$
+% The dynamics of $\mathcal H_1$
 % 
-% $$ \dot{x}_1 = f_1(x_1, u_1, t, j_1) \quad (x_1, u_1) \in C'_1 \times U_{C1} =: C_1 $$
-% 
-% $$ x_1^+ = g_1(x_1, u_1, t, j_1) \quad (x_1, u_1) \in D'_1 \times U_{D1} =: D_1 $$
+% $$ \left\{\begin{array}{ll} 
+%    \dot{x}_1 = f_1(x_1, u_1, t, j_1) \quad &(x_1, u_1) \in C'_1 \times U_{C1} =: C_1 \\
+%    x_1^+ = g_1(x_1, u_1, t, j_1) \quad &(x_1, u_1) \in D'_1 \times U_{D1} =: D_1 
+% \end{array} \right. $$
 % 
 % and the dynamics of $\mathcal H_2$ are 
 %
-% $$ \dot{x}_2 = f_2(x_2, u_2, t, j_2) \quad (x_2, u_2) \in C'_2 \times U_{C2} =: C_2$$
-%
-% $$x_2^+ = g_2(x_2, u_2, t, j_2) \quad (x_2, u_2) \in D'_2 \times U_{D2} =: D_2.$$
+% $$ \left\{\begin{array}{ll} 
+%    \dot{x}_2 = f_2(x_2, u_2, t, j_2) \quad &(x_2, u_2) \in C'_2 \times U_{C2} =: C_2 \\
+%    x_2^+ = g_2(x_2, u_2, t, j_2) \quad &(x_2, u_2) \in D'_2 \times U_{D2} =: D_2 
+% \end{array} \right. $$
 %
 % Note that $\mathcal H_1$ and $\mathcal H_2$ use the same continuous time
 % $t$ but different discrete times $j_1$ and $j_2.$ 
@@ -27,9 +28,9 @@
 % $u_2 = \kappa_{2C}(x_1, x_2)$ when $x_2 \in C'_2$; and 
 % $u_2 = \kappa_{2D}(x_1, x_2)$ when $x_2 \in D'_2$. 
 %
-% We now define the composite system $\tilde H$ that is the composition of subsystems 
+% We now define the system $\tilde H$ that is the composition of subsystems 
 % $\mathcal H_1$ and $\mathcal H_2.$ The state $\tilde x$ of $\tilde H$ is the
-% concatenation of $x_1$ and $x_2$ along with two natural numbers $j_1$ and $j_2$
+% concatenation of $x_1$ and $x_2$ along with $j_1, j_2\in N$
 % that track the discrete times of the subsystems (since they can jump at
 % different times). That is, $\tilde x = (x_1, x_2, j_1, j_2).$ 
 % We want the system to flow whenever both subsystems are in their respective 
@@ -107,7 +108,7 @@ sys.setFlowInput(1, @(y1, y2, t, j) -9.8/(j+1));
 % zero vector of the appropriate size.
 disp(sys)
 
-%% Alternative ways to reference subsystems to set input functions
+%% Alternative Ways to Reference Subsystems
 % In addition to referencing subsystems by their index number, they can
 % also be referenced by passing the subsystem object.
 % Thus, the command |sys.setJumpInput(1, @(y1, y2) y1(1));| can be replaced
@@ -115,22 +116,21 @@ disp(sys)
 sys.setJumpInput(subsystem1, @(y1, y2) y1(1)); 
 
 %%
-% Additionally, we can provide names for each subsystem. In which case, 
-% we can use the names when setting inputs.
-% If any subsystem are named, then all the subsystems must be named.
-sys_named = CompositeHybridSystem("Plant", subsystem1, "Controller", subsystem2);
+% Additionally, names can be given to each subsystem by passing strings before
+% each subsystem in the |CompositeHybridSystem| constructor. If any subsystems
+% are named, then all the subsystems must be named. 
+sys_named = CompositeHybridSystem("Plant", subsystem1, "Controller", subsystem2)
 
 %% 
-% Then the following three lines are equivalent:
+% If the subsystems are named, we can use the names when setting inputs.
+% Thus, the following three lines are equivalent:
 sys_named.setFlowInput(1, @(y1, y2) -y2);
 sys_named.setFlowInput(subsystem1, @(y1, y2) -y2);
-sys_named.setFlowInput("Plant", @(y1, y2) y2);
+sys_named.setFlowInput("Plant", @(y1, y2) -y2);
 
 %%
-% The names of systems are also
-% displayed when |disp| is called on a |CompositeHybridSystem|, to help with
-% debugging.
-disp(sys_named)
+% Hereafter, we call the collection of these three means of referring to
+% subsystems as _subsystem IDs_.
 
 %% Compute a solution
 % To compute a solution, we call |solve| on the system, similar to a
@@ -154,40 +154,43 @@ sol
 % components reached zero.
 HybridPlotBuilder()...
     .labels("$h_1$", "$v_1$", "$h_2$", "$v_2$")...
-    .slice(1:4).plotFlows(sol);
+    .slice(1:4)... % Only plot subsystem state vectors, not j1, j2.
+    .plotFlows(sol);
+
+%% Subsystem Solutions
+% The solutions to subsystems can be accessed by placing a subsystem ID within
+% parenteses immediately after |sol|.
+sol(1);
+sol(subsystem2);
 
 %% 
-% Now, we may want the solutions of the two subsystems separately. 
-% The |CompositeHybridSolution| object contains two additional properties not 
-% defined in the |HybridSolution| class: |subsystem1_sol| and |subsystem2_sol|.
-% As the names suggest, these contain the solutions of the subsystems. 
-% Looking at the solution for subystem1, we see all the data from |HybridSolution|
-% along with a new property |u| that contains the input to |subsystem1| that 
-% generated this solution:
-sol.subsys_sols{1}
+% If names were passed to the constructor when |sys| was created, we could also
+% reference the subsystem references by name, e.g., |sol('Plant')|.
+% Subsystem solutions have all the same properties as a |HybridSolution|, as
+% well as the control input, which is stored in the property |u|. 
+sol(1).termination_cause
 
 %% 
 % The solutions to the subystems can plotted just like any other solution.
-% Note that when the solution to one subsystem jumps, the other does not
+% Note that when the solution to one subsystem jumps, the others do not
 % necessarily jump at the same time.
 
 figure()
 hpb = HybridPlotBuilder()...
     .labels("$h$", "$v$")...
+    .legend("$\mathcal H_1$", "$\mathcal H_1$")...
     .titles("Height", "Velocity");
-hpb.plotFlows(sol.subsys_sols{1});
+hpb.plotFlows(sol(1));
 hold on
 hpb.flowColor("k").jumpColor("g")...
-    .plotFlows(sol.subsys_sols{2});
-
-hpb.legend("$\mathcal H_1$", "$\mathcal H_1$");
+    .legend("$\mathcal H_2$", "$\mathcal H_2$")...
+    .plotFlows(sol(subsystem2));
 
 %% Plotting Control Signal
 % We are still developing easy ways to plot the control signal, but for now
 % you can simply pass the t, j, and u from the 
 % subystem solutions to |plotFlows|.
-subsol = sol.subsys_sols{2};
-HybridPlotBuilder().plotFlows(subsol, subsol.u)
+HybridPlotBuilder().plotFlows(sol(2), sol(2).u)
 
 %% Single System
 % The |CompositeHybridSystem| class can also be used with a single subsystem
@@ -206,11 +209,9 @@ A_c = [0, 1; -1, 0];
 B_c = [0; 1];
 plant = hybrid.systems.LinearTimeInvariantSystem(A_c, B_c);
      
-
 % Create a linear feedback for the plant that asymptotically stabilizes the
 % origin of the closed loop system.
 K = [0, -2];
-
 controller = hybrid.systems.MemorylessSubsystem(2, 1, @(x, u) K*u);
 
 %% 
@@ -218,7 +219,7 @@ controller = hybrid.systems.MemorylessSubsystem(2, 1, @(x, u) K*u);
 zoh_dim = plant.input_dimension;
 sample_time = 0.3;
 zoh = ZOHController(zoh_dim, sample_time);
-
+ 
 %% 
 % Pass the plant and ZOH subsystems to |CopoundHybridSystem| to create the
 % closed-loop system.
@@ -238,6 +239,32 @@ disp(cl_sys);
 
 %% 
 % Finally, simulate and plot.
-sol = cl_sys.solve({[10; 0], [], [0; zoh.sample_time]}, [0, 10], [0, 100]);
+sol_zoh = cl_sys.solve({[10; 0], [], [0; zoh.sample_time]}, [0, 10], [0, 100]);
 HybridPlotBuilder().slice(1:3).labels("$x_1$", "$x_2$", "$u_{ZOH}$")...
+    .plotFlows(sol_zoh)
+
+%% Switched System
+import hybrid.systems.*
+clf 
+A = [0, 1; 0, 0];
+B = [0; 1];
+plant = LinearTimeInvariantSystem(A, B);
+controller_0 = MemorylessSubsystem(2, 1, @(~, z) [-1, -1]*z);
+controller_1 = MemorylessSubsystem(2, 1, @(~, z) [ 2, -1]*z);
+switcher = SwitchSubsystem(1);
+sys = CompositeHybridSystem(plant, controller_0, controller_1, switcher);
+
+sys.setInput(controller_0, @(z, ~, ~, ~) z);
+sys.setInput(controller_1, @(z, ~, ~, ~) z);
+sys.setInput(switcher, @(z, u0, u1, ~, t, j) ...
+                        switcher.wrapInput(u0, u1, norm(z) >= 3, norm(z) <= 1));
+sys.setInput(plant, @(~, ~, ~, u_switched) u_switched);
+
+x0 = {[10; 0], [], [], 1};
+sol = sys.solve(x0, [0, 100], [0, 100]);
+
+HybridPlotBuilder()....
+    .labels("$z_1$", "$z_2$", "$q$")...
+    .slice(1:3)...
+    .configurePlots(@(ndx) ylim("padded"))...
     .plotFlows(sol)

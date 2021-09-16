@@ -1,4 +1,3 @@
-
 function rename() {
     if [ $# -ne 2 ]; then
         echo "Please <old name> and <new name>"

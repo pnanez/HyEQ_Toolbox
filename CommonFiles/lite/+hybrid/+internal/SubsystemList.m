@@ -68,20 +68,25 @@ classdef SubsystemList
             else
                 name = "";
             end
-                
         end
         
         function ndx = getIndex(this, subsys_id)
             % subsys_id can be a HybridSubsystem or an integer index.
             if isa(subsys_id, "HybridSubsystem")
                 ndx = find(cellfun(@(x)x == subsys_id, this.entries));
+            elseif ~isscalar(subsys_id) && ~ischar(subsys_id)
+                % Check that an array of indices were not prvided, unless the
+                % array is a char array (which represents a single subsystem). 
+                e = MException("CompositeHybridSystem:MultipleIndices",...
+                    "Cannot reference multiple subsystems at once. Please provide a single id.");
+                throwAsCaller(e);
             elseif isnumeric(subsys_id) 
                 % Don't use 'isinteger' here because Matlab interprets
                 % number literals (such as "2") as doubles.
                 ndx = uint32(subsys_id);
                 if ndx ~= floor(subsys_id) 
                     e = MException("CompositeHybridSystem:InvalidSubsystemIndex",...
-                        "Arguement '%f' was a number but not an integer.", ndx);
+                        "Argument '%f' was a number but not an integer.", ndx);
                     throwAsCaller(e);
                 end
                 if ndx < 1 || ndx > this.length
@@ -93,7 +98,8 @@ classdef SubsystemList
             elseif isstring(subsys_id) || ischar(subsys_id)
                 if isempty(this.names)
                     error("CompositeHybridSystem:NoNamesProvided",...
-                        "Cannot reference subsystems by name because names were not provided at construction.")
+                        "Cannot reference subsystems by name because names " + ...
+                        "were not provided at construction.")
                 end
                 name = string(subsys_id);
                 ndx = find(cellfun(@(x)x == name, this.names));
