@@ -1,9 +1,7 @@
 classdef SwitchSubsystem < HybridSubsystem
           
     properties (SetAccess = immutable)
-        state_dimension
-        input_dimension
-        output_dimension
+        
     end
     
     properties(GetAccess = private, SetAccess = immutable)
@@ -34,16 +32,13 @@ classdef SwitchSubsystem < HybridSubsystem
                 end
             end
             
-            obj = obj@HybridSubsystem();
+            state_dim = 1;
+            output = @(q, u) output_switch(q, u);
+            obj = obj@HybridSubsystem(state_dim, in_dim, out_dim, output);
             obj.u0_indices = u0_indices;
             obj.u1_indices = u1_indices;
             obj.q_to_0_index = q_to_0_index;
             obj.q_to_1_index = q_to_1_index;
-            obj.input_dimension = in_dim;
-            obj.state_dimension = 1;
-            obj.output_dimension = out_dim;
-            
-            obj.output = @(q, u) output_switch(q, u);
         end       
         
         function u = wrapInput(~, u0, u1, q_to_0, q_to_1)

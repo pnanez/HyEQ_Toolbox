@@ -79,24 +79,28 @@ subsystem1 = ExampleHybridSubsystem();
 subsystem2 = ExampleHybridSubsystem();
 
 %% Create a Composite Hybrid System
-% Now that we have two subsystems, we merely pass these to the
+% Now that we have two subsystems, we pass these to the
 % |CompositeHybridSystem| constructor to create a coupled system.
 sys = CompositeHybridSystem(subsystem1, subsystem2);
 
 %%
-% Next, we set the feedback functions for each subsystem. The continuous
-% feedback functions generate the input for the respective subsystem during
-% flows and the discrete feedback generates the input at jumps.
+% Next, we set the input functions for each subsystem. The flow
+% input functions generate the input for the respective subsystem during
+% flows and the jump input functions generates the input at jumps. 
+% The first argument identifies the subsystem for the given function and can be
+% the ordinal number of a subsystem, an object reference to a subsystem, or
+% (explained later) a string name of a subsystem.
 sys.setJumpInput(1, @(y1, y2) y1(1)); 
-sys.setFlowInput(2, @(y1, y2) y1(1)-y2(1));
+sys.setFlowInput(subsystem2, @(y1, y2) y1(1)-y2(1));
 
 %% 
-% The feedback functions must have $N$, $N+1$, or $N+2$ input arguments,
+% The input functions must have between zero and $N+2$ input arguments,
 % where $N$ is the number of subsystems. The first $N$ arguments are passed
 % the output values of each corresponding subsystem, and, if present, the
 % $N+1$ argument is passed the continuous time |t| for the composite system
-% (same as the subsystems), and the $N+2$ argument is passed the discrete
-% time |j| _for that subsystem._ 
+% (same as the continuous time of the subsystems), and the $N+2$ argument is passed the discrete
+% time |j| for that subsystem, whic is _not_ (in general) the same as the
+% discrete time of the subsystem.
 % 
 % For example, we can make downward acceleration ("gravity") of the first
 % ball decrease every time it bounces with the following feedback:
@@ -183,7 +187,6 @@ hpb = HybridPlotBuilder()...
 hpb.plotFlows(sol(1));
 hold on
 hpb.flowColor("k").jumpColor("g")...
-    .legend("$\mathcal H_2$", "$\mathcal H_2$")...
     .plotFlows(sol(subsystem2));
 
 %% Plotting Control Signal
@@ -192,7 +195,7 @@ hpb.flowColor("k").jumpColor("g")...
 % subystem solutions to |plotFlows|.
 HybridPlotBuilder().plotFlows(sol(2), sol(2).u)
 
-%% Single System
+%% Example: Single System
 % The |CompositeHybridSystem| class can also be used with a single subsystem
 % for cases where you want to be able to modify the feedback functions
 % without modifying the code for the system. 
@@ -205,20 +208,21 @@ sol_1 = sys_1.solve({x1_initial}, tspan, jspan);
 % As a case study in creating a composition of hybrid systems, consider the
 % following % example. First, we create a linear time-invariant plant. The
 % class |LinearTimeInvariantSystem| is a subclass of |HybridSubsystem|.
+
 A_c = [0, 1; -1, 0];
 B_c = [0; 1];
-plant = hybrid.systems.LinearTimeInvariantSystem(A_c, B_c);
+plant = hybrid.subsystems.LinearContinuousSubsystem(A_c, B_c);
      
 % Create a linear feedback for the plant that asymptotically stabilizes the
 % origin of the closed loop system.
 K = [0, -2];
-controller = hybrid.systems.MemorylessSubsystem(2, 1, @(x, u) K*u);
+controller = hybrid.subsystems.MemorylessSubsystem(2, 1, @(x, u) K*u);
 
 %% 
 % Next, we create a zero-order hold subsystem. 
 zoh_dim = plant.input_dimension;
 sample_time = 0.3;
-zoh = ZOHController(zoh_dim, sample_time);
+zoh = hybrid.subsystems.ZeroOrderHold(zoh_dim, sample_time);
  
 %% 
 % Pass the plant and ZOH subsystems to |CopoundHybridSystem| to create the
@@ -243,15 +247,16 @@ sol_zoh = cl_sys.solve({[10; 0], [], [0; zoh.sample_time]}, [0, 10], [0, 100]);
 HybridPlotBuilder().slice(1:3).labels("$x_1$", "$x_2$", "$u_{ZOH}$")...
     .plotFlows(sol_zoh)
 
-%% Switched System
-import hybrid.systems.*
+%% Example: Switched System
 clf 
 A = [0, 1; 0, 0];
 B = [0; 1];
-plant = LinearTimeInvariantSystem(A, B);
-controller_0 = MemorylessSubsystem(2, 1, @(~, z) [-1, -1]*z);
-controller_1 = MemorylessSubsystem(2, 1, @(~, z) [ 2, -1]*z);
-switcher = SwitchSubsystem(1);
+C = eye(2); % C can be omitted when it is the identity matrix.
+D = zeros(2, 1); % D can be ommitted when it is a zero matrix.
+plant = hybrid.subsystems.LinearContinuousSubsystem(A, B, C, D);
+controller_0 = hybrid.subsystems.MemorylessSubsystem(2, 1, @(~, z) [-1, -1]*z);
+controller_1 = hybrid.subsystems.MemorylessSubsystem(2, 1, @(~, z) [ 2, -1]*z);
+switcher = hybrid.subsystems.SwitchSubsystem(1);
 sys = CompositeHybridSystem(plant, controller_0, controller_1, switcher);
 
 sys.setInput(controller_0, @(z, ~, ~, ~) z);

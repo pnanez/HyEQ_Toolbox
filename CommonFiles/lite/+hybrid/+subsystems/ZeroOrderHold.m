@@ -1,33 +1,27 @@
-classdef ZOHController < HybridSubsystem
+classdef ZeroOrderHold < HybridSubsystem
 
     properties
         sample_time;
     end
     
-    properties(SetAccess = immutable)
-        state_dimension
-        input_dimension
-        output_dimension
-    end
-    
-    properties(SetAccess = immutable, Hidden)
+    properties(SetAccess = immutable, GetAccess = private)
         zoh_dim
         zoh_indices
         timer_index
     end
         
     methods
-        function obj = ZOHController(zoh_dim, sample_time)
-            obj.sample_time = sample_time;
+        function obj = ZeroOrderHold(zoh_dim, sample_time)
             zoh_dim = int32(zoh_dim);
+            state_dim = zoh_dim + 1;
+            input_dim = zoh_dim;
+            output_dim = zoh_dim;
+            output = @(x) x(1:zoh_dim);
+            obj = obj@HybridSubsystem(state_dim, input_dim, output_dim, output);
             obj.zoh_dim = zoh_dim;
             obj.zoh_indices = 1:zoh_dim;
             obj.timer_index = zoh_dim + 1;
-            obj.state_dimension = zoh_dim + 1;
-            obj.input_dimension = zoh_dim;
-            obj.output_dimension = zoh_dim;
-            
-            obj.output = @(x) x(obj.zoh_indices);
+            obj.sample_time = sample_time;
         end
         
         function xdot = flowMap(this, ~, ~, ~, ~)  

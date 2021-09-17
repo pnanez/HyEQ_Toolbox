@@ -19,3 +19,4 @@ function rename() {
 # 3.0.0.11 to 3.0.0.12
 rename CompoundHybridSystem CompositeHybridSystem
 rename CompoundHybridSolution CompositeHybridSolution
+rename ZOHController hybrid.subsystems.ZeroOrderHold

@@ -1,16 +1,8 @@
 classdef MemorylessSubsystem < HybridSubsystem
-    
-    properties(SetAccess = immutable)
-        input_dimension
-        state_dimension = 0;
-        output_dimension
-    end
-    
+       
     methods
         function obj = MemorylessSubsystem(input_dimension, output_dimension, output)
-            obj.input_dimension = input_dimension;
-            obj.output_dimension = output_dimension;
-            obj.output = output;
+            obj = obj@HybridSubsystem(0, input_dimension, output_dimension, output);
         end
     end
     
@@ -18,8 +10,7 @@ classdef MemorylessSubsystem < HybridSubsystem
         function xdot = flowMap(this, x, u, t, j)   %#ok<INUSD>
            xdot = []; 
         end
-        
-        % The system does not jump.
+
         function xplus = jumpMap(this, x, u, t, j)   %#ok<INUSD>
            xplus = []; 
         end

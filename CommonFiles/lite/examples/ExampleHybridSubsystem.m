@@ -1,17 +1,16 @@
 classdef ExampleHybridSubsystem < HybridSubsystem
-    
-    properties(SetAccess = immutable)
-        % Define the abstract properties from HybridSubsystem.
-        state_dimension = 2
-        input_dimension = 1
-        output_dimension = 2;
-    end
-    
+        
     properties
         bounce_coef = 0.9; 
     end
     
     methods
+        function obj = ExampleHybridSubsystem()
+            state_dim = 2;
+            input_dim = 1;
+            obj = obj@HybridSubsystem(state_dim, input_dim);
+        end
+        
         function xdot = flowMap(~, x, u, ~, ~)  
             xdot = [x(2); u];
         end

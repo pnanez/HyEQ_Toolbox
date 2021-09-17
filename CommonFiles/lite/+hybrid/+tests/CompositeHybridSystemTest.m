@@ -4,7 +4,7 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
        
         function testTwo1x1Subsystems(testCase)
             import hybrid.tests.internal.*
-                           % Size of: (u, x, y)
+                           % Size of: (x, u, y)
             sub1 = MockHybridSubsystem(1, 1, 1);
             sub2 = MockHybridSubsystem(1, 1, 1);
             sys = CompositeHybridSystem(sub1, sub2);
@@ -19,10 +19,10 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
        
         function testThreeSubsystemsOfDifferentSizes(testCase)
             import hybrid.tests.internal.*
-                           % Size of: (u, x, y)
-            sub1 = MockHybridSubsystem(1, 1, 2);
-            sub2 = MockHybridSubsystem(2, 1, 3);
-            sub3 = MockHybridSubsystem(3, 1, 1);
+                           % Size of: (x, u, y)
+            sub1 = MockHybridSubsystem(4, 1, 2);
+            sub2 = MockHybridSubsystem(4, 2, 3);
+            sub3 = MockHybridSubsystem(4, 3, 1);
             sys = CompositeHybridSystem(sub1, sub2, sub3);
             sys.setFlowInput(sub1, @(y1, y2, y3, t, j) 4);
             sys.setFlowInput(sub2, @(y1, y2, y3, t, j) ones(2, 1));
@@ -32,7 +32,7 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
             sys.setJumpInput(sub3, @(y1, y2, y3, t, j) 3*ones(3, 1));
             tspan = [0, 10];
             jspan = [0, 10];
-            sol = sys.solve({1, 2, 3}, tspan, jspan);
+            sol = sys.solve({ones(4, 1), ones(4, 1), ones(4, 1)}, tspan, jspan);
             testCase.assertLength(sol, 3)
             testCase.assertLength(sol.x(1, :), ...
                 sub1.state_dimension+sub2.state_dimension+sub3.state_dimension+3);
@@ -40,7 +40,7 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
        
         function testJumpsWhenAnySubsystemInJumpSet(testCase)
             import hybrid.tests.internal.*
-                           % Size of: (u, x, y)
+                           % Size of: (x, u, y)
             sub1 = MockHybridSubsystem(1, 1, 1);
             sub2 = MockHybridSubsystem(1, 1, 1);
             sys = CompositeHybridSystem(sub1, sub2);
@@ -56,7 +56,7 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
        
         function testAllSubsystemsJumpWhenAllInJumpSet(testCase)
             import hybrid.tests.internal.*
-                           % Size of: (u, x, y)
+                           % Size of: (x, u, y)
             sub1 = MockHybridSubsystem(1, 1, 1);
             sub2 = MockHybridSubsystem(1, 1, 1);
             sys = CompositeHybridSystem(sub1, sub2);
@@ -74,7 +74,7 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
         
         function testFlowPriorityWarning(testCase)
             import hybrid.tests.internal.*
-                          % Size of: (u, x, y)
+                          % Size of: (x, u, y)
             sub = MockHybridSubsystem(1, 1, 1);
             sys = CompositeHybridSystem(sub);
             tspan = [0, 10];
@@ -89,7 +89,7 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
 %         CompositeHybridSystem, and turning off warnings was causing the
 %         testFlowPriorityWarning test to fail intermittently.
 %         function testFlowsWhenAllSubsystemsInFlowSetAndFlowPriority(testCase)
-%                            % Size of: (u, x, y)
+%                            % Size of: (x, u, y)
 %             sub1 = MockHybridSubsystem(1, 1, 1);
 %             sub2 = MockHybridSubsystem(1, 1, 1);
 %             sys = CompositeHybridSystem(sub1, sub2);
@@ -111,7 +111,7 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
             % correctly handle flow priority when one subsystem is in C \ D
             % and another is in C \cap D.
             assumeFail(testCase)
-                           % Size of: (u, x, y)
+                           % Size of: (x, u, y)
             sub1 = MockHybridSubsystem(1, 1, 1);
             sub2 = MockHybridSubsystem(1, 1, 1);
             sys = CompositeHybridSystem(sub1, sub2);
@@ -128,7 +128,7 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
         
         function testWrongNumberOfInitialStates(testCase)
             import hybrid.tests.internal.*
-                          % Size of: (u, x, y)
+                          % Size of: (x, u, y)
             sub = MockHybridSubsystem(1, 1, 1);
             sys = CompositeHybridSystem(sub);
             tspan = [0, 10];
@@ -140,7 +140,7 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
         
         function testInitialStatesWrongSize(testCase)
             import hybrid.tests.internal.*
-                           % Size of: (u, x, y)
+                           % Size of: (x, u, y)
             sub1 = MockHybridSubsystem(1, 1, 1);
             sub2 = MockHybridSubsystem(1, 1, 1);
             sys = CompositeHybridSystem(sub1, sub2);
@@ -153,7 +153,7 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
         
         function testInitialStatesNotCellArray(testCase)
             import hybrid.tests.internal.*
-                                  % Size of: (u, x, y)
+                          % Size of: (x, u, y)
             sub = MockHybridSubsystem(1, 1, 1);
             sys = CompositeHybridSystem(sub);
             tspan = [0, 10];
@@ -166,7 +166,7 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
         function testNumberOfContinuousInputArguments(testCase)
             import hybrid.tests.internal.*
             % i.e. @(y1, y2, t, j) instead of @(y1, y2, y3, t, j).
-                           % Size of: (u, x, y)
+                           % Size of: (x, u, y)
             sub1 = MockHybridSubsystem(1, 1, 1);
             sub2 = MockHybridSubsystem(1, 1, 1);
             sys = CompositeHybridSystem(sub1, sub2);
@@ -190,7 +190,7 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
         
         function testWarningWhenSetInputForSystemWithNoInputs(testCase)
             import hybrid.tests.internal.*
-            sub = MockHybridSubsystem(0, 1, 1);
+            sub = MockHybridSubsystem(1, 0, 1);
             sys = CompositeHybridSystem(sub);
             testCase.verifyWarning(@() sys.setFlowInput(1, @(x1, t, j) []), ...
                "CompositeHybridSystem:SystemHasNoInputs");
@@ -202,7 +202,7 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
         
         function testSubsystemNames(testCase)
             import hybrid.tests.internal.*
-                           % Size of: (u, x, y)
+                           % Size of: (x, u, y)
             sub1 = MockHybridSubsystem(1, 1, 1);
             sub2 = MockHybridSubsystem(1, 1, 1);
             sys = CompositeHybridSystem("sub 1", sub1, "sub 2", sub2);

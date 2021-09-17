@@ -1,11 +1,5 @@
 classdef MockHybridSubsystem < HybridSubsystem
-    
-    properties(SetAccess = immutable)
-        state_dimension
-        input_dimension
-        output_dimension
-    end
-    
+
     properties
         C_indicator = @(x, u, t, j) 1;
         D_indicator = @(x, u, t, j) 1; 
@@ -13,11 +7,6 @@ classdef MockHybridSubsystem < HybridSubsystem
     
     %%%%%% System Data %%%%%% 
     methods
-        function obj = MockHybridSubsystem(input_dimension, state_dimension, output_dimension)
-            obj.input_dimension = input_dimension;
-            obj.state_dimension = state_dimension;
-            obj.output_dimension = output_dimension;
-        end
             
         % The jumpMap function must be implemented with the following 
         % signature (t and j cannot be ommited)

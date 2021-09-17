@@ -1,9 +1,6 @@
-classdef LinearTimeInvariantSystem < HybridSubsystem
+classdef LinearContinuousSubsystem < HybridSubsystem
     
     properties(SetAccess = immutable)
-        state_dimension
-        input_dimension
-        output_dimension
         A
         B
         C
@@ -12,7 +9,7 @@ classdef LinearTimeInvariantSystem < HybridSubsystem
     
     %%%%%% System Data %%%%%% 
     methods
-        function obj = LinearTimeInvariantSystem(A, B, C, D)
+        function obj = LinearContinuousSubsystem(A, B, C, D)
             assert(size(A, 1) == size(B, 1), "The heights of A and B must match!")
             assert(size(A, 1) == size(A, 2), "Matrix A must be square!")
             
@@ -20,20 +17,21 @@ classdef LinearTimeInvariantSystem < HybridSubsystem
                 assert(~exist("D", "var"))
                 C = eye(size(A));
             end
-            if ~exist("D", "var")
+            if ~exist("D", "var") || isempty(D) || all(D == 0)
                 D = zeros(size(C, 1), size(B, 2));
-                obj.output = @(x) C * x;
+                output = @(x) C * x;
             else
-                obj.output = @(x, u) C * x + D * u; 
+                output = @(x, u) C * x + D * u; 
             end     
-            obj.state_dimension = size(A, 1);
-            obj.input_dimension = size(B, 2);
-            obj.output_dimension = size(C, 1); 
+            state_dimension = size(A, 1);
+            input_dimension = size(B, 2);
+            output_dimension = size(C, 1); 
+            obj = obj@HybridSubsystem(state_dimension, input_dimension, ...
+                                        output_dimension, output);
             obj.A = A;
             obj.B = B;
             obj.C = C;
             obj.D = D;
-            
         end
             
         % The jumpMap function must be implemented with the following 

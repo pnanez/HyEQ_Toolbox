@@ -1,14 +1,30 @@
 classdef (Abstract) HybridSubsystem < handle
 %%% The HybridSubsystem class allows for the construction of a
 %%% hybrid system that depends on an input. 
-    properties (Abstract, SetAccess = immutable)
+    properties(SetAccess = immutable)
         state_dimension
         input_dimension
         output_dimension
+        output
     end
     
-    properties(SetObservable)
-        output = @(x) x;
+    methods
+        function this = HybridSubsystem(state_dim, input_dim, output_dim, output_fnc)
+            this.state_dimension = state_dim;
+            if ~exist('input_dim', 'var')
+                input_dim = 0;
+            end
+            if ~exist('output_dim', 'var')
+                 output_dim = state_dim;
+            end  
+            if ~exist('output_fnc', 'var')
+                assert(output_dim <= state_dim);
+                output_fnc = @(x) x(1:output_dim);
+            end
+            this.input_dimension = input_dim;
+            this.output_dimension = output_dim;
+            this.output = output_fnc;
+        end
     end
     
     %%%%%% System Data %%%%%% 

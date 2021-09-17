@@ -69,8 +69,10 @@ classdef CompositeHybridSystem < HybridSystem
                obj.x_indices{i} = uint32(ndx : (ndx + ss_n - 1));
                
                % We use a listener to update the list of outputs each time the
-               % output of a subsystem changes.
-               addlistener(ss, 'output', 'PostSet', @obj.updateOutputsList);
+               % output of a subsystem changes. (Requires "SetObservable"
+               % attribute to be added to 'output' property in HybridSubsystem.) 
+               % addlistener(ss, 'output', 'PostSet', @obj.updateOutputsList);
+               
                assert(~isempty(ss_n), "State dimension for subsystem %d has not been set", i);
                ndx = ndx + ss_n;
            end
@@ -456,7 +458,6 @@ end
 end
 
 function kappas = generate_default_feedbacks(subsystems)
-
 sys_count = length(subsystems);
 kappas = cell(sys_count, 1);
 args_fmt = join(repmat("~", sys_count, 1), ", ");

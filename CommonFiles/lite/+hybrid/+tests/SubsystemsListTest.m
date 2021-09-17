@@ -23,14 +23,14 @@ classdef SubsystemsListTest < matlab.unittest.TestCase
         function testGetByName(testCase)
             import hybrid.tests.internal.*
             sub1 = MockHybridSubsystem(1, 1, 1);
-            sub2 = MockHybridSubsystem(1, 1, 1);
-            sub3 = MockHybridSubsystem(1, 1, 1);
+            sub2 = MockHybridSubsystem(2, 1, 1);
+            sub3 = MockHybridSubsystem(3, 1, 1);
             subsystems = hybrid.internal.SubsystemList("sub 1", sub1, ...
                                                        "sub 2", sub2, ...
                                                        'sub 3', sub3);
             testCase.assertEqual(subsystems.get("sub 1"), sub1);
             testCase.assertEqual(subsystems.get('sub 2'), sub2);
-            testCase.assertEqual(subsystems.get("sub 3"), sub2);
+            testCase.assertEqual(subsystems.get("sub 3"), sub3);
             testCase.assertEqual(subsystems.getName(1),      "sub 1");
             testCase.assertEqual(subsystems.getName(sub2),   "sub 2");
             testCase.assertEqual(subsystems.getName('sub 3'),"sub 3");

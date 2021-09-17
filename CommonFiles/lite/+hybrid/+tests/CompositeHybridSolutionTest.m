@@ -54,7 +54,7 @@ import hybrid.tests.internal.*
 subs = {};
 x0 = {};
 for dim = dims
-    subs{end+1} = MockHybridSubsystem(1, dim, 1); %#ok<AGROW>
+    subs{end+1} = MockHybridSubsystem(dim, 1, 1); %#ok<AGROW>
     x0{end+1} = zeros(dim, 1); %#ok<AGROW>
 end
 
