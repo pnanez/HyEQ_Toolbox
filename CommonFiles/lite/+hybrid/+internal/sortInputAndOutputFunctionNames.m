@@ -47,8 +47,10 @@ unsorted_names(n_ss+(1:n_ss), 2) = (1:n_ss)' + 48;
 end
 
 function is_dependent = getInputDependenciesMatrix(kappa, n_subsystems)
+is_dependent = zeros(1, n_subsystems);
 is_used = hybrid.internal.getUsedArguments(kappa);
-is_dependent = double(is_used(1:n_subsystems));
+n = min(length(is_used), n_subsystems);
+is_dependent(1:n) = double(is_used(1:n));
 end
 
 function is_dependent = getOutputDependenciesMatrix(h, n_subsystems, i_subsystem)

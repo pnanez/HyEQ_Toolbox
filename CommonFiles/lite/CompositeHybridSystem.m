@@ -435,7 +435,7 @@ classdef CompositeHybridSystem < HybridSystem
         
         function check_feedback(this, kappa)
             nargs = nargin(kappa);
-            is_wrong_nargs = nargs > this.subsys_n + 2 || nargs < this.subsys_n;
+            is_wrong_nargs = nargs > this.subsys_n + 2;
             if is_wrong_nargs
                e = MException("CompositeHybridSystem:WrongNumberInputArgs", ...
                    "Wrong number of input arguments. Expected=%d, %d, or %d, actual=%d.",...

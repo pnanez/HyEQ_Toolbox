@@ -49,13 +49,21 @@ end
 function u = eval_input(kappa, ys, t, j)
 assert(isscalar(t), "t is not a scalar")
 assert(isscalar(j), "j is not a scalar")
-switch nargin(kappa)
+narg = nargin(kappa);
+switch narg
     case length(ys)
         u = kappa(ys{:});
     case length(ys) + 1
         u = kappa(ys{:}, t);
     case length(ys) + 2
         u = kappa(ys{:}, t, j);
+    otherwise 
+        if narg < length(ys)
+            u = kappa(ys{1:narg});
+        else
+            error("Unexpected number of input arguments for function %s: %d", ...
+                narg, func2str(kappa));
+        end
 end
 end
 

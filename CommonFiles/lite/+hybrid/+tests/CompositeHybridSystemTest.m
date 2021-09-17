@@ -170,8 +170,7 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
             sub1 = MockHybridSubsystem(1, 1, 1);
             sub2 = MockHybridSubsystem(1, 1, 1);
             sys = CompositeHybridSystem(sub1, sub2);
-            testCase.verifyError(@() sys.setFlowInput(1, @(y1) y1), ...
-                "CompositeHybridSystem:WrongNumberInputArgs")
+            sys.setFlowInput(1, @(y1) y1)
             sys.setFlowInput(1, @(y1, y2) y1)
             sys.setFlowInput(1, @(y1, y2, t) y1)
             sys.setFlowInput(1, @(y1, y2, t, j) y1)
