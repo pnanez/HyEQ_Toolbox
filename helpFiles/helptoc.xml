@@ -5,7 +5,7 @@
         <tocitem target="Instructions_Main/HyEQ_Toolbox_v204.html" image="HelpIcon.FUNCTION">New in Version 3.0
             <tocitem target="Matlab_Publish/MatlabScripts/v3.0/html/HybridSystem_demo.html">Solve Hybrid Systems</tocitem>
             <tocitem target="Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo.html">Plot Solutions</tocitem>
-            <tocitem target="Matlab_Publish/MatlabScripts/v3.0/html/CompoundHybridSystem_demo.html">Solve Multiple Interconnected Systems</tocitem>
+            <tocitem target="Matlab_Publish/MatlabScripts/v3.0/html/CompositeHybridSystem_demo.html">Composition of Systems</tocitem>
         </tocitem>
         <tocitem target="Instructions_Main/HyEQ_Toolbox_v204.html" image="HelpIcon.FUNCTION">Functions
             <tocitem target="Matlab_Publish/Html/html_plotHarc/plotHarc_help.html">plotHarc()</tocitem>

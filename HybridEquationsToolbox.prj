@@ -7,7 +7,7 @@
     <param.summary />
     <param.description />
     <param.screenshot />
-    <param.version>3.0.0.12</param.version>
+    <param.version>3.0.0.13</param.version>
     <param.output>${PROJECT_ROOT}\Hybrid Equations Toolbox.mltbx</param.output>
     <param.products.name />
     <param.products.id />
@@ -63,6 +63,74 @@ configure_development_path.m
          &lt;file type="thumbnail"&gt;/helpFiles/Matlab_Publish/MatlabScripts/Example_publish_template/html/Template_to_publish.png&lt;/file&gt;
          &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/Example_publish_template/html/Template_to_publish_01.png&lt;/file&gt;
          &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/Example_publish_template/html/Template_to_publish_02.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/Example_publish_template/html/Template_to_publish_03.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/Example_publish_template/html/Template_to_publish_04.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/Example_publish_template/html/Template_to_publish_05.png&lt;/file&gt;
+      &lt;/example&gt;
+   &lt;/exampleCategory&gt;
+   &lt;exampleCategory name="v3"&gt;
+      &lt;example name="CompositeHybridSystem_demo" type="html"&gt;
+         &lt;file type="source"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/CompositeHybridSystem_demo.html&lt;/file&gt;
+         &lt;file type="main"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/CompositeHybridSystem_demo.m&lt;/file&gt;
+         &lt;file type="thumbnail"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/CompositeHybridSystem_demo.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/CompositeHybridSystem_demo_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/CompositeHybridSystem_demo_02.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/CompositeHybridSystem_demo_03.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/CompositeHybridSystem_demo_04.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/CompositeHybridSystem_demo_05.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/CompositeHybridSystem_demo_06.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/CompositeHybridSystem_demo_07.png&lt;/file&gt;
+      &lt;/example&gt;
+      &lt;example name="HybridPlotBuilder_demo" type="html"&gt;
+         &lt;file type="source"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo.html&lt;/file&gt;
+         &lt;file type="main"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/HybridPlotBuilder_demo.m&lt;/file&gt;
+         &lt;file type="thumbnail"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_02.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_03.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_04.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_05.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_06.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_07.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_08.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_09.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_10.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_11.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_12.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_13.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_14.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_15.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_16.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_17.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_18.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_19.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_20.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_21.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_22.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_23.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_24.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_25.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_26.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_27.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_28.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_29.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_30.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_31.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_32.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_33.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_34.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_35.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_36.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_37.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_38.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_39.png&lt;/file&gt;
+      &lt;/example&gt;
+      &lt;example name="HybridSystem_demo" type="html"&gt;
+         &lt;file type="source"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridSystem_demo.html&lt;/file&gt;
+         &lt;file type="main"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/HybridSystem_demo.m&lt;/file&gt;
+         &lt;file type="thumbnail"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridSystem_demo.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridSystem_demo_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridSystem_demo_02.png&lt;/file&gt;
       &lt;/example&gt;
    &lt;/exampleCategory&gt;
 &lt;/examples&gt;</param.examples>
@@ -82,8 +150,8 @@ configure_development_path.m
     <param.required.addons />
     <param.matlab.project.id />
     <param.matlab.project.name />
-    <param.release.start />
-    <param.release.end />
+    <param.release.start>R2016a</param.release.start>
+    <param.release.end>latest</param.release.end>
     <param.release.current.only>false</param.release.current.only>
     <param.compatiblity.windows>true</param.compatiblity.windows>
     <param.compatiblity.macos>true</param.compatiblity.macos>
@@ -97,6 +165,8 @@ configure_development_path.m
     <param.additional.sw.linux.url />
     <unset>
       <param.authnamewatermark />
+      <param.email />
+      <param.company />
       <param.summary />
       <param.description />
       <param.screenshot />
@@ -114,8 +184,6 @@ configure_development_path.m
       <param.required.addons />
       <param.matlab.project.id />
       <param.matlab.project.name />
-      <param.release.start />
-      <param.release.end />
       <param.release.current.only />
       <param.compatiblity.windows />
       <param.compatiblity.macos />

@@ -5,16 +5,23 @@ classdef LinearContinuousSubsystem < HybridSubsystem
         B
         C
         D
+        state_space_model
     end
     
     %%%%%% System Data %%%%%% 
     methods
         function obj = LinearContinuousSubsystem(A, B, C, D)
+            % LinearContinuousSubsystem Create a continuous linear time invariant subsystem with data (A, B, C, D).
+            % The state equation is given 
+            %   \dot x = Ax + Bu
+            % The output function is 
+            %   y = Cx + Du
+            % The arguments C and D are optional. If omitted, C is set to the
+            % identity matrix of appropriate size and D is set to zero.
             assert(size(A, 1) == size(B, 1), "The heights of A and B must match!")
             assert(size(A, 1) == size(A, 2), "Matrix A must be square!")
             
             if ~exist("C", "var")
-                assert(~exist("D", "var"))
                 C = eye(size(A));
             end
             if ~exist("D", "var") || isempty(D) || all(D == 0)
@@ -32,6 +39,7 @@ classdef LinearContinuousSubsystem < HybridSubsystem
             obj.B = B;
             obj.C = C;
             obj.D = D;
+            obj.state_space_model = ss(A, B, C, D);
         end
             
         % The jumpMap function must be implemented with the following 
@@ -41,7 +49,7 @@ classdef LinearContinuousSubsystem < HybridSubsystem
         end
 
         function xplus = jumpMap(this, x, u, t, j)  %#ok<INUSD,INUSL>
-            xplus = x; % This will never be used.
+            xplus = x;
         end 
 
         function C = flowSetIndicator(this, x, u, t, j)  %#ok<INUSD>

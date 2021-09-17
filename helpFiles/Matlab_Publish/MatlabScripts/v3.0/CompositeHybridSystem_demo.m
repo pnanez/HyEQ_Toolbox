@@ -206,13 +206,15 @@ sol_1 = sys_1.solve({x1_initial}, tspan, jspan);
 
 %% Example: Zero-order Hold
 % As a case study in creating a composition of hybrid systems, consider the
-% following % example. First, we create a linear time-invariant plant. The
-% class |LinearTimeInvariantSystem| is a subclass of |HybridSubsystem|.
+% following example. First, we create a linear time-invariant plant. The
+% class |hybrid.subsystems.LinearContinuousSubsystem| is a subclass of
+% |HybridSubsystem|. 
 
 A_c = [0, 1; -1, 0];
 B_c = [0; 1];
 plant = hybrid.subsystems.LinearContinuousSubsystem(A_c, B_c);
      
+%% 
 % Create a linear feedback for the plant that asymptotically stabilizes the
 % origin of the closed loop system.
 K = [0, -2];
@@ -225,21 +227,29 @@ sample_time = 0.3;
 zoh = hybrid.subsystems.ZeroOrderHold(zoh_dim, sample_time);
  
 %% 
-% Pass the plant and ZOH subsystems to |CopoundHybridSystem| to create the
-% closed-loop system.
+% Remark: The creation of the subsystem objects included the full package path
+% to each class (That is "hybrid.subsystems"). The package path can be omitted
+% if the package is first omitted:
+import hybrid.subsystems.*
+zoh = ZeroOrderHold(zoh_dim, sample_time);
+
+%%
+% For the sake of clarity, we use the explicit path throughout.
+
+%% 
+% Next, we create the composite hybrid system by passing the plant, controller,
+% and ZOH subsystems to the |CopoundHybridSystem| constructor.
 cl_sys = CompositeHybridSystem(plant, controller, zoh);
 
 %%
-% Set inputs functions for |plant| and |zoh|. The first argument of the
-% set*Feedback functions can either be the index of the subsystem within
-% the |CompositeSystem| or a reference to the subsystem itself.
+% Set inputs functions for each subsystem.
 cl_sys.setInput(plant, @(~, ~, y_zoh) y_zoh);
 cl_sys.setInput(controller, @(y_plant, ~, ~) y_plant);
 cl_sys.setInput(zoh, @(~, y_controller, ~) y_controller );
 
 %% 
 % Print the system to check that everything is connected as expected.
-disp(cl_sys);
+cl_sys
 
 %% 
 % Finally, simulate and plot.
@@ -247,29 +257,61 @@ sol_zoh = cl_sys.solve({[10; 0], [], [0; zoh.sample_time]}, [0, 10], [0, 100]);
 HybridPlotBuilder().slice(1:3).labels("$x_1$", "$x_2$", "$u_{ZOH}$")...
     .plotFlows(sol_zoh)
 
+%% 
+% The subsystem solutions can also be plotted in isolation.
+HybridPlotBuilder()...
+    .title("Trajectory of Plant State")...
+    .plot(sol_zoh(plant))
+axis equal
+axis padded
+
 %% Example: Switched System
+% We create a composite system that consists of a plant, two controllers, and a
+% switch that toggles between the controllers based on some criteria. 
 clf 
 A = [0, 1; 0, 0];
 B = [0; 1];
-C = eye(2); % C can be omitted when it is the identity matrix.
-D = zeros(2, 1); % D can be ommitted when it is a zero matrix.
-plant = hybrid.subsystems.LinearContinuousSubsystem(A, B, C, D);
-controller_0 = hybrid.subsystems.MemorylessSubsystem(2, 1, @(~, z) [-1, -1]*z);
-controller_1 = hybrid.subsystems.MemorylessSubsystem(2, 1, @(~, z) [ 2, -1]*z);
+plant = hybrid.subsystems.LinearContinuousSubsystem(A, B);
+controller_0 = hybrid.subsystems.MemorylessSubsystem(2, 1, @(~, z_plant) [-1, -1]*z_plant);
+controller_1 = hybrid.subsystems.MemorylessSubsystem(2, 1, @(~, z_plant) [ 2, -1]*z_plant);
 switcher = hybrid.subsystems.SwitchSubsystem(1);
 sys = CompositeHybridSystem(plant, controller_0, controller_1, switcher);
 
-sys.setInput(controller_0, @(z, ~, ~, ~) z);
-sys.setInput(controller_1, @(z, ~, ~, ~) z);
-sys.setInput(switcher, @(z, u0, u1, ~, t, j) ...
-                        switcher.wrapInput(u0, u1, norm(z) >= 3, norm(z) <= 1));
+%% 
+% The full state vector is passed as input to the controllers. We can ommit the
+% '~'s from the argument list since we only use the first argument is used. 
+sys.setInput(controller_0, @(z_plant, ~, ~, ~) z_plant);  % '~'s included 
+sys.setInput(controller_1, @(z_plant) z_plant); % '~'s omitted
+
+%%
+% The current choice of controller is stored as state variable |q|
+% in |switcher|, where |controller_0| is passed through as the output of
+% |switcher| whenever |q = 0| and |controller_1| is passed through when |q = 1|.
+% The plant state |z_plant| and output of the controllers, named |u0| and |u1|,
+% are passed to the switcher. The |SwitchSubsystem| class provides a |wrapInput|
+% method that handles the creation of the input vector from the given values. 
+% The third argument to |wrapInput| is the criteria for switching to 
+% to |q = 0| and the fourth argument is the criteria for switching to
+% |q = 1|. If 
+% # |q=0| and the third argument of |wrapInput| is zero, 
+% # |q=1| and fourth argument of |wrapInput| is zero, or 
+% # he third and fourth arguments of |wrapInput| are zero, 
+% then |q| is held constant.
+sys.setInput(switcher, @(z_plant, u0, u1) ...
+                        switcher.wrapInput(u0, u1, norm(z_plant) >= 3, norm(z_plant) <= 1));
+                    
+%% 
+% The output of the switch is passed to the plant.
 sys.setInput(plant, @(~, ~, ~, u_switched) u_switched);
 
+%%
+% Compute a solution. Note that the MemorylessSubsystems have no state, so empty
+% arrays are given in |x0| for the corresponding subsystems.
 x0 = {[10; 0], [], [], 1};
 sol = sys.solve(x0, [0, 100], [0, 100]);
 
 HybridPlotBuilder()....
     .labels("$z_1$", "$z_2$", "$q$")...
-    .slice(1:3)...
-    .configurePlots(@(ndx) ylim("padded"))...
+    .slice(1:3)... % Ignore j1,j2,j3 components
+    .configurePlots(@(ndx) ylim("padded"))... % Might not work on older versions of Matlab.
     .plotFlows(sol)

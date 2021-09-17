@@ -31,7 +31,7 @@ bb_system.gravity = 3.72;
 bb_system.bounce_coeff = 0.5;
 %% 
 % To compute a solution, pass the initial state and time spans to the 
-% |solve| function (defined in the |HybridSystem| class; |bb_system| is a 
+% |solve| function, which is defined in the |HybridSystem| class (|bb_system| is a 
 % |HybridSystem| object because |ExampleBouncingBallHybridSystem| 
 % is a subclass of |HybridSystem|).
 
@@ -39,6 +39,7 @@ x0 = [10, 0];
 tspan = [0, 30];
 jspan = [0, 30];
 sol = bb_system.solve(x0, tspan, jspan);
+plotFlows(sol);
 
 %% Interpret the Solution
 % The return value of the |solve| method is a |HybridSolution| object and contains 
@@ -78,11 +79,11 @@ sol
 % in |HybridSolution|.
 f = @(x) norm(x);
 x_norm = sol.evaluateFunction(f);
-HybridPlotBuilder().plot(sol, x_norm)
+HybridPlotBuilder().plot(sol, x_norm);
 %% Configuration Options
 % To configure the ODE solver and progress updates, create a
-% |HybridSolverConfig| object and pass it to |solve| as follows (this reproduces 
-% the default behavior):
+% |HybridSolverConfig| object and pass it to |solve| as follows (if no
+% properties are changed on |config|, then this reproduces the default behavior):
 config = HybridSolverConfig();
 bb_system.solve(x0, tspan, jspan, config);
 
@@ -112,7 +113,7 @@ config.odeOption("MassSingular", 'no');
 config.ode_options
 
 %% 
-% Computing a hybrid solution can take be slow, so progress updates are
+% Computing a hybrid solution can take considerable time, so progress updates are
 % displayed. The default behavior is to use the 
 % |PopupHybridProgress| class. 
 progress = PopupHybridProgress();
@@ -140,5 +141,6 @@ bb_system.solve(x0, tspan, jspan, config);
 config.progress("silent");
 
 %% 
-% Other progress update mechanisms can be defined by writing a subclass of
-% the |HybridProgress| class.
+% If no other solver configurations are desired, then 'silent' can be passed
+% directly to |solve| in place of |config|.
+bb_system.solve(x0, tspan, jspan, "silent");

@@ -1,9 +1,6 @@
 classdef LinearHybridSubsystem < HybridSubsystem
     
     properties(SetAccess = immutable)
-        state_dimension
-        input_dimension
-        output_dimension
         A_c
         B_c
         A_d
@@ -32,7 +29,9 @@ classdef LinearHybridSubsystem < HybridSubsystem
                 
             if isempty(A_d) && isempty(B_d)
                % No discrete motion
-               obj.no_discrete = true;
+               no_discrete = true;
+            else 
+                no_discrete = false;
             end
             if isempty(B_c)
                B_c = zeros(size(A_c, 1), 0);
@@ -42,10 +41,8 @@ classdef LinearHybridSubsystem < HybridSubsystem
             end
             n = size(A_c, 1);
             m = size(B_c, 2);
-            p = n; % Update this when we have an output matrix.
-            obj.state_dimension = n;
-            obj.input_dimension = m;
-            obj.output_dimension = p;
+            obj = obj@HybridSubsystem(n, m);
+            obj.no_discrete = no_discrete;
             % Check state matrices
             % assert(size(A_c, 1) == n, "A_c has wrong number of rows.") always true.
             assert(all(size(A_c) == [n, n]), "A_c has wrong size.")
