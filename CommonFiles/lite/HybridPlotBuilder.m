@@ -5,15 +5,16 @@ classdef HybridPlotBuilder < handle
     end
     
     properties(Constant, Access = private)
-        % To reset the defaults, clear all instances of HybridPlotBuilder,
-        % then call "clear HybridPlotBuilder". (To do both at once, "clear all", 
-        % if you don't mind deleting all other variables)
         defaults = hybrid.internal.HybridPlotBuilderDefaults()
     end
 
     methods(Static)
         function setDefault(key, value)
             HybridPlotBuilder.defaults.set(key, value);
+        end
+        
+        function printDefaults()
+            disp(HybridPlotBuilder.defaults);
         end
         
         function resetDefaults()
@@ -31,8 +32,8 @@ classdef HybridPlotBuilder < handle
         single_legend_label;
         title_interpreter;
         label_interpreter;
-        title_size;
         label_size;
+        title_size;
 
         % Plots
         flow_color = "b";
@@ -58,7 +59,7 @@ classdef HybridPlotBuilder < handle
     
     properties(Access = private)
         % Legend options
-        legend_options
+        legend_options = {};
         plots_for_legend = [];
         axes_for_legend = [];
         component_indices = [];
@@ -164,7 +165,11 @@ classdef HybridPlotBuilder < handle
         end
 
         function this = legend(this, varargin)
-            if ~isempty(varargin) && iscell(varargin{1})
+            if isempty(varargin)
+                % Clear legend labels.
+                this.component_legend_labels = {};
+                this.single_legend_label = [];
+            elseif iscell(varargin{1})
                 labels = varargin{1};
                 varargin(1) = []; % delete first entry.
                 this.legend_options = varargin;
@@ -183,11 +188,7 @@ classdef HybridPlotBuilder < handle
             labels = string(labels);
             
             this.component_legend_labels = labels;
-            if ~isempty(labels)
-                this.single_legend_label = labels(1);
-            else 
-                this.single_legend_label = [];
-            end
+            this.single_legend_label = labels(1);
         end
         
         function this = flowColor(this, color)
@@ -410,15 +411,19 @@ classdef HybridPlotBuilder < handle
             dimensions = length(sliced_indices);
             
             if dimensions ~= 2 && dimensions ~= 3
-                this.plotFlows(hybrid_sol)
+                this.plotFlows(hybrid_sol);
+                if nargout == 0
+                    % Prevent output if function is not terminated with a
+                    % semicolon.
+                    clear this
+                end   
                 return
             end
             if this.auto_subplots
                 subplot(1, 1, 1) % Reset to only one subplot
             end
             sliced_x = hybrid_sol.x(:, sliced_indices);
-%             this.getLegend
-            this.plot_sliced(hybrid_sol, sliced_x, 'single')
+            this.plot_sliced(hybrid_sol, sliced_x, 'single');
 
             if dimensions == 2
                 this.configureAxes(sliced_indices(1), sliced_indices(2))
@@ -434,7 +439,7 @@ classdef HybridPlotBuilder < handle
             end          
         end
 
-        function addLegendEntry(this, plt, name)
+        function this = addLegendEntry(this, plt, name)
             % Add an object to include in the legend. 
             % This function MUST be called while the axes where the object
             % was plotted is still active.
@@ -445,6 +450,14 @@ classdef HybridPlotBuilder < handle
             this.plots_for_legend = [this.plots_for_legend, plt];
             this.axes_for_legend = [this.axes_for_legend, gca()];
             this.display_legend();
+            if nargout == 0
+                clear this
+            end
+        end
+        
+        function plotFlowLengths(~, sol)
+            % PLOTFLOWLENGTHS Create a plot of the length of each interval of flow.
+            hybrid.plotFlowLengths(sol);
         end
     end
 
@@ -513,31 +526,15 @@ classdef HybridPlotBuilder < handle
             if is_x_a_time_axis
                 % Make the plot limits 'tight'
                 xlim([-inf, inf])
-            else
-                try
-                    % Not supported by all versions of Matlab.
-                    set(gca, 'XLimitMethod', 'Padded');
-                catch
-                    % Ignore
-                end
             end
             
             if is_y_a_time_axis
                 % Make the plot limits 'tight'
                 ylim([-inf, inf])
-            else
-                try
-                    % Not supported by all versions of Matlab.
-                    set(gca, 'YLimitMethod', 'Padded');
-                catch 
-                    % Ignore
-                end
             end
             
             % The z-axis never contains t or j, so we don't make it
-            % "tight". Conversely, making it "padded" doesn't improve the
-            % appearance of a 3D plot, so we don't modify the default
-            % behavior.         
+            % "tight".       
             
             this.display_legend();
         end
@@ -635,7 +632,7 @@ classdef HybridPlotBuilder < handle
                 "MarkerSize", this.jump_start_marker_size, ...
                 "MarkerEdgeColor", this.jump_color);
             legend_label = this.createLegendLabel(legend_id);
-            this.addLegendEntry(plt, legend_label)
+            this.addLegendEntry(plt, legend_label);
             
             % We have to turn on hold while plotting the hybrid arc, so 
             % we save the current hold state and restore it at the end.
@@ -743,9 +740,9 @@ classdef HybridPlotBuilder < handle
             % in the current figure. (Plots in other figures will be
             % skipped).
             
-            % For the current figure, get all the line plots. 
-            plots_in_figure = findall(gcf,'Type','Line');
-            
+            % For the current figure, get all the graphics objects. 
+            plots_in_figure = findall(gcf, '-not', 'DisplayName', []);
+
             % For each plot saved in this.plots_for_legend, check whether
             % it is a plot in the current figure.
             plots_for_legend_indices ...
@@ -818,6 +815,7 @@ classdef HybridPlotBuilder < handle
             if index <= length(this.component_legend_labels)
                 label = this.component_legend_labels(index);  
             else
+                % warning("No label given for plot")
                 label = [];
             end
         end
@@ -882,50 +880,58 @@ classdef HybridPlotBuilder < handle
         
         function val = get.label_size(this)
            if isempty(this.label_size)
-               val = HybridPlotBuilder.defaults.label_size;
-           else
-               val = this.label_size;
+               this.label_size = HybridPlotBuilder.defaults.label_size;
            end
+           val = HybridPlotBuilder.defaults.text_scale*this.label_size;
         end
         
         function val = get.title_size(this)
            if isempty(this.title_size)
-               val = HybridPlotBuilder.defaults.title_size;
-           else
-               val = this.title_size;
+               this.title_size = HybridPlotBuilder.defaults.title_size;
            end
+           val = HybridPlotBuilder.defaults.text_scale*this.title_size;
         end
         
         function val = get.label_interpreter(this)
            if isempty(this.label_interpreter)
-               val = HybridPlotBuilder.defaults.label_interpreter;
-           else
-               val = this.label_interpreter;
+               this.label_interpreter = HybridPlotBuilder.defaults.label_interpreter;
            end
+           val = this.label_interpreter;
         end
         
         function val = get.title_interpreter(this)
            if isempty(this.title_interpreter)
-               val = HybridPlotBuilder.defaults.title_interpreter;
-           else
-               val = this.title_interpreter;
+               this.title_interpreter = HybridPlotBuilder.defaults.title_interpreter;
            end
+           val = this.title_interpreter;
         end
         
         function val = get.flow_line_width(this)
            if isnan(this.flow_line_width)
-               val = HybridPlotBuilder.defaults.flow_line_width;
-           else
-               val = this.flow_line_width;
+               this.flow_line_width = HybridPlotBuilder.defaults.flow_line_width;
            end
+           val = HybridPlotBuilder.defaults.line_scale*this.flow_line_width;
         end
         
         function val = get.jump_line_width(this)
            if isnan(this.jump_line_width)
-               val = HybridPlotBuilder.defaults.jump_line_width;
-           else
-               val = this.jump_line_width;
+               this.jump_line_width = HybridPlotBuilder.defaults.jump_line_width;
            end
+           val = HybridPlotBuilder.defaults.line_scale*this.jump_line_width;
+        end
+        
+        function val = get.jump_start_marker_size(this)
+           if isnan(this.jump_line_width)
+               this.jump_start_marker_size = HybridPlotBuilder.defaults.jump_line_width;
+           end
+           val = HybridPlotBuilder.defaults.marker_scale*this.jump_start_marker_size;
+        end
+        
+        function val = get.jump_end_marker_size(this)
+           if isnan(this.jump_line_width)
+               this.jump_end_marker_size = HybridPlotBuilder.defaults.jump_line_width;
+           end
+               val = HybridPlotBuilder.defaults.marker_scale*this.jump_end_marker_size;
         end
     end
 end
@@ -991,3 +997,4 @@ elseif length(plots_in_axes) > length(lgd_labels)
     warning(warning_msg, length(plots_in_axes), "more", length(lgd_labels))
 end
 end
+ 

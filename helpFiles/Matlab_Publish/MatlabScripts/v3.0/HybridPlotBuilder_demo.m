@@ -71,22 +71,24 @@ HybridPlotBuilder().slice([1,2]).plot(sol_3D);
 HybridPlotBuilder().slice([2,1]).plot(sol_3D);
 
 %% Ploting Other Values
-% To plot a series of values other than the state, pass t, j, and the
-% desired values to the plotting function of choice.
+% |HyrbidPlotBuilder| can plot trajectories given as (t, j, x).
 HybridPlotBuilder().slice(1).plotFlows(sol.t, sol.j, -sol.x)
 title("Negative Height")
 
 %% 
-% Rather then referencing sol.t and sol.j, the solution object can be
+% This can be simplified by using the |HybridSolution|
+% object to provide the values of |t| and |j|.
+% Rather than referencing |sol.t| and |sol.j| explicitly, the solution object can be
 % passed to the plotting function, along with the plot values. The time
 % values from |sol| are then used.
 HybridPlotBuilder().slice(1).plotFlows(sol, -sol.x)
 title("Negative Height")
 
 %% 
-% Alternatively, a function can be evaluated along the solution and plotted
-% as follows. The evaluation of the funciton is done via the function
-% |HybridSolution.evaluateFunction()|.
+% Alternatively, a function handle can be evaluated along the solution and plotted
+% as follows. The evaluation of the function is done via the function
+% |HybridSolution.evaluateFunction()|. See the documentation of that function
+% for details.
 HybridPlotBuilder().plotFlows(sol, @(x) -x(1)); % Can also use @(x, t) or @(x, t, j).
 
 %% Customizing Plot Appearance
@@ -186,7 +188,7 @@ HybridPlotBuilder().title("Phase Plot").plot(sol)
 HybridPlotBuilder()...
     .titleInterpreter("none")...
     .labelInterpreter("tex")...
-    .titles("'tex' is used for labels",...
+    .titles("'tex' is used for labels and 'none' for titles",...
             "In 'tex', dollar signs do not indicate a switch to math mode", ...
             "default label is formatted to match interpreter") ...
     .labels("z_1", "$z_2$")... % only two labels provided.
@@ -217,7 +219,9 @@ pb.autoSubplots("off")...
     .plotFlows(sol)
 
 %%
-% Legend options can be set simlar to the MATLAB legend function. 
+% Legend options can be set simlar to the MATLAB legend function. The legend
+% labels are passed as a cell array (enclosed with braces "{}") and name/value
+% pairs are passed in subsequent arguments.
 clf
 HybridPlotBuilder()...
     .legend({'h', 'v'}, "Location", "southeast")...
@@ -225,14 +229,14 @@ HybridPlotBuilder()...
 
 %%
 % The above method applies the same settings to the legends in all subplots. 
-% To modify legend options on a subplot basis, use the |configureSubplots|
+% To modify legend options on a subplot basis, use the |configurePlots|
 % function described below.
 
 %% Filtering Solutions
 % Portions of solutions can be hidden with the |filter| function. In this
 % example, we create a filter that only includes points where the second
 % component (velocity) is negative. (If the time-step size
-% along flows is large, hidden lines connected to filtered points may
+% along flows is large, deleted lines connected to filtered points may
 % extends a noticible distance into the portion of the solution that should
 % be visible.)
 clf
@@ -280,43 +284,43 @@ axis padded
 axis equal
 
 %%
+% For the bouncing ball system, we can change the color of the plot based on
+% whether the ball is falling.
 is_falling = sol.x(:, 2) < 0;
 pb = HybridPlotBuilder();
-pb.filter(is_falling).plotFlows(sol);
-hold on
-pb.filter(~is_falling).flowColor("k").plotFlows(sol);
-
-%% Legends
-% Next, we add a legend to the previous plot. 
-% The |plot| function is called on a single instance of
-% |HybridPlotBuilder|, so the legend will have two entries. 
-
-%% 
-% When using auto-subplots, legends are added to each subplot.
-close all
-clf
-clc
-pb = HybridPlotBuilder()...
-    .legend("Sublot 1", "Subplot 2")...
+pb.filter(is_falling)...
+    .jumpColor('none')...
+    .flowColor('k')...
+    .legend("Falling", "Falling")...
     .plotFlows(sol);
 hold on
-pb.flowColor("k").jumpColor("g").slice(1:2).plotFlows(sol_3D);
+pb.filter(~is_falling)...
+    .flowColor("g")...
+    .legend("Rising", "Rising")...
+    .plotFlows(sol);
 
-%% 
-% A single |HybridPlotBuilder| object can be used to add plots and legends to
-% multiple figures.
+%% Legends
+% When using auto-subplots, legends are added to each subplot on a
+% component-wise basis. This means that legends switch locations when |slice| is
+% used.
 clf
 HybridPlotBuilder()...
-    .legend("First Figure (Subplot 1)", []  , "First Figure (Subplot 3)")...
-    .plotFlows(sol_3D); % Ignored in second figure
-%%
-figure()
-pb.legend("Second Figure").flowColor("k").jumpColor("g").plotFlows(sol); % Still using "pb"
-pb; % Ignores plot in first figure
+    .legend("Component 1", "Component 2")...
+    .slice([2 1])...
+    .plotFlows(sol);
 
 %%
-% Plots added to a figure without |HybridPlotBuilder| can be added to
-% tbe legend by passing the output argument of |plot| to |addLegendEntry|.
+% If |slice| is used to omit components, it is necessary to include a legend
+% entry for those components so that the legend entries for displayed components
+% are displayed correctly. 
+HybridPlotBuilder()...
+    .legend("", "Component 2")...
+    .slice(2)...
+    .plotFlows(sol);
+
+%%
+% Plots or other graphics added to a figure without using |HybridPlotBuilder|
+% can be added to the legend by passing the graphic handle to |addLegendEntry|.
 clf
 pb = HybridPlotBuilder()...
     .legend("Hybrid Plot")...
@@ -325,9 +329,9 @@ hold on
 axis equal
 % Plot a circle.
 theta = linspace(0, 2*pi);
-plt = plot(10*cos(theta), 10*sin(theta), "magenta");
+plt_handle = plot(10*cos(theta), 10*sin(theta), "magenta");
 % Pass the circle to the plot builder.
-pb.addLegendEntry(plt, "Circle");
+pb.addLegendEntry(plt_handle, "Circle");
 
 %% Replacing vs. Adding Plots to a Figure
 % By default, each call to a HybridPlotBuilder plot function overwrites the 
@@ -356,8 +360,25 @@ HybridPlotBuilder().flowColor('black').jumpColor("green")...
 hold off
 
 %% Modifying Defaults
-% 
+% Matlab is inconsistent about the size of text and graphics in plots on
+% different devices. To mitigate this difference, the default values of some
+% |HybridPlotBuilder| properties can be set. There are two approaches provided.
+% The first is to set scale factors that are applied to text, lines, and
+% markers.
 clf
+HybridPlotBuilder.setDefault("text scale", 0.5)
+HybridPlotBuilder.setDefault("line scale", 3)
+HybridPlotBuilder.setDefault("marker scale", 3)
+
+HybridPlotBuilder()...
+    .title("Title")...
+    .plotFlows(sol);
+
+%% Alternative set of defaults
+% The alternative approach is to explicitly specify the default values of
+% |HybridPlotBuilder| properties. (The two approaches can be used in
+% conjunction, but one or the other might be removed before the release of v3.0)
+HybridPlotBuilder.resetDefaults()
 HybridPlotBuilder.setDefault("Label Size", 18)
 HybridPlotBuilder.setDefault("Title Size", 12)
 HybridPlotBuilder.setDefault("Label interpreter", 'tex')
@@ -367,6 +388,7 @@ HybridPlotBuilder.setDefault("jump line width", 3)
 
 HybridPlotBuilder()...
     .title("Title")...
+    .legend("Legend A", "Legend B")...
     .plotFlows(sol);
 
 %% 
@@ -384,9 +406,8 @@ HybridPlotBuilder()...
 % that are not included explicitly in HybridPlotBuilder (see
 % <https://www.mathworks.com/help/matlab/ref/matlab.graphics.axis.axes-properties.html
 % here>).
-% For plots with a single subplot, the appearance can be modified using the
-% same methods as for any other Matlab plot. 
-
+% For plots with a single subplot, the appearance can be modified just like any
+% other Matlab plot.
 HybridPlotBuilder().plot(sol);
 grid on
 ax = gca;
@@ -396,11 +417,11 @@ ax.YAxisLocation = "right";
 % Plots with multiple subplots can also be configured as described above by
 % calling |subplot(2, 1, 1)| and making the desired modifications, then
 % calling |subplot(2, 1, 2)|, etc., but that approach 
-% is messy and repetative. Instead, the |configureSubplot| function provides a
-% cleaner alternative. A function handle is passed to |configureSubplot|,
-% which is then called by |HybridPlotBuilder| when each subplot is active.
+% is messy and tediuous. Instead, the |configurePlot| function provides a
+% cleaner alternative. A function handle is passed to |configurePlot|,
+% which is then called by |HybridPlotBuilder| within each subplot.
 % The function handle passed to |configureSubplot| must take one input
-% argument, which is set to the index of the state component for the active
+% argument, which is the ordinal number of the state component for the active
 % subplot. 
 HybridPlotBuilder()...
     .legend("A", "B")...

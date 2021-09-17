@@ -21,7 +21,7 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
     end
     
     methods(TestMethodSetup)
-        function setup(testCase)
+        function setup(testCase) %#ok<MANU>
             clf
             HybridPlotBuilder.resetDefaults();
         end
@@ -31,7 +31,7 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         
         function testAutoSubplotsDefaultOn(testCase)
             pb = HybridPlotBuilder();
-            pb.plotFlows(testCase.sol_3)
+            pb.plotFlows(testCase.sol_3);
             testCase.assertSubplotCount(3)
             testCase.assertSubplotTitles('', '', '')
             testCase.assertSubplotYLabels('$x_{1}$', '$x_{2}$', '$x_{3}$')
@@ -66,7 +66,7 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
                 .titles("Title 1", "Title 2", "Title 3")...
                 .labels("A", "B", "C")...
                 .slice([1 3]);
-            pb.plotFlows(testCase.sol_3)
+            pb.plotFlows(testCase.sol_3);
             function check(testCase, plot_dim)
                 testCase.assertSubplotCount(2)
                 testCase.assertSubplotTitles('Title 1', 'Title 3')
@@ -101,11 +101,11 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         function testAutomaticTimeLabels(testCase)
             pb = HybridPlotBuilder();
             function verify(testCase, pb, tlabel, jlabel)
-                pb.plotFlows(testCase.sol_2)
+                pb.plotFlows(testCase.sol_2);
                 testCase.assertSubplotXLabels(tlabel, tlabel)
-                pb.plotJumps(testCase.sol_2)
+                pb.plotJumps(testCase.sol_2);
                 testCase.assertSubplotXLabels(jlabel, jlabel)
-                pb.plotHybrid(testCase.sol_2)
+                pb.plotHybrid(testCase.sol_2);
                 testCase.assertSubplotXLabels(tlabel, tlabel)
                 testCase.assertSubplotYLabels(jlabel, jlabel)
             end
@@ -119,20 +119,17 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         end
         
         function testPlotFlowsIs2D(testCase)
-            HybridPlotBuilder()...
-                .plotFlows(testCase.sol_3)
+            HybridPlotBuilder().plotFlows(testCase.sol_3);
             testCase.assert2DSubplots()
         end
         
         function testPlotJumpsIs2D(testCase)
-            HybridPlotBuilder()...
-                .plotJumps(testCase.sol_3)
+            HybridPlotBuilder().plotJumps(testCase.sol_3);
             testCase.assert2DSubplots()
         end
         
         function testPlotHybridIs3D(testCase)
-            HybridPlotBuilder()...
-                .plotHybrid(testCase.sol_3)
+            HybridPlotBuilder().plotHybrid(testCase.sol_3);
             testCase.assert3DSubplots()
         end
         
@@ -301,8 +298,24 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             pb.plotJumps(testCase.sol_2);
             hold on
             plt = plot([1, 5], [0, 8]);
-            pb.addLegendEntry(plt, "Another plot") % in subplot 2.
-            testCase.assertLegendLabels("Subplot 1", ["Subplot 2", "Another plot"])
+            q = quiver(1, 1, -1, 2);
+            pb.addLegendEntry(plt, "A plot") % in subplot 2.
+            pb.addLegendEntry(q, "A quiver") % in subplot 2.
+            testCase.assertLegendLabels("Subplot 1", ["Subplot 2", "A plot", "A quiver"])
+        end
+        
+        function testLegendsInMultipleFigures(testCase)
+            % A single |HybridPlotBuilder| object can be used to add plots and legends to
+            % multiple figures.
+            pb = HybridPlotBuilder()...
+                .legend("First Figure")...
+                .plotFlows(testCase.sol_1); % Ignored in second figure
+            testCase.assertLegendLabels("First Figure")
+            
+            figure()
+            pb.legend("Second Figure")...
+                .plotFlows(testCase.sol_1); % Still using "pb"
+            testCase.assertLegendLabels("Second Figure")
         end
         
         function testPlotConfig(testCase)
