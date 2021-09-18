@@ -37,7 +37,7 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             testCase.assertSubplotYLabels('$x_{1}$', '$x_{2}$', '$x_{3}$')
         end
         
-        function testAutoSubplotsOff(testCase)
+        function testWithoutAutoSubplots(testCase)
             pb = HybridPlotBuilder().autoSubplots("off")...
                 .title("Title")...
                 .label('Label');
@@ -180,6 +180,19 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             testCase.assumeFail("Incomplete")
         end
         
+        function testCheckColor(testCase)
+            % Check valid colors
+            HybridPlotBuilder().flowColor("black");
+            HybridPlotBuilder().jumpColor("m");
+            HybridPlotBuilder().flowColor([0 1 0.3]);
+            
+            % Check invalid color, except on versions of Matlab before 9.9 (R2020b).
+            if ~verLessThan('matlab', '9.9')
+                fh = @() HybridPlotBuilder().flowColor("blurg");
+                testCase.verifyError(fh, "MATLAB:graphics:validatecolor:InvalidColorString");
+            end
+        end
+        
         function testUseDefaultSettings(testCase)
             testCase.assumeFail("Incomplete")
         end
@@ -201,11 +214,49 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             testCase.assumeFail("Incomplete")
         end
         
+        function testTitlesAsCellArray(testCase)
+            titles{1} = 'Title 1';
+            titles{3} = "Title 3";
+            HybridPlotBuilder()...
+                .titles(titles)...
+                .plotFlows(testCase.sol_3);
+            testCase.assertSubplotTitles("Title 1", "", "Title 3")
+        end
+        
+        function testErrorTitlesWithOptions(testCase)
+            titles = {"Title 1", "Title 2"}; %#ok<CLARRSTR>
+            fh = @() HybridPlotBuilder().titles(titles, "FontSize", 3);
+            testCase.verifyError(fh, "Hybrid:UnexpectedOptions");
+        end
+        
+        function testLabelsAsCellArray(testCase)
+            labels{1} = 'Label 1';
+            labels{3} = "Label 3";
+            HybridPlotBuilder()...
+                .labels(labels)...
+                .plotFlows(testCase.sol_3);
+            testCase.assertSubplotYLabels("Label 1", "", "Label 3")
+        end
+        
+        function testErrorLabelsWithOptions(testCase)
+            labels = {"Title 1", "Title 2"}; %#ok<CLARRSTR>
+            fh = @() HybridPlotBuilder().labels(labels, "FontSize", 3);
+            testCase.verifyError(fh, "Hybrid:UnexpectedOptions");
+        end
+        
         function testSingleLegend(testCase)
             HybridPlotBuilder()...
                 .legend("A legend")...
                 .plotFlows(testCase.sol_1);
             testCase.assertLegendLabels("A legend")
+        end
+        
+        function testClearLegend(testCase)
+            HybridPlotBuilder()...
+                .legend("A legend")...
+                .legend()...
+                .plotFlows(testCase.sol_1);
+            testCase.assertLegendLabels("")
         end
         
         function testLegendsInTwoSubplots(testCase)
@@ -437,16 +488,16 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         end
         
         function assertLegendLabels(this, varargin)
-            labels = varargin;
-            function checkLabels(sp, ndx)
-                expected_labels = labels{ndx};
+            assert(~isempty(varargin), "Empty legend entries must be entered as empty strings or char arrays")
+            labels_expected = varargin;
+            function checkLabels(sp, sp_ndx)
+                expected_labels = labels_expected{sp_ndx};
                 lgd = sp.Legend;
                 if isa(lgd, "matlab.graphics.GraphicsPlaceholder")
                     actual = '';
                 else
                     actual = char(lgd.String(:));
                 end
-                
                 expected = char(expected_labels(:));
                 this.assertEqual(actual, expected);
             end

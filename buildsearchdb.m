@@ -20,12 +20,12 @@ if (~verLessThan('matlab', '8.4'))  % R2014b
             set_param('HyEQ_Library_R2012b', 'EnableLBRepository', 'on');
             set_param('HyEQ_Library_R2012b', 'Lock', 'on');
             save_system('HyEQ_Library_R2012b');
-        end;
+        end
         close_system('HyEQ_Library_R2012b');
     catch
         disp('Error when updating simulink library browser');
     end
-end;
+end
 %%
 disp('-----------------------------------')
 htmlFolder = fullfile(TBfullpath,'helpFiles');

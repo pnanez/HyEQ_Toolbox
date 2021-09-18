@@ -149,7 +149,7 @@ HybridPlotBuilder().slice([2 1])...
     .plotFlows(sol)
 
 %% 
-% Labels are also displayed for plots in phase space.
+% Labels are also displayed for plots in 2D or 3D phase space.
 HybridPlotBuilder().slice([2 1])...
     .labels("$h$", "$v$")...
     .plot(sol)
@@ -227,9 +227,35 @@ HybridPlotBuilder()...
     .legend({'h', 'v'}, "Location", "southeast")...
     .plotFlows(sol);
 
+%% 
+% Passing legend labels as a cell array is also useful when not plotting the
+% first several entries. The following notation creates a cell array with the
+% first two entries empty and the third set to the given value. 
+lgd_labels = {}; % This line is only necessary if lgd_labels is previously defined (but a good idea just in case).
+lgd_labels{3} = "Component 3";
+
+%% 
+% We can then set the relevant legend label without explicitly putting empty
+% labels for the first two components (i.e., |legend("", "", "Component 3").|
+HybridPlotBuilder()...
+    .legend(lgd_labels, "Location", "southeast")...
+    .slice(3)...
+    .plotFlows(sol_3D);
+
+%%
+% The 'titles' and 'labels' functions also accept values given as a cell array,
+% but do not (yet) accept subsequent options.
+labels{2} = '$y_2$';
+titles{2} = "Plot of second component";
+HybridPlotBuilder()...
+    .labels(labels)...
+    .titles(titles)...
+    .slice(2)...
+    .plotFlows(sol_3D);
+
 %%
 % The above method applies the same settings to the legends in all subplots. 
-% To modify legend options on a subplot basis, use the |configurePlots|
+% To modify legend options separately for each subplot, use the |configurePlots|
 % function described below.
 
 %% Filtering Solutions
@@ -269,7 +295,7 @@ q = sol_modes.x(:, 3);
 builder = HybridPlotBuilder();
 builder.title("Phase Portrait") ...
     .labels("$x_1$", "$x_2$") ...
-    .legend("$q = 0$", "$q = 1$") ...
+    .legend("$q = 0$") ...
     .slice([1,2]) ... % Pick which state components to plot
     .filter(q == 0) ... % Only plot points where q is 0.
     .plot(sol_modes)
@@ -417,12 +443,14 @@ ax.YAxisLocation = "right";
 % Plots with multiple subplots can also be configured as described above by
 % calling |subplot(2, 1, 1)| and making the desired modifications, then
 % calling |subplot(2, 1, 2)|, etc., but that approach 
-% is messy and tediuous. Instead, the |configurePlot| function provides a
-% cleaner alternative. A function handle is passed to |configurePlot|,
-% which is then called by |HybridPlotBuilder| within each subplot.
-% The function handle passed to |configureSubplot| must take one input
-% argument, which is the ordinal number of the state component for the active
-% subplot. 
+% is messy and tediuous. Instead, the |configurePlots| function provides a
+% cleaner alternative. A function handle is passed to |configurePlots|,
+% which is then called by |HybridPlotBuilder| within each (sub)plot.
+% The function handle passed to |configurePlots| must take one input
+% argument, which is the ordinal number of the state component(s) for the active
+% subplot. For |plotFlows|, |plotJumps|, and |plotHybrid|, this will be one
+% integer, and for phase plots generated with |plot|, this will be an array of
+% two or three integers, depending on the dimension of the plot.
 HybridPlotBuilder()...
     .legend("A", "B")...
     .configurePlots(@apply_plot_settings)...

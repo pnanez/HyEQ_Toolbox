@@ -295,7 +295,7 @@ sys.setInput(controller_1, @(z_plant) z_plant); % '~'s omitted
 % |q = 1|. If 
 % # |q=0| and the third argument of |wrapInput| is zero, 
 % # |q=1| and fourth argument of |wrapInput| is zero, or 
-% # he third and fourth arguments of |wrapInput| are zero, 
+% # the third and fourth arguments of |wrapInput| are zero, 
 % then |q| is held constant.
 sys.setInput(switcher, @(z_plant, u0, u1) ...
                         switcher.wrapInput(u0, u1, norm(z_plant) >= 3, norm(z_plant) <= 1));

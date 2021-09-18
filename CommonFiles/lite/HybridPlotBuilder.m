@@ -27,9 +27,6 @@ classdef HybridPlotBuilder < handle
         component_titles;
         component_labels; 
         component_legend_labels; 
-        single_title;
-        single_label;
-        single_legend_label;
         title_interpreter;
         label_interpreter;
         label_size;
@@ -55,6 +52,12 @@ classdef HybridPlotBuilder < handle
         t_label % Defaults to value of 'default_t_label'
         j_label % Defaults to value of 'default_j_label'
         label_format % Defaults to value of 'default_label_format'
+    end
+    
+    properties(Dependent, Access = private)
+        single_title;
+        single_label;
+        single_legend_label; 
     end
     
     properties(Access = private)
@@ -128,8 +131,7 @@ classdef HybridPlotBuilder < handle
         end
         
         function this = titles(this, varargin)
-            this.component_titles = varargin;
-            this.single_title = varargin{1};
+            this.component_titles = hybrid.internal.parseStringVararginWithOptionalOptions(varargin{:});
         end
 
         function this = label(this, label)
@@ -143,13 +145,7 @@ classdef HybridPlotBuilder < handle
         end
 
         function this = labels(this, varargin)
-            labels = string(varargin);
-            this.component_labels = labels;
-            if ~isempty(labels)
-                this.single_label = labels(1);
-            else 
-                this.single_label = [];
-            end
+            this.component_labels = hybrid.internal.parseStringVararginWithOptionalOptions(varargin{:});
         end
 
         function this = xLabelFormat(this, label_format)
@@ -165,35 +161,14 @@ classdef HybridPlotBuilder < handle
         end
 
         function this = legend(this, varargin)
-            if isempty(varargin)
-                % Clear legend labels.
-                this.component_legend_labels = {};
-                this.single_legend_label = [];
-            elseif iscell(varargin{1})
-                labels = varargin{1};
-                varargin(1) = []; % delete first entry.
-                this.legend_options = varargin;
-            else
-                labels = varargin;
-                this.legend_options = {};
-            end
-            for i = 1:length(labels)
-                % Convert empty entries to empty strings.
-                if isempty(labels{i})
-                    labels{i} = "";
-                else
-                    labels{i} = string(labels{i});
-                end
-            end
-            labels = string(labels);
-            
+            [labels, options] = hybrid.internal.parseStringVararginWithOptionalOptions(varargin{:});
             this.component_legend_labels = labels;
-            this.single_legend_label = labels(1);
+            this.legend_options = options;
         end
-        
+                
         function this = flowColor(this, color)
             % FLOWCOLOR Set the color of flow lines.
-            this.flow_color = color;
+            this.flow_color = checkColorArg(color);
         end
 
         function this = flowLineStyle(this, style)
@@ -215,7 +190,7 @@ classdef HybridPlotBuilder < handle
         function this = jumpColor(this, color)
             % JUMPCOLOR Set the color of jump lines and jump markers.
             % at each end.
-            this.jump_color = color;
+            this.jump_color = checkColorArg(color);
         end
 
         function this = jumpLineStyle(this, style)
@@ -854,6 +829,30 @@ classdef HybridPlotBuilder < handle
     end
     
     methods
+        function val = get.single_title(this)
+           if isempty(this.component_titles)
+               val = [];
+           else 
+               val = this.component_titles(1);
+           end
+        end
+        
+        function val = get.single_label(this)
+           if isempty(this.component_labels)
+               val = [];
+           else 
+               val = this.component_labels(1);
+           end
+        end
+        
+        function val = get.single_legend_label(this)
+           if isempty(this.component_legend_labels)
+               val = [];
+           else 
+               val = this.component_legend_labels(1);
+           end
+        end
+        
         function val = get.t_label(this)
             if isempty(this.t_label)
                 val = this.default_t_label;
@@ -974,16 +973,22 @@ narginchk(4, 4)
 
 end
 
-function checkColorArg(color_arg)
-    if ~verLessThan('matlab', '9.9')
+function color = checkColorArg(color)
+    if verLessThan('matlab', '9.9')
         % The validatecolor function was added in R2020b (v9.9), so we
         % first check the version to make sure we can call it.
-        if ~validatecolor(color_arg)
-            error("HybridPlotBuilder:InvalidColor", ...
-                "The argument is not recognized as a color.")
+        return
+    end
+    try
+        validatecolor(color)
+    catch e_caught
+        if strcmp(e_caught.identifier, "MATLAB:graphics:validatecolor:InvalidColorString")
+            % Check that the exception is caused by validatecolor being false,
+            % not because of some other reason, such as validatecolor not
+            % existing in older versions of MATLAB.
+            throwAsCaller(e_caught)
         end
     end
-    
 end
        
 function check_legend_count(plots_in_axes, lgd_labels)
@@ -997,4 +1002,3 @@ elseif length(plots_in_axes) > length(lgd_labels)
     warning(warning_msg, length(plots_in_axes), "more", length(lgd_labels))
 end
 end
- 

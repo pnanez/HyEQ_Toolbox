@@ -9,7 +9,8 @@ classdef (Abstract) HybridSubsystem < handle
     end
     
     methods
-        function this = HybridSubsystem(state_dim, input_dim, output_dim, output_fnc)
+        function this = HybridSubsystem(state_dim, input_dim, ...
+                output_dim, output_fnc)
             this.state_dimension = state_dim;
             if ~exist('input_dim', 'var')
                 input_dim = 0;
@@ -19,7 +20,12 @@ classdef (Abstract) HybridSubsystem < handle
             end  
             if ~exist('output_fnc', 'var')
                 assert(output_dim <= state_dim);
-                output_fnc = @(x) x(1:output_dim);
+                if output_dim < state_dim
+                    output_fnc = @(x) x(1:output_dim);
+                else 
+                    output_fnc = @(x) x;
+                end
+                
             end
             this.input_dimension = input_dim;
             this.output_dimension = output_dim;
