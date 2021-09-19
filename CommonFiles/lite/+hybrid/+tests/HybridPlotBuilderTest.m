@@ -23,7 +23,7 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
     methods(TestMethodSetup)
         function setup(testCase) %#ok<MANU>
             clf
-            HybridPlotBuilder.resetDefaults();
+            HybridPlotBuilder.defaults.reset();
         end
     end
     
@@ -153,65 +153,158 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         end
         
         function testPlotTJX(testCase)
-            testCase.assumeFail("Incomplete")
+            % This is just a smoke test. The selection of the values to plot are
+            % tested in convert_varargin_to_solution_objTest.m
+            sol = testCase.sol_2;
+            HybridPlotBuilder().plotJumps(sol.t, sol.j, -sol.x);
+            testCase.assertSubplotCount(2);
+            HybridPlotBuilder().plot(sol.t, sol.j, -sol.x);
+            testCase.assertSubplotCount(1);
         end
         
         function testPlotSolX(testCase)
-            testCase.assumeFail("Incomplete")
+            % This is just a smoke test. The selection of the values to plot are
+            % tested in convert_varargin_to_solution_objTest.m
+            sol = testCase.sol_3;
+            HybridPlotBuilder().plotHybrid(sol, -sol.x);
+            testCase.assertSubplotCount(3);
+            HybridPlotBuilder().plot(sol, -sol.x);
+            testCase.assertSubplotCount(1);
         end
         
         function testPlotSolFncHandWithXArg(testCase)
-            testCase.assumeFail("Incomplete")
+            % This is just a smoke test. The selection of the values to plot are
+            % tested in convert_varargin_to_solution_objTest.m
+            sol = testCase.sol_4;
+            HybridPlotBuilder().plotFlows(sol, @(x) [x(2); x(1)]);
+            testCase.assertSubplotCount(2);
+            HybridPlotBuilder().plot(sol, @(x) [x(2); x(1)]);
+            testCase.assertSubplotCount(1);
         end
         
         function testPlotSolFncHandWithXTArg(testCase)
-            testCase.assumeFail("Incomplete")
+            % This is just a smoke test. The selection of the values to plot are
+            % tested in convert_varargin_to_solution_objTest.m
+            sol = testCase.sol_4;
+            HybridPlotBuilder().plotHybrid(sol, @(x, t) [x(2)-t; x(1)]);
+            testCase.assertSubplotCount(2);
+            HybridPlotBuilder().plot(sol, @(x, t) [x(2)-t; x(1)+t]);
+            testCase.assertSubplotCount(1);
         end
         
         function plotSolFncHandWithXTJArg(testCase)
-            testCase.assumeFail("Incomplete")
+            % This is just a smoke test. The selection of the values to plot are
+            % tested in convert_varargin_to_solution_objTest.m
+            sol = testCase.sol_4;
+            HybridPlotBuilder().plotJumps(sol, @(x, t, j) [x(2)-t*j; x(4)-j]);
+            testCase.assertSubplotCount(2);
+            HybridPlotBuilder().plot(sol, @(x, t, j) [x(2); t*j; x(1)+t-j]);
+            testCase.assertSubplotCount(1);
         end
         
         function testSetFlowSettings(testCase)
-            testCase.assumeFail("Incomplete")
+            pb = HybridPlotBuilder()...
+                .flowColor("r")...
+                .flowLineStyle(':')...
+                .flowLineWidth(5);
+            testCase.assertEqual(pb.settings.flow_color, "r");
+            testCase.assertEqual(pb.settings.flow_line_style, ":");
+            testCase.assertEqual(pb.settings.flow_line_width, 5);
         end
         
-        function testSetJumpSettings(testCase)
-            testCase.assumeFail("Incomplete")
+        function testSetJumpLineSettings(testCase)
+            pb = HybridPlotBuilder()...
+                .jumpColor("g")...
+                .jumpLineStyle(':')...
+                .jumpLineWidth(5);
+            testCase.assertEqual(pb.settings.jump_color, "g");
+            testCase.assertEqual(pb.settings.jump_line_style, ":");
+            testCase.assertEqual(pb.settings.jump_line_width, 5);
         end
         
-        function testCheckColor(testCase)
-            % Check valid colors
-            HybridPlotBuilder().flowColor("black");
-            HybridPlotBuilder().jumpColor("m");
-            HybridPlotBuilder().flowColor([0 1 0.3]);
-            
-            % Check invalid color, except on versions of Matlab before 9.9 (R2020b).
-            if ~verLessThan('matlab', '9.9')
-                fh = @() HybridPlotBuilder().flowColor("blurg");
-                testCase.verifyError(fh, "MATLAB:graphics:validatecolor:InvalidColorString");
-            end
+        function testSetJumpMarkerSettingsStartAndEndTogether(testCase)
+            pb = HybridPlotBuilder()...
+                .jumpMarker('square')...
+                .jumpMarkerSize(12.3);
+            testCase.assertEqual(pb.settings.jump_start_marker, "square");
+            testCase.assertEqual(pb.settings.jump_end_marker, "square");
+            testCase.assertEqual(pb.settings.jump_start_marker_size, 12.3);
+            testCase.assertEqual(pb.settings.jump_end_marker_size, 12.3);
         end
         
-        function testUseDefaultSettings(testCase)
-            testCase.assumeFail("Incomplete")
+        function testSetJumpSettingsStartAndEndSeparately(testCase)
+            pb = HybridPlotBuilder()...
+                .jumpStartMarker('o')...
+                .jumpEndMarker('+')...
+                .jumpStartMarkerSize(0.1)...
+                .jumpEndMarkerSize(10);
+            testCase.assertEqual(pb.settings.jump_start_marker, "o");
+            testCase.assertEqual(pb.settings.jump_end_marker, "+");
+            testCase.assertEqual(pb.settings.jump_start_marker_size, 0.1);
+            testCase.assertEqual(pb.settings.jump_end_marker_size, 10);
         end
         
-        function testSetDefaultSettings(testCase)
-            testCase.assumeFail("Incomplete")
+        function testDefaultTextSize(testCase)
+            scale = 2.5;
+            HybridPlotBuilder.defaults.set(...
+                'label Size ', 14, ...
+                'title_size', 17, ...
+                'text_scale', scale);
+
+            pb = HybridPlotBuilder();
+            testCase.assertEqual(pb.settings.label_size, scale*14);
+            testCase.assertEqual(pb.settings.title_size, scale*17);
         end
         
-        function testResetDefaultSettings(testCase)
-            testCase.assumeFail("Incomplete")
+        function testDefaultLineSizes(testCase)
+            scale = 6;
+            HybridPlotBuilder.defaults.set(...
+                'Flow line width', 2, ...
+                'jump_line_width', 7, ...
+                'line_scale', scale);
+%             HybridPlotBuilder.setDefault('marker_scale', 4.0);
+
+            pb = HybridPlotBuilder();
+            testCase.assertEqual(pb.settings.flow_line_width, scale*2);
+            testCase.assertEqual(pb.settings.jump_line_width, scale*7); 
         end
         
-        function testSetStateLabelFormat(testCase)
-            % Rename
-            testCase.assumeFail("Incomplete")
+        function testDefaultMarkerSizes(testCase)
+            scale = 2;
+            HybridPlotBuilder.defaults.set(...
+                'jump start marker size', 3, ...
+                'jump end marker size', 4, ...
+                'marker_scale', scale);
+
+            pb = HybridPlotBuilder();
+            testCase.assertEqual(pb.settings.jump_start_marker_size, scale*3);
+            testCase.assertEqual(pb.settings.jump_end_marker_size, scale*4); 
         end
         
-        function testFilter(testCase)
-            testCase.assumeFail("Incomplete")
+        function testDefaultColors(testCase)
+            HybridPlotBuilder.defaults.set(...
+                'flow color', 'k', ...
+                'jump color', 'g');
+            pb = HybridPlotBuilder();
+            testCase.assertEqual(pb.settings.flow_color, 'k');
+            testCase.assertEqual(pb.settings.jump_color, 'g'); 
+        end
+        
+        function testDefaultInterpreters(testCase)
+            HybridPlotBuilder.defaults.set(...
+                'label interpreter', 'tex', ...
+                'Title Interpreter', 'none'); 
+            pb = HybridPlotBuilder();
+            testCase.assertEqual(pb.settings.label_interpreter, "tex");
+            testCase.assertEqual(pb.settings.title_interpreter, "none");
+        end
+        
+        function testSetXLabelFormat(testCase)
+            HybridPlotBuilder()...
+                .xLabelFormat('$z_{%d}$')...
+                .slice([1 3])...
+                .plotFlows(testCase.sol_3);
+            testCase.assertSubplotYLabels('$z_{1}$', '$z_{3}$')
         end
         
         function testTitlesAsCellArray(testCase)
@@ -307,41 +400,24 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             testCase.assertLegendLabels("Plot 2")
         end
         
-        function testTooManyLegendLabelsInPlotFlows(testCase)
-            HybridPlotBuilder().legend("Subplot 1", "Subplot 2", "Subplot 3")...
-                .plotJumps(testCase.sol_2);
-            testCase.assertLegendLabels("Subplot 1", "Subplot 2")
-        end
-        
         function testWarnTooManyLegendLabelsInPlotFlows(testCase)
-            testCase.assumeFail("Not yet implemented")
             pb = HybridPlotBuilder().legend("Subplot 1", "Subplot 2", "Subplot 3");
-            testCase.verifyWarning(@() pb.plotJumps(testCase.sol_2), "");
+            testCase.verifyWarning(@() pb.plotJumps(testCase.sol_2), "HybridPlotBuilder:TooManyLegends");
+            testCase.assertLegendLabels("Subplot 1", "Subplot 2");
         end
         
         function testTooManyLegendLabelsInPhasePlot(testCase)
-            HybridPlotBuilder().legend("Subplot 1", "Subplot 2")...
-                .plot(testCase.sol_2);
-            testCase.assertLegendLabels("Subplot 1")
-        end
-        
-        function testWarnTooManyLegendLabelsInPhasePlot(testCase)
-            testCase.assumeFail("Not yet implemented")
             pb = HybridPlotBuilder().legend("Subplot 1", "Subplot 2");
-            testCase.verifyWarning(@() pb.plot(testCase.sol_2), "");
+            testCase.verifyWarning(@() pb.plot(testCase.sol_2), ...
+                "HybridPlotBuilder:TooManyLegends");
+            testCase.assertLegendLabels("Subplot 1")
         end
         
         function testTooFewLegendEntries(testCase)
             pb = HybridPlotBuilder().legend("Subplot 1");
-            pb.plotJumps(testCase.sol_2);
-            testCase.assertLegendLabels("Subplot 1", "")
-        end
-        
-        function testWarnTooFewLegendEntries(testCase)
-            testCase.assumeFail("Not yet implemented")
-            pb = HybridPlotBuilder().legend("Subplot 1");
             fh = @() pb.plotJumps(testCase.sol_2);
-            testCase.verifyWarning(@() fh, "");
+            testCase.verifyWarning(fh, "HybridPlotBuilder:TooFewLegends");
+            testCase.assertLegendLabels("Subplot 1", "")
         end
         
         function testAddLegendEntry(testCase)
@@ -369,59 +445,108 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             testCase.assertLegendLabels("Second Figure")
         end
         
-        function testPlotConfig(testCase)
-            callback_inargs = {};
-            function config(component_ndx)
-                callback_inargs{end+1} = component_ndx;
-            end
+        function testPlotConfig(testCase)  
+            slice_ndxs = [1, 3];
+            plt_fnc_callback = @(pb) pb.slice([1, 3]).plotFlows(testCase.sol_3);
+            testCase.assertConfigurePlotsCallbackCalls(plt_fnc_callback, ...
+                length(slice_ndxs), num2cell(slice_ndxs))  
             
-            HybridPlotBuilder().configurePlots(@config)...
-                .slice([1, 3])...
-                .plotFlows(testCase.sol_3);
-            testCase.assertEqual(callback_inargs, {1, 3});
+            slice_ndxs = 1:4;
+            plt_fnc_callback = @(pb) pb.slice(slice_ndxs).plotJumps(testCase.sol_4);
+            testCase.assertConfigurePlotsCallbackCalls(plt_fnc_callback, ...
+                length(slice_ndxs), num2cell(slice_ndxs))
+            
+            slice_ndxs = 2;
+            plt_fnc_callback = @(pb) pb.slice(2).plotHybrid(testCase.sol_3);
+            testCase.assertConfigurePlotsCallbackCalls(plt_fnc_callback, ...
+                length(slice_ndxs), num2cell(slice_ndxs))
         end
         
         function testPlotConfigNoAutoSubplots(testCase)
-            callback_inargs = {};
-            function config(component_ndx)
-                callback_inargs{end+1} = component_ndx;
-            end
+            plt_fnc_callback = @(pb) pb.autoSubplots("off")...
+                                        .slice([3, 2])...
+                                        .plotFlows(testCase.sol_3);
+            testCase.assertConfigurePlotsCallbackCalls(plt_fnc_callback, 2, {3, 2})
+        end
+        
+        function testPlotConfigForPlotFunction(testCase)       
+            % If there are two or three components, then one plot is drawn and
+            % the component id is given as -1.
+            plt_fnc_callback = @(pb) pb.autoSubplots("off").plot(testCase.sol_3);
+            testCase.assertConfigurePlotsCallbackCalls(plt_fnc_callback, 1, {-1})
             
-            HybridPlotBuilder().autoSubplots("off")...
-                .configurePlots(@config)...
-                .slice([3, 2])...
-                .plotFlows(testCase.sol_3);
-            testCase.assertEqual(callback_inargs, {3, 2});
+            % If there are four or more components, then defaults to plotFlows
+            plt_fnc_callback = @(pb) pb.autoSubplots("off").plot(testCase.sol_4);
+            testCase.assertConfigurePlotsCallbackCalls(plt_fnc_callback, 4, {1, 2, 3, 4})
+        end
+               
+        function testHoldOnMaintainedWithAutoSubplots(testCase)
+            hold on
+            pb = HybridPlotBuilder().autoSubplots('on');
+            pb.plotFlows(testCase.sol_2)
+            testCase.assertTrue(ishold())
+            pb.plotJumps(testCase.sol_2)
+            testCase.assertTrue(ishold())
+            pb.plotHybrid(testCase.sol_2)
+            testCase.assertTrue(ishold())
+            testCase.assertSubplotCount(2);
+            
+            % 'plot' also preserves hold on but resets subplots
+            pb.plot(testCase.sol_3);
+            testCase.assertTrue(ishold())
+            testCase.assertSubplotCount(1);
+        end
+               
+        function testHoldOnMaintainedWithoutAutoSubplots(testCase)
+            hold on
+            pb = HybridPlotBuilder().autoSubplots('off');
+            pb.plotFlows(testCase.sol_2)
+            testCase.assertTrue(ishold())
+            pb.plotJumps(testCase.sol_2)
+            testCase.assertTrue(ishold())
+            pb.plotHybrid(testCase.sol_2)
+            testCase.assertTrue(ishold())
+            testCase.assertSubplotCount(1);
+            
+            % Check 'plot' also preserves hold on and subplots
+            pb.plot(testCase.sol_3);
+            testCase.assertTrue(ishold())
+            testCase.assertSubplotCount(1);
         end
         
-        function testPlotConfigForPlotFunction(testCase)
-            callback_inargs = [];
-            function config(component_ndxs)
-                assert(isempty(callback_inargs), "Should only be called once!")
-                callback_inargs = component_ndxs;
-            end
-            HybridPlotBuilder()...
-                .configurePlots(@config)...
-                .plot(testCase.sol_3);
-            testCase.assertEqual(callback_inargs, 1:3);
+        function testHoldOffMaintainedWithAutoSubplots(testCase)
+            hold off
+            pb = HybridPlotBuilder().autoSubplots('on');
+            pb.plotFlows(testCase.sol_2)
+            testCase.assertFalse(ishold())
+            pb.plotJumps(testCase.sol_2)
+            testCase.assertFalse(ishold())
+            pb.plotHybrid(testCase.sol_2)
+            testCase.assertFalse(ishold())
+            testCase.assertSubplotCount(2);
+            
+            % 'plot' also preserves hold off
+            pb.plot(testCase.sol_3);
+            testCase.assertFalse(ishold())
+            testCase.assertSubplotCount(1);
         end
         
-        function testHoldOnMaintained(testCase)
-            testCase.assumeFail("Incomplete")
-        end
-        
-        function testHoldOffMaintained(testCase)
-            testCase.assumeFail("Incomplete")
-        end
-        
-        function testConfigureSubplots(testCase)
-            testCase.assumeFail("Incomplete")
-        end
-        
-        function testCharArrayPassedToLabels(testCase)
-            testCase.assumeFail("Incomplete")
-        end
-        
+        function testHoldOffMaintainedWithoutAutoSubplots(testCase)
+            hold off
+            pb = HybridPlotBuilder().autoSubplots('off');
+            pb.plotFlows(testCase.sol_2)
+            testCase.assertFalse(ishold())
+            pb.plotJumps(testCase.sol_2)
+            testCase.assertFalse(ishold())
+            pb.plotHybrid(testCase.sol_2)
+            testCase.assertFalse(ishold())
+            testCase.assertSubplotCount(1);
+            
+            % 'plot' also preserves hold off
+            pb.plot(testCase.sol_3);
+            testCase.assertFalse(ishold())
+            testCase.assertSubplotCount(1);
+        end        
     end
     
     methods
@@ -482,7 +607,6 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             forEachSubplot(@(sp, ndx) this.assertTrue(is2D(sp)))
         end
 
-        
         function assert3DSubplots(this)
             forEachSubplot(@(sp, ndx) this.assertTrue(is3D(sp)))
         end
@@ -502,6 +626,23 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
                 this.assertEqual(actual, expected);
             end
             forEachSubplot(@checkLabels);
+        end
+        
+        function assertConfigurePlotsCallbackCalls(testCase, ...
+                plot_fnc_callback, expected_call_count, expected_args)
+            % Given 'hybrid_plot_builder' assert that the configurePlots
+            % callback function is called 'expected_call_count' number of times
+            % with arguments matching the entries in 'expected_args' when
+            % 'plot_fnc_callback' is called.
+            callback_count = 0;
+            function config(arg)
+                callback_count = callback_count + 1;
+                testCase.assertEqual(arg, expected_args{callback_count});
+            end
+            
+            pb = HybridPlotBuilder().configurePlots(@config);
+            plot_fnc_callback(pb);
+            testCase.assertEqual(callback_count, expected_call_count);
         end
     end
 end

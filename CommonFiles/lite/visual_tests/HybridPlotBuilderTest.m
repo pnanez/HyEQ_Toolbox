@@ -43,3 +43,6 @@ figure()
 HybridPlotBuilder().jumpColor('green').plotJumps(sol1)
 hold on
 HybridPlotBuilder().jumpColor('black').plotJumps(sol2)
+
+%% Test Filter
+% To-do.

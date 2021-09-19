@@ -211,6 +211,7 @@ HybridPlotBuilder()...
 % When automatic subplots are off, only the first label and title are used.
 % For legends, however, as many legend entries are used as plots have been
 % added. 
+clf
 pb = HybridPlotBuilder();
 pb.autoSubplots("off")...
     .labels("Label 1", "Label 2")... % Only first label is used.
@@ -312,6 +313,7 @@ axis equal
 %%
 % For the bouncing ball system, we can change the color of the plot based on
 % whether the ball is falling.
+clf
 is_falling = sol.x(:, 2) < 0;
 pb = HybridPlotBuilder();
 pb.filter(is_falling)...
@@ -345,7 +347,7 @@ HybridPlotBuilder()...
     .plotFlows(sol);
 
 %%
-% Plots or other graphics added to a figure without using |HybridPlotBuilder|
+% Graphic objects added to a figure without |HybridPlotBuilder|
 % can be added to the legend by passing the graphic handle to |addLegendEntry|.
 clf
 pb = HybridPlotBuilder()...
@@ -360,7 +362,7 @@ plt_handle = plot(10*cos(theta), 10*sin(theta), "magenta");
 pb.addLegendEntry(plt_handle, "Circle");
 
 %% Replacing vs. Adding Plots to a Figure
-% By default, each call to a HybridPlotBuilder plot function overwrites the 
+% By default, each call to a |HybridPlotBuilder| plot function overwrites the 
 % previous plots. In the following code, we call |plotFlows| twice. The
 % first call plots a solution in blue and red, but the second call resets the figure
 % and plots a solution in black and green.
@@ -383,49 +385,53 @@ hold on
 HybridPlotBuilder().flowColor('black').jumpColor("green")...
     .title("Multiple Calls to $\texttt{plotFlows}$ with \texttt{hold on}")...
     .plotFlows(sol2)
-hold off
 
 %% Modifying Defaults
-% Matlab is inconsistent about the size of text and graphics in plots on
-% different devices. To mitigate this difference, the default values of some
-% |HybridPlotBuilder| properties can be set. There are two approaches provided.
-% The first is to set scale factors that are applied to text, lines, and
-% markers.
+% The default values of all |HybridPlotBuilder| settings can be modified by
+% calling 'set' on the 'defaults' property. The arguments are must be name-value
+% pairs, where the name is a string that matches one of the
+% properties in PlotSettings (names are case insensitive and underscores can be
+% replaced with spaces). 
 clf
-HybridPlotBuilder.setDefault("text scale", 0.5)
-HybridPlotBuilder.setDefault("line scale", 3)
-HybridPlotBuilder.setDefault("marker scale", 3)
-
-HybridPlotBuilder()...
-    .title("Title")...
-    .plotFlows(sol);
-
-%% Alternative set of defaults
-% The alternative approach is to explicitly specify the default values of
-% |HybridPlotBuilder| properties. (The two approaches can be used in
-% conjunction, but one or the other might be removed before the release of v3.0)
-HybridPlotBuilder.resetDefaults()
-HybridPlotBuilder.setDefault("Label Size", 18)
-HybridPlotBuilder.setDefault("Title Size", 12)
-HybridPlotBuilder.setDefault("Label interpreter", 'tex')
-HybridPlotBuilder.setDefault("Title interpreter", 'none')
-HybridPlotBuilder.setDefault("flow line width", 5)
-HybridPlotBuilder.setDefault("jump line width", 3)
-
+HybridPlotBuilder.defaults.set("Label Size", 14, ...
+                             "Title Size", 16, ...
+                             "label interpreter", 'tex', ...
+                             "title interpreter", 'none', ...
+                             "flow_color", "k", ...
+                             "flow line width", 2, ...
+                             "jump_color", "k", ...
+                             "jump line width", 2, ...
+                             "jump line style", ':', ...
+                             "jump start marker", "s", ...
+                             "jump start marker size", 10, ...
+                             "jump end marker", "none", ...
+                             "x_label_format", "z_{%d}", ...
+                             "t_label", "t [s]")
 HybridPlotBuilder()...
     .title("Title")...
     .legend("Legend A", "Legend B")...
     .plotFlows(sol);
 
 %% 
-% The defaults can be reset to their original values by calling
-% |resetDefaults| on |HybridPlotBuilder|.
-clf
-HybridPlotBuilder.resetDefaults()
+% The defaults can be reset to their original value with the following command.
+HybridPlotBuilder.defaults.reset()
 
+%% Default Scaling
+% Matlab is inconsistent about the size of text and graphics in plots on
+% different devices. To mitigate this difference, the default values of some
+% |HybridPlotBuilder| properties can be set. There are two approaches provided.
+% The first is to set scale factors that are applied to text, lines, and
+% markers.
+clf
+HybridPlotBuilder.defaults.set("text scale", 2, ...
+                                "line scale", 3, ...
+                                "marker scale", 2)
 HybridPlotBuilder()...
     .title("Title")...
+    .legend('height', 'velocity')...
     .plotFlows(sol);
+
+HybridPlotBuilder.defaults.reset() % Cleanup
 
 %% Additional configuration
 % There are numerous options for configuring the appearance of Matlab plots
