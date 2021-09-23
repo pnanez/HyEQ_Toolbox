@@ -237,9 +237,8 @@ while (j < JSPAN(end) && tout(end) < TSPAN(end) && ~progress.is_cancel_solver)
     end
     doFlow = insideC && (rule == 2 || (rule == 1 && ~insideD));
     doJump = insideD && (rule == 1 || (rule == 2 && ~insideC));
-%     fprintf("do flow? %d, in C? %d, in D? %d\n", doFlow, insideC, insideD)
-    assert(~(doFlow && doJump), "Cannot do flow and do jump")
-    assert(doFlow || doJump, "Must either jump or flow")
+    assert(~(doFlow && doJump), 'Cannot do both flow and jump')
+    assert(doFlow || doJump, 'Must either jump or flow')
     if doFlow
         if isDAE
             options = odeset(options,'InitialSlope',f(xout(end,:).',tout(end)));
@@ -361,7 +360,7 @@ switch nargin(fh_in)
     case 3
         fh_out = fh_in;    
     otherwise
-        error("The function handle '%s' must have 1, 2, or 3 input arguments. Instead it had %d.",...
+        error('The function handle ''%s'' must have 1, 2, or 3 input arguments. Instead it had %d.',...
             func2str(fh_in), nargin(fh_in))
 end
 end

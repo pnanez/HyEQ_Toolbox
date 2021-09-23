@@ -79,9 +79,9 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
             sys = CompositeHybridSystem(sub);
             tspan = [0, 10];
             jspan = [0,  2];
-            config = HybridSolverConfig("silent").flowPriority();
+            config = HybridSolverConfig('silent').flowPriority();
             testCase.verifyWarning(@() sys.solve({0}, tspan, jspan, config), ...
-                "CompositeHybridSystem:FlowPriorityNotSupported")
+                'CompositeHybridSystem:FlowPriorityNotSupported')
         end
         
 %         % This test is disabled because it is testing unsupported
@@ -97,12 +97,12 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
 %             sub2.D_indicator = @(x, u, t, j) 1;
 %             tspan = [0, 10];
 %             jspan = [0,  2];
-%             warning('off',"CompositeHybridSystem:FlowPriorityNotSupported")
-%             config = HybridSolverConfig("silent").flowPriority();
+%             warning('off','CompositeHybridSystem:FlowPriorityNotSupported')
+%             config = HybridSolverConfig('silent').flowPriority();
 %             sol = sys.solve({0, 0}, tspan, jspan, config);
 %             testCase.assertEmpty(sol.jump_times)
 %             testCase.assertEqual(sol.t(end), tspan(end), 'AbsTol', 1e-6)
-%             warning('on',"CompositeHybridSystem:FlowPriorityNotSupported")
+%             warning('on','CompositeHybridSystem:FlowPriorityNotSupported')
 %         end
         
         function testJumpsWhenAnySubsystemsNotInFlowSetAndFlowPriority(testCase)
@@ -118,7 +118,7 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
             sub1.C_indicator = @(x, u, t, j) t <= 2.0 + 100*j;
             tspan = [0, 10];
             jspan = [0,  2];
-            config = HybridSolverConfig("silent").flowPriority();
+            config = HybridSolverConfig('silent').flowPriority();
             sol = sys.solve({0, 0}, tspan, jspan, config);
             expected_jumps = 2.0;
             testCase.assertEqual(sol.jump_times, expected_jumps, 'AbsTol', 1e-6)
@@ -133,9 +133,9 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
             sys = CompositeHybridSystem(sub);
             tspan = [0, 10];
             jspan = [0,  2];
-            config = HybridSolverConfig("silent");
+            config = HybridSolverConfig('silent');
             testCase.verifyError(@() sys.solve({1, 2, 3}, tspan, jspan, config), ...
-                "CompositeHybridSystem:WrongNumberOfInitialStates");
+                'CompositeHybridSystem:WrongNumberOfInitialStates');
         end
         
         function testInitialStatesWrongSize(testCase)
@@ -146,9 +146,9 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
             sys = CompositeHybridSystem(sub1, sub2);
             tspan = [0, 10];
             jspan = [0,  2];
-            config = HybridSolverConfig("silent");
+            config = HybridSolverConfig('silent');
             testCase.verifyError(@() sys.solve({1, [1; 2]}, tspan, jspan, config), ...
-                "CompositeHybridSystem:WrongNumberOfInitialStates");            
+                'CompositeHybridSystem:WrongNumberOfInitialStates');            
         end
         
         function testInitialStatesNotCellArray(testCase)
@@ -158,9 +158,9 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
             sys = CompositeHybridSystem(sub);
             tspan = [0, 10];
             jspan = [0,  2];
-            config = HybridSolverConfig("silent");
+            config = HybridSolverConfig('silent');
             testCase.verifyError(@() sys.solve([1, 2, 3], tspan, jspan, config), ...
-                "CompositeHybridSystem:InitialStateNotCell");    
+                'CompositeHybridSystem:InitialStateNotCell');    
         end
         
         function testNumberOfContinuousInputArguments(testCase)
@@ -175,7 +175,7 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
             sys.setFlowInput(1, @(y1, y2, t) y1)
             sys.setFlowInput(1, @(y1, y2, t, j) y1)
             testCase.verifyError(@() sys.setFlowInput(1, @(y1, y2, t, j, extra) y1), ...
-                "CompositeHybridSystem:WrongNumberInputArgs")
+                'CompositeHybridSystem:WrongNumberInputArgs')
         end
         
         function testInputOutVectorWrongSize(testCase)
@@ -184,7 +184,7 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
             sys = CompositeHybridSystem(sub);
             sys.setFlowInput(1, @(x1, t, j) zeros(2, 1));
             testCase.verifyError(@() sys.solve({1}, [0, 10], [0, 10]), ...
-               "CompositeHybridSystem:DoesNotMatchInputDimension");
+               'CompositeHybridSystem:DoesNotMatchInputDimension');
         end
         
         function testWarningWhenSetInputForSystemWithNoInputs(testCase)
@@ -192,11 +192,11 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
             sub = MockHybridSubsystem(1, 0, 1);
             sys = CompositeHybridSystem(sub);
             testCase.verifyWarning(@() sys.setFlowInput(1, @(x1, t, j) []), ...
-               "CompositeHybridSystem:SystemHasNoInputs");
+               'CompositeHybridSystem:SystemHasNoInputs');
             testCase.verifyWarning(@() sys.setJumpInput(1, @(x1, t, j) []), ...
-               "CompositeHybridSystem:SystemHasNoInputs");
+               'CompositeHybridSystem:SystemHasNoInputs');
             testCase.verifyWarning(@() sys.setInput(1, @(x1, t, j) []), ...
-               "CompositeHybridSystem:SystemHasNoInputs");
+               'CompositeHybridSystem:SystemHasNoInputs');
         end
         
         function testSubsystemNames(testCase)
@@ -204,26 +204,26 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
                            % Size of: (x, u, y)
             sub1 = MockHybridSubsystem(1, 1, 1);
             sub2 = MockHybridSubsystem(1, 1, 1);
-            sys = CompositeHybridSystem("sub 1", sub1, "sub 2", sub2);
+            sys = CompositeHybridSystem('sub 1', sub1, 'sub 2', sub2);
             
             kappa_C1 = @(y1, y2, t, j) 4;
             kappa_D1 = @(y1, y2, t, j) 12;
-            sys.setFlowInput("sub 1", kappa_C1);
-            sys.setJumpInput("sub 1", kappa_D1);
+            sys.setFlowInput('sub 1', kappa_C1);
+            sys.setJumpInput('sub 1', kappa_D1);
             
             kappa_2 = @(y1, y2, t, j) 5;
-            sys.setInput("sub 2", kappa_2);
+            sys.setInput('sub 2', kappa_2);
             
             testCase.assertEqual(sys.getFlowInput(1), kappa_C1)
             testCase.assertEqual(sys.getJumpInput(sub1), kappa_D1)
             testCase.assertEqual(sys.getFlowInput(2), kappa_2)
-            testCase.assertEqual(sys.getJumpInput("sub 2"), kappa_2)
+            testCase.assertEqual(sys.getJumpInput('sub 2'), kappa_2)
             
             sol = sys.solve({1, 2}, [0, 10], [0, 10]);
             
-            testCase.assertEqual(sol(1), sol("sub 1"))
-            testCase.assertEqual(sol(sub2), sol("sub 2"))
-            testCase.assertNotEqual(sol("sub 1"), sol("sub 2"))
+            testCase.assertEqual(sol(1), sol('sub 1'))
+            testCase.assertEqual(sol(sub2), sol('sub 2'))
+            testCase.assertNotEqual(sol('sub 1'), sol('sub 2'))
         end
         
     end

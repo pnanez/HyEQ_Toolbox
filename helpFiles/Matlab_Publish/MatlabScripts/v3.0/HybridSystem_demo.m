@@ -28,7 +28,7 @@ bb_system = ExampleBouncingBallHybridSystem();
 % Values of the properties can be modified using dot indexing on the object:
 
 bb_system.gravity = 3.72;
-bb_system.bounce_coeff = 0.5;
+bb_system.bounce_coeff = 0.8;
 %% 
 % To compute a solution, pass the initial state and time spans to the 
 % |solve| function, which is defined in the |HybridSystem| class (|bb_system| is a 
@@ -37,14 +37,15 @@ bb_system.bounce_coeff = 0.5;
 
 x0 = [10, 0];
 tspan = [0, 30];
-jspan = [0, 30];
-sol = bb_system.solve(x0, tspan, jspan);
+jspan = [0, 100];
+config = HybridSolverConfig('refine', 12);
+sol = bb_system.solve(x0, tspan, jspan, config);
 plotFlows(sol);
 
-%% Interpret the Solution
+%% Information About Solution
 % The return value of the |solve| method is a |HybridSolution| object and contains 
 % various information about the solution.
-sol
+disp(sol)
 
 %% 
 % A description of each HybridSolution property is as follows:
@@ -74,12 +75,17 @@ sol
 %
 
 %% Evaluating a Function Along a Solution
-% It is frequently desirable to evaluate a function at each point along the
+% It is frequently desirable to evaluate a function along the
 % solution. This functionality is provided by the method |evaluateFunction|
 % in |HybridSolution|.
-f = @(x) norm(x);
-x_norm = sol.evaluateFunction(f);
-HybridPlotBuilder().plot(sol, x_norm);
+energy_fnc = @(x) bb_system.gravity * x(1) + 0.5*x(2)^2;
+enregy = sol.evaluateFunction(energy_fnc);
+
+%%
+% |HybridPlotBuilder| calls |evaluateFunction| if a function handle is
+% passed to a plotting function.
+HybridPlotBuilder().plot(sol, energy_fnc);
+
 %% Configuration Options
 % To configure the ODE solver and progress updates, create a
 % |HybridSolverConfig| object and pass it to |solve| as follows (if no
@@ -102,12 +108,12 @@ config.hybrid_priority = HybridPriority.JUMP;
 % |odeOption| function, but are untested with the hybrid equation solver so they 
 % should be used with caution.
 
-config.ode_solver = "ode23s";
+config.ode_solver = 'ode23s';
 config.RelTol(1e-3);
 config.AbsTol(1e-4);
 config.Refine(4);
-config.odeOption("InitialStep", 0.4);
-config.odeOption("MassSingular", 'no');
+config.odeOption('InitialStep', 0.4);
+config.odeOption('MassSingular', 'no');
 
 % Display the options struct.
 config.ode_options
@@ -136,11 +142,11 @@ config.progress(progress);
 bb_system.solve(x0, tspan, jspan, config);
 
 %% 
-% Alternatively, progress updates can be disabled by passing |"silent"| to
+% Alternatively, progress updates can be disabled by passing |'silent'| to
 % |config.progess()|.
-config.progress("silent");
+config.progress('silent');
 
 %% 
 % If no other solver configurations are desired, then 'silent' can be passed
 % directly to |solve| in place of |config|.
-bb_system.solve(x0, tspan, jspan, "silent");
+bb_system.solve(x0, tspan, jspan, 'silent');

@@ -66,6 +66,17 @@ classdef evaluateInOrderTest < matlab.unittest.TestCase
             testCase.assertEqual(us, {xs{1} + xs{2} + t, -xs{1} + t});
             testCase.assertEqual(ys, {xs{1}, t + xs{2}});
         end
+        
+        function testErrorWhenNonunique(testCase)
+            import hybrid.internal.*
+            order = ['y1'; 'y1'; 'u1'; 'u2']; % y1 is repeated.
+            kappas = {@(y1, y2) y1+y2, @(y1, y2, t) -y1 + t};
+            outputs =  {@(x1) x1, @(x2, u2, t) t + x2};
+            xs = {20, 12};
+            t = pi;
+            js = {0, 0};
+            testCase.verifyError(@() evaluateInOrder(order, kappas, outputs, xs, t, js), '');
+        end
 
     end
 

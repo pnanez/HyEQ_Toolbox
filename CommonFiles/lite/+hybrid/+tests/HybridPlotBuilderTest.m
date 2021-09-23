@@ -38,33 +38,33 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         end
         
         function testWithoutAutoSubplots(testCase)
-            pb = HybridPlotBuilder().autoSubplots("off")...
-                .title("Title")...
+            pb = HybridPlotBuilder().autoSubplots('off')...
+                .title('Title')...
                 .label('Label');
             
             % Check plotFlows
             pb.plotFlows(testCase.sol_3);
             testCase.assertSubplotCount(1)
-            testCase.assertSubplotTitles("Title")
-            testCase.assertSubplotYLabels("Label")
+            testCase.assertSubplotTitles('Title')
+            testCase.assertSubplotYLabels('Label')
             
             % Check plotJumps
             pb.plotJumps(testCase.sol_3);
             testCase.assertSubplotCount(1)
-            testCase.assertSubplotTitles("Title")
-            testCase.assertSubplotYLabels("Label")
+            testCase.assertSubplotTitles('Title')
+            testCase.assertSubplotYLabels('Label')
             
             % Check plotHybrid
             pb.plotHybrid(testCase.sol_3);
             testCase.assertSubplotCount(1)
-            testCase.assertSubplotTitles("Title")
-            testCase.assertSubplotZLabels("Label")
+            testCase.assertSubplotTitles('Title')
+            testCase.assertSubplotZLabels('Label')
         end
         
         function testSlice(testCase)
             pb = HybridPlotBuilder()...
-                .titles("Title 1", "Title 2", "Title 3")...
-                .labels("A", "B", "C")...
+                .titles('Title 1', 'Title 2', 'Title 3')...
+                .labels('A', 'B', 'C')...
                 .slice([1 3]);
             pb.plotFlows(testCase.sol_3);
             function check(testCase, plot_dim)
@@ -81,8 +81,8 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         
         function testSliceSwitchedOrder(testCase)
             pb = HybridPlotBuilder()...
-                .titles("Title 1", "Title 2", "Title 3")...
-                .labels("A", "B", "C")...
+                .titles('Title 1', 'Title 2', 'Title 3')...
+                .labels('A', 'B', 'C')...
                 .slice([3 1]);
             
             function check(testCase, plot_dim)
@@ -204,21 +204,21 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         
         function testSetFlowSettings(testCase)
             pb = HybridPlotBuilder()...
-                .flowColor("r")...
+                .flowColor('r')...
                 .flowLineStyle(':')...
                 .flowLineWidth(5);
-            testCase.assertEqual(pb.settings.flow_color, "r");
-            testCase.assertEqual(pb.settings.flow_line_style, ":");
+            testCase.assertEqual(pb.settings.flow_color, 'r');
+            testCase.assertEqual(pb.settings.flow_line_style, ':');
             testCase.assertEqual(pb.settings.flow_line_width, 5);
         end
         
         function testSetJumpLineSettings(testCase)
             pb = HybridPlotBuilder()...
-                .jumpColor("g")...
+                .jumpColor('g')...
                 .jumpLineStyle(':')...
                 .jumpLineWidth(5);
-            testCase.assertEqual(pb.settings.jump_color, "g");
-            testCase.assertEqual(pb.settings.jump_line_style, ":");
+            testCase.assertEqual(pb.settings.jump_color, 'g');
+            testCase.assertEqual(pb.settings.jump_line_style, ':');
             testCase.assertEqual(pb.settings.jump_line_width, 5);
         end
         
@@ -226,8 +226,8 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             pb = HybridPlotBuilder()...
                 .jumpMarker('square')...
                 .jumpMarkerSize(12.3);
-            testCase.assertEqual(pb.settings.jump_start_marker, "square");
-            testCase.assertEqual(pb.settings.jump_end_marker, "square");
+            testCase.assertEqual(pb.settings.jump_start_marker, 'square');
+            testCase.assertEqual(pb.settings.jump_end_marker, 'square');
             testCase.assertEqual(pb.settings.jump_start_marker_size, 12.3);
             testCase.assertEqual(pb.settings.jump_end_marker_size, 12.3);
         end
@@ -238,8 +238,8 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
                 .jumpEndMarker('+')...
                 .jumpStartMarkerSize(0.1)...
                 .jumpEndMarkerSize(10);
-            testCase.assertEqual(pb.settings.jump_start_marker, "o");
-            testCase.assertEqual(pb.settings.jump_end_marker, "+");
+            testCase.assertEqual(pb.settings.jump_start_marker, 'o');
+            testCase.assertEqual(pb.settings.jump_end_marker, '+');
             testCase.assertEqual(pb.settings.jump_start_marker_size, 0.1);
             testCase.assertEqual(pb.settings.jump_end_marker_size, 10);
         end
@@ -295,8 +295,8 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
                 'label interpreter', 'tex', ...
                 'Title Interpreter', 'none'); 
             pb = HybridPlotBuilder();
-            testCase.assertEqual(pb.settings.label_interpreter, "tex");
-            testCase.assertEqual(pb.settings.title_interpreter, "none");
+            testCase.assertEqual(pb.settings.label_interpreter, 'tex');
+            testCase.assertEqual(pb.settings.title_interpreter, 'none');
         end
         
         function testSetXLabelFormat(testCase)
@@ -309,140 +309,140 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         
         function testTitlesAsCellArray(testCase)
             titles{1} = 'Title 1';
-            titles{3} = "Title 3";
+            titles{3} = 'Title 3';
             HybridPlotBuilder()...
                 .titles(titles)...
                 .plotFlows(testCase.sol_3);
-            testCase.assertSubplotTitles("Title 1", "", "Title 3")
+            testCase.assertSubplotTitles('Title 1', '', 'Title 3')
         end
         
         function testErrorTitlesWithOptions(testCase)
-            titles = {"Title 1", "Title 2"}; %#ok<CLARRSTR>
-            fh = @() HybridPlotBuilder().titles(titles, "FontSize", 3);
-            testCase.verifyError(fh, "Hybrid:UnexpectedOptions");
+            titles = {'Title 1', 'Title 2'};
+            fh = @() HybridPlotBuilder().titles(titles, 'FontSize', 3);
+            testCase.verifyError(fh, 'Hybrid:UnexpectedOptions');
         end
         
         function testLabelsAsCellArray(testCase)
             labels{1} = 'Label 1';
-            labels{3} = "Label 3";
+            labels{3} = 'Label 3';
             HybridPlotBuilder()...
                 .labels(labels)...
                 .plotFlows(testCase.sol_3);
-            testCase.assertSubplotYLabels("Label 1", "", "Label 3")
+            testCase.assertSubplotYLabels('Label 1', '', 'Label 3')
         end
         
         function testErrorLabelsWithOptions(testCase)
-            labels = {"Title 1", "Title 2"}; %#ok<CLARRSTR>
-            fh = @() HybridPlotBuilder().labels(labels, "FontSize", 3);
-            testCase.verifyError(fh, "Hybrid:UnexpectedOptions");
+            labels = {'Title 1', 'Title 2'};
+            fh = @() HybridPlotBuilder().labels(labels, 'FontSize', 3);
+            testCase.verifyError(fh, 'Hybrid:UnexpectedOptions');
         end
         
         function testSingleLegend(testCase)
             HybridPlotBuilder()...
-                .legend("A legend")...
+                .legend('A legend')...
                 .plotFlows(testCase.sol_1);
-            testCase.assertLegendLabels("A legend")
+            testCase.assertLegendLabels('A legend')
         end
         
         function testClearLegend(testCase)
             HybridPlotBuilder()...
-                .legend("A legend")...
+                .legend('A legend')...
                 .legend()...
                 .plotFlows(testCase.sol_1);
-            testCase.assertLegendLabels("")
+            testCase.assertLegendLabels('')
         end
         
         function testLegendsInTwoSubplots(testCase)
             HybridPlotBuilder()...
-                .legend("Subplot 1", "Subplot 2")...
+                .legend('Subplot 1', 'Subplot 2')...
                 .plotFlows(testCase.sol_2);
-            testCase.assertLegendLabels("Subplot 1", "Subplot 2");
+            testCase.assertLegendLabels('Subplot 1', 'Subplot 2');
         end
         
         function testTwoLegendsInTwoSubplots(testCase)
             pb = HybridPlotBuilder();
-            pb.legend("Subplot 1.1", "Subplot 2.1")...
+            pb.legend('Subplot 1.1', 'Subplot 2.1')...
                 .plotFlows(testCase.sol_2);
             hold on
-            pb.legend("Subplot 1.2", "Subplot 2.2")...
+            pb.legend('Subplot 1.2', 'Subplot 2.2')...
                 .plotFlows(testCase.sol_2);
-            testCase.assertLegendLabels(["Subplot 1.1","Subplot 1.2"],...
-                                        ["Subplot 2.1","Subplot 2.2"]);
+            testCase.assertLegendLabels({'Subplot 1.1','Subplot 1.2'},...
+                                        {'Subplot 2.1','Subplot 2.2'});
         end
         
         function testTwoLegendsInOneSubplot(testCase)
             pb = HybridPlotBuilder();
-            pb.legend("Legend 1")...
+            pb.legend('Legend 1')...
                 .plotFlows(testCase.sol_1);
             hold on
-            pb.legend("Legend 2")...
+            pb.legend('Legend 2')...
                 .plotFlows(testCase.sol_1);
-            testCase.assertLegendLabels(["Legend 1", "Legend 2"])
+            testCase.assertLegendLabels({'Legend 1', 'Legend 2'})
         end
         
         function testMultipleLegendsIn3DPlot(testCase)
             pb = HybridPlotBuilder();
-            pb.legend("Plot 1")...
+            pb.legend('Plot 1')...
                 .plot(testCase.sol_3);
             hold on
-            pb.legend("Plot 2")...
+            pb.legend('Plot 2')...
                 .plot(testCase.sol_3);
-            testCase.assertLegendLabels(["Plot 1", "Plot 2"])
+            testCase.assertLegendLabels({'Plot 1', 'Plot 2'})
         end
         
         function testLegendWithoutHold(testCase)
             pb = HybridPlotBuilder();
-            pb.legend("Plot 1")...
+            pb.legend('Plot 1')...
                 .plot(testCase.sol_3);
             hold off
-            pb.legend("Plot 2")...
+            pb.legend('Plot 2')...
                 .plot(testCase.sol_2);
-            testCase.assertLegendLabels("Plot 2")
+            testCase.assertLegendLabels('Plot 2')
         end
         
         function testWarnTooManyLegendLabelsInPlotFlows(testCase)
-            pb = HybridPlotBuilder().legend("Subplot 1", "Subplot 2", "Subplot 3");
-            testCase.verifyWarning(@() pb.plotJumps(testCase.sol_2), "HybridPlotBuilder:TooManyLegends");
-            testCase.assertLegendLabels("Subplot 1", "Subplot 2");
+            pb = HybridPlotBuilder().legend('Subplot 1', 'Subplot 2', 'Subplot 3');
+            testCase.verifyWarning(@() pb.plotJumps(testCase.sol_2), 'HybridPlotBuilder:TooManyLegends');
+            testCase.assertLegendLabels('Subplot 1', 'Subplot 2');
         end
         
         function testTooManyLegendLabelsInPhasePlot(testCase)
-            pb = HybridPlotBuilder().legend("Subplot 1", "Subplot 2");
+            pb = HybridPlotBuilder().legend('Subplot 1', 'Subplot 2');
             testCase.verifyWarning(@() pb.plot(testCase.sol_2), ...
-                "HybridPlotBuilder:TooManyLegends");
-            testCase.assertLegendLabels("Subplot 1")
+                'HybridPlotBuilder:TooManyLegends');
+            testCase.assertLegendLabels('Subplot 1')
         end
         
         function testTooFewLegendEntries(testCase)
-            pb = HybridPlotBuilder().legend("Subplot 1");
+            pb = HybridPlotBuilder().legend('Subplot 1');
             fh = @() pb.plotJumps(testCase.sol_2);
-            testCase.verifyWarning(fh, "HybridPlotBuilder:TooFewLegends");
-            testCase.assertLegendLabels("Subplot 1", "")
+            testCase.verifyWarning(fh, 'HybridPlotBuilder:TooFewLegends');
+            testCase.assertLegendLabels('Subplot 1', '')
         end
         
         function testAddLegendEntry(testCase)
-            pb = HybridPlotBuilder().legend("Subplot 1", "Subplot 2");
+            pb = HybridPlotBuilder().legend('Subplot 1', 'Subplot 2');
             pb.plotJumps(testCase.sol_2);
             hold on
             plt = plot([1, 5], [0, 8]);
             q = quiver(1, 1, -1, 2);
-            pb.addLegendEntry(plt, "A plot") % in subplot 2.
-            pb.addLegendEntry(q, "A quiver") % in subplot 2.
-            testCase.assertLegendLabels("Subplot 1", ["Subplot 2", "A plot", "A quiver"])
+            pb.addLegendEntry(plt, 'A plot') % in subplot 2.
+            pb.addLegendEntry(q, 'A quiver') % in subplot 2.
+            testCase.assertLegendLabels('Subplot 1', {'Subplot 2', 'A plot', 'A quiver'})
         end
         
         function testLegendsInMultipleFigures(testCase)
             % A single |HybridPlotBuilder| object can be used to add plots and legends to
             % multiple figures.
             pb = HybridPlotBuilder()...
-                .legend("First Figure")...
+                .legend('First Figure')...
                 .plotFlows(testCase.sol_1); % Ignored in second figure
-            testCase.assertLegendLabels("First Figure")
+            testCase.assertLegendLabels('First Figure')
             
             figure()
-            pb.legend("Second Figure")...
-                .plotFlows(testCase.sol_1); % Still using "pb"
-            testCase.assertLegendLabels("Second Figure")
+            pb.legend('Second Figure')...
+                .plotFlows(testCase.sol_1); % Still using 'pb'
+            testCase.assertLegendLabels('Second Figure')
         end
         
         function testPlotConfig(testCase)  
@@ -463,7 +463,7 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         end
         
         function testPlotConfigNoAutoSubplots(testCase)
-            plt_fnc_callback = @(pb) pb.autoSubplots("off")...
+            plt_fnc_callback = @(pb) pb.autoSubplots('off')...
                                         .slice([3, 2])...
                                         .plotFlows(testCase.sol_3);
             testCase.assertConfigurePlotsCallbackCalls(plt_fnc_callback, 2, {3, 2})
@@ -472,11 +472,11 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         function testPlotConfigForPlotFunction(testCase)       
             % If there are two or three components, then one plot is drawn and
             % the component id is given as -1.
-            plt_fnc_callback = @(pb) pb.autoSubplots("off").plot(testCase.sol_3);
+            plt_fnc_callback = @(pb) pb.autoSubplots('off').plot(testCase.sol_3);
             testCase.assertConfigurePlotsCallbackCalls(plt_fnc_callback, 1, {-1})
             
             % If there are four or more components, then defaults to plotFlows
-            plt_fnc_callback = @(pb) pb.autoSubplots("off").plot(testCase.sol_4);
+            plt_fnc_callback = @(pb) pb.autoSubplots('off').plot(testCase.sol_4);
             testCase.assertConfigurePlotsCallbackCalls(plt_fnc_callback, 4, {1, 2, 3, 4})
         end
                
@@ -560,7 +560,7 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         end
         
         function assertSubplotCount(this, rows, cols)
-            if ~exist("cols", "var")
+            if ~exist('cols', 'var')
                 cols = 1;
             end
             [nrows, ncols] = subplotCount(gcf);
@@ -569,19 +569,19 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         end
         
         function assertSubplotTitles(this, varargin)
-            this.assertSubplotValues("Title", varargin{:})
+            this.assertSubplotValues('Title', varargin{:})
         end
         
         function assertSubplotXLabels(this, varargin)
-            this.assertSubplotValues("XLabel", varargin{:})
+            this.assertSubplotValues('XLabel', varargin{:})
         end
         
         function assertSubplotYLabels(this, varargin)
-            this.assertSubplotValues("YLabel", varargin{:})
+            this.assertSubplotValues('YLabel', varargin{:})
         end
         
         function assertSubplotZLabels(this, varargin)
-            this.assertSubplotValues("ZLabel", varargin{:})
+            this.assertSubplotValues('ZLabel', varargin{:})
         end
         
         function assertSubplotValues(this, key, varargin)
@@ -612,18 +612,25 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         end
         
         function assertLegendLabels(this, varargin)
-            assert(~isempty(varargin), "Empty legend entries must be entered as empty strings or char arrays")
+            if verLessThan('matlab', '9.1')
+                this.assumeFail('Our legend checking doesn''t work prior to Matlab 2016b. Please verify manually.')
+            end
+            
+            assert(~isempty(varargin), 'Empty legend entries must be entered as empty strings or char arrays')
             labels_expected = varargin;
+            
             function checkLabels(sp, sp_ndx)
-                expected_labels = labels_expected{sp_ndx};
+                expected_label = labels_expected{sp_ndx};
                 lgd = sp.Legend;
-                if isa(lgd, "matlab.graphics.GraphicsPlaceholder")
+                if isa(lgd, 'matlab.graphics.GraphicsPlaceholder')
                     actual = '';
                 else
-                    actual = char(lgd.String(:));
+                    actual = lgd.String;
+                    if length(actual) == 1
+                        actual = actual{1};
+                    end
                 end
-                expected = char(expected_labels(:));
-                this.assertEqual(actual, expected);
+                this.assertEqual(actual, expected_label);
             end
             forEachSubplot(@checkLabels);
         end

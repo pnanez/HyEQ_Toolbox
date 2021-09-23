@@ -8,13 +8,17 @@ classdef MockHybridSubsystem < HybridSubsystem
     %%%%%% System Data %%%%%% 
     methods
             
+        function obj = MockHybridSubsystem(varargin)
+            obj = obj@HybridSubsystem(varargin{:});
+        end
+        
         % The jumpMap function must be implemented with the following 
         % signature (t and j cannot be ommited)
-        function xdot = flowMap(this, x, u, t, j)
+        function xdot = flowMap(this, x, u, t, j) %#ok<INUSD>
             xdot = zeros(this.state_dimension, 1);
         end
 
-        function xplus = jumpMap(this, x, u, t, j) 
+        function xplus = jumpMap(this, x, u, t, j)  %#ok<INUSD>
             this.checkXU(x, u)
             xplus = x;
         end 

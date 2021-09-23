@@ -37,7 +37,7 @@ classdef CheckHybridSolutionTest < matlab.unittest.TestCase
             
             testCase.verifyError(...
                 @() checkHybridSolution(sol, f_vals, g_vals, C_vals, D_vals, priority),...
-                "HybridSolution:IncorrectFlow")
+                'HybridSolution:IncorrectFlow')
         end
         
         function testIncorrectJumps(testCase) 
@@ -58,7 +58,7 @@ classdef CheckHybridSolutionTest < matlab.unittest.TestCase
             
             testCase.verifyError(...
                 @() checkHybridSolution(sol, f_vals, g_vals, C_vals, D_vals, priority),...
-                "HybridSolution:IncorrectJump")
+                'HybridSolution:IncorrectJump')
         end
     end
     
@@ -91,7 +91,7 @@ for k = 1:(length(t)-1)
         doFlow = false;
         doJump = false;
     end
-    assert(~(doFlow && doJump), "Only one of doFlow and doJump can be true.")
+    assert(~(doFlow && doJump), 'Only one of doFlow and doJump can be true.')
     if doFlow
         t(k+1) = t(k) + dt;
         j(k+1) = j(k);

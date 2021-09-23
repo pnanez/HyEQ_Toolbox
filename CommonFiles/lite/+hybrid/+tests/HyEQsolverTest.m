@@ -10,7 +10,7 @@ classdef HyEQsolverTest < matlab.unittest.TestCase
             x0 = 1;
             tspan = [0, 100];
             jspan = [1, 100];
-            [t, ~, ~] = HyEQsolver(f, g, C, D, x0, tspan, jspan); % "rule" not specified.
+            [t, ~, ~] = HyEQsolver(f, g, C, D, x0, tspan, jspan); % 'rule' not specified.
             
             testCase.assertEqual(t(end), 0)
         end
@@ -108,9 +108,9 @@ classdef HyEQsolverTest < matlab.unittest.TestCase
             C = @(x) x(1) >= 0 || x(2) >= 0;
             D = @(x) x(1) <= 0 && x(2) <= 0;
             
-            options = odeset("Refine", 1);
+            options = odeset('Refine', 1);
             [t, j, x] = HyEQsolver(f, g, C, D, ...
-                                x0, tspan, jspan, 1, options, [], [], "silent");
+                                x0, tspan, jspan, 1, options, [], [], 'silent');
                             
             sol = HybridSolution.fromLegacyData(t, j, x, C, D, tspan, jspan);
             [~, ~, C_vals, D_vals] = HybridSystem(f, g, C, D).generateFGCD(sol);
@@ -179,12 +179,12 @@ end
 
 function verifySolver(f, g, C, D, x0, tspan, jspan, priority)
 import hybrid.tests.internal.*
-if ~exist("priority", "var")
+if ~exist('priority', 'var')
     priority = HybridPriority.default();
 end
 % We enforce a small maximum step so that a first-order approximation of
 % dxdt is close to f(x), allowing us to verify they are almost equal.
-options = odeset("MaxStep", 0.01); 
+options = odeset('MaxStep', 0.01); 
 [t, j, x] = HyEQsolver(f, g, C, D, x0, tspan, jspan, priority, options);
 sol = HybridSolution.fromLegacyData(t, j, x, C, D, tspan, jspan);
 [f_vals, g_vals, C_vals, D_vals] = HybridSystem(f, g, C, D).generateFGCD(sol);

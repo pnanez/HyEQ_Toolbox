@@ -4,7 +4,7 @@ classdef getUsedArgumentsTest < matlab.unittest.TestCase
        
         function testErrorIfNotAFunctionHandle(testCase)
             import hybrid.internal.*
-            testCase.verifyError(@() getUsedArguments(123), "");
+            testCase.verifyError(@() getUsedArguments(123), '');
         end
         
         function testErrorIfLocalFunctionUsed(testCase)
@@ -12,7 +12,7 @@ classdef getUsedArgumentsTest < matlab.unittest.TestCase
             function localFunction(x, t, j) %#ok<INUSD>
                 % Empty
             end
-            testCase.verifyError(@() getUsedArguments(@localFunction), "");
+            testCase.verifyError(@() getUsedArguments(@localFunction), '');
         end
         
         function testNoArgs(testCase)

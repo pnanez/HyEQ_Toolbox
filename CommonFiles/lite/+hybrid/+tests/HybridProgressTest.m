@@ -22,7 +22,7 @@ classdef HybridProgressTest < matlab.unittest.TestCase
             hp.j_cancel = Inf;
             
             max_step = 1e-2;
-            config = HybridSolverConfig("MaxStep", 1e-2).progress(hp);
+            config = HybridSolverConfig('MaxStep', 1e-2).progress(hp);
             sys = ExampleBouncingBallHybridSystem();
             tspan = [0, 10];
             jspan = [0, 10];
@@ -77,7 +77,7 @@ classdef HybridProgressTest < matlab.unittest.TestCase
             hp.min_delay = 0;
             hp.t_decimal_places = 1;
             
-            config = HybridSolverConfig("MaxStep", 1e-2).progress(hp);
+            config = HybridSolverConfig('MaxStep', 1e-2).progress(hp);
             sys = ExampleBouncingBallHybridSystem();
             tspan = [0, 1];
             jspan = [0, 1];

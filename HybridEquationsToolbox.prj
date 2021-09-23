@@ -1,13 +1,13 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration build-checksum="2946357043" file="C:\Users\pwintz\code\hybrid-toolbox\HybridEquationsToolbox.prj" location="C:\Users\pwintz\code\hybrid-toolbox" name="HybridEquationsToolbox" target="target.toolbox" target-name="Package Toolbox">
+  <configuration build-checksum="4009313989" file="C:\Users\pwintz\code\hybrid-toolbox\HybridEquationsToolbox.prj" location="C:\Users\pwintz\code\hybrid-toolbox" name="HybridEquationsToolbox" target="target.toolbox" target-name="Package Toolbox">
     <param.appname>Hybrid Equations Toolbox</param.appname>
     <param.authnamewatermark />
     <param.email>pwintz@ucsc.edu</param.email>
-    <param.company>Hybrid System Laboratory at UC, Santa Cruz</param.company>
+    <param.company>Hybrid System Laboratory; UC, Santa Cruz</param.company>
     <param.summary />
     <param.description />
     <param.screenshot />
-    <param.version>3.0.0.13</param.version>
+    <param.version>3.0.0.15</param.version>
     <param.output>${PROJECT_ROOT}\Hybrid Equations Toolbox.mltbx</param.output>
     <param.products.name />
     <param.products.id />
@@ -42,30 +42,13 @@ configure_development_path.m
 % **/*.bak
 **/*.tex
 **/*.asv</param.exclude.filters>
-    <param.exclude.pcodedmfiles>true</param.exclude.pcodedmfiles>
     <param.examples>&lt;?xml version="1.0" encoding="utf-8"?&gt;
 &lt;examples&gt;
-   &lt;exampleCategory name="ex_1_2"&gt;
-      &lt;example name="run_HyEQsolver_Help" type="html"&gt;
-         &lt;file type="source"&gt;/helpFiles/Matlab_Publish/MatlabScripts/ex_1_2/html/run_HyEQsolver_Help.html&lt;/file&gt;
-         &lt;file type="main"&gt;/helpFiles/Matlab_Publish/MatlabScripts/ex_1_2/run_HyEQsolver_Help.m&lt;/file&gt;
-         &lt;file type="thumbnail"&gt;/helpFiles/Matlab_Publish/MatlabScripts/ex_1_2/html/run_HyEQsolver_Help.png&lt;/file&gt;
-         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/ex_1_2/html/run_HyEQsolver_Help_01.png&lt;/file&gt;
-         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/ex_1_2/html/run_HyEQsolver_Help_02.png&lt;/file&gt;
-         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/ex_1_2/html/run_HyEQsolver_Help_03.png&lt;/file&gt;
-         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/ex_1_2/html/run_HyEQsolver_Help_04.png&lt;/file&gt;
-      &lt;/example&gt;
-   &lt;/exampleCategory&gt;
-   &lt;exampleCategory name="Example_publish_template"&gt;
-      &lt;example name="Template_to_publish" type="html"&gt;
-         &lt;file type="source"&gt;/helpFiles/Matlab_Publish/MatlabScripts/Example_publish_template/html/Template_to_publish.html&lt;/file&gt;
-         &lt;file type="main"&gt;/helpFiles/Matlab_Publish/MatlabScripts/Example_publish_template/Template_to_publish.m&lt;/file&gt;
-         &lt;file type="thumbnail"&gt;/helpFiles/Matlab_Publish/MatlabScripts/Example_publish_template/html/Template_to_publish.png&lt;/file&gt;
-         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/Example_publish_template/html/Template_to_publish_01.png&lt;/file&gt;
-         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/Example_publish_template/html/Template_to_publish_02.png&lt;/file&gt;
-         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/Example_publish_template/html/Template_to_publish_03.png&lt;/file&gt;
-         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/Example_publish_template/html/Template_to_publish_04.png&lt;/file&gt;
-         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/Example_publish_template/html/Template_to_publish_05.png&lt;/file&gt;
+   &lt;exampleCategory name="lite"&gt;
+      &lt;example name="HybridPlotBuilder" type="html"&gt;
+         &lt;file type="source"&gt;/CommonFiles/lite/html/HybridPlotBuilder.html&lt;/file&gt;
+         &lt;file type="main"&gt;/CommonFiles/lite/HybridPlotBuilder.m&lt;/file&gt;
+         &lt;file type="thumbnail"/&gt;
       &lt;/example&gt;
    &lt;/exampleCategory&gt;
    &lt;exampleCategory name="v3"&gt;
@@ -124,6 +107,7 @@ configure_development_path.m
          &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_37.png&lt;/file&gt;
          &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_38.png&lt;/file&gt;
          &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_39.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridPlotBuilder_demo_40.png&lt;/file&gt;
       &lt;/example&gt;
       &lt;example name="HybridSystem_demo" type="html"&gt;
          &lt;file type="source"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridSystem_demo.html&lt;/file&gt;
@@ -131,6 +115,7 @@ configure_development_path.m
          &lt;file type="thumbnail"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridSystem_demo.png&lt;/file&gt;
          &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridSystem_demo_01.png&lt;/file&gt;
          &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridSystem_demo_02.png&lt;/file&gt;
+         &lt;file type="image"&gt;/helpFiles/Matlab_Publish/MatlabScripts/v3.0/html/HybridSystem_demo_03.png&lt;/file&gt;
       &lt;/example&gt;
    &lt;/exampleCategory&gt;
 &lt;/examples&gt;</param.examples>
@@ -166,7 +151,6 @@ configure_development_path.m
     <unset>
       <param.authnamewatermark />
       <param.email />
-      <param.company />
       <param.summary />
       <param.description />
       <param.screenshot />

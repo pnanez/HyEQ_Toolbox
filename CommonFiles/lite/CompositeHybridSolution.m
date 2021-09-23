@@ -38,8 +38,8 @@ classdef CompositeHybridSolution < HybridSolution
                         end
                     end
                 case '.'
-                    if strcmp(s(1).subs, "subsys_sols")
-                        msg = {'Property "subsys_sols" is private.'
+                    if strcmp(s(1).subs, 'subsys_sols')
+                        msg = {'Property ''subsys_sols'' is private.'
                             'Reference subsolutions with parentheses and one of the following:'
                             '1. index number, (e.g., sol(1))'
                             '2. subsystem object, (e.g., sol(subsys1)) or '
@@ -70,7 +70,7 @@ classdef CompositeHybridSolution < HybridSolution
            % n is the total number of indices in the expression
 
            if isscalar(this)
-               assert(n == 1, "Using multiple indexes (i.e., 'sol(end, 1)') is not supported on CompositeHybridSolution objects.");
+               assert(n == 1, 'Using multiple indexes (i.e., ''sol(end, 1)'') is not supported on CompositeHybridSolution objects.');
                ndx = length(this.subsys_sols);
            else
                % Handle the case where 'this' is an array.

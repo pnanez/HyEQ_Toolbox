@@ -53,28 +53,28 @@ classdef PlotSettings < matlab.mixin.Copyable
         % Text
         DEFAULT_LABEL_SIZE = 10;
         DEFAULT_TITLE_SIZE = 11;
-        DEFAULT_LABEL_INTERPRETER = "latex";
-        DEFAULT_TITLE_INTERPRETER = "latex";
+        DEFAULT_LABEL_INTERPRETER = 'latex';
+        DEFAULT_TITLE_INTERPRETER = 'latex';
         
         % Text data
-        DEFAULT_COMPONENT_TITLES = [];
-        DEFAULT_COMPONENT_LABELS = [];   
-        DEFAULT_COMPONENT_LEGEND_LABELS = []; 
+        DEFAULT_COMPONENT_TITLES = {};
+        DEFAULT_COMPONENT_LABELS = {};   
+        DEFAULT_COMPONENT_LEGEND_LABELS = {}; 
         
         DEFAULT_LEGEND_OPTIONS = {};
         
         % Flows
-        DEFAULT_FLOW_COLOR = "blue";
+        DEFAULT_FLOW_COLOR = 'blue';
         DEFAULT_FLOW_LINE_WIDTH = 0.5;
-        DEFAULT_FLOW_LINE_STYLE = "-"
+        DEFAULT_FLOW_LINE_STYLE = '-'
         
         % Jumps
-        DEFAULT_JUMP_COLOR = "red";
+        DEFAULT_JUMP_COLOR = 'red';
         DEFAULT_JUMP_LINE_WIDTH = 0.5;
-        DEFAULT_JUMP_LINE_STYLE = "--";
-        DEFAULT_JUMP_START_MARKER = ".";
+        DEFAULT_JUMP_LINE_STYLE = '--';
+        DEFAULT_JUMP_START_MARKER = '.';
         DEFAULT_JUMP_START_MARKER_SIZE = 6;
-        DEFAULT_JUMP_END_MARKER = "*";
+        DEFAULT_JUMP_END_MARKER = '*';
         DEFAULT_JUMP_END_MARKER_SIZE = 6;
         
         % Axis Labels
@@ -104,14 +104,14 @@ classdef PlotSettings < matlab.mixin.Copyable
         
         function set(this, varargin)
             if mod(length(varargin), 2) ~= 0
-                error("HybridPlotBuiderDefaults:MissingValue", ...
-                    "Must have an even number of Name/Value arguments") 
+                error('Hybrid:MissingValue', ...
+                    'Must have an even number of Name/Value arguments') 
             end
             for k = 1:2:length(varargin)
                property_name = varargin{k};
-               if ~isstring(property_name) && ~ischar(property_name)
-                   error("HybridPlotBuiderDefaults:NameNotString", ...
-                       "Expected a string for the name, but instead was %s", ...
+               if ~isa(property_name, 'string') && ~ischar(property_name)
+                   error('Hybrid:NameNotString', ...
+                       'Expected a string for the name, but instead was %s', ...
                        class(property_name));
                end
                value = varargin{k+1};
@@ -160,8 +160,8 @@ classdef PlotSettings < matlab.mixin.Copyable
         function reset(this)
             names = hybrid.internal.PlotSettings.getSettingNames();
             for name = names
-                default_name = "DEFAULT_" + upper(name);
-                this.(name) = this.(default_name);
+                default_name = strcat('DEFAULT_', upper(name));
+                this.(name{1}) = this.(default_name{1});
             end
         end
     end    
@@ -203,18 +203,18 @@ classdef PlotSettings < matlab.mixin.Copyable
         end 
     
         function val = labelArguments(this)
-            val = {"interpreter", this.label_interpreter, ...
-                   "FontSize", this.label_size};
+            val = {'interpreter', this.label_interpreter, ...
+                   'FontSize', this.label_size};
         end 
     
         function val = titleArguments(this)
-            val = {"interpreter", this.title_interpreter, ...
-                    "FontSize", this.title_size};
+            val = {'interpreter', this.title_interpreter, ...
+                    'FontSize', this.title_size};
         end 
         
         function val = legendArguments(this)
-            val = {"Interpreter", this.label_interpreter, ...
-                   "FontSize", this.label_size};
+            val = {'Interpreter', this.label_interpreter, ...
+                   'FontSize', this.label_size};
            val = [val, this.legend_options];
         end 
         
@@ -224,13 +224,13 @@ classdef PlotSettings < matlab.mixin.Copyable
         function set.title_interpreter(this, interpreter)
             % Set the text interpreter used in titles. 
             check_interpreter(interpreter)
-            this.title_interpreter = string(interpreter);
+            this.title_interpreter = char(interpreter);
         end 
         
         function set.label_interpreter(this, interpreter)
             % Set the text interpreter used in labels and legend entries. 
             check_interpreter(interpreter);
-            this.label_interpreter = string(interpreter);
+            this.label_interpreter = char(interpreter);
         end
         
         function set.flow_color(this, color)
@@ -240,12 +240,13 @@ classdef PlotSettings < matlab.mixin.Copyable
         
         function set.flow_line_style(this, style)
             style = convert_empty_arg_to_none_string(style);
-            this.flow_line_style = string(style);
+            assert_ischar_or_isstring(style)
+            this.flow_line_style = char(style);
         end
         
         function set.flow_line_width(this, width)
-            assert(isnumeric(width), "Line width must be numeric")
-            assert(width > 0, "Line width must be positive")
+            assert(isnumeric(width), 'Line width must be numeric')
+            assert(width > 0, 'Line width must be positive')
             this.flow_line_width = width;
         end
         
@@ -256,55 +257,70 @@ classdef PlotSettings < matlab.mixin.Copyable
         
         function set.jump_line_style(this, style)
             style = convert_empty_arg_to_none_string(style);
-            this.jump_line_style = string(style);
+            assert_ischar_or_isstring(style);
+            this.jump_line_style = char(style);
         end
         
         function set.jump_line_width(this, width)
-            assert(isnumeric(width), "Line width must be numeric")
-            assert(width > 0, "Line width must be positive")
+            assert(isnumeric(width), 'Line width must be numeric')
+            assert(width > 0, 'Line width must be positive')
             this.jump_line_width = width;
         end
         
         function set.jump_start_marker(this, marker)
             marker = convert_empty_arg_to_none_string(marker);
-            this.jump_start_marker = string(marker);
+            assert_ischar_or_isstring(marker);
+            this.jump_start_marker = char(marker);
         end
         
         function set.jump_end_marker(this, marker)
             marker = convert_empty_arg_to_none_string(marker);
-            this.jump_end_marker = string(marker);
+            assert_ischar_or_isstring(marker);
+            this.jump_end_marker = char(marker);
         end
         
         function set.jump_start_marker_size(this, size)
-            assert(isnumeric(size), "Marker size must be numeric")
-            assert(size > 0, "Marker size must be positive")
+            assert(isnumeric(size), 'Marker size must be numeric')
+            assert(size > 0, 'Marker size must be positive')
             this.jump_start_marker_size = size;
         end
         
         function set.jump_end_marker_size(this, size)
-            assert(isnumeric(size), "Marker size must be numeric")
-            assert(size > 0, "Marker size must be positive")
+            assert(isnumeric(size), 'Marker size must be numeric')
+            assert(size > 0, 'Marker size must be positive')
             this.jump_end_marker_size = size;
         end
         
         function set.x_label_format(this, fmt)
-            this.x_label_format = string_or_empty(fmt);
+            this.x_label_format = char_or_empty(fmt);
         end
         
         function set.t_label(this, fmt)
-            this.t_label = string_or_empty(fmt);
+            this.t_label = char_or_empty(fmt);
         end
         
         function set.j_label(this, fmt)
-            this.j_label = string_or_empty(fmt);
+            this.j_label = char_or_empty(fmt);
         end        
+        
+        function set.component_titles(this, titles)
+           this.component_titles = cellstr(titles); 
+        end   
+        
+        function set.component_labels(this, labels)
+           this.component_labels = cellstr(labels); 
+        end   
+        
+        function set.component_legend_labels(this, labels)
+           this.component_legend_labels = cellstr(labels); 
+        end
         
         function set.component_indices(this, component_indices)
             assert(isempty(component_indices) || isvector(component_indices))
             if size(component_indices, 1) > 1
                 % We need component_indices to be a row vector so that when
-                % we use it to create a for-loop (i.e., "for
-                % i=component_indices"), every entry is used for 
+                % we use it to create a for-loop (i.e., 'for
+                % i=component_indices'), every entry is used for 
                 % one iteration each. If component_indices is a column
                 % vector, instead, then the entire column is used as the
                 % value of 'i' for only a single iteration.
@@ -352,14 +368,14 @@ classdef PlotSettings < matlab.mixin.Copyable
             end
             
             % Otherwise, use defaults, given here.
-            if strcmp(this.label_interpreter, "none")
-                value = "t"; % No formatting
-            elseif strcmp(this.label_interpreter, "tex")
-                value = "t";
-            elseif strcmp(this.label_interpreter, "latex")
-                value = "$t$";
+            if strcmp(this.label_interpreter, 'none')
+                value = 't'; % No formatting
+            elseif strcmp(this.label_interpreter, 'tex')
+                value = 't';
+            elseif strcmp(this.label_interpreter, 'latex')
+                value = '$t$';
             else
-                error("text interpreter '%s' unrecognized",... 
+                error('text interpreter ''%s'' unrecognized',... 
                             this.label_interpreter);
             end
         end
@@ -371,14 +387,14 @@ classdef PlotSettings < matlab.mixin.Copyable
             end
             
             % Otherwise, use defaults, given here.
-            if strcmp(this.label_interpreter, "none")
-                value = "j"; % No formatting
-            elseif strcmp(this.label_interpreter, "tex")
-                value = "j";
-            elseif strcmp(this.label_interpreter, "latex")
-                value = "$j$";
+            if strcmp(this.label_interpreter, 'none')
+                value = 'j'; % No formatting
+            elseif strcmp(this.label_interpreter, 'tex')
+                value = 'j';
+            elseif strcmp(this.label_interpreter, 'latex')
+                value = '$j$';
             else
-                error("text interpreter '%s' unrecognized",... 
+                error('text interpreter ''%s'' unrecognized',... 
                             this.label_interpreter);
             end
         end
@@ -390,14 +406,14 @@ classdef PlotSettings < matlab.mixin.Copyable
             end
             
             % Otherwise, use defaults, given here.
-            if strcmp(this.label_interpreter, "none")
-                fmt = "x(%d)"; % No formatting
-            elseif strcmp(this.label_interpreter, "tex")
-                fmt = "x_{%d}";
-            elseif strcmp(this.label_interpreter, "latex")
-                fmt = "$x_{%d}$";
+            if strcmp(this.label_interpreter, 'none')
+                fmt = 'x(%d)'; % No formatting
+            elseif strcmp(this.label_interpreter, 'tex')
+                fmt = 'x_{%d}';
+            elseif strcmp(this.label_interpreter, 'latex')
+                fmt = '$x_{%d}$';
             else
-                error("text interpreter '%s' unrecognized",...
+                error('text interpreter ''%s'' unrecognized',...
                     this.label_interpreter);
             end
         end 
@@ -413,16 +429,16 @@ classdef PlotSettings < matlab.mixin.Copyable
                 title = this.component_titles(title_id);
             else
                 % No title
-                title = "";
+                title = '';
                 return
             end            
         end
         
         function label = labelFromId(this, label_id)
-            if strcmp("t", label_id)
+            if strcmp('t', label_id)
                 label = this.getTLabel();
                 return
-            elseif strcmp("j", label_id)
+            elseif strcmp('j', label_id)
                 label = this.getJLabel();
                 return
             elseif strcmp('single', label_id)
@@ -445,7 +461,7 @@ classdef PlotSettings < matlab.mixin.Copyable
     
     methods % Candidates to move to a 'PlotData' class
         function label = createLegendLabel(this, index)
-            if strcmp("single", index) || index == -1
+            if strcmp('single', index) || index == -1
                 if isempty(this.component_legend_labels)
                     label = [];
                 else
@@ -457,7 +473,7 @@ classdef PlotSettings < matlab.mixin.Copyable
             if index <= length(this.component_legend_labels)
                 label = this.component_legend_labels(index);  
             else
-                % warning("No label given for plot")
+                % warning('No label given for plot')
                 label = [];
             end
         end
@@ -474,9 +490,10 @@ classdef PlotSettings < matlab.mixin.Copyable
             else
                 indices_to_plot = this.component_indices';
             end
+            assert(~isempty(indices_to_plot), 'There must be at least one index to plot')
             assert(min(indices_to_plot) >= 1)
             assert(max(indices_to_plot) <= n, ...
-                "max(indices_to_plot)=%d is greater than n=%d", ...
+                'max(indices_to_plot)=%d is greater than n=%d', ...
                 max(indices_to_plot), n)
             assert(size(indices_to_plot, 2) == 1)
         end
@@ -487,7 +504,7 @@ classdef PlotSettings < matlab.mixin.Copyable
             % Get a list of all the setting names as a string array.
             mc = ?hybrid.internal.PlotSettings;
             props = findobj(mc.PropertyList,'Constant',false);
-            names = string({props.Name});
+            names = {props.Name};
         end
     end
 end
@@ -499,46 +516,52 @@ function name = sanitize_property_name(name)
 % 3. Replace spaces with underscores. 
 % 
 % Example:
-% "Title Size " -> "title_size"
+% 'Title Size ' -> 'title_size'
 name = lower(name);
 name = strtrim(name);
-name = replace(name, " ", "_");
+
+% Replace underscores with spaces.
+name = safe_replace(name, ' ', '_');
+name = char(name);
 end
 
 function arg = parse_logical_arg(arg)
 if islogical(arg)
-    assert(isscalar(arg), "Argument must be a scalar")
+    assert(isscalar(arg), 'Argument must be a scalar')
     return
 elseif isnumeric(arg)
-    assert(isscalar(arg), "Argument must be a scalar")
-    assert(arg == 0 || arg == 1, "Numeric value must be 0 or 1.");
+    assert(isscalar(arg), 'Argument must be a scalar')
+    assert(arg == 0 || arg == 1, 'Numeric value must be 0 or 1.');
     arg = logical(arg);
-elseif strcmp("on", arg)
+elseif strcmp('on', arg)
     arg = true;
-elseif strcmp("off", arg)
+elseif strcmp('off', arg)
     arg = false;
 else
-    error("String value must be 'on' or 'off'")
+    error('String value must be ''on'' or ''off''')
 end
 end
 
 function s = convert_empty_arg_to_none_string(s)
-if isempty(s) || strcmp(s, "")
-    s = "none";
+if isempty(s) || strcmp(s, '')
+    s = 'none';
 end
 end
 
 function check_interpreter(interpreter)
-INTERPRETERS = ["none", "tex", "latex"];
+INTERPRETERS = {'none', 'tex', 'latex'};
 if ~ismember(interpreter, INTERPRETERS) % works for both strings and char arrays.
-    e = MException("Hybrid:InvalidInterpreter", ...
-        "'%s' is not a valid interpreter. Use one of these values: 'none' | 'tex' | 'latex'.", ...
+    e = MException('Hybrid:InvalidInterpreter', ...
+        '''%s'' is not a valid interpreter. Use one of these values: ''none'' | ''tex'' | ''latex''.', ...
         interpreter);
     throwAsCaller(e)
 end        
 end
 
 function color = checkColorArg(color)
+    if isa(color, 'string')
+        color = char(color);
+    end
     if verLessThan('matlab', '9.9')
         % The validatecolor function was added in R2020b (v9.9), so we
         % first check the version to make sure we can call it.
@@ -561,17 +584,41 @@ function color = checkColorArg(color)
                    'string ("red", "green", ...), '
                    'RGB triplet ([1, 0, 0], [0, 1, 0], ...), or '
                    'hexidecimal code (''#FF0000'', ''#00FF00'', ...).'};
-            e = MException("Hybrid:InvalidColor", sprintf('%s\n\t', msg{:}));
+            e = MException('Hybrid:InvalidColor', '%s\n\t', msg{:});
             e = addCause(e, e_caught);
             throwAsCaller(e)
         end
     end
 end
 
-function s = string_or_empty(s)
+function s = char_or_empty(s)
     if isempty(s)
         s = [];
     else
-        s = string(s);
+        assert_ischar_or_isstring(s);
+        s = char(s);
     end
+end
+
+function assert_ischar_or_isstring(s)
+if ~ischar(s) && ~isa(s, 'string')
+   e = MException('Hybrid:InvalidArgument', ...
+       'Argument must be a char array or (on Matlab 2016b or later) a string. Instead is was a %s.',...
+       class(s));
+   throwAsCaller(e);
+end
+end
+
+function str = safe_replace(str, old_char, new_char)
+try
+    str = replace(str, old_char, new_char);
+catch
+    % The replace function is not defined prior to 2016b, when strings were
+    % introduced. Thus, we compute the replacement manually.
+    assert(ischar(str), 'Expected char array, instead was ', class(str))
+    assert(length(old_char) == 1, 'Only one char can be replaced')
+    assert(length(new_char) == 1, 'Only one char can be replaced')
+    is_old_char = str == old_char;
+    str(is_old_char) = new_char;
+end
 end

@@ -52,7 +52,7 @@ classdef VerifyHybridSolutionDomainTest < matlab.unittest.TestCase
             % Now check that it fails with FLOW priority
             priority = HybridPriority.FLOW;
             f = @() verifyHybridSolutionDomain(t, j, C, D, priority);
-            testCase.verifyError(f, "HybridSolution:InvalidDomain")
+            testCase.verifyError(f, 'HybridSolution:InvalidDomain')
             
             % Check if C is zero at the jump with FLOW priority 
             priority = HybridPriority.FLOW;
@@ -72,13 +72,13 @@ classdef VerifyHybridSolutionDomainTest < matlab.unittest.TestCase
             % Check that it fails with default priority and D=1 at some point.
             D(n1) = 1;
             f = @() verifyHybridSolutionDomain(t, j, C, D);
-            testCase.verifyError(f, "HybridSolution:InvalidDomain")
+            testCase.verifyError(f, 'HybridSolution:InvalidDomain')
             
             %  Check that it fails with  with explicit JUMP priority and D=1 at some point
             priority = HybridPriority.JUMP;
             D(n1) = 1; 
             f = @() verifyHybridSolutionDomain(t, j, C, D, priority);
-            testCase.verifyError(f, "HybridSolution:InvalidDomain")
+            testCase.verifyError(f, 'HybridSolution:InvalidDomain')
             
             % Check that is OK with FLOW priority and D=1 at some point
             priority = HybridPriority.FLOW;
@@ -90,7 +90,7 @@ classdef VerifyHybridSolutionDomainTest < matlab.unittest.TestCase
             C(n1) = 0;
             D(n1) = 0; 
             f = @() verifyHybridSolutionDomain(t, j, C, D, priority);
-            testCase.verifyError(f, "HybridSolution:InvalidDomain")
+            testCase.verifyError(f, 'HybridSolution:InvalidDomain')
         end
         
         function testIncorrectFlowOutsideJumpAndFlowSet(testCase)
@@ -104,7 +104,7 @@ classdef VerifyHybridSolutionDomainTest < matlab.unittest.TestCase
             priority = HybridPriority.JUMP;
             
             f = @() verifyHybridSolutionDomain(t, j, C, D, priority);
-            testCase.verifyError(f, "HybridSolution:InvalidDomain")
+            testCase.verifyError(f, 'HybridSolution:InvalidDomain')
         end
         
         function testIncorrectFlowWhenJumpPriority(testCase)
@@ -118,7 +118,7 @@ classdef VerifyHybridSolutionDomainTest < matlab.unittest.TestCase
             priority = HybridPriority.JUMP;
             
             f = @() verifyHybridSolutionDomain(t, j, C, D, priority);
-            testCase.verifyError(f, "HybridSolution:InvalidDomain")
+            testCase.verifyError(f, 'HybridSolution:InvalidDomain')
         end
        
     end

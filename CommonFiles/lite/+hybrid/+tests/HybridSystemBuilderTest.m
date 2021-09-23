@@ -7,7 +7,7 @@ classdef HybridSystemBuilderTest < matlab.unittest.TestCase
         function testDefaultBuilderProducesTrivalSolution(testCase)
             system = HybridSystemBuilder().build();
             x0 = 0.34;
-            sol = system.solve(x0, [0, 1], [0, 10], "silent");
+            sol = system.solve(x0, [0, 1], [0, 10], 'silent');
             testCase.assertEqual(sol.t, 0);
             testCase.assertEqual(sol.j, 0);
             testCase.assertEqual(sol.x, x0);
@@ -41,7 +41,7 @@ classdef HybridSystemBuilderTest < matlab.unittest.TestCase
                             .jumpSetIndicator(@(x) 1);
             system = builder.build();
             
-            sol = system.solve(12, [0, 100], [1, 5], "silent");
+            sol = system.solve(12, [0, 100], [1, 5], 'silent');
 
             testCase.assertEqual(sol.t(end), 0);
             testCase.assertEqual(sol.j(end), 5);
@@ -53,7 +53,7 @@ classdef HybridSystemBuilderTest < matlab.unittest.TestCase
                             .jumpSetIndicator(@(x) 1);
 
             system = builder.build();
-            config = HybridSolverConfig("silent").jumpPriority();
+            config = HybridSolverConfig('silent').jumpPriority();
             sol = system.solve(12, [0, 100], [1, 5], config);
 
             testCase.assertEqual(sol.t(end), 0);
@@ -69,7 +69,7 @@ classdef HybridSystemBuilderTest < matlab.unittest.TestCase
             
             tspan = [0, 100];
             jspan = [1, 5];
-            config = HybridSolverConfig("silent").flowPriority();
+            config = HybridSolverConfig('silent').flowPriority();
             sol = system.solve(12, tspan, jspan, config);
 
             testCase.assertEqual(sol.t(end), 100);

@@ -55,8 +55,8 @@ classdef PopupHybridProgress < HybridProgress
             
             if show_update
                 this.openWaitbar()
-                msg = sprintf("Solving Hybrid Sysytem. t=%." + ...
-                        this.t_decimal_places + "f, j=%d", this.t, this.j);
+                msg_fmt = strcat('Solving Hybrid Sysytem. t=%.', num2str(this.t_decimal_places), 'f, j=%d');
+                msg = sprintf(msg_fmt, this.t, this.j);
                 waitbar(pct, this.progressbar, msg)
                 this.last_update_t = round_t;
                 this.last_update_j = this.j;
@@ -90,9 +90,9 @@ classdef PopupHybridProgress < HybridProgress
                 % after this PopupHybridProgress was initialized, so we do that
                 % now.
                 cancel_callback = @(src, event) this.cancelSolver();
-                this.progressbar = waitbar(0.0, "", ...
-                    "Name", "Hybrid Solver Progress", ...
-                    "CreateCancelBtn", cancel_callback);
+                this.progressbar = waitbar(0.0, '', ...
+                    'Name', 'Hybrid Solver Progress', ...
+                    'CreateCancelBtn', cancel_callback);
             end
         end
     end

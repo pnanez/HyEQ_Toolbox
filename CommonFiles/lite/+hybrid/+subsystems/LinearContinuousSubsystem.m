@@ -5,7 +5,6 @@ classdef LinearContinuousSubsystem < HybridSubsystem
         B
         C
         D
-        state_space_model
     end
     
     %%%%%% System Data %%%%%% 
@@ -18,13 +17,13 @@ classdef LinearContinuousSubsystem < HybridSubsystem
             %   y = Cx + Du
             % The arguments C and D are optional. If omitted, C is set to the
             % identity matrix of appropriate size and D is set to zero.
-            assert(size(A, 1) == size(B, 1), "The heights of A and B must match!")
-            assert(size(A, 1) == size(A, 2), "Matrix A must be square!")
+            assert(size(A, 1) == size(B, 1), 'The heights of A and B must match!')
+            assert(size(A, 1) == size(A, 2), 'Matrix A must be square!')
             
-            if ~exist("C", "var")
+            if ~exist('C', 'var')
                 C = eye(size(A));
             end
-            if ~exist("D", "var") || isempty(D) || all(D == 0)
+            if ~exist('D', 'var') || isempty(D) || all(D == 0)
                 D = zeros(size(C, 1), size(B, 2));
                 output = @(x) C * x;
             else
@@ -39,7 +38,6 @@ classdef LinearContinuousSubsystem < HybridSubsystem
             obj.B = B;
             obj.C = C;
             obj.D = D;
-            obj.state_space_model = ss(A, B, C, D);
         end
             
         % The jumpMap function must be implemented with the following 

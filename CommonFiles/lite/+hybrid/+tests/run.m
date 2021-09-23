@@ -1,6 +1,12 @@
 function [nFailed, nIncomplete] = run()
 
-results = runtests("hybrid.tests", "Strict", true);
+if verLessThan('matlab', '9.2') 
+    % I'm not sure when 'Strict' was introduced as a runtests option.
+    % Please increase the version number as needed.
+    results = runtests('hybrid.tests');
+else
+    results = runtests('hybrid.tests', 'Strict', true);
+end
 
 nPassed = 0;
 nFailed = 0;
@@ -11,13 +17,11 @@ end
 for i = 1:length(results)
     nFailed = nFailed + results(i).Failed;
 end
-for i = 1:length(results)
-    nIncomplete = nIncomplete + results(i).Incomplete;
-end
+nSkipped = length(results) - nPassed - nFailed;
 
 if nargout == 0
-   fprintf("\nFinished: %d passed, %d failed, %d skipped.\n", ...
-       nPassed, nFailed, nIncomplete - nFailed)
+   fprintf('\nFinished: %d passed, %d failed, %d skipped.\n', ...
+       nPassed, nFailed, nSkipped)
    clear nFailed;
    clear nIncomplete;
 end

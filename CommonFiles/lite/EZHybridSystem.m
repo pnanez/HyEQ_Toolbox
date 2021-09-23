@@ -87,13 +87,13 @@ function result = evaluate_with_correct_args(func_handle, x, t, j)
         case 3
             result = func_handle(x, t, j);
         otherwise
-            error("Functions must have 1,2, or 3 arguments. Instead the function had %d.", nargs) 
+            error('Functions must have 1,2, or 3 arguments. Instead the function had %d.', nargs) 
     end
 end
 
 function check_function_handle(function_handle)
-    assert(isa(function_handle, 'function_handle'), "Argument '%s' was not a function handle!", function_handle)
+    assert(isa(function_handle, 'function_handle'), 'Argument ''%s'' was not a function handle!', function_handle)
     nargs = nargin(function_handle);
-    assert(nargs >= 1, "There must be at least one argument (namely, 'x')!")
-    assert(nargs <= 3, "There must be no more than three arguments ('x, t, j')!")
+    assert(nargs >= 1, 'There must be at least one argument (namely, ''x'')!')
+    assert(nargs <= 3, 'There must be no more than three arguments (''x, t, j'')!')
 end

@@ -42,19 +42,19 @@ classdef convert_varargin_to_solution_objTest < matlab.unittest.TestCase
         function test_too_many_inputs(testCase)
             import hybrid.internal.convert_varargin_to_solution_obj
             varagin_cell = {1, 2, 3, 4};       
-            testCase.verifyError(@() convert_varargin_to_solution_obj(varagin_cell), "");
+            testCase.verifyError(@() convert_varargin_to_solution_obj(varagin_cell), '');
         end
         
         function test_1input_not_solution(testCase)
             import hybrid.internal.convert_varargin_to_solution_obj
             varagin_cell = {1};       
-            testCase.verifyError(@() convert_varargin_to_solution_obj(varagin_cell), "");
+            testCase.verifyError(@() convert_varargin_to_solution_obj(varagin_cell), '');
         end
         
         function test_2input_first_not_solution(testCase)
             import hybrid.internal.convert_varargin_to_solution_obj
             varagin_cell = {1, 4};       
-            testCase.verifyError(@() convert_varargin_to_solution_obj(varagin_cell), "");
+            testCase.verifyError(@() convert_varargin_to_solution_obj(varagin_cell), '');
         end
 
     end

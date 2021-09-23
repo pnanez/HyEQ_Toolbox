@@ -1,15 +1,14 @@
 classdef HybridSolverConfig < handle
 
     properties
-        ode_solver string = "ode45";
+        ode_solver = 'ode45';
         hybrid_priority = HybridPriority.JUMP;
         mass_matrix = [];
     end
     
     properties(SetAccess = private)
         ode_options;
-    
-        progressListener HybridProgress = PopupHybridProgress();
+        progressListener = PopupHybridProgress(); % Is a HybridProgress
     end
 
     methods
@@ -19,7 +18,7 @@ classdef HybridSolverConfig < handle
             % Check if the first argument is "silent". If it is, set the
             % progress listener and remove the first argument from
             % varargin.
-            if ~isempty(varargin) && strcmp(varargin{1}, "silent")
+            if ~isempty(varargin) && strcmp(varargin{1}, 'silent')
                 this.progressListener = SilentHybridProgress();
 
                 % Delete first entry
@@ -51,8 +50,8 @@ classdef HybridSolverConfig < handle
         end
             
         function set.ode_solver(this, ode_solver)
-            if ode_solver == "ode15i"
-                error("The 'ode15i' solver is not supported");
+            if strcmp(ode_solver, 'ode15i')
+                error('The ''ode15i'' solver is not supported');
             end
             this.ode_solver = ode_solver;
         end
@@ -67,23 +66,23 @@ classdef HybridSolverConfig < handle
 
         function this = RelTol(this, relTol)
             % RelTol  Set the relative tolerance for the ODE solver.
-            this.ode_options = odeset(this.ode_options, "RelTol", relTol);
+            this.ode_options = odeset(this.ode_options, 'RelTol', relTol);
         end
 
         function this = AbsTol(this, absTol)
             % AbsTol  Set the absolute tolerance for the ODE solver.
-            this.ode_options = odeset(this.ode_options, "AbsTol", absTol);
+            this.ode_options = odeset(this.ode_options, 'AbsTol', absTol);
         end
 
         function this = MaxStep(this, maxStep)
             % MaxStep  Set the maximum step size for the ODE solver.
-            this.ode_options = odeset(this.ode_options, "MaxStep", maxStep);
+            this.ode_options = odeset(this.ode_options, 'MaxStep', maxStep);
         end
 
         function this = Refine(this, refine)
             % Refine Solution refinement factor. See documentation for
             % odeset.
-            this.ode_options = odeset(this.ode_options, "Refine", refine);
+            this.ode_options = odeset(this.ode_options, 'Refine', refine);
         end
         
         function this = odeOption(this, name, value)
@@ -101,31 +100,31 @@ classdef HybridSolverConfig < handle
             % shown. This is slightly faster than the popup progress bar
             % and is useful when solving many hybrid systems.
             
-            if ischar(progressListener)
+            if isa(progressListener, 'string')
                 % Convert progressListener to a string if it is a char
                 % array (i.e., if single quotes 'silent' was used instead
                 % of double quotes "silent")
-                progressListener = string(progressListener);
+                progressListener = char(progressListener);
             end
             
-            if ~isstring(progressListener)
+            if ~ischar(progressListener)
                 if isa(progressListener, 'HybridProgress')
                     this.progressListener = progressListener;
                 else
-                    error("HybridSolverConfig:InvalidProgress", ...
-                        "The progress listener must be a subclass of HybridProgress, but instead was '%s'.",...
+                    error('HybridSolverConfig:InvalidProgress', ...
+                        'The progress listener must be a subclass of HybridProgress, but instead was ''%s''.',...
                         class(progressListener));
                 end
                 return;
             end
             switch progressListener
-                case "popup"
+                case 'popup'
                     this.progressListener = PopupHybridProgress();
-                case "silent"
+                case 'silent'
                     this.progressListener = SilentHybridProgress();
                 otherwise
-                    error("HybridSolverConfig:InvalidProgress", ...
-                        "The progress type '%s' was unrecognized. Should be 'popup' or 'string'.",...
+                    error('HybridSolverConfig:InvalidProgress', ...
+                        'The progress type ''%s'' was unrecognized. Should be ''popup'' or ''string''.',...
                         progressListener);
             end
         end

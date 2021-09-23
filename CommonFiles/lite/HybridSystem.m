@@ -58,13 +58,12 @@ classdef (Abstract) HybridSystem < handle
                 % Check that the first argument is a reference to 'this'
                 % object, rather than the state vector.
                 first_argument_name = method.InputNames{1};
-                is_this = strcmp(first_argument_name, "this");
-                is_self = strcmp(first_argument_name, "self");
-                is_tilde = strcmp(first_argument_name, "~");
-%                 valid_second_arg_names = {"this", "self", "~"};
-%                 validatestring(first_argument_name, valid_second_arg_names)
-                assert(is_this || is_self || is_tilde , ...
-                    "The first argument in %s must be 'this', 'self', or '~' but instead was '%s'.", ...
+                is_this = strcmp(first_argument_name, 'this');
+                is_self = strcmp(first_argument_name, 'self');
+                is_obj = strcmp(first_argument_name, 'obj');
+                is_tilde = strcmp(first_argument_name, '~');
+                assert(is_this || is_self || is_obj || is_tilde, ...
+                    'The first argument in %s must be ''this'', ''self'', or ''~'' but instead was ''%s''.', ...
                     name, first_argument_name)
                 
                 % Check that the second argument is the state vector. 
@@ -73,10 +72,10 @@ classdef (Abstract) HybridSystem < handle
                 % 'xhat', etc.), so instead of checking that the name
                 % matches some list of strings, we make sure it does not match 't'.
                 second_argument_name = method.InputNames{2};
-                is_t = strcmp(second_argument_name, "t");
+                is_t = strcmp(second_argument_name, 't');
                 assert(~is_t , ...
-                    "The second argument in %s should be the state vector (e.g. 'x') " + ...
-                    "but instead was 't'. Did you remember the first 'this' argument?", ...
+                    'The second argument in %s should be the state vector (e.g. ''x'') ' + ...
+                    'but instead was ''t''. Did you remember the first ''this'' argument?', ...
                     name)
             end
         end
@@ -87,7 +86,7 @@ classdef (Abstract) HybridSystem < handle
             % time 'jspan'. If 'tspan' and 'jspan' are not supplied, then
             % the default span [0, 10] is used. The optional 'config'
             % argument can either be an instance of HybridSolverConfig or
-            % the string "silent" to disable progress updates.
+            % the string 'silent' to disable progress updates.
             
             % Check arguments
             narginchk(2,5);
@@ -98,24 +97,24 @@ classdef (Abstract) HybridSystem < handle
                jspan = [0, 10]; 
             end
             if length(tspan) ~= 2
-                e = MException("HybridSystem:InvalidArgs", ...
-                    "tspan must be an array of two values in the form [tstart, tend]");
+                e = MException('HybridSystem:InvalidArgs', ...
+                    'tspan must be an array of two values in the form [tstart, tend]');
                 throwAsCaller(e);
             end
             if length(jspan) ~= 2
-                e = MException("HybridSystem:InvalidArgs", ...
-                    "jspan must be an array of two values in the form [jstart, jend]");
+                e = MException('HybridSystem:InvalidArgs', ...
+                    'jspan must be an array of two values in the form [jstart, jend]');
                 throwAsCaller(e);
             end
             if ~exist('config', 'var')
                 config = HybridSolverConfig();
-            elseif strcmp(config, "silent")
-                config = HybridSolverConfig("silent");
+            elseif strcmp(config, 'silent')
+                config = HybridSolverConfig('silent');
             end
 
             if ~isempty(this.state_dimension)
                 assert(length(x0) == this.state_dimension, ...
-                    "size(x0)=%d does not match the dimension of the system=%d",...
+                    'size(x0)=%d does not match the dimension of the system=%d',...
                     length(x0), this.state_dimension)
             end
             this.assert_functions_can_be_evaluated_at_point(x0, tspan(1), jspan(1));           
@@ -151,7 +150,7 @@ classdef (Abstract) HybridSystem < handle
     methods
         
         function [f_vals, g_vals, C_vals, D_vals] = generateFGCD(this, sol)            
-            assert(isa(sol, "HybridSolution"))
+            assert(isa(sol, 'HybridSolution'))
 
             t = sol.t;
             j = sol.j;
@@ -159,7 +158,7 @@ classdef (Abstract) HybridSystem < handle
             
             if ~isempty(this.state_dimension)
                 assert(this.state_dimension == size(x, 2), ...
-                    "Expected length of x to be %d, instead was %d",...
+                    'Expected length of x to be %d, instead was %d',...
                     this.state_dimension, size(x, 2))
             end
             
@@ -202,7 +201,7 @@ classdef (Abstract) HybridSystem < handle
             if(isempty(this.flowMap_3args))
                 % If flowMap_3args has not yet been constructed,
                 % then we use convert_to_3_args to do so.
-                this.flowMap_3args = this.convert_to_3_args(@this.flowMap, "flowMap");
+                this.flowMap_3args = this.convert_to_3_args(@this.flowMap, 'flowMap');
             end
             value = this.flowMap_3args;
         end
@@ -211,7 +210,7 @@ classdef (Abstract) HybridSystem < handle
             if isempty(this.jumpMap_3args)
                 % If jumpMap_3args has not yet been constructed,
                 % then we use convert_to_3_args to do so.
-                this.jumpMap_3args = this.convert_to_3_args(@this.jumpMap, "jumpMap");
+                this.jumpMap_3args = this.convert_to_3_args(@this.jumpMap, 'jumpMap');
             end
             value = this.jumpMap_3args;
         end
@@ -221,7 +220,7 @@ classdef (Abstract) HybridSystem < handle
                 % If flowSetIndicator_3args has not yet been 
                 % constructed, then we use convert_to_3_args to do so.
                 this.flowSetIndicator_3args ...
-                    = this.convert_to_3_args(@this.flowSetIndicator, "flowSetIndicator");
+                    = this.convert_to_3_args(@this.flowSetIndicator, 'flowSetIndicator');
             end
             value = this.flowSetIndicator_3args;
         end
@@ -231,7 +230,7 @@ classdef (Abstract) HybridSystem < handle
                 % If jumpSetIndicator_3args has not yet been 
                 % constructed, then we use convert_to_3_args to do so.
                 this.jumpSetIndicator_3args ...
-                    = this.convert_to_3_args(@this.jumpSetIndicator, "jumpSetIndicator");
+                    = this.convert_to_3_args(@this.jumpSetIndicator, 'jumpSetIndicator');
             end
             value = this.jumpSetIndicator_3args;
         end
@@ -251,15 +250,15 @@ classdef (Abstract) HybridSystem < handle
                     % includes "this" in the first argument.
                     func_lambda = @(x, t, j) func_handle(x, t, j);
                 otherwise
-                    error("Functions must have 2,3, or 4 arguments (including 'this'). Instead the function had %d.", nargs) 
+                    error('Functions must have 2,3, or 4 arguments (including ''this''). Instead the function had %d.', nargs) 
             end
         end
 
         function assert_functions_can_be_evaluated_at_point(this, x, t, j)
-            assert_function_can_be_evaluated(this.flowMap_3args, x, t, j, "flowMap")
-            assert_function_can_be_evaluated(this.jumpMap_3args, x, t, j, "jumpMap")
-            assert_function_can_be_evaluated(this.flowSetIndicator_3args, x, t, j, "flowSetIndicator")
-            assert_function_can_be_evaluated(this.jumpSetIndicator_3args, x, t, j, "jumpSetIndicator")
+            assert_function_can_be_evaluated(this.flowMap_3args, x, t, j, 'flowMap')
+            assert_function_can_be_evaluated(this.jumpMap_3args, x, t, j, 'jumpMap')
+            assert_function_can_be_evaluated(this.flowSetIndicator_3args, x, t, j, 'flowSetIndicator')
+            assert_function_can_be_evaluated(this.jumpSetIndicator_3args, x, t, j, 'jumpSetIndicator')
         end
 
         function nargs = implementated_nargs(this, function_name)
@@ -279,8 +278,8 @@ function assert_function_can_be_evaluated(func_handl, x, t, j, function_name)
     try
         func_handl(x, t, j);
     catch e        
-        cause = MException("HybridSystem:CannotEvaluateFunction", ...
-            "Could not evaluate '%s' at x0=%s, t=%0.2f, j=%d.", ...
+        cause = MException('HybridSystem:CannotEvaluateFunction', ...
+            'Could not evaluate ''%s'' at x0=%s, t=%0.2f, j=%d.', ...
             function_name, mat2str(x), t, j);
         e = e.addCause(cause);
         rethrow(e)

@@ -22,10 +22,9 @@ classdef HybridPlotBuilder < handle
     
     methods % Setting property setters
         function this = title(this, title)
-            title = string(title); % Convert char arrays to string.
-            if length(title) > 1
-                e = MException("HybridPlotBuilder:InvalidArgument", ...
-                    "For setting multiple titles, use titles()");
+            if iscell(title)
+                e = MException('HybridPlotBuilder:InvalidArgument', ...
+                    'For setting multiple titles, use titles()');
                 throwAsCaller(e);
             end
             this.titles(title);
@@ -37,10 +36,9 @@ classdef HybridPlotBuilder < handle
         end
 
         function this = label(this, label)
-            label = string(label); % Convert char arrays to string.
-            if length(label) > 1
-                e = MException("HybridPlotBuilder:InvalidArgument", ...
-                    "For setting multiple labels, use labels()");
+            if iscell(label)
+                e = MException('HybridPlotBuilder:InvalidArgument', ...
+                    'For setting multiple labels, use labels()');
                 throwAsCaller(e);
             end
             this.labels(label);
@@ -179,7 +177,7 @@ classdef HybridPlotBuilder < handle
             indices_to_plot = this.settings.indicesToPlot(hybrid_sol);
                         
             nplot = length(indices_to_plot);
-            axis1_ids = repmat("t", nplot, 1);
+            axis1_ids = repmat('t', nplot, 1);
             axis2_ids = indices_to_plot;
              
             axis_ids = {axis1_ids, axis2_ids};
@@ -199,7 +197,7 @@ classdef HybridPlotBuilder < handle
             indices_to_plot = this.settings.indicesToPlot(hybrid_sol);
                         
             nplot = length(indices_to_plot);
-            axis1_ids = repmat("j", nplot, 1);
+            axis1_ids = repmat('j', nplot, 1);
             axis2_ids = indices_to_plot;
              
             axis_ids = {axis1_ids, axis2_ids};
@@ -219,8 +217,8 @@ classdef HybridPlotBuilder < handle
             indices_to_plot = this.settings.indicesToPlot(hybrid_sol);
 
             nplot = length(indices_to_plot);
-            axis1_ids = repmat("t", nplot, 1);
-            axis2_ids = repmat("j", nplot, 1);
+            axis1_ids = repmat('t', nplot, 1);
+            axis2_ids = repmat('j', nplot, 1);
             axis3_ids = indices_to_plot;
              
             axis_ids = {axis1_ids, axis2_ids, axis3_ids};
@@ -266,10 +264,10 @@ classdef HybridPlotBuilder < handle
             % Add an object to include in the legend. 
             % This function MUST be called while the axes where the object
             % was plotted is still active.
-            if isempty(name) || strcmp("", name)
+            if isempty(name) || strcmp('', name)
                 return
             end
-            plt.DisplayName = name;
+            plt.DisplayName = char(name);
             this.plots_for_legend = [this.plots_for_legend, plt];
             this.axes_for_legend = [this.axes_for_legend, gca()];
             this.display_legend();
@@ -289,17 +287,17 @@ classdef HybridPlotBuilder < handle
         % from v2.04 to v3.0.
         
         function plotflows(this, varargin)            
-            warning("Please use the plotFlows function instead of plotflows.")
+            warning('Please use the plotFlows function instead of plotflows.')
             this.plotFlows(varargin{:});
         end
 
         function plotjumps(this, varargin)
-            warning("Please use the plotJumps function instead of plotjumps.")
+            warning('Please use the plotJumps function instead of plotjumps.')
             this.plotJumps(varargin{:});
         end
 
         function plotHybridArc(this, varargin)
-            warning("Please use the plotHybrid function instead of plotHybridArc.")
+            warning('Please use the plotHybrid function instead of plotHybridArc.')
             this.plotHybrid(varargin{:});
         end 
     end
@@ -310,8 +308,8 @@ classdef HybridPlotBuilder < handle
             narginchk(3, 4)
             %is2D = nargin == 4;
             is3D = nargin == 4;
-            is_x_a_time_axis = any(strcmp(xaxis_id, ["t", "j"]));
-            is_y_a_time_axis = strcmp(yaxis_id, "j");            
+            is_x_a_time_axis = any(strcmp(xaxis_id, {'t', 'j'}));
+            is_y_a_time_axis = strcmp(yaxis_id, 'j');            
             first_nontime_axis = 1 + is_x_a_time_axis + is_y_a_time_axis;
             
             % Apply labels
@@ -357,9 +355,6 @@ classdef HybridPlotBuilder < handle
                 ylim([-inf, inf])
             end
             
-            % The z-axis never contains t or j, so we don't make it
-            % "tight".       
-            
             this.display_legend();
         end
         
@@ -386,7 +381,7 @@ classdef HybridPlotBuilder < handle
             
             if ~this.settings.auto_subplots
                 was_hold_on_no_auto_subplots = ishold();
-                % Clear the plot if "hold off". Otherwise, this has no effect.
+                % Clear the plot if 'hold off'. Otherwise, this has no effect.
                 plot(nan, nan);
                 % Turn on hold until the end of plot_from_ids
                 hold on
@@ -398,7 +393,7 @@ classdef HybridPlotBuilder < handle
                     was_hold_on_outside_subplot = ishold(); 
                     subplots(iplot) = subplot(nplot, 1, iplot); %#ok<AGROW>
                     if ~was_hold_on_outside_subplot
-                        % Clear the plot to emulate "hold off" behavior.
+                        % Clear the plot to emulate 'hold off' behavior.
                         plot(nan, nan);
                     end
                     hold on
@@ -416,7 +411,7 @@ classdef HybridPlotBuilder < handle
                 
                 if ~isempty(this.settings.timesteps_filter)
                     assert(length(this.settings.timesteps_filter) == size(plot_values, 1), ...
-                        "The length(filter)=%d does not match the timesteps=%d in the HybridSolution.", ...
+                        'The length(filter)=%d does not match the timesteps=%d in the HybridSolution.', ...
                         length(this.settings.timesteps_filter), size(plot_values, 1))
                     % Set entries that don't match the filter to NaN so they are not plotted.
                     plot_values(~this.settings.timesteps_filter) = NaN;
@@ -446,7 +441,7 @@ classdef HybridPlotBuilder < handle
                         this.plotJump3D(jumps_x, jumps_befores, jumps_afters)
                         view(34.8,16.8)
                     otherwise
-                        error("plot_values must have 2 or 3 components.")
+                        error('plot_values must have 2 or 3 components.')
                 end
                    
                 this.configureAxes(axis1_id, axis2_id, axis3_id);
@@ -541,8 +536,14 @@ classdef HybridPlotBuilder < handle
                 plots_in_axes = plots_for_this_legend(axes_for_this_legend == ax);
                 
                 if isvalid(ax) % Check that figure hasn't been closed.
-                    legend(ax, plots_in_axes, 'AutoUpdate','off', ...
-                        this.settings.legendArguments{:});
+                    lgd = legend(ax, plots_in_axes);
+                    try
+                        set(lgd, 'AutoUpdate','off');
+                    catch
+                        % Older versions of MATLAB don't automatically update
+                        % legends and thus don't have an 'AutoUpdate' option.
+                    end
+                    set(lgd, this.settings.legendArguments{:})
                 end
             end
         end
@@ -551,23 +552,27 @@ classdef HybridPlotBuilder < handle
             % xlabel Add a label to the x-axis for thecreateLegendLabel component at 'index'.
             label = this.settings.labelFromId(index);
             xlabel(label, this.settings.labelArguments{:})
+            set(gca, 'LabelFontSizeMultiplier', 1.0);
         end
 
         function ylabel(this, index)
             % ylabel Add a label to the y-axis for the component at 'index'.
             label = this.settings.labelFromId(index);
             ylabel(label, this.settings.labelArguments{:})
+            set(gca, 'LabelFontSizeMultiplier', 1.0);
         end
 
         function zlabel(this, index)
             % zlabel Add a label to the z-axis for the component at 'index'.
             label = this.settings.labelFromId(index);
             zlabel(label, this.settings.labelArguments{:})
+            set(gca, 'LabelFontSizeMultiplier', 1.0);
         end
 
         function applyTitle(this, title_id)
             title_str = this.settings.getTitle(title_id);
             title(title_str, this.settings.titleArguments{:});
+            set(gca, 'TitleFontSizeMultiplier', 1.0);
         end         
     end
 end
@@ -576,15 +581,15 @@ end
 
 function plot_values = create_plot_values(sol, xaxis_id, yaxis_id, zaxis_id)
 % CREATE_PLOT_VALUES Create an array containing the values from the corresponding id in each column.
-% xaxis_id can take values "t", "j" or an integer.
-% yaxis_id can take values "j" or an integer.
+% xaxis_id can take values 't', 'j' or an integer.
+% yaxis_id can take values 'j' or an integer.
 % zaxis_id can take value of an integer or an empty set.
 narginchk(4, 4)
 
     function values = values_from_id(id)
-        if strcmp(id, "t")
+        if strcmp(id, 't')
             values = sol.t;
-        elseif strcmp(id, "j")
+        elseif strcmp(id, 'j')
             values = sol.j;
         else
             values = sol.x(:, id);
@@ -613,12 +618,12 @@ else
 end
 
 lgd_count = length(lgd_labels);
-warning_msg = "Expected %d legend labels but only %d of were provided.";
+warning_msg = 'Expected %d legend labels but only %d of were provided.';
 if expected_count < lgd_count
-    id = "HybridPlotBuilder:TooManyLegends";
+    id = 'HybridPlotBuilder:TooManyLegends';
     warning(id, warning_msg, expected_count, lgd_count)
 elseif expected_count > lgd_count
-    id = "HybridPlotBuilder:TooFewLegends";
+    id = 'HybridPlotBuilder:TooFewLegends';
     warning(id, warning_msg, expected_count, lgd_count)
 end
 end

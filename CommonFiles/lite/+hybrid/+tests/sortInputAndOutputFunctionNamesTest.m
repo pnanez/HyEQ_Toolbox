@@ -65,7 +65,7 @@ classdef sortInputAndOutputFunctionNamesTest < matlab.unittest.TestCase
             
             testCase.verifyError(...
                 @() sortInputAndOutputFunctionNames(inputs, outputs), ...
-                "sortInputAndOutputFunctionNames:DependencyLoop");
+                'sortInputAndOutputFunctionNames:DependencyLoop');
         end
 
     end

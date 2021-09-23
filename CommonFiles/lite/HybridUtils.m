@@ -6,7 +6,7 @@ classdef HybridUtils
         function t_end = timeOfNonconvergence(sol, dist_function, tol)
             % Truncate the solution to the time where the solution has not
             % yet converged.
-            if ~exist("tol", "var")
+            if ~exist('tol', 'var')
                 tol = 1e-2;
             end
             cnvg_t = HybridUtils.convergenceData(sol, dist_function, tol);
@@ -14,13 +14,13 @@ classdef HybridUtils
             if isempty(t_end)
                 % If trajectories don't converge to the origin, then show the whole time span.    
                 t_end = sol.t(end);
-                fprintf("Jump count: %d,\tfinal distance: %1.2f (no convergence), termination cause: %s\n", ...
+                fprintf('Jump count: %d,\tfinal distance: %1.2f (no convergence), termination cause: %s\n', ...
                             sol.jump_count, dist_function(sol.x(end, :)), sol.termination_cause)
             end
         end
 
         function [cnvg_t, cnvg_j, cnvg_index] = convergenceData(sol, dist_function, tol)
-            if ~exist("tol", "var")
+            if ~exist('tol', 'var')
                 tol = 1e-4;
             end
             

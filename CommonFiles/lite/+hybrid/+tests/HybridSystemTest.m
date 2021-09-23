@@ -8,7 +8,7 @@ classdef HybridSystemTest < matlab.unittest.TestCase
             C_indicator = @(x, t, j) 0;
             D_indicator = @(x, t, j) 1;
             system = HybridSystem(f, g, C_indicator, D_indicator);
-            sol = system.solve(1, [0, 1], [0, 10], "silent");
+            sol = system.solve(1, [0, 1], [0, 10], 'silent');
             testCase.assertTrue(all(sol.x(1:2:end) ==  1))
             testCase.assertTrue(all(sol.x(2:2:end) == -1))
         end
@@ -19,13 +19,13 @@ classdef HybridSystemTest < matlab.unittest.TestCase
             C_indicator = @(x, t, j) 1;
             D_indicator = @(x, t, j) 0;
             system = HybridSystem(f, g, C_indicator, D_indicator);
-            sol = system.solve(0, [0, 1], [0, 10], "silent");
+            sol = system.solve(0, [0, 1], [0, 10], 'silent');
             testCase.assertEqual(sol.x, 2*sol.t, 'AbsTol', 1e-8)
         end
 
         function testBouncingBall(testCase)
             system = ExampleBouncingBallHybridSystem();
-            sol = system.solve([1; 0], [0, 1], [0, 10], "silent");
+            sol = system.solve([1; 0], [0, 1], [0, 10], 'silent');
         end
 
         %%%%%%%%%%%%%%%% Test JumpTime calculations %%%%%%%%%%%%%%%%%

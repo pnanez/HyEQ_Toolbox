@@ -123,14 +123,14 @@ sys.setJumpInput(subsystem1, @(y1, y2) y1(1));
 % Additionally, names can be given to each subsystem by passing strings before
 % each subsystem in the |CompositeHybridSystem| constructor. If any subsystems
 % are named, then all the subsystems must be named. 
-sys_named = CompositeHybridSystem("Plant", subsystem1, "Controller", subsystem2)
+sys_named = CompositeHybridSystem('Plant', subsystem1, 'Controller', subsystem2)
 
 %% 
 % If the subsystems are named, we can use the names when setting inputs.
 % Thus, the following three lines are equivalent:
 sys_named.setFlowInput(1, @(y1, y2) -y2);
 sys_named.setFlowInput(subsystem1, @(y1, y2) -y2);
-sys_named.setFlowInput("Plant", @(y1, y2) -y2);
+sys_named.setFlowInput('Plant', @(y1, y2) -y2);
 
 %%
 % Hereafter, we call the collection of these three means of referring to
@@ -157,7 +157,7 @@ sol
 % Plotting |sol|, we see that the system jumped whenever the first or third
 % components reached zero.
 HybridPlotBuilder()...
-    .labels("$h_1$", "$v_1$", "$h_2$", "$v_2$")...
+    .labels('$h_1$', '$v_1$', '$h_2$', '$v_2$')...
     .slice(1:4)... % Only plot subsystem state vectors, not j1, j2.
     .plotFlows(sol);
 
@@ -181,12 +181,12 @@ sol(1).termination_cause
 
 figure()
 hpb = HybridPlotBuilder()...
-    .labels("$h$", "$v$")...
-    .legend("$\mathcal H_1$", "$\mathcal H_1$")...
-    .titles("Height", "Velocity");
+    .labels('$h$', '$v$')...
+    .legend('$\mathcal H_1$', '$\mathcal H_1$')...
+    .titles('Height', 'Velocity');
 hpb.plotFlows(sol(1));
 hold on
-hpb.flowColor("k").jumpColor("g")...
+hpb.flowColor('k').jumpColor('g')...
     .plotFlows(sol(subsystem2));
 
 %% Plotting Control Signal
@@ -228,7 +228,7 @@ zoh = hybrid.subsystems.ZeroOrderHold(zoh_dim, sample_time);
  
 %% 
 % Remark: The creation of the subsystem objects included the full package path
-% to each class (That is "hybrid.subsystems"). The package path can be omitted
+% to each class (That is 'hybrid.subsystems'). The package path can be omitted
 % if the package is first omitted:
 import hybrid.subsystems.*
 zoh = ZeroOrderHold(zoh_dim, sample_time);
@@ -254,13 +254,13 @@ cl_sys
 %% 
 % Finally, simulate and plot.
 sol_zoh = cl_sys.solve({[10; 0], [], [0; zoh.sample_time]}, [0, 10], [0, 100]);
-HybridPlotBuilder().slice(1:3).labels("$x_1$", "$x_2$", "$u_{ZOH}$")...
+HybridPlotBuilder().slice(1:3).labels('$x_1$', '$x_2$', '$u_{ZOH}$')...
     .plotFlows(sol_zoh)
 
 %% 
 % The subsystem solutions can also be plotted in isolation.
 HybridPlotBuilder()...
-    .title("Trajectory of Plant State")...
+    .title('Trajectory of Plant State')...
     .plot(sol_zoh(plant))
 axis equal
 axis padded
@@ -311,7 +311,7 @@ x0 = {[10; 0], [], [], 1};
 sol = sys.solve(x0, [0, 100], [0, 100]);
 
 HybridPlotBuilder()....
-    .labels("$z_1$", "$z_2$", "$q$")...
+    .labels('$z_1$', '$z_2$', '$q$')...
     .slice(1:3)... % Ignore j1,j2,j3 components
-    .configurePlots(@(ndx) ylim("padded"))... % Might not work on older versions of Matlab.
+    .configurePlots(@(ndx) ylim([-inf, inf]))... % Remove any empty space in vertical dimension
     .plotFlows(sol)

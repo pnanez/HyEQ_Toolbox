@@ -28,7 +28,7 @@ classdef SwitchSubsystem < HybridSubsystem
                     case 1
                         y = u(u1_indices);
                     otherwise
-                        error("q=%f was not 0 or 1.", q)
+                        error('q=%f was not 0 or 1.', q)
                 end
             end
             

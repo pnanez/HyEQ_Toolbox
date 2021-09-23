@@ -1,20 +1,20 @@
 classdef HybridSolution < handle
 
     properties(SetAccess = immutable)
-        t (:, 1) double;
-        j (:, 1) double;
-        x (:, :) double;
+        t double; % (:, 1) 
+        j double; % (:, 1) 
+        x double; % (:, :) 
         
         % Initial state
-        x0 (1, :) double;
+        x0 double; % (1, :) 
         % Final state
-        xf (1, :) double;
+        xf double; % (1, :) 
         termination_cause TerminationCause; 
 
         % The duration of each interval of flow.
-        flow_lengths (:,1) double; 
+        flow_lengths double; % (:, 1)
         % The continuous time of each jump.
-        jump_times (:,1) double; 
+        jump_times double; % (:, 1)
         shortest_flow_length double;
         total_flow_length double;
         jump_count uint32;
@@ -41,8 +41,8 @@ classdef HybridSolution < handle
             this.shortest_flow_length = min(this.flow_lengths);
             
             if nargin == 7
-                assert(t(1) == tspan(1), "t(1)=%f does equal the start of tspan=%s", t(1), mat2str(tspan))
-                assert(j(1) == jspan(1), "j(1)=%d does equal the start of jspan=%s", j(1), mat2str(jspan))
+                assert(t(1) == tspan(1), 't(1)=%f does equal the start of tspan=%s', t(1), mat2str(tspan))
+                assert(j(1) == jspan(1), 'j(1)=%d does equal the start of jspan=%s', j(1), mat2str(jspan))
                 
                 this.C_end = C_vals(end);
                 this.D_end = D_vals(end);
@@ -75,17 +75,17 @@ classdef HybridSolution < handle
     
     methods(Hidden)
         function plotflows(this)
-            warning("Please use the plotFlows function instead of plotflow.")
+            warning('Please use the plotFlows function instead of plotflow.')
             this.plotFlows(this);
         end
 
         function plotjumps(this)
-            warning("Please use the plotJumps function instead of plotjumps.")
+            warning('Please use the plotJumps function instead of plotjumps.')
             this.plotJumps();
         end
         
         function plotHybridArc(this)
-            warning("Please use the plotHybrid function instead of plotHybridArc.")
+            warning('Please use the plotHybrid function instead of plotHybridArc.')
             this.plotHybrid();
         end
     end
@@ -108,10 +108,10 @@ classdef HybridSolution < handle
             % The argument "time_indices" is optional. If supplied, the
             % function is evaluated only at the indices specificed and the
             % "out" vector matches the legnth of "time_indices." 
-            assert(isa(func_hand, "function_handle"), ...
-                "The 'func_hand' argument must be a function_handle. Instead it was %s.", class(func_hand))
+            assert(isa(func_hand, 'function_handle'), ...
+                'The ''func_hand'' argument must be a function_handle. Instead it was %s.', class(func_hand))
             
-            if ~exist("indices", "var")
+            if ~exist('indices', 'var')
                 time_indices = 1:length(this.t);
             end
             
@@ -121,12 +121,12 @@ classdef HybridSolution < handle
             end
             
             assert(length(time_indices) <= length(this.t), ...
-                "The length of time_indices (%d) is greater than the length of this solution (%d).", ...
+                'The length of time_indices (%d) is greater than the length of this solution (%d).', ...
                 length(time_indices), length(this.t))
             
             ndx0 = time_indices(1);
             val0 = evaluate_function(func_hand, this.x(ndx0, :)', this.t(ndx0), this.j(ndx0))';
-            assert(isvector(val0), "Function handle does not return a vector")
+            assert(isvector(val0), 'Function handle does not return a vector')
             
             out = NaN(length(time_indices), length(val0));
             
@@ -158,7 +158,7 @@ switch nargin(fh)
     case 3
         val_end = fh(x, t, j);
     otherwise
-        error("Function handle must have 1, 2, or 3 arguments. Instead %s had %d.",...
+        error('Function handle must have 1, 2, or 3 arguments. Instead %s had %d.',...
             func2str(fh), nargin(fh))
 end
 end
@@ -166,25 +166,25 @@ end
 function checkVectorSizes(t, j, x)
     if size(t, 2) ~= 1
         e = MException('HybridSolution:WrongShape', ...
-            "The vector t must be a column vector. Instead its shape was %s.", ...
+            'The vector t must be a column vector. Instead its shape was %s.', ...
             mat2str(size(t)));
         throwAsCaller(e);
     end
     if size(j, 2) ~= 1
         e = MException('HybridSolution:WrongShape', ...
-            "The vector j must be a column vector. Instead its shape was %s.", ...
+            'The vector j must be a column vector. Instead its shape was %s.', ...
             mat2str(size(j)));
         throwAsCaller(e);
     end
     if size(t, 1) ~= size(j, 1)
         e = MException('HybridSolution:WrongShape', ...
-            "The length(t)=%d and length(j)=%d must match.", ...
+            'The length(t)=%d and length(j)=%d must match.', ...
             size(t, 1), size(j, 1));
         throwAsCaller(e);
     end
     if size(t, 1) ~= size(x, 1)
         e = MException('HybridSolution:WrongShape', ...
-            "The length(t)=%d and length(x)=%d must match.", ...
+            'The length(t)=%d and length(x)=%d must match.', ...
             size(t, 1), size(x, 1));
         throwAsCaller(e);
     end
@@ -199,6 +199,6 @@ function f_handle = wrap_with_three_args(function_handle)
         case 3
             f_handle = function_handle;
         otherwise
-            error("Function must have 1,2, or 3 arguments")
+            error('Function must have 1,2, or 3 arguments')
     end
 end

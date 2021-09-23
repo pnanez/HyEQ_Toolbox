@@ -21,11 +21,11 @@ function [us, ys] = evaluateInOrder(order, inputs, outputs, xs, t, js)
 
 n = length(inputs);
 assert(n == length(outputs))
-assert(2*n == length(order), "2n = %d, length(order) = %d", 2*n, length(order))
-assert(iscell(xs), "xs is not a cell array")
-assert(isscalar(t), "t is not a scalar")
-assert(isvector(js), "js is not a vector")
-assert(length(unique(string(order))) == length(string(order)), "Rows are not all unique")
+assert(2*n == length(order), '2n = %d, length(order) = %d', 2*n, length(order))
+assert(iscell(xs), 'xs is not a cell array')
+assert(isscalar(t), 't is not a scalar')
+assert(isvector(js), 'js is not a vector')
+assert_all_unique(order)
 
 us = cell(1,n);
 ys = cell(1,n);
@@ -41,14 +41,14 @@ for row = 1:size(order, 1)
             kappa = inputs{i_ss};
             us{i_ss} = eval_input(kappa, ys, t, js(i_ss));
         otherwise
-            error("Invalid function name: %s", order(row, :));
+            error('Invalid function name: %s', order(row, :));
     end
 end
 end
 
 function u = eval_input(kappa, ys, t, j)
-assert(isscalar(t), "t is not a scalar")
-assert(isscalar(j), "j is not a scalar")
+assert(isscalar(t), 't is not a scalar')
+assert(isscalar(j), 'j is not a scalar')
 narg = nargin(kappa);
 switch narg
     case length(ys)
@@ -61,15 +61,15 @@ switch narg
         if narg < length(ys)
             u = kappa(ys{1:narg});
         else
-            error("Unexpected number of input arguments for function %s: %d", ...
+            error('Unexpected number of input arguments for function %s: %d', ...
                 narg, func2str(kappa));
         end
 end
 end
 
 function u = eval_output(h, x, u, t, j)
-assert(isscalar(t), "t is not a scalar")
-assert(isscalar(j), "j is not a scalar")
+assert(isscalar(t), 't is not a scalar')
+assert(isscalar(j), 'j is not a scalar')
 switch nargin(h)
     case 1
         u = h(x);
@@ -80,8 +80,15 @@ switch nargin(h)
     case 4
         u = h(x, u, t, j);
     otherwise
-        error("Unexpected number of arguments for function '%s'. " + ... 
-            "Must be 1, 2, 3, or 4. Instead was %d.",...
+        error('Unexpected number of arguments for function ''%s''. ' + ... 
+            'Must be 1, 2, 3, or 4. Instead was %d.',...
             func2str(h), nargin(h));
 end
+end
+
+function assert_all_unique(char_array)
+assert(ischar(char_array), 'expected char array, instead was %s', class(char_array));
+assert(size(char_array, 2) == 2, 'expected 2 columns')
+unique_rows = unique(char_array,'rows');
+assert(length(char_array) == length(unique_rows), 'Rows are not all unique');
 end

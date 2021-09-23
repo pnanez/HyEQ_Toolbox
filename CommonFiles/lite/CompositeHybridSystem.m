@@ -27,7 +27,7 @@ classdef CompositeHybridSystem < HybridSystem
         % Indicies within the composite state of each subsystem's state 
         x_indices cell
         % Index within the composite state of subsystem1's discrete time.
-        j_index (:, 1) uint32 
+        j_index uint32 % (:, 1) 
     end
     
     properties(Access = private)
@@ -73,7 +73,7 @@ classdef CompositeHybridSystem < HybridSystem
                % attribute to be added to 'output' property in HybridSubsystem.) 
                % addlistener(ss, 'output', 'PostSet', @obj.updateOutputsList);
                
-               assert(~isempty(ss_n), "State dimension for subsystem %d has not been set", i);
+               assert(~isempty(ss_n), 'State dimension for subsystem %d has not been set', i);
                ndx = ndx + ss_n;
            end
            for i = 1:subsys_n
@@ -95,7 +95,7 @@ classdef CompositeHybridSystem < HybridSystem
             % constructor).
             ndx = this.subsystems.getIndex(subsys_id);
             this.check_feedback(kappa_C)
-            warn_if_input_dim_zero(this, ndx, "setFlowInput")
+            warn_if_input_dim_zero(this, ndx, 'setFlowInput')
             this.kappa_C{ndx} = kappa_C;
         end
         
@@ -114,7 +114,7 @@ classdef CompositeHybridSystem < HybridSystem
             % object itself, or subsystem names (if names were passed to the
             % constructor).
             ndx = this.subsystems.getIndex(subsys_id);
-            warn_if_input_dim_zero(this, ndx, "setJumpInput")
+            warn_if_input_dim_zero(this, ndx, 'setJumpInput')
             this.check_feedback(kappa_D)
             this.kappa_D{ndx} = kappa_D;
         end
@@ -134,37 +134,37 @@ classdef CompositeHybridSystem < HybridSystem
             % object itself, or subsystem names (if names were passed to the
             % constructor).
             ndx = this.subsystems.getIndex(subsys_id);
-            warn_if_input_dim_zero(this, ndx, "setInput")
+            warn_if_input_dim_zero(this, ndx, 'setInput')
             this.check_feedback(kappa)
             this.kappa_C{ndx} = kappa;
             this.kappa_D{ndx} = kappa;
         end
         
         function disp(this)
-            disp(class(this) + ":")
-            subsys_prefix = "├";
-            prop_prefix = "│";
+            disp(class(this) + ':')
+            subsys_prefix = char(9500); % i.e. '├' (visible in MATLAB 2021a)
+            prop_prefix = char(9474); % i.e. '|';
             for i = 1:this.subsys_n
                 if i == this.subsys_n
-                    subsys_prefix = "└";
-                    prop_prefix = " ";
+                    subsys_prefix = char(9492); % i.e. '└' (visible in MATLAB 2021a)
+                    prop_prefix = ' ';
                 end
                 ss = this.subsystems.get(i);
                 if this.subsystems.has_names
                     name = this.subsystems.getName(i);
-                    fprintf('%s Subsystem %d: "%s" (%s)\n', subsys_prefix, i, name, class(ss))
+                    fprintf('%s Subsystem %d: ''%s'' (%s)\n', subsys_prefix, i, name, class(ss))
                 else
                     fprintf('%s Subsystem %d: (%s)\n', subsys_prefix, i, class(ss))
                 end
                 if isequal(this.kappa_C{i}, this.kappa_D{i})
-                    fprintf("%s \t\t      Input: %s\n", prop_prefix, func2str(this.kappa_D{i}))
+                    fprintf('%s \t\t      Input: %s\n', prop_prefix, func2str(this.kappa_D{i}))
                 else
-                    fprintf("%s \t\t Flow input: %s\n", prop_prefix, func2str(this.kappa_C{i}))
-                    fprintf("%s \t\t Jump input: %s\n", prop_prefix, func2str(this.kappa_D{i}))
+                    fprintf('%s \t\t Flow input: %s\n', prop_prefix, func2str(this.kappa_C{i}))
+                    fprintf('%s \t\t Jump input: %s\n', prop_prefix, func2str(this.kappa_D{i}))
                 end
-                fprintf("%s \t\t     Output: y%d=%s\n", prop_prefix, i, func2str(ss.output))
-                fprintf("%s \t\t Dimensions: ", prop_prefix)
-                fprintf("State=%d, Input=%d, Output=%d\n", ...
+                fprintf('%s \t\t     Output: y%d=%s\n', prop_prefix, i, func2str(ss.output))
+                fprintf('%s \t\t Dimensions: ', prop_prefix)
+                fprintf('State=%d, Input=%d, Output=%d\n', ...
                     ss.state_dimension, ss.input_dimension, ss.output_dimension)
             end
         end
@@ -201,8 +201,8 @@ classdef CompositeHybridSystem < HybridSystem
                assert_control_length(length(u), ss.input_dimension, i)
                D = ss.jumpSetIndicator(xs{i}, u, t, js(i));
                if ~isscalar(D)
-                   error("CompositeHybridSystem:InvalidFunction", ...
-                       "The jump set indicator function for system %d returned an array.", i)
+                   error('CompositeHybridSystem:InvalidFunction', ...
+                       'The jump set indicator function for system %d returned an array.', i)
                end
                if D
                    xplus_i = ss.jumpMap(xs{i}, u, t, j);
@@ -232,8 +232,8 @@ classdef CompositeHybridSystem < HybridSystem
                assert_control_length(length(u), ss.input_dimension, i)
                C = ss.flowSetIndicator(xs{i}, u, t, j);
                if ~isscalar(C)
-                   error("CompositeHybridSystem:InvalidFunction", ...
-                       "The flow set indicator function for system %d returned an array.", i)
+                   error('CompositeHybridSystem:InvalidFunction', ...
+                       'The flow set indicator function for system %d returned an array.', i)
                end
                if ~C
                    % If any of the subsystems are not in their flow set,
@@ -276,25 +276,24 @@ classdef CompositeHybridSystem < HybridSystem
             % so track the jumps for each in the last components of the 
             % composite state).
             if ~iscell(xs_0)
-                e = MException("CompositeHybridSystem:InitialStateNotCell", ...
-                    "Initial states xs_0 was a %s instead of a cell array.", ...
+                e = MException('CompositeHybridSystem:InitialStateNotCell', ...
+                    'Initial states xs_0 was a %s instead of a cell array.', ...
                     class(xs_0));
                 throwAsCaller(e);
             end
             
             if length(xs_0) ~= this.subsys_n
-                e = MException("CompositeHybridSystem:WrongNumberOfInitialStates", ...
-                    "Wrong number of initial states. Expected=%d, actual=%d", ...
+                e = MException('CompositeHybridSystem:WrongNumberOfInitialStates', ...
+                    'Wrong number of initial states. Expected=%d, actual=%d', ...
                     this.subsys_n, length(xs_0));
                 throwAsCaller(e);
             end
             for i=1:this.subsys_n
                 ss_dim = this.subsystems.get(i).state_dimension;
                 if any((size(xs_0{i}) ~= [ss_dim, 1])) && ~(ss_dim == 0 && size(xs_0{i}, 1) == 0)
-                    e = MException("CompositeHybridSystem:WrongNumberOfInitialStates",...
-                        "Mismatched initial state size. System %d has state dimension %d " + ... 
-                        "but the initial value had shape %s.",...
-                        i, ss_dim, mat2str(size(xs_0{i})));
+                    e = MException('CompositeHybridSystem:WrongNumberOfInitialStates', '%s',...
+                        sprintf('Mismatched initial state size. System %d has state dimension %d ', i, ss_dim), ...
+                        sprintf('but the initial value had shape %s.', mat2str(size(xs_0{i}))));
                     throwAsCaller(e);
                 end
             end
@@ -303,17 +302,17 @@ classdef CompositeHybridSystem < HybridSystem
             
             x0 = [xs_0; js_0];
             
-            if ~exist("config", "var")
+            if ~exist('config', 'var')
                 config = HybridSolverConfig();
-            elseif strcmp(config, "silent")
-                config = HybridSolverConfig("silent");
+            elseif strcmp(config, 'silent')
+                config = HybridSolverConfig('silent');
             end
             
             if config.hybrid_priority == HybridPriority.FLOW
-                warning("CompositeHybridSystem:FlowPriorityNotSupported", ...
-                    "Using CompositeHybridSystems with FLOW priority is not reccomended. " + ...
-                    "When two subsystems are in their respective jump sets and one of them leaves " +...
-                    "its flow set, then the state of both will jump, violating flow priority.")
+                msg = {'Using CompositeHybridSystems with FLOW priority is not reccomended. '
+                    'When two subsystems are in their respective jump sets and one of them leaves '
+                    'its flow set, then the state of both will jump, violating flow priority.'};
+                warning('CompositeHybridSystem:FlowPriorityNotSupported', '%s', msg{:})
             end
             this.updateEvaluationOrder();
             sol = this.solve@HybridSystem(x0, tspan, jspan, config);
@@ -437,8 +436,8 @@ classdef CompositeHybridSystem < HybridSystem
             nargs = nargin(kappa);
             is_wrong_nargs = nargs > this.subsys_n + 2;
             if is_wrong_nargs
-               e = MException("CompositeHybridSystem:WrongNumberInputArgs", ...
-                   "Wrong number of input arguments. Expected=%d, %d, or %d, actual=%d.",...
+               e = MException('CompositeHybridSystem:WrongNumberInputArgs', ...
+                   'Wrong number of input arguments. Expected=%d, %d, or %d, actual=%d.',...
                    this.subsys_n, this.subsys_n + 1, this.subsys_n + 2, nargs);
                throwAsCaller(e);
             end
@@ -450,8 +449,8 @@ function check_output(h)
 nargs = nargin(h);
 is_wrong_nargs = nargs > 3 || nargs < 1;
 if is_wrong_nargs
-    e = MException("CompositeHybridSystem:OutputWrongNumberArgsIn", ...
-        "Given output function has wrong number of arguments. Expected=1, 2, or 3, actual=%d.",...
+    e = MException('CompositeHybridSystem:OutputWrongNumberArgsIn', ...
+        'Given output function has wrong number of arguments. Expected=1, 2, or 3, actual=%d.',...
         nargs);
     throwAsCaller(e);
 end
@@ -460,12 +459,16 @@ end
 function kappas = generate_default_feedbacks(subsystems)
 sys_count = length(subsystems);
 kappas = cell(sys_count, 1);
-args_fmt = join(repmat("~", sys_count, 1), ", ");
+if sys_count == 0
+    args_fmt = '';
+else
+    args_fmt = [repmat('~,', 1, sys_count), '~'];
+end
 feedback_arugments_string = sprintf(args_fmt, 1:sys_count);
 for i = 1:sys_count
     ss = subsystems.get(i);
     n = ss.input_dimension;
-    kappa_eval_string = sprintf("kappas{i} = @("+feedback_arugments_string+") zeros(%d, 1);", n);
+    kappa_eval_string = sprintf(['kappas{i} = @(',feedback_arugments_string,') zeros(%d, 1);'], n);
     eval(kappa_eval_string);
 end
 
@@ -474,7 +477,7 @@ end
 function assert_control_length(u_length, subsys_input_dimension, sys_ndx)
 if ~(u_length == subsys_input_dimension)
     err_id = 'CompositeHybridSystem:DoesNotMatchInputDimension';
-    msg = sprintf("Vector does not match input dimension for system %d. Expected=%d, actual=%d.", ...
+    msg = sprintf('Vector does not match input dimension for system %d. Expected=%d, actual=%d.', ...
         sys_ndx, subsys_input_dimension, u_length);
     throwAsCaller(MException(err_id,msg))
 end
@@ -483,7 +486,7 @@ end
 function assert_state_length(x_length, subsys_state_dimension, sys_ndx)
 if ~(x_length == subsys_state_dimension)
     err_id = 'CompositeHybridSystem:DoesNotMatchStateDimension';
-    msg = sprintf("Vector does not match state dimension for system %d. Expected=%d, actual=%d.", ...
+    msg = sprintf('Vector does not match state dimension for system %d. Expected=%d, actual=%d.', ...
         sys_ndx, subsys_state_dimension, x_length);
     throwAsCaller(MException(err_id,msg))    
 end
@@ -491,8 +494,8 @@ end
 
 function warn_if_input_dim_zero(this, ndx, function_name)
 if this.subsystems.get(ndx).input_dimension == 0
-    warning("CompositeHybridSystem:SystemHasNoInputs", ...
-        "%s() was called for subsystem %d, but this system does not have input.", ...
+    warning('CompositeHybridSystem:SystemHasNoInputs', ...
+        '%s was called for subsystem %d, but this system does not have input.', ...
         function_name, ndx)
 end
 end

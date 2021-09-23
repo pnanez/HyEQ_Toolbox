@@ -13,15 +13,15 @@ classdef ExampleBouncingBallHybridSystem < HybridSystem
             xdot = [x(2); -this.gravity];
         end
 
-        function xplus = jumpMap(this, x, t, j)
-            xplus = [0; -this.bounce_coeff*x(2)];
+        function xplus = jumpMap(this, x)
+            xplus = [x(1); -this.bounce_coeff*x(2)];
         end
         
-        function C = flowSetIndicator(this, x, t, j) %#ok<INUSD>
-            C = 1;
+        function C = flowSetIndicator(this, x)
+            C = x(1) >= 0 || x(2) >= 0;
         end
 
-        function D = jumpSetIndicator(this, x, t, j) %#ok<INUSL>
+        function D = jumpSetIndicator(this, x)
             D = x(1) <= 0 && x(2) <= 0;
         end
     end
