@@ -51,7 +51,7 @@ classdef HybridSolverConfigTest < matlab.unittest.TestCase
         
         function testOtherOdeOptions(testCase)
             config = HybridSolverConfig();
-            config.odeOption('JConstant', true)
+            config.odeOption('JConstant', true);
             expected_options = odeset('JConstant', true);
             testCase.assertEqual(config.ode_options, expected_options)
         end

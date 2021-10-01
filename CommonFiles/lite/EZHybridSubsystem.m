@@ -1,9 +1,6 @@
 classdef EZHybridSubsystem < HybridSubsystem
     
     properties(SetAccess = immutable)
-        state_dimension
-        input_dimension
-        output_dimension
         f
         g
         C_indicator
@@ -11,16 +8,13 @@ classdef EZHybridSubsystem < HybridSubsystem
     end
     
     methods
-        function obj = EZHybridSubsystem(f, g, C_indicator, D_indicator, output,...
-                input_dim, state_dim, output_dim)
+        function obj = EZHybridSubsystem(f, g, C_indicator, D_indicator,...
+                state_dim, input_dim, output_dim, output)
+            obj = obj@HybridSubsystem(state_dim, input_dim, output_dim, output);
             obj.f = f;
             obj.g = g;
             obj.C_indicator = C_indicator;
             obj.D_indicator = D_indicator;
-            obj.output = output;
-            obj.state_dimension = state_dim;
-            obj.input_dimension = input_dim;
-            obj.output_dimension = output_dim;
         end
             
         function xdot = flowMap(this, x, u, t, j)

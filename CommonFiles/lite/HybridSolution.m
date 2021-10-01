@@ -55,38 +55,38 @@ classdef HybridSolution < handle
             end
         end
 
-        function plot(this)
-            HybridPlotBuilder().plot(this);
+        function plot(varargin)
+            HybridPlotBuilder().plot(varargin{:});
         end
 
-        function plotFlows(this)
-            HybridPlotBuilder().plotFlows(this);
+        function plotFlows(varargin)
+            HybridPlotBuilder().plotFlows(varargin{:});
         end
 
-        function plotJumps(this)
-            HybridPlotBuilder().plotJumps(this);
+        function plotJumps(varargin)
+            HybridPlotBuilder().plotJumps(varargin{:});
         end
         
-        function plotHybrid(this)
-            HybridPlotBuilder().plotHybrid(this);
+        function plotHybrid(varargin)
+            HybridPlotBuilder().plotHybrid(varargin{:});
         end
         
     end
     
     methods(Hidden)
-        function plotflows(this)
-            warning('Please use the plotFlows function instead of plotflow.')
-            this.plotFlows(this);
+        function plotflows(varargin)
+            warning('Please use the plotFlows function instead of plotflows.')
+            this.plotFlows(varargin{:});
         end
 
-        function plotjumps(this)
+        function plotjumps(varargin)
             warning('Please use the plotJumps function instead of plotjumps.')
-            this.plotJumps();
+            this.plotJumps(varargin{:});
         end
         
-        function plotHybridArc(this)
+        function plotHybridArc(varargin)
             warning('Please use the plotHybrid function instead of plotHybridArc.')
-            this.plotHybrid();
+            this.plotHybrid(varargin{:});
         end
     end
     

@@ -17,6 +17,7 @@ end
 
 if do_tests
     nTestsFailed = hybrid.tests.run();
+    validateFunctionSignaturesJSON('CommonFiles/lite/functionSignatures.json')
 else
     nTestsFailed = -1;
 end

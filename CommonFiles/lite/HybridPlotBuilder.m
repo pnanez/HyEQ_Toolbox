@@ -49,6 +49,14 @@ classdef HybridPlotBuilder < handle
             this.settings.component_labels = labels;
         end
 
+        function this = labelSize(this, size)
+            this.settings.label_size = size;
+        end
+
+        function this = titleSize(this, size)
+            this.settings.title_size = size;
+        end
+
         function this = tLabel(this, t_label)
             this.settings.t_label = t_label;
         end
@@ -138,8 +146,7 @@ classdef HybridPlotBuilder < handle
         end
 
         function this = filter(this, timesteps_filter)
-            % FILTER Pick the timesteps to display. All others are hidden
-            % from plots. 
+            % FILTER Pick the timesteps to display. All others are hidden from plots. 
             this.settings.timesteps_filter = timesteps_filter;
         end
         
@@ -232,6 +239,33 @@ classdef HybridPlotBuilder < handle
             end
         end
 
+        function this = plotPhase(this, varargin)
+            % PLOTPHASE Plot a phase plot of the hybrid solution.
+            % The output of depends on the dimension of the system 
+            % (or the number of components selected with 'slice()'). 
+            % The output is as follows: 
+            % - 2D: a 2D phase plot
+            % - 3D: a 3D phase plot
+            % - otherwise, an error is thrown
+            hybrid_sol = hybrid.internal.convert_varargin_to_solution_obj(varargin);
+            sliced_indices = this.settings.indicesToPlot(hybrid_sol);
+            dimensions = length(sliced_indices);
+            
+            if dimensions ~= 2 && dimensions ~= 3
+                error('Expected 2 or 3 dimensions.');
+            else
+                sliced_indices_cell = num2cell(sliced_indices');
+                primary_ndxs = -ones(size(sliced_indices_cell));
+                this.plot_from_ids(hybrid_sol, sliced_indices_cell, primary_ndxs);
+            end
+            
+            if nargout == 0
+                % Prevent output if function is not terminated with a
+                % semicolon.
+                clear this
+            end          
+        end
+
         function this = plot(this, varargin)
             % PLOT Plot the hybrid solution in an intelligent way.
             % The output of depends on the dimension of the system 
@@ -248,9 +282,7 @@ classdef HybridPlotBuilder < handle
             if dimensions ~= 2 && dimensions ~= 3
                 this.plotFlows(hybrid_sol);
             else
-                sliced_indices_cell = num2cell(sliced_indices');
-                primary_ndxs = -ones(size(sliced_indices_cell));
-                this.plot_from_ids(hybrid_sol, sliced_indices_cell, primary_ndxs);
+                this.plotPhase(hybrid_sol);
             end
             
             if nargout == 0
