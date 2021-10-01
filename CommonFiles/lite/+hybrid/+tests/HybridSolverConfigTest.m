@@ -17,7 +17,7 @@ classdef HybridSolverConfigTest < matlab.unittest.TestCase
         
         function testInvalidRelTolInConstructor(testCase)
             f = @() HybridSolverConfig('RelTol', -5);
-            testCase.verifyError(f, 'MATLAB:expectedNonnegative');
+            testCase.verifyError(f, 'Hybrid:expectedNonnegative');
         end
         
         function testAbsTolInConstructor(testCase)
@@ -28,7 +28,7 @@ classdef HybridSolverConfigTest < matlab.unittest.TestCase
         
         function testInvalidAbsTolInConstructor(testCase)
             f = @() HybridSolverConfig('AbsTol', -5);
-            testCase.verifyError(f, 'MATLAB:expectedNonnegative');
+            testCase.verifyError(f, 'Hybrid:expectedNonnegative');
         end
         
         function testMaxStepInConstructor(testCase)
@@ -39,7 +39,7 @@ classdef HybridSolverConfigTest < matlab.unittest.TestCase
         
         function testInvalidMaxStepInConstructor(testCase)
             f = @() HybridSolverConfig('MaxStep', -5);
-            testCase.verifyError(f, 'MATLAB:expectedNonnegative');
+            testCase.verifyError(f, 'Hybrid:expectedNonnegative');
         end
         
         function testMaxStepFromStringInConstructor(testCase)
@@ -54,6 +54,37 @@ classdef HybridSolverConfigTest < matlab.unittest.TestCase
             config.odeOption('JConstant', true);
             expected_options = odeset('JConstant', true);
             testCase.assertEqual(config.ode_options, expected_options)
+        end
+        
+        function testOdeSolver(testCase)
+            config = HybridSolverConfig();
+            config.odeSolver('ode23');
+            testCase.assertEqual(config.ode_solver, 'ode23')
+        end
+        
+        function testOdeSolverInvalid(testCase)
+            config = HybridSolverConfig();
+            testCase.verifyError(@()config.odeSolver('ode15i'), 'Hybrid:InvalidOdeSolver')
+        end
+        
+        function testPriority(testCase)
+            config = HybridSolverConfig();
+            config.priority(HybridPriority.JUMP);
+            testCase.assertEqual(config.hybrid_priority, HybridPriority.JUMP)
+            config.priority(HybridPriority.FLOW);
+            testCase.assertEqual(config.hybrid_priority, HybridPriority.FLOW)
+            config.priority('jump');
+            testCase.assertEqual(config.hybrid_priority, HybridPriority.JUMP)
+            config.priority('FLOW');
+            testCase.assertEqual(config.hybrid_priority, HybridPriority.FLOW)
+            
+            testCase.verifyError(@() config.priority('not enumeration value'), 'Hybrid:InvalidPriority')
+        end
+        
+        function testMassMatrix(testCase)
+            config = HybridSolverConfig();
+            config.massMatrix(magic(2));
+            testCase.assertEqual(config.mass_matrix, magic(2))
         end
         
         function testDefaultProgress(testCase)

@@ -1,6 +1,6 @@
 classdef SubsystemList
     
-    properties(Access = private)
+    properties(SetAccess = immutable)
         entries cell = {};
         names cell = {};
     end

@@ -1,13 +1,10 @@
 classdef HybridSolverConfig < handle
 
-    properties
+    properties(SetAccess = private)
         ode_solver = 'ode45';
+        ode_options;
         hybrid_priority = HybridPriority.JUMP;
         mass_matrix = [];
-    end
-    
-    properties(SetAccess = private)
-        ode_options;
         progressListener = PopupHybridProgress(); % Is a HybridProgress
     end
 
@@ -27,11 +24,10 @@ classdef HybridSolverConfig < handle
 
             % Parse Name/Value pairs from arguments.
             parser = inputParser();
-            nonnegative_validator = @(n)validateattributes(n,{'numeric'},{'nonnegative'});
-            addParameter(parser,'RelTol',NaN,nonnegative_validator);
-            addParameter(parser,'AbsTol',NaN,nonnegative_validator);
-            addParameter(parser,'MaxStep',NaN,nonnegative_validator);
-            addParameter(parser,'Refine',NaN,nonnegative_validator);
+            addParameter(parser,'RelTol',NaN);
+            addParameter(parser,'AbsTol',NaN);
+            addParameter(parser,'MaxStep',NaN);
+            addParameter(parser,'Refine',NaN);
             parse(parser, varargin{:})
             
             % Apply non-NaN values.
@@ -48,12 +44,32 @@ classdef HybridSolverConfig < handle
                 this.Refine(parser.Results.Refine);
             end
         end
+        
+        function this = odeSolver(this, solver)
+            % ODESOLVER Set the ODE solver to compute trajectories during flows.
+            % The solver 'ode15i' is not supported.
+            this.ode_solver = solver;
+        end
             
         function set.ode_solver(this, ode_solver)
             if strcmp(ode_solver, 'ode15i')
-                error('The ''ode15i'' solver is not supported');
+                error('Hybrid:InvalidOdeSolver','The ''ode15i'' solver is not supported');
             end
             this.ode_solver = ode_solver;
+        end
+
+        function this = priority(this, priority)
+            % PRIORITY Set the hybrid priority. Value must be either HybridPriority.JUMP or HybridPriority.FLOW, 
+            % or the string representation ''jump'' or ''flow'' (case
+            % insensitive).
+            if strcmpi(priority, 'jump') % Case insenstive
+                priority = HybridPriority.JUMP;
+            elseif strcmpi(priority, 'flow') % Case insenstive
+                priority = HybridPriority.FLOW;
+            end
+            assert(ismember(priority, enumeration('HybridPriority')), 'Hybrid:InvalidPriority',...
+                'The value of ''priority'' must be one of: HybridPriority.JUMP, HybridPriority.FLOW, ''jump'', or ''flow''.')
+            this.hybrid_priority = priority;
         end
 
         function this = jumpPriority(this)
@@ -66,28 +82,41 @@ classdef HybridSolverConfig < handle
 
         function this = RelTol(this, relTol)
             % RelTol  Set the relative tolerance for the ODE solver.
+            assert(relTol > 0, 'Hybrid:expectedNonnegative', ...
+                'Relative tolerance must be positive.')
             this.ode_options = odeset(this.ode_options, 'RelTol', relTol);
         end
 
         function this = AbsTol(this, absTol)
             % AbsTol  Set the absolute tolerance for the ODE solver.
+            assert(absTol > 0, 'Hybrid:expectedNonnegative', ...
+                'Absolute tolerance must be positive.')
             this.ode_options = odeset(this.ode_options, 'AbsTol', absTol);
         end
 
         function this = MaxStep(this, maxStep)
             % MaxStep  Set the maximum step size for the ODE solver.
+            assert(maxStep > 0, 'Hybrid:expectedNonnegative', ...
+                'Max step must be positive.')
             this.ode_options = odeset(this.ode_options, 'MaxStep', maxStep);
         end
 
         function this = Refine(this, refine)
             % Refine Solution refinement factor. See documentation for
             % odeset.
+            assert(refine > 0, 'Hybrid:expectedNonnegative', ...
+                'Refine must be positive.')
             this.ode_options = odeset(this.ode_options, 'Refine', refine);
         end
         
         function this = odeOption(this, name, value)
             % ODEOPTION  Set an arbitrary ODE option via name-value pair.
             this.ode_options.(name) = value;
+        end
+
+        function this = massMatrix(this, mass_matrix)
+            % MASSMATRIX Set the mass matrix.
+            this.mass_matrix = mass_matrix;
         end
         
         function this = progress(this, progressListener)

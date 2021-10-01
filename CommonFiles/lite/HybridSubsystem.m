@@ -69,9 +69,14 @@ classdef (Abstract) HybridSubsystem < handle
 
     methods
         
-        function [f_vals, g_vals, C_vals, D_vals] = generateFGCD(this, t, j, x, u)
+        function [f_vals, g_vals, C_vals, D_vals] = generateFGCD(this, sol)
             % Compute the values of the flow and jump maps and sets at each
             % point in the solution trajectory.
+            assert(isa(sol, 'HybridSolutionWithInput'))
+            t = sol.t;
+            j = sol.j;
+            x = sol.x;
+            u = sol.u;
             f_vals = NaN(size(x));
             g_vals = NaN(size(x));
             C_vals = NaN(size(t));
