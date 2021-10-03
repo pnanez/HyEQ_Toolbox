@@ -177,7 +177,7 @@ classdef PlotSettings < matlab.mixin.Copyable
     %    end
     % end
     
-    methods % Arguments generation
+    methods(Access = ?HybridPlotBuilder) % Arguments generation
         function val = flowArguments(this)
             val = {'Color', this.flow_color, ...
                     'LineStyle', this.flow_line_style, ...
@@ -527,18 +527,21 @@ end
 
 function arg = parse_logical_arg(arg)
 if islogical(arg)
-    assert(isscalar(arg), 'Argument must be a scalar')
+    assert(isscalar(arg), 'Hybrid:InvalidArgument', ...
+        'Argument must be a scalar')
     return
 elseif isnumeric(arg)
-    assert(isscalar(arg), 'Argument must be a scalar')
-    assert(arg == 0 || arg == 1, 'Numeric value must be 0 or 1.');
+    assert(isscalar(arg), 'Hybrid:InvalidArgument', ...
+        'Argument must be a scalar')
+    assert(arg == 0 || arg == 1, 'Hybrid:InvalidArgument', ...
+        'Numeric value must be 0 or 1.');
     arg = logical(arg);
 elseif strcmp('on', arg)
     arg = true;
 elseif strcmp('off', arg)
     arg = false;
 else
-    error('String value must be ''on'' or ''off''')
+    error('Hybrid:InvalidArgument', 'String value must be ''on'' or ''off''')
 end
 end
 

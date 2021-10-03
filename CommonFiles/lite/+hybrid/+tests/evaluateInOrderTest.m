@@ -75,7 +75,7 @@ classdef evaluateInOrderTest < matlab.unittest.TestCase
             xs = {20, 12};
             t = pi;
             js = {0, 0};
-            testCase.verifyError(@() evaluateInOrder(order, kappas, outputs, xs, t, js), '');
+            testCase.verifyError(@() evaluateInOrder(order, kappas, outputs, xs, t, js), 'Hybrid:NonuniqueRows');
         end
 
     end

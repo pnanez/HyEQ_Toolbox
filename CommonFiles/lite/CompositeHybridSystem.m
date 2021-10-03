@@ -14,7 +14,7 @@ classdef CompositeHybridSystem < HybridSystem
 %%% its own discrete time).
     
     properties(SetAccess = immutable)
-        subsystems hybrid.internal.SubsystemList; 
+        subsystems % hybrid.internal.SubsystemList; 
     end
     
     properties(GetAccess = private, SetAccess = immutable) 
@@ -25,9 +25,9 @@ classdef CompositeHybridSystem < HybridSystem
         subsys_n;
         
         % Indicies within the composite state of each subsystem's state 
-        x_indices cell
+        x_indices % cell (:, :) 
         % Index within the composite state of subsystem1's discrete time.
-        j_index uint32 % (:, 1) 
+        j_index % integer array (:, 1) 
     end
     
     properties(Access = private)

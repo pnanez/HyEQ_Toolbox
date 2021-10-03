@@ -1,8 +1,8 @@
 classdef SubsystemList
     
     properties(SetAccess = immutable)
-        entries cell = {};
-        names cell = {};
+        entries = {};
+        names = {};
     end
     
     properties(Dependent)

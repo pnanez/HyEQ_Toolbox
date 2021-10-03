@@ -41,7 +41,7 @@ for row = 1:size(order, 1)
             kappa = inputs{i_ss};
             us{i_ss} = eval_input(kappa, ys, t, js(i_ss));
         otherwise
-            error('Invalid function name: %s', order(row, :));
+            error('Hybrid:InvalidFunctionName','Invalid function name: %s', order(row, :));
     end
 end
 end
@@ -61,7 +61,8 @@ switch narg
         if narg < length(ys)
             u = kappa(ys{1:narg});
         else
-            error('Unexpected number of input arguments for function %s: %d', ...
+            error('Hybrid:InvalidArguments',...
+                'Unexpected number of input arguments for function %s: %d', ...
                 narg, func2str(kappa));
         end
 end
@@ -80,7 +81,7 @@ switch nargin(h)
     case 4
         u = h(x, u, t, j);
     otherwise
-        error('Unexpected number of arguments for function ''%s''. ' + ... 
+        error('Hybrid:InvalidArguments''Unexpected number of arguments for function ''%s''. ' + ... 
             'Must be 1, 2, 3, or 4. Instead was %d.',...
             func2str(h), nargin(h));
 end
@@ -90,5 +91,5 @@ function assert_all_unique(char_array)
 assert(ischar(char_array), 'expected char array, instead was %s', class(char_array));
 assert(size(char_array, 2) == 2, 'expected 2 columns')
 unique_rows = unique(char_array,'rows');
-assert(length(char_array) == length(unique_rows), 'Rows are not all unique');
+assert(length(char_array) == length(unique_rows), 'Hybrid:NonuniqueRows', 'Rows are not all unique');
 end

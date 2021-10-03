@@ -13,7 +13,10 @@ classdef parseStringVararginWithOptionalOptionsTest < matlab.unittest.TestCase
         end
         
         function testStringArgsConvertToCharArrays(testCase)
-            hybrid.tests.internal.assumeStringsSupported();
+            if ~exist('string', 'class')
+                % Pass. Strings are not supported on current version of Matlab'
+                return
+            end
             A = string('Apple'); %#ok<STRQUOT>
             B = string('Bat'); %#ok<STRQUOT>
             strings = hybrid.internal.parseStringVararginWithOptionalOptions(A, B);
@@ -56,7 +59,10 @@ classdef parseStringVararginWithOptionalOptionsTest < matlab.unittest.TestCase
         
         function testStringsInOption(testCase)
             import hybrid.internal.*
-            hybrid.tests.internal.assumeStringsSupported(testCase)
+            if ~exist('string', 'class')
+                % Pass. Strings are not supported on current version of Matlab'
+                return
+            end
             strings = {'A', 'B'};
             [~, options] = parseStringVararginWithOptionalOptions(strings, ...
                 string('Option 1'), string('a string'), ...

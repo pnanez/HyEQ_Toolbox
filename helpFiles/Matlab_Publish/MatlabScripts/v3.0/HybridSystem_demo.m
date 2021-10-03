@@ -38,20 +38,20 @@ bb_system.bounce_coeff = 0.8;
 x0 = [10, 0];
 tspan = [0, 30];
 jspan = [0, 100];
-config = HybridSolverConfig('refine', 12);
+config = HybridSolverConfig('refine', 12); % Improves plot appearance. More on HybridSolverConfig below.
 sol = bb_system.solve(x0, tspan, jspan, config);
 plotFlows(sol);
 
 %% Information About Solution
-% The return value of the |solve| method is a |HybridSolution| object and contains 
-% various information about the solution.
-disp(sol)
+% The return value of the |solve| method is a |HybridSolution| object that contains 
+% information about the solution.
+sol
 
 %% 
 % A description of each HybridSolution property is as follows:
 %
-% * |t|: The continuous times of the solution.
-% * |j|: The discrete times of the solution.
+% * |t|: The continuous time values of the solution's hybrid time domain.
+% * |j|: The discrete time values of the solution's hybrid time domain.
 % * |x|: The state vector of the solution.
 % * |x0|: The initial state of the solution.
 % * |xf|: The final state of the solution.
@@ -70,49 +70,56 @@ disp(sol)
 % * |T_REACHED_END_OF_TSPAN| 
 % * |J_REACHED_END_OF_JSPAN|
 % * |CANCELED|
-% * |UNDETERMINED| (Only occurs if the optional arguments C, D, tspan, jspan
-% are ommitted)
-%
+% * |UNDETERMINED| 
+
+%% 
+% The value |UNDETERMINED| only occurs if the |HybridSolution| object is
+% constructed without the optional arguments |C|, |D|, |tspan|, and |jspan|.
 
 %% Evaluating a Function Along a Solution
-% It is frequently desirable to evaluate a function along the
+% It is frequently useful to evaluate a function along the
 % solution. This functionality is provided by the method |evaluateFunction|
 % in |HybridSolution|.
 energy_fnc = @(x) bb_system.gravity * x(1) + 0.5*x(2)^2;
-enregy = sol.evaluateFunction(energy_fnc);
+energy = sol.evaluateFunction(energy_fnc);
 
 %%
-% |HybridPlotBuilder| calls |evaluateFunction| if a function handle is
-% passed to a plotting function.
-HybridPlotBuilder().plot(sol, energy_fnc);
+% |HybridPlotBuilder| calls |evaluateFunction| internally if a function handle is
+% passed to any of its plotting functions.
+HybridPlotBuilder().plotFlows(sol, energy_fnc);
 
 %% Configuration Options
-% To configure the ODE solver and progress updates, create a
-% |HybridSolverConfig| object and pass it to |solve| as follows (if no
-% properties are changed on |config|, then this reproduces the default behavior):
-config = HybridSolverConfig();
+% To configure the hybrid solver, create a
+% |HybridSolverConfig| object and pass it to |solve| as follows:
+config = HybridSolverConfig(); % Simply the default.
 bb_system.solve(x0, tspan, jspan, config);
 
 %%
 % By default, the hybrid solver gives precedence to jumps when the solution
 % is in the intersection of the flow and jump sets. This can be changed by
-% setting the |hybrid_priority| property to one of the enumeration values
-% in |HybridPriority|.
-config.hybrid_priority = HybridPriority.FLOW;
-config.hybrid_priority = HybridPriority.JUMP;
+% setting the |priority| to |HybridPriority.JUMP| or
+% |HybridPriority.FLOW|, or one of the (case insensitive) strings |'flow'| or
+% |'jump'|.
+config.priority(HybridPriority.FLOW);
+config.priority(HybridPriority.JUMP);
+config.priority('flow');
+config.priority('jump');
+config.flowPriority();
+config.jumpPriority();
 
 %% 
-% The ODE solver and options can be modified in |config|. The functions 
+% The ODE solver function and solver options can be modified in |config|. The functions 
 % |RelTol|, |AbsTol|, |MaxStep|, and |Refine| provide convenient ways to set the
 % corresponding ODE solver options. Other options can be set using the
-% |odeOption| function, but are untested with the hybrid equation solver so they 
-% should be used with caution.
+% |odeOption| function (not all of the options have be tested with the hybrid
+% equation solver so they should be used with caution).
 
-config.ode_solver = 'ode23s';
+config.odeSolver('ode23s');
 config.RelTol(1e-3);
 config.AbsTol(1e-4);
+config.MaxStep(0.5);
 config.Refine(4);
-config.odeOption('InitialStep', 0.4);
+config.odeOption('InitialStep', 0.1);
 config.odeOption('MassSingular', 'no');
 
 % Display the options struct.
@@ -120,26 +127,14 @@ config.ode_options
 
 %% 
 % Computing a hybrid solution can take considerable time, so progress updates are
-% displayed. The default behavior is to use the 
-% |PopupHybridProgress| class. 
-progress = PopupHybridProgress();
+% displayed. The default behavior is to create a popup progress bar. This can be
+% set explicitly like this:
+config.progress('popup');
 
 %%
-% We can configure the |progress| object by setting the values
-% of its properties. First, we change the displayed resolution for 
-% continuous time (this also effects the frequency of updates).
-progress.t_decimal_places = 1; 
-
-%%
-% We can also set the maximum refresh rate to 1 second to make the solver
-% slightly faster.
-progress.min_delay = 1.0;
-
-%%
-% Then we pass |progress| to |config.progress| and pass |config| to
-% |solve|.
-config.progress(progress);
-bb_system.solve(x0, tspan, jspan, config);
+% We can modify the number of decimal places displayed for the continuous time
+% |t| in the popup by passing an integer after |'popup'|.
+config.progress('popup', 4); 
 
 %% 
 % Alternatively, progress updates can be disabled by passing |'silent'| to
@@ -147,6 +142,5 @@ bb_system.solve(x0, tspan, jspan, config);
 config.progress('silent');
 
 %% 
-% If no other solver configurations are desired, then 'silent' can be passed
-% directly to |solve| in place of |config|.
+% |'silent'| can be also be passed directly to |solve| in place of |config|.
 bb_system.solve(x0, tspan, jspan, 'silent');

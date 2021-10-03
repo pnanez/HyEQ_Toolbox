@@ -67,9 +67,7 @@ classdef HybridSolverConfig < handle
             elseif strcmpi(priority, 'flow') % Case insenstive
                 priority = HybridPriority.FLOW;
             end
-            assert(ismember(priority, enumeration('HybridPriority')), 'Hybrid:InvalidPriority',...
-                'The value of ''priority'' must be one of: HybridPriority.JUMP, HybridPriority.FLOW, ''jump'', or ''flow''.')
-            this.hybrid_priority = priority;
+            this.hybrid_priority = HybridPriority(priority);
         end
 
         function this = jumpPriority(this)

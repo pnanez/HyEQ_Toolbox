@@ -24,8 +24,10 @@ classdef HybridSystemTest < matlab.unittest.TestCase
         end
 
         function testBouncingBall(testCase)
-            system = ExampleBouncingBallHybridSystem();
+            system = hybrid.examples.ExampleBouncingBallHybridSystem();
             sol = system.solve([1; 0], [0, 1], [0, 10], 'silent');
+            
+            testCase.assertGreaterThan(sol.x(:,1), -1e-2);
         end
 
         %%%%%%%%%%%%%%%% Test JumpTime calculations %%%%%%%%%%%%%%%%%

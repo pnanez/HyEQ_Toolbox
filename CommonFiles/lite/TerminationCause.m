@@ -17,7 +17,7 @@ classdef TerminationCause
       UNDETERMINED('Insufficient information provided to determine cause of termination.')
    end
 
-    methods(Static)
+    methods(Static, Hidden)
         function cause = getCause(t, j, x, C_vals, D_vals, tspan, jspan)
             %%% From the given data, compute the reason that the solution
             %%% terminated. 

@@ -1,9 +1,9 @@
 classdef HybridProgress < handle
     properties
-        tspan double % (1, 2) 
-        jspan % (1, 2)
-        t double % (1,1) 
-        j % (1,1)
+        tspan % double (1, 2) 
+        jspan % integer (1, 2)
+        t % double (1,1) 
+        j % integer (1,1)
         is_cancel_solver; % When true, HyEQSolver aborts.
     end
 

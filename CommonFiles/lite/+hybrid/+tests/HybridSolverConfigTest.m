@@ -43,7 +43,10 @@ classdef HybridSolverConfigTest < matlab.unittest.TestCase
         end
         
         function testMaxStepFromStringInConstructor(testCase)
-            hybrid.tests.internal.assumeStringsSupported();
+            if ~exist('string', 'class')
+                % Pass. Strings are not supported on current version of Matlab'
+                return
+            end
             config = HybridSolverConfig(string('MaxStep'), 1e-3); %#ok<STRQUOT>
             expected_options = odeset('MaxStep', 1e-3);
             testCase.assertEqual(config.ode_options, expected_options)
@@ -77,8 +80,12 @@ classdef HybridSolverConfigTest < matlab.unittest.TestCase
             testCase.assertEqual(config.hybrid_priority, HybridPriority.JUMP)
             config.priority('FLOW');
             testCase.assertEqual(config.hybrid_priority, HybridPriority.FLOW)
+            config.priority(1);
+            testCase.assertEqual(config.hybrid_priority, HybridPriority.JUMP)
+            config.priority(2);
+            testCase.assertEqual(config.hybrid_priority, HybridPriority.FLOW)
             
-            testCase.verifyError(@() config.priority('not enumeration value'), 'Hybrid:InvalidPriority')
+            testCase.verifyError(@() config.priority('not enumeration value'), 'MATLAB:class:CannotConvert')
         end
         
         function testMassMatrix(testCase)
@@ -94,10 +101,13 @@ classdef HybridSolverConfigTest < matlab.unittest.TestCase
         end
         
         function testPopupProgressFromString(testCase)
-           hybrid.tests.internal.assumeStringsSupported();
-           str = string('popup'); %#ok<STRQUOT>
-           progress = HybridSolverConfig().progress(str).progressListener;
-           testCase.assertInstanceOf(progress, ?PopupHybridProgress)
+            if ~exist('string', 'class')
+                % Pass. Strings are not supported on current version of Matlab'
+                return
+            end
+            str = string('popup'); %#ok<STRQUOT>
+            progress = HybridSolverConfig().progress(str).progressListener;
+            testCase.assertInstanceOf(progress, ?PopupHybridProgress)
         end
         
         function testPopupProgressFromCharArray(testCase)
@@ -106,10 +116,13 @@ classdef HybridSolverConfigTest < matlab.unittest.TestCase
         end
         
         function testSilentProgressFromString(testCase)
-           hybrid.tests.internal.assumeStringsSupported();
-           str = string('silent'); %#ok<STRQUOT>
-           progress = HybridSolverConfig().progress(str).progressListener;
-           testCase.assertInstanceOf(progress, ?SilentHybridProgress)
+            if ~exist('string', 'class')
+                % Pass. Strings are not supported on current version of Matlab'
+                return
+            end
+            str = string('silent'); %#ok<STRQUOT>
+            progress = HybridSolverConfig().progress(str).progressListener;
+            testCase.assertInstanceOf(progress, ?SilentHybridProgress)
         end
         
         function testSilentProgressFromCharArray(testCase)

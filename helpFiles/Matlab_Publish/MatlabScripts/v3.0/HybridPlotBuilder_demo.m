@@ -27,6 +27,15 @@ sol_3D = system_3D.solve([0; 1; 0], [0, 20], [0, 100], config);
 HybridPlotBuilder().plotFlows(sol);
 
 %% 
+% NOTE: prior to MATLAB version R2016a, it is not possible to chain
+% a function call directly after a constructor, so the code above must be
+% split into variable assignment, followed by the function call:
+% 
+%  hpb = HybridPlotBuilder();
+%  hpb.plotFlows(sol);
+% 
+
+%% 
 % The |plotJumps| function plots each component of the solution versus
 % discrete time $j$.
 HybridPlotBuilder().plotJumps(sol);

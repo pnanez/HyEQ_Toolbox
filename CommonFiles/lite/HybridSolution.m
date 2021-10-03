@@ -1,33 +1,76 @@
-classdef HybridSolution < handle
-
+classdef HybridSolution
+% HybridSolution Solution to a hybrid dynamical system, with additional information. 
+    
     properties(SetAccess = immutable)
-        t double; % (:, 1) 
-        j double; % (:, 1) 
-        x double; % (:, :) 
+        % A column vector containing the continuous time value for each entry in
+        % the solution.
+        t % double (:, 1) 
         
-        % Initial state
-        x0 double; % (1, :) 
-        % Final state
-        xf double; % (1, :) 
-        termination_cause TerminationCause; 
+        % A column vector containing the discrete time value for each entry in
+        % the solution.
+        j % double (:, 1) 
+        
+        % A column vector containing the state vector for each entry in
+        % the solution.
+        x % double (:, :) 
+        
+        % Initial state vector.
+        x0 % double (1, :) 
+        
+        % Final state vector.
+        xf % double (1, :) 
+        
+        % The reason the simulation terminated.
+        % The value of termination_cause is set to one of the the enumeration
+        % values in TerminationCause.
+        termination_cause % TerminationCause; 
 
         % The duration of each interval of flow.
-        flow_lengths double; % (:, 1)
+        flow_lengths % double (:, 1)
+        
         % The continuous time of each jump.
-        jump_times double; % (:, 1)
-        shortest_flow_length double;
-        total_flow_length double;
-        jump_count uint32;
+        jump_times % double (:, 1)
+        
+        % The legenth of the shortest interval of flow.
+        shortest_flow_length % double
+        
+        % The cumulative length of all intervals of flow.
+        total_flow_length % double
+        
+        % The number of jumps in the solution.
+        jump_count % integer
     end
 
-    properties(GetAccess = protected, SetAccess = immutable)
+    properties(GetAccess = protected, SetAccess = immutable, Hidden)
         system;
         C_end;
         D_end;
     end
 
     methods
-        function this = HybridSolution(t, j, x, C_vals, D_vals, tspan, jspan)
+        function this = HybridSolution(t, j, x, C, D, tspan, jspan)
+            % Construct a HybridSolution object. 
+            %
+            % Input arguments:
+            % 1) t: a column vector containing the continuous time at each time step.
+            % 2) j: a column vector containing the discrete time at each time step.
+            % 3) x: an array where each row contains the transpose of the state
+            % vector at that time step.
+            % 4) C (optional): flow set indicator. Given as one of the following:
+            %   * a column vector containing the value at each time step.
+            %   * a scalar containing the value at only the last time step, or
+            %   * a function handle.
+            % 5) D (optional): jump set indicator. Given as one of the following:
+            %   * a column vector containing the value at each time step.
+            %   * a scalar containing the value at only the last time step, or
+            %   * a function handle.
+            % 6) tspan (optional): a 2x1 array containing the continuous time
+            % span.
+            % 7) jspan (optional): a 2x1 array containing the continuous time
+            % span.
+            % 
+            % Arguments 4 through 7 are used to determine the termination cause.
+            
             checkVectorSizes(t, j, x);
             this.t = t;
             this.j = j;
@@ -44,11 +87,18 @@ classdef HybridSolution < handle
                 assert(t(1) == tspan(1), 't(1)=%f does equal the start of tspan=%s', t(1), mat2str(tspan))
                 assert(j(1) == jspan(1), 'j(1)=%d does equal the start of jspan=%s', j(1), mat2str(jspan))
                 
-                this.C_end = C_vals(end);
-                this.D_end = D_vals(end);
+                if isa(C, 'function_handle')
+                    C = evaluate_function(C, x(end,:)', t(end), j(end));
+                end
+                if isa(D, 'function_handle')
+                    D = evaluate_function(D, x(end,:)', t(end), j(end));
+                end
+                
+                this.C_end = C(end);
+                this.D_end = D(end);
                 
                 this.termination_cause = TerminationCause.getCause(...
-                    this.t, this.j, this.x, C_vals, D_vals, tspan, jspan);
+                    this.t, this.j, this.x, C, D, tspan, jspan);
             else
                 this.termination_cause = TerminationCause.getCause(...
                     this.t, this.j, this.x);
@@ -56,19 +106,28 @@ classdef HybridSolution < handle
         end
 
         function plot(varargin)
+            % Shortcut for HybridPlotBuilder.plot function.
             HybridPlotBuilder().plot(varargin{:});
         end
 
         function plotFlows(varargin)
+            % Shortcut for HybridPlotBuilder.plotFlows function.
             HybridPlotBuilder().plotFlows(varargin{:});
         end
 
         function plotJumps(varargin)
+            % Shortcut for HybridPlotBuilder.plotJumps function.
             HybridPlotBuilder().plotJumps(varargin{:});
         end
         
         function plotHybrid(varargin)
+            % Shortcut for HybridPlotBuilder.plotHybrid function.
             HybridPlotBuilder().plotHybrid(varargin{:});
+        end
+        
+        function plotPhase(varargin)
+            % Shortcut for HybridPlotBuilder.plotPhase function.
+            HybridPlotBuilder().plotPhase(varargin{:});
         end
         
     end
@@ -93,7 +152,7 @@ classdef HybridSolution < handle
     methods
         
         function out = evaluateFunction(this, func_hand, time_indices)
-            % EVALUATEFUNCTION Evaluate a function handle at each point along the solution.
+            % Evaluate a function at each point along the solution.
             % The function handle 'func_hand' is evaluated with the
             % arguments of the state 'x', continuous time 't' (optional),
             % and discrete time 'j' (optional). This function returns an
@@ -133,16 +192,6 @@ classdef HybridSolution < handle
             for k=time_indices
                 out(k, :) = evaluate_function(func_hand, this.x(k, :)', this.t(k), this.j(k))';
             end
-        end
-    end
-    
-    methods(Static)
-        function hs = fromLegacyData(t, j, x, C, D, tspan, jspan)
-            % fromLegacyData Create a HybridSolution given the input and
-            % output arguments of HyEQsolver.
-            C_end = evaluate_function(C, x(end,:)', t(end), j(end));
-            D_end = evaluate_function(D, x(end,:)', t(end), j(end));
-            hs = HybridSolution(t, j, x, C_end, D_end, tspan, jspan);
         end
     end
 end

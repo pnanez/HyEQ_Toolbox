@@ -7,7 +7,6 @@ classdef Example2DHybridSystem < HybridSystem
             xdot = [x(2); -x(1)];
         end
 
-
         function xplus = jumpMap(this, x) %#ok<INUSL> 
             xplus = [x(2); -x(1)];        
         end

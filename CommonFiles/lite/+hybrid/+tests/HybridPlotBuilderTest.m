@@ -611,17 +611,27 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             forEachSubplot(@(sp, ndx) this.assertTrue(is3D(sp)))
         end
         
-        function assertLegendLabels(this, varargin)
-            if verLessThan('matlab', '9.1')
-                this.assumeFail('Our legend checking doesn''t work prior to Matlab 2016b. Please verify manually.')
-            end
-            
+        function assertLegendLabels(this, varargin)            
             assert(~isempty(varargin), 'Empty legend entries must be entered as empty strings or char arrays')
             labels_expected = varargin;
-            
+            legends = findobj(gcf, 'Type', 'Legend');
+            subplots = findobj(gcf, 'Type', 'axes');
             function checkLabels(sp, sp_ndx)
-                expected_label = labels_expected{sp_ndx};
-                lgd = sp.Legend;
+                expected_labels = labels_expected{sp_ndx};
+
+                if verLessThan('matlab', '9.1')
+                    if numel(subplots) > 1
+                        this.assumeFail('Prior to R2016b, we cannot check legend entries on multiple subplots');
+                    end
+                    if numel(legends) > 1
+                        lgd = legends(sp_ndx);
+                    else 
+                        lgd = legends;
+                    end
+                else
+                    lgd = sp.Legend;
+                end
+
                 if isa(lgd, 'matlab.graphics.GraphicsPlaceholder')
                     actual = '';
                 else
@@ -630,7 +640,7 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
                         actual = actual{1};
                     end
                 end
-                this.assertEqual(actual, expected_label);
+                this.assertEqual(actual, expected_labels);
             end
             forEachSubplot(@checkLabels);
         end

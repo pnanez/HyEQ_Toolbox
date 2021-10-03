@@ -39,7 +39,10 @@ classdef PlotSettingsTest < matlab.unittest.TestCase
         end
         
         function testSetWithStrings(testCase)
-            hybrid.tests.internal.assumeStringsSupported();
+            if ~exist('string', 'class')
+                % Pass. Strings are not supported on current version of Matlab'
+                return
+            end
             ps = hybrid.internal.PlotSettings();
             ps.set(...
                 string('label interpreter'), string('tex'), ...
@@ -163,16 +166,20 @@ classdef PlotSettingsTest < matlab.unittest.TestCase
             assertSet(1, true)
             assertSet(false, false)
             assertSet(true, true)
-            testCase.verifyError(@() ps.set('auto_subplots', 'blarg'), '');
-            testCase.verifyError(@() ps.set('auto_subplots', 2), '');
-            testCase.verifyError(@() ps.set('auto_subplots', [1 2]), '');
-            testCase.verifyError(@() ps.set('auto_subplots', [true false]), '');
+            testCase.verifyError(@() ps.set('auto_subplots', 'blarg'), 'Hybrid:InvalidArgument');
+            testCase.verifyError(@() ps.set('auto_subplots', 2), 'Hybrid:InvalidArgument');
+            testCase.verifyError(@() ps.set('auto_subplots', [1 2]), 'Hybrid:InvalidArgument');
+            testCase.verifyError(@() ps.set('auto_subplots', [true false]), 'Hybrid:InvalidArgument');
         end
         
         function testSetLegendAsString(testCase)
+            if ~exist('string', 'class')
+                % Pass. Strings are not supported on current version of Matlab'
+                return
+            end
             import hybrid.internal.*
             ps = PlotSettings(); 
-            ps.component_legend_labels = {"String 1", "String 2"}; %#ok<CLARRSTR>
+            ps.component_legend_labels = {string('String 1'), string('String 2')}; %#ok<STRQUOT>
             testCase.assertEqual(ps.component_legend_labels, {'String 1', 'String 2'});
         end
         

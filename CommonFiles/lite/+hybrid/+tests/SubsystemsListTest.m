@@ -38,7 +38,10 @@ classdef SubsystemsListTest < matlab.unittest.TestCase
         
         function testGetByNameString(testCase)
             import hybrid.tests.internal.*
-            assumeStringsSupported();
+            if ~exist('string', 'class')
+                % Pass. Strings are not supported on current version of Matlab'
+                return
+            end
             sub1 = MockHybridSubsystem(1, 1, 1);
             subsystems = hybrid.internal.SubsystemList(string('sub 1'), sub1); %#ok<*STRQUOT>
             testCase.assertEqual(subsystems.get(string('sub 1')), sub1);
