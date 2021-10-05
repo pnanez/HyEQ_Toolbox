@@ -75,23 +75,60 @@
 %
 % Then, we can create two instances (here they happen to both be the same class, 
 % but they will generally be different classes):
-subsystem1 = ExampleHybridSubsystem();
-subsystem2 = ExampleHybridSubsystem();
+subsystem1 = hybrid.examples.ExampleHybridSubsystem();
+subsystem2 = hybrid.examples.ExampleHybridSubsystem();
 
 %% Create a Composite Hybrid System
 % Now that we have two subsystems, we pass these to the
 % |CompositeHybridSystem| constructor to create a coupled system.
+% There are two forms of the constructor arguments. The first is to simply past
+% the list of subsystems. 
 sys = CompositeHybridSystem(subsystem1, subsystem2);
 
 %%
-% Next, we set the input functions for each subsystem. The flow
-% input functions generate the input for the respective subsystem during
-% flows and the jump input functions generates the input at jumps. 
-% The first argument identifies the subsystem for the given function and can be
-% the ordinal number of a subsystem, an object reference to a subsystem, or
-% (explained later) a string name of a subsystem.
+% Alternatively, names can be given to each subsystem by passing strings before
+% each subsystem in the |CompositeHybridSystem| constructor. If any subsystems
+% are named, then all the subsystems must be named. 
+sys_named = CompositeHybridSystem('Plant', subsystem1, 'Controller', subsystem2)
+
+%% Subsystem Identifiers
+% To reference each subsystem, its _subsystem identifier_ are defined as one of
+% the following:
+% 1. A positive integer matching the ordinal position of the subsystem in the
+% |CompositeHybridSystem| constructor arguments.
+% 2. The |HybridSubsystem| object itself (such as the variables |subsystem1| and
+% |subsystem2|, above). 
+% 3. The subsystem's name, if given in the constructor, 
+
+%% Input Functions
+% Each subsystem has a _flow input function_ and a _jump input function._ 
+% The flow input function determines the input values for the subsystem during each
+% interval of flow and the jump input function determines the input at
+% each jump. 
+% The functions |setFlowInput|, and |setJumpInput| set the
+% respective input functions for a given subsystem and |setInput| sets the flow
+% and jump input to a single function.
+% The first argument is a subsystem identifier, described above. 
+% The second argument is the input function, given as a function handle 
+% The function must take between zero and $N+2$ arguments,
+% where $N$ is the number of subsystems. The first $N$ arguments are passed
+% the output values of each corresponding subsystem, the
+% $N+1$ argument is passed the continuous time |t| for the composite system
+% (same as the continuous time of the subsystems), and the $N+2$ argument is passed the discrete
+% time |j| for that subsystem, which is _not_ (in general) the same as the
+% discrete time of the subsystem. That is, the input function must have one of
+% the following forms:
+%
+% * |@()|
+% * |@(y1)|
+% * $\vdots$
+% * |@(y1, y2, ..., yN)|
+% * |@(y1, y2, ..., yN, t)|
+% * |@(y1, y2, ..., yN, t, j)|
+% where '...' is replaced with the appropriate number of arguments.
 sys.setJumpInput(1, @(y1, y2) y1(1)); 
 sys.setFlowInput(subsystem2, @(y1, y2) y1(1)-y2(1));
+sys_named.setInput('Plant', @(y1, y2) y1(1)-y2(1));
 
 %% 
 % The input functions must have between zero and $N+2$ input arguments,
@@ -99,7 +136,7 @@ sys.setFlowInput(subsystem2, @(y1, y2) y1(1)-y2(1));
 % the output values of each corresponding subsystem, and, if present, the
 % $N+1$ argument is passed the continuous time |t| for the composite system
 % (same as the continuous time of the subsystems), and the $N+2$ argument is passed the discrete
-% time |j| for that subsystem, whic is _not_ (in general) the same as the
+% time |j| for that subsystem, which is _not_ (in general) the same as the
 % discrete time of the subsystem.
 % 
 % For example, we can make downward acceleration ("gravity") of the first
@@ -118,12 +155,6 @@ disp(sys)
 % Thus, the command |sys.setJumpInput(1, @(y1, y2) y1(1));| can be replaced
 % by 
 sys.setJumpInput(subsystem1, @(y1, y2) y1(1)); 
-
-%%
-% Additionally, names can be given to each subsystem by passing strings before
-% each subsystem in the |CompositeHybridSystem| constructor. If any subsystems
-% are named, then all the subsystems must be named. 
-sys_named = CompositeHybridSystem('Plant', subsystem1, 'Controller', subsystem2)
 
 %% 
 % If the subsystems are named, we can use the names when setting inputs.

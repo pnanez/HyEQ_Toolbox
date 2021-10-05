@@ -1,6 +1,8 @@
 classdef MockHybridSubsystem < HybridSubsystem
 
     properties
+        f = [];
+        g = [];
         C_indicator = @(x, u, t, j) 1;
         D_indicator = @(x, u, t, j) 1; 
     end
@@ -14,13 +16,22 @@ classdef MockHybridSubsystem < HybridSubsystem
         
         % The jumpMap function must be implemented with the following 
         % signature (t and j cannot be ommited)
-        function xdot = flowMap(this, x, u, t, j) %#ok<INUSD>
-            xdot = zeros(this.state_dimension, 1);
+        function xdot = flowMap(this, x, u, t, j)
+            this.checkXU(x, u)
+            if isempty(this.f)
+                xdot = zeros(this.state_dimension, 1);
+            else
+                xdot = this.f(x, u, t, j);
+            end
         end
 
-        function xplus = jumpMap(this, x, u, t, j)  %#ok<INUSD>
+        function xplus = jumpMap(this, x, u, t, j)
             this.checkXU(x, u)
-            xplus = x;
+            if isempty(this.g)
+                xplus = x;
+            else
+                xplus = this.g(x, u, t, j);
+            end
         end 
 
         function C = flowSetIndicator(this, x, u, t, j)
@@ -36,7 +47,12 @@ classdef MockHybridSubsystem < HybridSubsystem
     
     methods(Access = private)
         function checkXU(this, x, u)
-            assert(length(x) == this.state_dimension)
+            if length(x) ~= this.state_dimension
+               e = MException('Hybrid:MismatchedVectorSizes', ...
+                   'length(x)=%d does not match state_dimension=%d', ...
+                   length(x), this.state_dimension);
+               throwAsCaller(e);
+            end
             assert(length(u) == this.input_dimension)
         end
     end

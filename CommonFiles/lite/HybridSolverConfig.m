@@ -117,7 +117,7 @@ classdef HybridSolverConfig < handle
             this.mass_matrix = mass_matrix;
         end
         
-        function this = progress(this, progressListener)
+        function this = progress(this, progressListener, varargin)
             % PROGRESS Set the progress listener for displaying the portion
             % completed while running the hybrid solver. The argument
             % 'progressListener' must be either an instance of
@@ -146,7 +146,7 @@ classdef HybridSolverConfig < handle
             end
             switch progressListener
                 case 'popup'
-                    this.progressListener = PopupHybridProgress();
+                    this.progressListener = PopupHybridProgress(varargin{:});
                 case 'silent'
                     this.progressListener = SilentHybridProgress();
                 otherwise
@@ -154,6 +154,18 @@ classdef HybridSolverConfig < handle
                         'The progress type ''%s'' was unrecognized. Should be ''popup'' or ''string''.',...
                         progressListener);
             end
+        end
+    end
+    
+    methods(Hidden)
+        function copy_of_this = copy(this)
+            copy_of_this = HybridSolverConfig();
+            copy_of_this.ode_solver = this.ode_solver;
+            copy_of_this.ode_options = odeset(this.ode_options);
+            copy_of_this.hybrid_priority = this.hybrid_priority;
+            copy_of_this.mass_matrix = this.mass_matrix;
+            copy_of_this.progressListener = this.progressListener;
+            
         end
     end
     

@@ -72,6 +72,22 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
             testCase.assertEqual(sol(2).jump_times, expected_jumps, 'AbsTol', 1e-6)
         end
         
+        function testNoFlowWhenAnySubsystemNotInFlowSet(testCase)
+            import hybrid.tests.internal.*
+                           % Size of: (x, u, y)
+            sub1 = MockHybridSubsystem(1, 1, 1);
+            sub2 = MockHybridSubsystem(1, 1, 1);
+            sys = CompositeHybridSystem(sub1, sub2);
+            t_exit_C = 2;
+            sub1.C_indicator = @(x, u, t, j) t <= t_exit_C;
+            sub1.D_indicator = @(x, u, t, j) 0;
+            sub2.D_indicator = @(x, u, t, j) 0;
+            tspan = [0, 100];
+            jspan = [0, 100];
+            sol = sys.solve({0, 0}, tspan, jspan);
+            testCase.assertEqual(sol.total_flow_length, t_exit_C, 'AbsTol', 1e-6)
+        end
+        
         function testFlowPriorityWarning(testCase)
             import hybrid.tests.internal.*
                           % Size of: (x, u, y)
@@ -185,6 +201,27 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
             sys.setFlowInput(1, @(x1, t, j) zeros(2, 1));
             testCase.verifyError(@() sys.solve({1}, [0, 10], [0, 10]), ...
                'CompositeHybridSystem:DoesNotMatchInputDimension');
+        end
+        
+        function testUserDefinedHybridSystemDataFunctionsReturnsWrongSize(testCase)
+            import hybrid.tests.internal.*
+            sub = MockHybridSubsystem(1, 1, 1);
+            sub.f = @(x, u, t, j) [1; 2];
+            sub.g = @(x, u, t, j) [];
+            sys = CompositeHybridSystem(sub);
+            x0 = [1; 0];
+            testCase.verifyError(@() sys.flowMap(x0, 0), ...
+               'CompositeHybridSystem:DoesNotMatchStateDimension');
+            testCase.verifyError(@() sys.jumpMap(x0, 0), ...
+               'CompositeHybridSystem:DoesNotMatchStateDimension');
+            % Now change the indicator functions to return nonscalar values.
+            sub.C_indicator = @(x, u, t, j) [1, 2];
+            testCase.verifyError(@() sys.flowSetIndicator(x0, 0), ...
+               'CompositeHybridSystem:InvalidFunction');
+            sub.C_indicator = @(x, u, t, j) 1;
+            sub.D_indicator = @(x, u, t, j) [];
+            testCase.verifyError(@() sys.jumpSetIndicator(x0, 0), ...
+               'CompositeHybridSystem:InvalidFunction');
         end
         
         function testWarningWhenSetInputForSystemWithNoInputs(testCase)

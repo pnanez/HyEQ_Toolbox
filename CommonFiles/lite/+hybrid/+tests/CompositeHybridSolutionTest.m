@@ -38,13 +38,27 @@ classdef CompositeHybridSolutionTest < matlab.unittest.TestCase
             % preserved standard array behavior.
             dims = [1, 2, 3];
             sol = createCompositeSolution(dims);
+            sol_end = createCompositeSolution(dims);
             
-            array = [sol; sol; sol; sol];
+            array = [sol; sol; sol; sol_end];
             testCase.assertEqual(array(1), sol)
             testCase.assertEqual(array(1:2), [sol; sol])
             testCase.assertLength(array, 4)
             testCase.assertEqual(size(array), [4, 1])
+            testCase.assertEqual(sol_end, array(end));
         end
+        
+        function testBraceIndexing(testCase)
+            % In the CompositeHybridSolution class, we mess around with the way
+            % objects are indexed, so this test is to verify that we have
+            % preserved standard cell array behavior.
+            dims = [1, 2, 3];
+            sol = createCompositeSolution(dims);
+            cellarray = {sol, sol};
+            testCase.assertEqual(cellarray{1}, sol);
+            testCase.verifyError(@() sol{1}, 'CompositeHybridSolution:subsref')
+        end
+        
     end
 
 end

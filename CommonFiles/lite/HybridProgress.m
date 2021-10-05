@@ -64,14 +64,9 @@ classdef HybridProgress < handle
     end
 
     methods(Access = protected)
-        function s = j_progress_str(this)
-            s = sprintf('j complete: %d in %s', this.j, mat2str(this.jspan));
-        end
-        
         function cancelSolver(this)
             this.is_cancel_solver = true;
         end
-
     end
     
 end

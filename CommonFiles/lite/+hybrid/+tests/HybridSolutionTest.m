@@ -39,6 +39,21 @@ classdef HybridSolutionTest < matlab.unittest.TestCase
             testCase.assertEqual(sol.shortest_flow_length, 0.5)
         end
 
+        function testSolverConfigIsImmutable(testCase)
+            t = [0; 0.5; 0.5; 2; 3; 3; 4];
+            j = [0;   0;   1; 1; 1; 2; 2];
+            x = NaN(7, 1); % Not important
+            C = 1;
+            D = 1;
+            tspan = [0 1];
+            jspan = [0 1];
+            config = HybridSolverConfig();
+            config.odeSolver('ode23');
+            sol = HybridSolution(t, j, x, C, D, tspan, jspan, config);
+            config.odeSolver('ode45');
+            testCase.assertEqual(sol.solver_config.ode_solver, 'ode23');
+        end
+
         function testInconsistenVectorLengths(testCase)
             % We define vectors that are all the same length...
             t = linspace(0, 12, 3)'; 

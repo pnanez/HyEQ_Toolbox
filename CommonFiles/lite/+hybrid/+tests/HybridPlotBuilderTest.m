@@ -10,6 +10,8 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
     methods
         function this = HybridPlotBuilderTest()
             close all
+            
+            figure('visible','off');
             t = [linspace(0, 1, 50)'; linspace(1, 2, 50)'];
             j = [zeros(50, 1); ones(50, 1)];
             x = (t + j).^2;
@@ -22,6 +24,7 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
     
     methods(TestMethodSetup)
         function setup(testCase) %#ok<MANU>
+            
             clf
             HybridPlotBuilder.defaults.reset();
         end
@@ -200,6 +203,31 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             testCase.assertSubplotCount(2);
             HybridPlotBuilder().plot(sol, @(x, t, j) [x(2); t*j; x(1)+t-j]);
             testCase.assertSubplotCount(1);
+        end
+        
+        function testLabelSize(testCase)
+           pb = HybridPlotBuilder();
+           pb.labelSize(17);
+           testCase.assertEqual(pb.settings.label_size, 17);
+        end
+        
+        function testTitleSize(testCase)
+           pb = HybridPlotBuilder();
+           pb.titleSize(17);
+           testCase.assertEqual(pb.settings.title_size, 17);
+        end
+        
+        function testSetInterpreters(testCase)
+            pb = HybridPlotBuilder();
+            % Set individually.
+            pb.labelInterpreter('tex');
+            pb.titleInterpreter('none');
+            testCase.assertEqual(pb.settings.label_interpreter, 'tex');
+            testCase.assertEqual(pb.settings.title_interpreter, 'none');
+            % Set both.
+            pb.textInterpreter('latex');
+            testCase.assertEqual(pb.settings.label_interpreter, 'latex');
+            testCase.assertEqual(pb.settings.title_interpreter, 'latex');
         end
         
         function testSetFlowSettings(testCase)
@@ -439,7 +467,7 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
                 .plotFlows(testCase.sol_1); % Ignored in second figure
             testCase.assertLegendLabels('First Figure')
             
-            figure()
+            figure('visible','off')
             pb.legend('Second Figure')...
                 .plotFlows(testCase.sol_1); % Still using 'pb'
             testCase.assertLegendLabels('Second Figure')

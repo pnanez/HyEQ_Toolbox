@@ -24,6 +24,12 @@ classdef PopupHybridProgress < HybridProgress
     end
     
     methods 
+        function obj = PopupHybridProgress(t_decimal_places)
+            if exist('t_decimal_places', 'var')
+                obj.t_decimal_places = t_decimal_places;
+            end
+        end
+
         function init(this, tspan, jspan)
             % Creating the waitbar is slow, so we wait to initialize it 
             % until a time of at least min_delay seconds has passed. This

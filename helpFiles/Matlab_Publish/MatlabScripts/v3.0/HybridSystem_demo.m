@@ -12,18 +12,18 @@
 % which means it inherits all the methods and properties of that class. Next, 
 % we define several variables in the |properties| block and functions in the |methods| 
 % block. Every subclass of |HybridSystem| must define the |flowMap, jumpMap, flowSetIndicator,| 
-% and |jumpSetIndicator| functions. The indicator functions should return |1| 
+% and |jumpSetIndicator| functions. The indicator functions must return |1| 
 % inside their respective sets and |0| otherwise.
 % 
 % Notice that the first argument in each of the functions is |this|. The |this|
-% arugment provides a reference to the object on which the function was
+% argument provides a reference to the object on which the function was
 % called. The object's properties are referenced using |this.gravity| and
 % |this.bounce_coeff|.
 %% Solve the HybridSystem
 % Now that we have an implementation of the |HybridSystem|, we can create an 
 % instance of it.
 
-bb_system = ExampleBouncingBallHybridSystem();
+bb_system = hybrid.examples.ExampleBouncingBallHybridSystem();
 %% 
 % Values of the properties can be modified using dot indexing on the object:
 

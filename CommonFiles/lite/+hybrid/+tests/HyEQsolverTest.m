@@ -73,7 +73,7 @@ classdef HyEQsolverTest < matlab.unittest.TestCase
             C = @(x) x <= 1.5;
             D = @(x) 1;
             [t, j, x] = HyEQsolver(f, g, C, D, x0, tspan, jspan, rule);   
-            sol = HybridSolution.fromLegacyData(t, j, x, C, D, tspan, jspan);         
+            sol = HybridSolution(t, j, x, C, D, tspan, jspan);         
             testCase.assertLessThanOrEqual(sol.x, 1.500001)
         end
         
@@ -88,7 +88,7 @@ classdef HyEQsolverTest < matlab.unittest.TestCase
             D = @(x) 0;
             [t, j, x] = HyEQsolver(f, g, C, D, x0, tspan, jspan, rule);
             
-            sol = HybridSolution.fromLegacyData(t, j, x, C, D, tspan, jspan);
+            sol = HybridSolution(t, j, x, C, D, tspan, jspan);
             
             testCase.assertEqual(sol.x, x0')
             testCase.assertEqual(sol.t, tspan(1))
@@ -112,7 +112,7 @@ classdef HyEQsolverTest < matlab.unittest.TestCase
             [t, j, x] = HyEQsolver(f, g, C, D, ...
                                 x0, tspan, jspan, 1, options, [], [], 'silent');
                             
-            sol = HybridSolution.fromLegacyData(t, j, x, C, D, tspan, jspan);
+            sol = HybridSolution(t, j, x, C, D, tspan, jspan);
             [~, ~, C_vals, D_vals] = HybridSystem(f, g, C, D).generateFGCD(sol);
 
             verifyHybridSolutionDomain(sol.t, sol.j, C_vals, D_vals)
@@ -173,8 +173,20 @@ classdef HyEQsolverTest < matlab.unittest.TestCase
             x0 = [1; 0];
             verifySolver(f, g, C, D, x0, tspan, jspan)
         end
+        
+        function testFiniteTimeBlowup(testCase)
+            f = @(x) x.^2; % Goes to infinity.
+            sys = HybridSystemBuilder()...
+                .flowMap(f)...
+                .flowSetIndicator(@(x) 1)...
+                .build();
+            warning('off') % Hide expected warnings.
+            sol = sys.solve([0; 1; 1; 0], [0, 400], [0, 1]);
+            warning('on') % Renable warnings.
+            testCase.assertEqual(sol.termination_cause, ...
+                TerminationCause.STATE_IS_NAN);
+        end
     end
-    
 end
 
 function verifySolver(f, g, C, D, x0, tspan, jspan, priority)
@@ -186,7 +198,7 @@ end
 % dxdt is close to f(x), allowing us to verify they are almost equal.
 options = odeset('MaxStep', 0.01); 
 [t, j, x] = HyEQsolver(f, g, C, D, x0, tspan, jspan, priority, options);
-sol = HybridSolution.fromLegacyData(t, j, x, C, D, tspan, jspan);
+sol = HybridSolution(t, j, x, C, D, tspan, jspan);
 [f_vals, g_vals, C_vals, D_vals] = HybridSystem(f, g, C, D).generateFGCD(sol);
 verifyHybridSolutionDomain(sol.t, sol.j, C_vals, D_vals);
 checkHybridSolution(sol, f_vals, g_vals, C_vals, D_vals, priority);

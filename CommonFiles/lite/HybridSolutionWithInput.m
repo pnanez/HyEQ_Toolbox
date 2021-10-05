@@ -5,8 +5,8 @@ classdef HybridSolutionWithInput < HybridSolution
     end
     
     methods
-        function this = HybridSolutionWithInput(t, j, x, u, C_end, D_end, tspan, jspan)
-            this = this@HybridSolution(t, j, x, C_end, D_end, tspan, jspan);
+        function this = HybridSolutionWithInput(t, j, x, u, varargin)
+            this = this@HybridSolution(t, j, x, varargin{:});
             assert(size(u, 1) == length(t), ...
                 'length(u)=%d doesn''t match length(t)', ...
                 size(u, 1), length(t))
@@ -46,7 +46,7 @@ classdef HybridSolutionWithInput < HybridSolution
                 length(time_indices), length(this.t))
             
             ndx0 = time_indices(1);
-            val0 = evaluate_function(func_hand, this.x(ndx0, :)', this.t(ndx0), this.j(ndx0))';
+            val0 = evaluate_function(func_hand, this.x(ndx0, :)', this.u(ndx0, :)', this.t(ndx0), this.j(ndx0))';
             assert(isvector(val0), 'Function handle does not return a vector')
             
             out = NaN(length(time_indices), length(val0));
@@ -72,7 +72,7 @@ switch nargin(fh)
     case 4
         val_end = fh(x, u, t, j);
     otherwise
-        error('Function handle must have 1, 2, 3, or 4 arguments. Instead %s had %d',...
+        error('Hybrid:InvalidFunctionArguments', 'Function handle must have 1, 2, 3, or 4 arguments. Instead %s had %d',...
             func2str(fh), nargin(fh))
 end
 end

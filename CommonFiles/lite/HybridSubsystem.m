@@ -70,8 +70,14 @@ classdef (Abstract) HybridSubsystem < handle
     methods
         
         function [f_vals, g_vals, C_vals, D_vals] = generateFGCD(this, sol)
-            % Compute the values of the flow and jump maps and sets at each
-            % point in the solution trajectory.
+            % Compute the values of the data (f, g, C, D) at each point along the solution.
+            % 
+            % The flow map 'f' and jump map 'g' are evaluated at each point, including
+            % points not in the flow set or jump set, respectively. 
+            % If the flow map 'f' (jump map 'g') throws an error and the
+            % solution is not flow set (jump set), then the values are set to
+            % NaN, but if the solution is in the flow set (jump set), then the
+            % error is rethrown. 
             assert(isa(sol, 'HybridSolutionWithInput'))
             t = sol.t;
             j = sol.j;
@@ -86,11 +92,20 @@ classdef (Abstract) HybridSubsystem < handle
                 u_i = u(i, :)';
                 C_vals(i) = this.flowSetIndicator(x_i, u_i, t(i), j(i));
                 D_vals(i) = this.jumpSetIndicator(x_i, u_i, t(i), j(i));
-                if C_vals(i) % Only evaluate flow map in the flow set.
+
+                try
                     f_vals(i, :) = this.flowMap(x_i, u_i, t(i), j(i))';
+                catch e
+                    if C_vals(i) % Only evaluate flow map in the flow set.
+                        rethrow(e);
+                    end
                 end
-                if D_vals(i) % Only evaluate jump map in the jump set.
+                try
                     g_vals(i, :) = this.jumpMap(x_i, u_i, t(i), j(i))';
+                catch e
+                    if D_vals(i) % Only evaluate jump map in the jump set.
+                        rethrow(e)
+                    end
                 end
             end
         end

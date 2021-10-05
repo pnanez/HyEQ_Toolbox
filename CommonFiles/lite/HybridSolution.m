@@ -2,36 +2,30 @@ classdef HybridSolution
 % HybridSolution Solution to a hybrid dynamical system, with additional information. 
     
     properties(SetAccess = immutable)
-        % A column vector containing the continuous time value for each entry in
-        % the solution.
+        % A column vector containing the continuous time value for each entry in the solution.
         t % double (:, 1) 
         
-        % A column vector containing the discrete time value for each entry in
-        % the solution.
+        % A column vector containing the discrete time value for each entry in the solution.
         j % double (:, 1) 
         
-        % A column vector containing the state vector for each entry in
-        % the solution.
+        % An array containing the state vector for each entry in the solution.
+        % Each row i of x contains the transposed state vector at the ith
+        % timestep. 
         x % double (:, :) 
         
-        % Initial state vector.
-        x0 % double (1, :) 
+        % Initial state vector (column vector).
+        x0
         
-        % Final state vector.
-        xf % double (1, :) 
-        
-        % The reason the simulation terminated.
-        % The value of termination_cause is set to one of the the enumeration
-        % values in TerminationCause.
-        termination_cause % TerminationCause; 
+        % Final state vector (column vector).
+        xf
 
         % The duration of each interval of flow.
         flow_lengths % double (:, 1)
         
-        % The continuous time of each jump.
+        % The continuous time of each jump (column vector).
         jump_times % double (:, 1)
         
-        % The legenth of the shortest interval of flow.
+        % The length of the shortest interval of flow.
         shortest_flow_length % double
         
         % The cumulative length of all intervals of flow.
@@ -39,6 +33,15 @@ classdef HybridSolution
         
         % The number of jumps in the solution.
         jump_count % integer
+        
+        % The reason the simulation terminated.
+        % The value of termination_cause is set to one of the the enumeration
+        % values in TerminationCause.
+        termination_cause % TerminationCause
+    end
+    
+    properties(SetAccess = immutable, Hidden)
+        solver_config
     end
 
     properties(GetAccess = protected, SetAccess = immutable, Hidden)
@@ -46,9 +49,9 @@ classdef HybridSolution
         C_end;
         D_end;
     end
-
+    
     methods
-        function this = HybridSolution(t, j, x, C, D, tspan, jspan)
+        function this = HybridSolution(t, j, x, C, D, tspan, jspan, solver_config)
             % Construct a HybridSolution object. 
             %
             % Input arguments:
@@ -68,6 +71,8 @@ classdef HybridSolution
             % span.
             % 7) jspan (optional): a 2x1 array containing the continuous time
             % span.
+            % 8) solver_config (optional): HybridSolverConfig object used when
+            % solution was generated.
             % 
             % Arguments 4 through 7 are used to determine the termination cause.
             
@@ -83,7 +88,7 @@ classdef HybridSolution
             this.flow_lengths = hybrid.internal.flowLengths(t, j);
             this.shortest_flow_length = min(this.flow_lengths);
             
-            if nargin == 7
+            if nargin >= 7
                 assert(t(1) == tspan(1), 't(1)=%f does equal the start of tspan=%s', t(1), mat2str(tspan))
                 assert(j(1) == jspan(1), 'j(1)=%d does equal the start of jspan=%s', j(1), mat2str(jspan))
                 
@@ -102,6 +107,11 @@ classdef HybridSolution
             else
                 this.termination_cause = TerminationCause.getCause(...
                     this.t, this.j, this.x);
+            end
+            if exist('solver_config', 'var')
+                 this.solver_config = solver_config.copy();
+            else
+                this.solver_config = [];
             end
         end
 
@@ -236,18 +246,5 @@ function checkVectorSizes(t, j, x)
             'The length(t)=%d and length(x)=%d must match.', ...
             size(t, 1), size(x, 1));
         throwAsCaller(e);
-    end
-end
-
-function f_handle = wrap_with_three_args(function_handle)
-    switch nargin(function_handle)
-        case 1
-            f_handle = @(x, t, j) function_handle(x);
-        case 2
-            f_handle = @(x, t, j) function_handle(x, t);
-        case 3
-            f_handle = function_handle;
-        otherwise
-            error('Function must have 1,2, or 3 arguments')
     end
 end

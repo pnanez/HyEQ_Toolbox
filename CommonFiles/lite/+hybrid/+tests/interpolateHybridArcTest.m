@@ -9,7 +9,7 @@ classdef interpolateHybridArcTest < matlab.unittest.TestCase
                  3, 4;
                  3, 6;
                  4, 8];
-            [t_interp, j_interp, x_interp] = hybrid.internal.HybridUtils.interpolateHybridArc(t, j, x, 11);
+            [t_interp, j_interp, x_interp] = hybrid.internal.experimental.HybridUtils.interpolateHybridArc(t, j, x, 11);
             testCase.assertEqual(length(t_interp), 22)
             testCase.assertEqual(length(j_interp), 22)
             testCase.assertEqual(length(x_interp(:,1)), 22)

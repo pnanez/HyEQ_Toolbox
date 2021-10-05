@@ -3,8 +3,8 @@
 % The |HybridPlotBuilder| class provides an easy and configurable way to plot 
 % hybrid solutions. We first create several solutions that are used in
 % subsequent examples.
-system = ExampleBouncingBallHybridSystem();
-system_3D = Example3DHybridSystem();
+system = hybrid.examples.ExampleBouncingBallHybridSystem();
+system_3D = hybrid.examples.Example3DHybridSystem();
 config = HybridSolverConfig('Refine', 15); % 'Refine' option makes the plots smoother.
 sol = system.solve([10, 0], [0 30], [0 30], config);
 sol_3D = system_3D.solve([0; 1; 0], [0, 20], [0, 100], config);
@@ -290,7 +290,7 @@ HybridPlotBuilder()...
 % black. The same |HybridPlotBuilder| object is used for both plots by saving it 
 % to the |builder| variable (this allows us to specify the labels only
 % once and add a legend for both plots). 
-system_with_modes = ExampleModesHybridSystem();
+system_with_modes = hybrid.examples.ExampleModesHybridSystem();
 
 % Create initial condition and solve.
 z0 = [-7; 7];

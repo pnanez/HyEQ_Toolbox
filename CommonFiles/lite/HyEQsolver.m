@@ -245,6 +245,20 @@ while (j < JSPAN(end) && tout(end) < TSPAN(end) && ~progress.is_cancel_solver)
         end
         [t_flow,x_flow] = odeX(@(t,x) f(x,t,j),[tout(end) tfinal],xout(end,:).', options);
         
+        if length(t_flow) == 1
+            % Handle the case where the ode solver doesn't step forward in time.
+            % This is ony known to happen when the solution is blowing up to
+            % infinity. 
+            warning(horzcat('Hybrid solver is not progressing toward solution, ', ...
+                'possibly due to |f(x, t, j)|=%0.3g being very large.  ', ...
+                'Aborting solver and setting final value of x to NaN.'), ...
+                vecnorm(f(x_flow', t_flow, j)))
+            tout = [tout; t_flow]; %#ok<AGROW>
+            xout = [xout; NaN(size(x_flow))]; %#ok<AGROW>
+            jout = [jout; j]; %#ok<AGROW>
+            break
+        end
+        
         % Matlab ODE solvers miss events if they occur at the second time
         % step (such as the case as if the state in the boundary of a
         % closed set). To correct for this, we manually check if the second

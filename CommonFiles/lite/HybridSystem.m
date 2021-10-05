@@ -1,4 +1,5 @@
 classdef (Abstract) HybridSystem < handle
+% Hybrid dynamical system.
 
     properties
         % State dimension is an optional property. If set, additional error
@@ -8,80 +9,75 @@ classdef (Abstract) HybridSystem < handle
 
     %%%%%% System Data %%%%%% 
     methods(Abstract) 
+        % The following functions define the data (f, g, C, D) of the hybrid
+        % system.
         % Each of these functions must be implemented in subclasses with 
-        % 2, 3, or 4 arguments (j, or t and j can be omitted). 
+        % arguments (this, x), (this, x, t), or (this, x, t, j).
         % If the arguments 'x' or 'this' are not used in an implementations,
         % Matlab will show a warning. This can be surpressed by
         % adding "%#ok<INUSD>" (for 'x') or "%#ok<INUSL>" (for "this") at 
         % the end of the line.
 
+        % Flow map 'f'. Must be implmented in subclasses.
+        % 
         % In a concrete implemention of the HybridSystem class, the 
         % flowMap function must be implemented with one of the following 
-        % signatures: flowMap(this, x, t, j), flowMap(this, x, t)
-        % or flowMap(this, x). 
+        % signatures: flowMap(this, x), flowMap(this, x, t)
+        % or flowMap(this, x, t, j). 
         xdot = flowMap(this, x, t, j)  
 
+        % Jump map 'g'. Must be implmented in subclasses.
+        % 
         % In a concrete implemention of the HybridSystem class, the 
         % jumpMap function must be implemented with one of the following 
-        % signatures: jumpMap(this, x, t, j), jumpMap(this, x, t)
-        % or jumpMap(this, x). 
-        xplus = jumpMap(this, x, t, j)  
+        % signatures: jumpMap(this, x), jumpMap(this, x, t)
+        % or jumpMap(this, x, t, j). 
+        xplus = jumpMap(this, x, t, j) 
 
+        % Indicator function for flow set 'C'. Must be implmented in subclasses.
+        % 
         % In a concrete implemention of the HybridSystem class, the 
         % flowSetIndicator function must be implemented with one of the 
-        % following signatures: flowSetIndicator(this, x, t, j), 
-        % flowSetIndicator(this, x, t) or flowSetIndicator(this, x). 
+        % following signatures: flowSetIndicator(this, x), 
+        % flowSetIndicator(this, x, t) or flowSetIndicator(this, x, t, j). 
         C = flowSetIndicator(this, x, t, j) 
 
+        % Indicator function for jump set 'D'. Must be implmented in subclasses.
+        % 
         % In a concrete implemention of the HybridSystem class, the 
         % jumpSetIndicator function must be implemented with one of the 
-        % following signatures: jumpSetIndicator(this, x, t, j), 
-        % jumpSetIndicator(this, x, t) or jumpSetIndicator(this, x). 
+        % following signatures: jumpSetIndicator(this, x), 
+        % jumpSetIndicator(this, x, t) or jumpSetIndicator(this, x, t, j). 
         D = jumpSetIndicator(this, x, t, j)
     end
 
     methods
-        function this = HybridSystem()
+        function this = HybridSystem(state_dimension)
+            % Constructor for hybrid system.
+            % 
+            % The optional argument 'state_dimension' can be provided to enable
+            % additional error checking. 
+            
             % WARNING: Don't reference function handles for 
             % "@this.flowMap," "@this.jumpMap," etc. in the constructor, it does
             % not work as expected. It appears to store a reference to this
             % as it is at this point, in its unconstructed state.
             
-            names = {'flowMap', 'jumpMap', ...
-                      'flowSetIndicator', 'jumpSetIndicator'};            
-            mc = metaclass(this);
-            for iName = 1:length(names)        
-                name = names{iName};
-                mask = arrayfun(@(x)strcmp(x.Name, name), mc.MethodList);
-                method = mc.MethodList(mask);
-                
-                % Check that the first argument is a reference to 'this'
-                % object, rather than the state vector.
-                first_argument_name = method.InputNames{1};
-                is_this = strcmp(first_argument_name, 'this');
-                is_self = strcmp(first_argument_name, 'self');
-                is_obj = strcmp(first_argument_name, 'obj');
-                is_tilde = strcmp(first_argument_name, '~');
-                assert(is_this || is_self || is_obj || is_tilde, ...
-                    'The first argument in %s must be ''this'', ''self'', or ''~'' but instead was ''%s''.', ...
-                    name, first_argument_name)
-                
-                % Check that the second argument is the state vector. 
-                % For the state vector, we expect users to choose various
-                % names for the state other than simply 'x' (e.g., 'z',
-                % 'xhat', etc.), so instead of checking that the name
-                % matches some list of strings, we make sure it does not match 't'.
-                second_argument_name = method.InputNames{2};
-                is_t = strcmp(second_argument_name, 't');
-                assert(~is_t , ...
-                    'The second argument in %s should be the state vector (e.g. ''x'') ' + ...
-                    'but instead was ''t''. Did you remember the first ''this'' argument?', ...
-                    name)
+            if exist('state_dim', 'var')
+               this.state_dimension = state_dimension;
+            end
+            
+            try
+                checkMethodArgumentNames(this);
+            catch e
+                % We throw the exception as caller from here to create a cleaner
+                % stacktrace.
+               throwAsCaller(e) 
             end
         end
         
-        function sol = solve(this, x0, tspan, jspan, config)
-            % SOLVE Compute a solution to this hybrid system starting from
+        function sol = solve(this, x0, tspan, jspan, varargin)
+            % Compute a solution to this hybrid system starting from
             % initial state 'x0' over continuous time 'tspan' and discrete
             % time 'jspan'. If 'tspan' and 'jspan' are not supplied, then
             % the default span [0, 10] is used. The optional 'config'
@@ -89,7 +85,6 @@ classdef (Abstract) HybridSystem < handle
             % the string 'silent' to disable progress updates.
             
             % Check arguments
-            narginchk(2,5);
             if ~exist('tspan', 'var')
                tspan = [0, 10]; 
             end
@@ -106,10 +101,12 @@ classdef (Abstract) HybridSystem < handle
                     'jspan must be an array of two values in the form [jstart, jend]');
                 throwAsCaller(e);
             end
-            if ~exist('config', 'var')
-                config = HybridSolverConfig();
-            elseif strcmp(config, 'silent')
-                config = HybridSolverConfig('silent');
+            if ~isempty(varargin) && isa(varargin{1}, 'HybridSolverConfig')
+                assert(numel(varargin) == 1, ...
+                    'If a HybridSolverConfig is provided in the 4th argument, then there cannot be any more arguments.')
+                config = varargin{1};
+            else
+                config = HybridSolverConfig(varargin{:});
             end
 
             if ~isempty(this.state_dimension)
@@ -131,25 +128,26 @@ classdef (Abstract) HybridSystem < handle
                         
             % Wrap solution in HybridSolution class (or another class if
             % the function wrap_solution is overriden).
-            sol = this.wrap_solution(t, j, x, tspan, jspan);
+            sol = this.wrap_solution(t, j, x, tspan, jspan, config);
         end
 
     end
     
     methods(Access = protected)
         % Override this function to use other wrappers.
-        function sol = wrap_solution(this, t, j, x, tspan, jspan)    
+        function sol = wrap_solution(this, t, j, x, tspan, jspan, solver_config)    
             xf = x(end, :)';
             Cf = this.flowSetIndicator_3args(xf, t(end), j(end));
             Df = this.jumpSetIndicator_3args(xf, t(end), j(end));
-            sol = HybridSolution(t, j, x, Cf, Df, tspan, jspan);
+            sol = HybridSolution(t, j, x, Cf, Df, tspan, jspan, solver_config);
         end
         
     end
     
     methods
         
-        function [f_vals, g_vals, C_vals, D_vals] = generateFGCD(this, sol)            
+        function [f_vals, g_vals, C_vals, D_vals] = generateFGCD(this, sol)  
+            % Evaluate the data (f, g, C, D) for this system at each point along a solution.
             assert(isa(sol, 'HybridSolution'))
 
             t = sol.t;
@@ -272,6 +270,20 @@ classdef (Abstract) HybridSystem < handle
             nargs = length(method_data.InputNames);
         end
     end
+end
+
+function checkMethodArgumentNames(this)
+
+fnc_names = {'flowMap', 'jumpMap', 'flowSetIndicator', 'jumpSetIndicator'};
+arg_name_validators = {
+    @(arg1_name) any(strcmp(arg1_name, {'this', 'self', 'obj', '~'})), ...
+    @(arg2_name)    ~strcmp(arg2_name, 't') ...
+    };
+error_string_fmts = {
+    'The first argument in ''%s'' must be ''this'', ''self'', ''obj'', or ''~'' but instead was ''%s''.%0d',
+    'The second argument in ''%s'' must be the state vector (e.g. ''x'') but instead was ''t''. Did you remember the first ''this'' argument?'
+    }; %#ok<COMNL>
+hybrid.internal.checkMethodArgumentNames(this, fnc_names, arg_name_validators, error_string_fmts);
 end
 
 function assert_function_can_be_evaluated(func_handl, x, t, j, function_name)

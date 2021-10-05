@@ -307,11 +307,6 @@ classdef HybridPlotBuilder < handle
                 clear this
             end
         end
-        
-        function plotFlowLengths(~, sol)
-            % PLOTFLOWLENGTHS Create a plot of the length of each interval of flow.
-            hybrid.plotFlowLengths(sol);
-        end
     end
 
     methods(Hidden) % Legacy-named plot functions

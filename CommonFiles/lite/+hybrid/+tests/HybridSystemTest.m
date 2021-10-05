@@ -30,6 +30,11 @@ classdef HybridSystemTest < matlab.unittest.TestCase
             testCase.assertGreaterThan(sol.x(:,1), -1e-2);
         end
 
+        function testMissingThisInMethod(testCase)
+            fh = @() hybrid.tests.internal.HybridSystemWithMissingThisArg();
+            testCase.verifyError(fh, 'Hybrid:InvalidMethodArgumentName')
+        end
+        
         %%%%%%%%%%%%%%%% Test JumpTime calculations %%%%%%%%%%%%%%%%%
         
 %         function testSingleJumpTime(testCase)
@@ -39,7 +44,6 @@ classdef HybridSystemTest < matlab.unittest.TestCase
 %             sol = HybridSolution([], t, j, x, [0, 100], [0, 100]);
 %             testCase.assertEqual(sol.jump_times, t(2))
 %         end
-
     end
 
 end
