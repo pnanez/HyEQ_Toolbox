@@ -140,16 +140,15 @@ function [t, j, x] = HyEQsolver(f,g,C,D,x0,TSPAN,JSPAN,rule,options,solver,E,pro
 %         grid on
 %
 %--------------------------------------------------------------------------
-% Matlab M-file Project: HyEQ Toolbox @  Hybrid Systems Laboratory (HSL),
+% Matlab M-file Project: HyEQ Toolbox @ Hybrid Systems Laboratory (HSL),
 % https://hybrid.soe.ucsc.edu/software
 % http://hybridsimulator.wordpress.com/
 % Filename: HYEQSOLVER.m
 %--------------------------------------------------------------------------
 %   See also HYEQSOLVER, PLOTARC, PLOTARC3, PLOTFLOWS, PLOTHARC,
-%   PLOTHARCCOLOR, PLOTHARCCOLOR3D, PLOTHYBRIDARC, PLOTJUMPS.
+%   PLOTHARCCOLOR, PLOTHARCCOLOR3D, PLOTHYBRIDARC, PLOTJUMPS, HybridSystem.
 %   Copyright @ Hybrid Systems Laboratory (HSL),
 %   Revision: 3.0.0 Date: 08/14/2021
-
 
 if ~exist('rule','var')
     rule = 1;

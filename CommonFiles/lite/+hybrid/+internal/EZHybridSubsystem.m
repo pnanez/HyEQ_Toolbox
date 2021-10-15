@@ -18,20 +18,38 @@ classdef EZHybridSubsystem < HybridSubsystem
         end
             
         function xdot = flowMap(this, x, u, t, j)
-            xdot = this.f(x, u, t, j);
+            xdot = evaluate_with_correct_args(this.f, x, u, t, j);
         end
 
         function xplus = jumpMap(this, x, u, t, j) 
-            xplus = this.g(x, u, t, j);
+            xplus = evaluate_with_correct_args(this.g, x, u, t, j);
         end 
 
         function C = flowSetIndicator(this, x, u, t, j) 
-            C = this.C_indicator(x, u, t, j);
+            C = evaluate_with_correct_args(this.C_indicator, x, u, t, j);
         end
 
         function D = jumpSetIndicator(this, x, u, t, j)
-            D = this.D_indicator(x, u, t, j);
+            D = evaluate_with_correct_args(this.D_indicator, x, u, t, j);
         end
     end
     
+end
+
+
+function result = evaluate_with_correct_args(func_handle, x, u, t, j)
+    narginchk(5,5)
+    nargs = nargin(func_handle);
+    switch nargs
+        case 1
+            result = func_handle(x);
+        case 2
+            result = func_handle(x, u);
+        case 3
+            result = func_handle(x, u, t);
+        case 4
+            result = func_handle(x, u, t, j);
+        otherwise
+            error('Functions must have 1-4 arguments. Instead the function had %d.', nargs) 
+    end
 end

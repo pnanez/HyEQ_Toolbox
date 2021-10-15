@@ -46,7 +46,11 @@ classdef EZHybridSystem < HybridSystem
 
     methods
         function this = EZHybridSystem(flowMap_handle, jumpMap_handle, ...
-                        flowSetIndicator_handle, jumpSetIndicator_handle)
+                        flowSetIndicator_handle, jumpSetIndicator_handle, state_dim)
+            if ~exist('state_dim', 'var')
+                state_dim = [];
+            end
+            this = this@HybridSystem(state_dim);
             check_function_handle(flowMap_handle)
             check_function_handle(jumpMap_handle)
             check_function_handle(flowSetIndicator_handle)

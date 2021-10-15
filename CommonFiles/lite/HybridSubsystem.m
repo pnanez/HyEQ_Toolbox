@@ -1,6 +1,11 @@
 classdef (Abstract) HybridSubsystem < handle
-%%% The HybridSubsystem class allows for the construction of a
-%%% hybrid system that depends on an input. 
+% The HybridSubsystem class allows for the construction of a hybrid system that depends on an input. 
+%
+% See also: CompositeHybridSystem, HybridSystem, HybridSubsystemBuilder.
+%
+% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
+% © 2021. 
+
     properties(SetAccess = immutable)
         state_dimension
         input_dimension

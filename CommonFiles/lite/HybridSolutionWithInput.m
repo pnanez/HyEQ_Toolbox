@@ -1,7 +1,15 @@
 classdef HybridSolutionWithInput < HybridSolution
+% Class of hybrid solutions that include an input signal.
+%
+% See also: HybridSolution, HybridSubsystem, CompositeHybridSolution,
+% CompositeHybridSystem.
+%
+% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
+% © 2021. 
 
     properties(SetAccess = immutable)
-        u double; % (:, :) 
+        % Input values. 
+        u double % (:, :) 
     end
     
     methods
@@ -14,18 +22,19 @@ classdef HybridSolutionWithInput < HybridSolution
         end
         
         function out = evaluateFunctionWithInputs(this, func_hand, time_indices)
-            % EVALUATEFUNCTIONWITHINPUTS Evaluate a function handle at each point along the solution.
+            % Evaluate a function handle at each point along the solution.
             % The function handle 'func_hand' is evaluated with the
-            % arguments of the state 'x', continuous time 't' (optional),
-            % and discrete time 'j' (optional). This function returns an
-            % array with length equal to the length of 't' (or
+            % arguments of the state 'x', input 'u' (optional), continuous time
+            % 't' (optional), and discrete time 'j' (optional). This function
+            % returns an array with length equal to the length of 't' (or
             % 'time_indices', if provided). Each row of the output array
             % contains the vector returned by 'func_hand' at the
             % corresponding entry in this HybridSolution.
             % 
             % The argument 'func_hand' must be a function handle
-            % that has the input arguments 'x', 'x, u', 'x, t', or 'x, t, j', and
+            % that has the input arguments '(x)', '(x, u)', '(x, t)', or '(x, t, j)', and
             % returns a column vector of fixed length.
+            %
             % The argument 'time_indices' is optional. If supplied, the
             % function is evaluated only at the indices specificed and the
             % 'out' vector matches the legnth of 'time_indices.' 

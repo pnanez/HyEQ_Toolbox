@@ -1,4 +1,10 @@
 classdef PopupHybridProgress < HybridProgress
+% Defines a mechanism that displays progress updates while solving hybrid systems in a popup box with a progress bar.
+%
+% See also: HybridSolverConfig, HybridProgress, SilentHybridProgress.
+%
+% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
+% © 2021. 
     
     properties
         % The t_decimal_places property deterimines the number of decimal points to

@@ -1,4 +1,11 @@
 classdef TerminationCause
+% Enumeration class of possible causes for why a hybrid solution terminiated.
+%
+% See also: HybridSolution, HybridSystem.
+%
+% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
+% © 2021. 
+
    properties
       description
    end
@@ -8,19 +15,31 @@ classdef TerminationCause
       end
    end
    enumeration
+      % At least one state vector component is infinite.
       STATE_IS_INFINITE('Final state is infinite.')
+      
+      % At least one state vector component is NaN (not a number).
       STATE_IS_NAN('Final state is NaN.')
+      
+      % The final state value is not the flow set 'C' or the jump set 'D'.
       STATE_NOT_IN_C_UNION_D('Solution left the flow and jump sets.')
+      
+      % The continuous time 't' reached the end of the given range 'tspan'.
       T_REACHED_END_OF_TSPAN('Continuous time t reached the end of tspan.')
+      
+      % The discrete time 'j' reached the end of the given range 'jspan'.
       J_REACHED_END_OF_JSPAN('Discrete time j reached the end of jspan.')
+      
+      % The hybrid solver was cancelled before completing. 
       CANCELED('The solver was canceled.')
+
+      % Insufficient information was provided to determine cause of termination.
       UNDETERMINED('Insufficient information provided to determine cause of termination.')
    end
 
     methods(Static, Hidden)
         function cause = getCause(t, j, x, C_vals, D_vals, tspan, jspan)
-            %%% From the given data, compute the reason that the solution
-            %%% terminated. 
+            % From the given data, compute the reason that the solution terminated. 
             x_final = x(end,:);
 
             if any(isinf(x_final)) 

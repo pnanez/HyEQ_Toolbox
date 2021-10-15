@@ -1,9 +1,11 @@
 classdef (Abstract) HybridSystem < handle
-% Hybrid dynamical system.
+% Abstract class of hybrid systems. A concrete hybrid system is defined by writing a subclass of HybridSystem.
+%
+% See also: HybridSystemBuilder.
 
     properties
-        % State dimension is an optional property. If set, additional error
-        % checking is enabled.
+        % Dimension of the state space (optional).
+        % If set, additional error-checking is enabled.
         state_dimension;
     end
 
@@ -18,12 +20,9 @@ classdef (Abstract) HybridSystem < handle
         % adding "%#ok<INUSD>" (for 'x') or "%#ok<INUSL>" (for "this") at 
         % the end of the line.
 
-        % Flow map 'f'. Must be implmented in subclasses.
-        % 
-        % In a concrete implemention of the HybridSystem class, the 
-        % flowMap function must be implemented with one of the following 
-        % signatures: flowMap(this, x), flowMap(this, x, t)
-        % or flowMap(this, x, t, j). 
+        % Flow map 'f' defines continuous evolution of the system. 
+        % Must be implmented in subclasses as either 'flowMap(this, x)',
+        % 'flowMap(this, x, t)', or 'flowMap(this, x, t, j)'. 
         xdot = flowMap(this, x, t, j)  
 
         % Jump map 'g'. Must be implmented in subclasses.
@@ -63,7 +62,7 @@ classdef (Abstract) HybridSystem < handle
             % not work as expected. It appears to store a reference to this
             % as it is at this point, in its unconstructed state.
             
-            if exist('state_dim', 'var')
+            if exist('state_dimension', 'var')
                this.state_dimension = state_dimension;
             end
             
@@ -133,15 +132,15 @@ classdef (Abstract) HybridSystem < handle
 
     end
     
-    methods(Access = protected)
+    methods(Access = protected, Hidden)
         % Override this function to use other wrappers.
-        function sol = wrap_solution(this, t, j, x, tspan, jspan, solver_config)    
+        function sol = wrap_solution(this, t, j, x, tspan, jspan, solver_config)   
+            % Create a HybridSolution object from the data (x, t, j) and given simluation parameters.
             xf = x(end, :)';
             Cf = this.flowSetIndicator_3args(xf, t(end), j(end));
             Df = this.jumpSetIndicator_3args(xf, t(end), j(end));
             sol = HybridSolution(t, j, x, Cf, Df, tspan, jspan, solver_config);
         end
-        
     end
     
     methods
@@ -268,6 +267,46 @@ classdef (Abstract) HybridSystem < handle
             mc = metaclass(this);
             method_data = mc.MethodList(strcmp({mc.MethodList.Name}, function_name));
             nargs = length(method_data.InputNames);
+        end
+    end
+
+    methods(Hidden) % Hide methods from 'handle' superclass from documentation.
+        function addlistener(varargin)
+             addlistener@HybridSystem(varargin{:});
+        end
+        function delete(varargin)
+             delete@HybridSystem(varargin{:});
+        end
+        function eq(varargin)
+            error('Not supported')
+        end
+        function findobj(varargin)
+             findobj@HybridSystem(varargin{:});
+        end
+        function findprop(varargin)
+             findprop@HybridSystem(varargin{:});
+        end
+        % function isvalid(varargin)  Method is sealed.
+        %      isvalid@HybridSystem(varargin);
+        % end
+        function ge(varargin)
+        end
+        function gt(varargin)
+        end
+        function le(varargin)
+            error('Not supported')
+        end
+        function lt(varargin)
+            error('Not supported')
+        end
+        function ne(varargin)
+            error('Not supported')
+        end
+        function notify(varargin)
+            notify@HybridSystem(varargin{:});
+        end
+        function listener(varargin)
+            listener@HybridSystem(varargin{:});
         end
     end
 end

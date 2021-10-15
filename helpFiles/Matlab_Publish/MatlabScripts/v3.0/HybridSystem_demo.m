@@ -104,8 +104,6 @@ config.priority(HybridPriority.FLOW);
 config.priority(HybridPriority.JUMP);
 config.priority('flow');
 config.priority('jump');
-config.flowPriority();
-config.jumpPriority();
 
 %% 
 % The ODE solver function and solver options can be modified in |config|. The functions 

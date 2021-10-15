@@ -27,7 +27,7 @@ classdef HybridSystemBuilderTest < matlab.unittest.TestCase
             system = builder.build();
 
             % Test the output for the functions for various state values.
-            for x=linspace(-10, 10, 23)
+            for x=linspace(-10, 10, 5)
                 testCase.assertEqual(system.flowMap(x, NaN, NaN), f(x));
                 testCase.assertEqual(system.jumpMap(x, NaN, NaN), g(x));
                 testCase.assertEqual(system.flowSetIndicator(x, NaN, NaN), C_ind(x));
@@ -35,47 +35,54 @@ classdef HybridSystemBuilderTest < matlab.unittest.TestCase
             end
         end
 
-        function testDefaultPriorityIsFlow(testCase)
+        function testAbbreviatedFunctionSetters(testCase)
+            f = @(x) sin(x);
+            g = @(x) -x;
+            C_ind = @(x) x <= 0;
+            D_ind = @(x) x >= 0;
+
             builder = HybridSystemBuilder() ...
-                            .flowSetIndicator(@(x) 1) ...
-                            .jumpSetIndicator(@(x) 1);
+                            .f(f) ...
+                            .g(g) ...
+                            .C(C_ind) ...
+                            .D(D_ind);
             system = builder.build();
+
+            % Test the output for the functions for various state values.
+            for x=linspace(-10, 10, 5)
+                testCase.assertEqual(system.flowMap(x, NaN, NaN), f(x));
+                testCase.assertEqual(system.jumpMap(x, NaN, NaN), g(x));
+                testCase.assertEqual(system.flowSetIndicator(x, NaN, NaN), C_ind(x));
+                testCase.assertEqual(system.jumpSetIndicator(x, NaN, NaN), D_ind(x));
+            end
+        end
+
+        function testBadFunctionHandles(testCase)
+            hsb = HybridSystemBuilder();   
+            testCase.verifyError(@() hsb.flowMap(1), 'Hybrid:InvalidArgument');
+            testCase.verifyError(@() hsb.jumpMap('hello'), 'Hybrid:InvalidArgument');
+            testCase.verifyError(@() hsb.flowSetIndicator(@() 1), 'Hybrid:InvalidFunction');
+            testCase.verifyError(@() hsb.jumpSetIndicator(@(x, t, j, extra) x), 'Hybrid:InvalidFunction');
+            testCase.verifyError(@() hsb.f(1), 'Hybrid:InvalidArgument');
+            testCase.verifyError(@() hsb.g('hello'), 'Hybrid:InvalidArgument');
+            testCase.verifyError(@() hsb.C(@() 1), 'Hybrid:InvalidFunction');
+            testCase.verifyError(@() hsb.D(@(x, t, j, extra) x), 'Hybrid:InvalidFunction');
             
-            sol = system.solve(12, [0, 100], [1, 5], 'silent');
-
-            testCase.assertEqual(sol.t(end), 0);
-            testCase.assertEqual(sol.j(end), 5);
         end
 
-        function testJumpPriority(testCase)
-            builder = HybridSystemBuilder() ...
-                            .flowSetIndicator(@(x) 1) ...
-                            .jumpSetIndicator(@(x) 1);
-
-            system = builder.build();
-            config = HybridSolverConfig('silent').jumpPriority();
-            sol = system.solve(12, [0, 100], [1, 5], config);
-
-            testCase.assertEqual(sol.t(end), 0);
-            testCase.assertEqual(sol.j(end), 5);
+        function testDefaultStateDimension(testCase)
+            sys = HybridSystemBuilder().build();
+            testCase.assertEqual(sys.state_dimension, []);
         end
 
-        function testFlowPriority(testCase)
-            builder = HybridSystemBuilder() ...
-                            .flowMap(@(x) 1)...
-                            .flowSetIndicator(@(x) 1) ...
-                            .jumpSetIndicator(@(x) 1);
-            system = builder.build();
-            
-            tspan = [0, 100];
-            jspan = [1, 5];
-            config = HybridSolverConfig('silent').flowPriority();
-            sol = system.solve(12, tspan, jspan, config);
-
-            testCase.assertEqual(sol.t(end), 100);
-            testCase.assertEqual(sol.j(end), jspan(1));
+        function testSetStateDimension(testCase)
+            sys = HybridSystemBuilder()...
+                .stateDimension(4)...
+                .build();
+            testCase.assertEqual(sys.state_dimension, 4);
         end
 
+%         function 
     end
 
 end

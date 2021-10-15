@@ -13,3 +13,5 @@ dev_dirs = {fullfile(proj_root, 'doc'), ...
 % Setup path
 addpath(toolbox_dirs{:}) 
 addpath(dev_dirs{:}) 
+
+disp('hybrid-toolbox development path configured.')

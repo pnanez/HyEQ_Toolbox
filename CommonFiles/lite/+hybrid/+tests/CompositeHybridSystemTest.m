@@ -95,7 +95,7 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
             sys = CompositeHybridSystem(sub);
             tspan = [0, 10];
             jspan = [0,  2];
-            config = HybridSolverConfig('silent').flowPriority();
+            config = HybridSolverConfig('silent').priority('flow');
             testCase.verifyWarning(@() sys.solve({0}, tspan, jspan, config), ...
                 'CompositeHybridSystem:FlowPriorityNotSupported')
         end

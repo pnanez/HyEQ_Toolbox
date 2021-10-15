@@ -1,5 +1,8 @@
 classdef HybridSolution
 % HybridSolution Solution to a hybrid dynamical system, with additional information. 
+%
+% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
+% © 2021. 
     
     properties(SetAccess = immutable)
         % A column vector containing the continuous time value for each entry in the solution.

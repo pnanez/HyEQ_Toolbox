@@ -1,11 +1,15 @@
 classdef HybridPlotBuilder < handle
-    
+% Class for creating plots of hybrid solutions
+%
+% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
+% © 2021. 
+
     properties(Constant)
-        defaults = hybrid.internal.PlotSettings() % default settings
+        defaults = hybrid.internal.PlotSettings() % default plot settings
     end
     
     properties(SetAccess = immutable)
-        settings
+        settings % plot settings
     end
     
     properties(Access = private)
@@ -16,12 +20,14 @@ classdef HybridPlotBuilder < handle
 
     methods
         function obj = HybridPlotBuilder()
+            % HybridPlotBuilder constructor.
            obj.settings = HybridPlotBuilder.defaults.copy();
         end
     end
     
     methods % Setting property setters
         function this = title(this, title)
+            % Set a title for the plot.
             if iscell(title)
                 e = MException('HybridPlotBuilder:InvalidArgument', ...
                     'For setting multiple titles, use titles()');
@@ -31,11 +37,13 @@ classdef HybridPlotBuilder < handle
         end
         
         function this = titles(this, varargin)
+            % Set the titles for each subplot.
             titles = hybrid.internal.parseStringVararginWithOptionalOptions(varargin{:});
             this.settings.component_titles = titles;
         end
 
         function this = label(this, label)
+            % Set a single component label. 
             if iscell(label)
                 e = MException('HybridPlotBuilder:InvalidArgument', ...
                     'For setting multiple labels, use labels()');
@@ -45,31 +53,70 @@ classdef HybridPlotBuilder < handle
         end
 
         function this = labels(this, varargin)
+            % Set component labels.
             labels = hybrid.internal.parseStringVararginWithOptionalOptions(varargin{:});
             this.settings.component_labels = labels;
         end
 
         function this = labelSize(this, size)
+            % Set the font size of component labels.
             this.settings.label_size = size;
         end
 
         function this = titleSize(this, size)
+            % Set the font size of titles.
             this.settings.title_size = size;
         end
 
         function this = tLabel(this, t_label)
+            % Set the label for the continuous time axis.
+            %
+            % The default value depends on the label interpreter:
+            %  'none': 't'
+            %   'tex': 't'
+            % 'latex': '$t$'
             this.settings.t_label = t_label;
         end
 
         function this = jLabel(this, j_label)
+            % Set the label for the discrete time axis 
+            % The default value depends on the label interpreter:
+            %  'none': 'j'
+            %   'tex': 'j'
+            % 'latex': '$j$'
             this.settings.j_label = j_label;
         end
 
         function this = xLabelFormat(this, label_format)
+            % Set the string format used for missing component labels in automatic subplots (used only if explicit labels are not specified) .
+            %
+            % The string 'label_format' must be a valid format for
+            %         sprint(label_format, i)
+            % where 'i' is an integer that equals the index number of the
+            % component for the subplot where the label is placed. That is,
+            % label_format is a string that contains a single occurance of '%d',
+            % which is replaced in each label by the corresponding component
+            % index.
+            % 
+            % The default value depends on the label interpreter:
+            %  'none': 'x(%d)'
+            %   'tex': 'x_{%d}'
+            % 'latex': '$x_{%d}$'
             this.settings.x_label_format = label_format;
         end
 
+        function this = plot2Function(this, plot_function_2D)
+            % Set the plot function used for drawing 2D graphs. 
+            this.settings.plot_function_2D = str2func(plot_function_2D);
+        end
+
+        function this = plot3Function(this, plot_function_3D)
+            % Set the plot function used for drawing 3D graphs. 
+            this.settings.plot_function_3D = str2func(plot_function_3D);
+        end
+
         function this = legend(this, varargin)
+            % Set the legend entry label(s) for the next plot. Optional name-value options for the built-in MATLAB 'legend' function can be included.
             [labels, options] = hybrid.internal.parseStringVararginWithOptionalOptions(varargin{:});
             this.settings.component_legend_labels = labels;
             this.settings.legend_options = options;
@@ -109,53 +156,54 @@ classdef HybridPlotBuilder < handle
         end
 
         function this = jumpMarker(this, marker)
-            % JUMPMARKER Set the marker for both sides of jumps.
+            % Set the marker for both sides of jumps.
             this.jumpStartMarker(marker);
             this.jumpEndMarker(marker);
         end
 
         function this = jumpMarkerSize(this, size)
-            % JUMPMARKERSIZE Set the marker size for both sides of jumps.
+            % Set the marker size for both sides of jumps.
             this.jumpStartMarkerSize(size);
             this.jumpEndMarkerSize(size);
         end
 
         function this = jumpStartMarker(this, marker)
-            % JUMPSTARTMARKER Set the marker for the starting point of each jump.
+            % Set the marker for the starting point of each jump.
             this.settings.jump_start_marker = marker;
         end
 
         function this = jumpStartMarkerSize(this, size)
-            % JUMPSTARTMARKERSIZE Set the marker size for the starting point of each jump.
+            % Set the marker size for the starting point of each jump.
             this.settings.jump_start_marker_size = size;
         end
 
         function this = jumpEndMarker(this, marker)
-            % JUMPENDMARKER Set the marker for the end point of each jump.
+            % Set the marker for the end point of each jump.
             this.settings.jump_end_marker = marker;
         end
 
         function this = jumpEndMarkerSize(this, size)
-            % JUMPENDMARKERSIZE Set the marker size for the end  point of each jump.
+            % Set the marker size for the end  point of each jump.
             this.settings.jump_end_marker_size = size;
         end
 
         function this = slice(this, component_indices)
-            % SLICE Pick the state components to plot by providing the corresponding indices. 
+            % Pick the state components to plot by providing the corresponding indices. 
             this.settings.component_indices = component_indices;
         end
 
         function this = filter(this, timesteps_filter)
-            % FILTER Pick the timesteps to display. All others are hidden from plots. 
+            % Pick the timesteps to display. All others are hidden from plots. 
             this.settings.timesteps_filter = timesteps_filter;
         end
         
         function this = autoSubplots(this, auto_subplots)
-            % AUTOSUBPLOTS Configure whether to automatically create subplots for each component.
+            % Configure whether to automatically create subplots for each component.
             this.settings.auto_subplots = auto_subplots;
         end
         
         function this = configurePlots(this, plots_callback)
+            % Provide a function that is called within each subplot to facilitate additional configuration.
            this.settings.plots_callback = plots_callback;
         end
         
@@ -165,11 +213,12 @@ classdef HybridPlotBuilder < handle
         end
         
         function this = labelInterpreter(this, interpreter)
-            % Set the text interpreter used in labels and legend entries. 
+            % Set the text interpreter used in time, component, and legend entry labels. 
             this.settings.label_interpreter = interpreter;
         end
         
         function this = textInterpreter(this, interpreter)
+            % Set both the title and legend entry labels.
             this.titleInterpreter(interpreter);
             this.labelInterpreter(interpreter);
         end
@@ -178,7 +227,7 @@ classdef HybridPlotBuilder < handle
     
     methods 
         function this = plotFlows(this, varargin)
-            % Plot values vs. continuous time.
+            % Plot values vs. continuous time 't'.
             hybrid_sol = hybrid.internal.convert_varargin_to_solution_obj(varargin);
             
             indices_to_plot = this.settings.indicesToPlot(hybrid_sol);
@@ -199,7 +248,7 @@ classdef HybridPlotBuilder < handle
         end
 
         function this = plotJumps(this, varargin)
-            % Plot values vs. discrete time.
+            % Plot values vs. discrete time 'j'.
             hybrid_sol = hybrid.internal.convert_varargin_to_solution_obj(varargin);
             indices_to_plot = this.settings.indicesToPlot(hybrid_sol);
                         
@@ -219,7 +268,7 @@ classdef HybridPlotBuilder < handle
         end
 
         function this = plotHybrid(this, varargin)
-            % Plot values vs. continuous and discrete time.
+            % Plot values vs. continuous and discrete time (t, j).
             hybrid_sol = hybrid.internal.convert_varargin_to_solution_obj(varargin);
             indices_to_plot = this.settings.indicesToPlot(hybrid_sol);
 
@@ -240,9 +289,9 @@ classdef HybridPlotBuilder < handle
         end
 
         function this = plotPhase(this, varargin)
-            % PLOTPHASE Plot a phase plot of the hybrid solution.
+            % Plot a phase plot of the hybrid solution.
             % The output of depends on the dimension of the system 
-            % (or the number of components selected with 'slice()'). 
+            % or the number of components selected with 'slice()'. 
             % The output is as follows: 
             % - 2D: a 2D phase plot
             % - 3D: a 3D phase plot
@@ -313,7 +362,7 @@ classdef HybridPlotBuilder < handle
         % The following functions are provided to help users transition
         % from v2.04 to v3.0.
         
-        function plotflows(this, varargin)            
+        function plotflows(this, varargin)   
             warning('Please use the plotFlows function instead of plotflows.')
             this.plotFlows(varargin{:});
         end
@@ -601,6 +650,46 @@ classdef HybridPlotBuilder < handle
             title(title_str, this.settings.titleArguments{:});
             set(gca, 'TitleFontSizeMultiplier', 1.0);
         end         
+    end
+
+    methods(Hidden) % Hide methods from 'handle' superclass from documentation.
+        function addlistener(varargin)
+             addlistener@HybridPlotBuilder(varargin{:});
+        end
+        function delete(varargin)
+             delete@HybridPlotBuilder(varargin{:});
+        end
+        function eq(varargin)
+            error('Not supported')
+        end
+        function findobj(varargin)
+             findobj@HybridPlotBuilder(varargin{:});
+        end
+        function findprop(varargin)
+             findprop@HybridPlotBuilder(varargin{:});
+        end
+        % function isvalid(varargin)  Method is sealed.
+        %      isvalid@HybridPlotBuilder(varargin);
+        % end
+        function ge(varargin)
+        end
+        function gt(varargin)
+        end
+        function le(varargin)
+            error('Not supported')
+        end
+        function lt(varargin)
+            error('Not supported')
+        end
+        function ne(varargin)
+            error('Not supported')
+        end
+        function notify(varargin)
+            notify@HybridPlotBuilder(varargin{:});
+        end
+        function listener(varargin)
+            listener@HybridPlotBuilder(varargin{:});
+        end
     end
 end
         

@@ -1,11 +1,17 @@
 classdef CompositeHybridSolution < HybridSolution
+% A class of solution objects produced by solving a CompositeHybridSystem.
+%
+% See also: HybridSolution, CompositeHybridSystems, HybridSolutionWithInput.
+%
+% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
+% © 2021. 
 
     properties(SetAccess = immutable, Hidden)
         subsystem_solutions 
     end
     
     properties(GetAccess=private, SetAccess=immutable)
-        subsystems
+        subsystems % hybrid.internal.SubsystemList
     end
     
     methods
@@ -17,7 +23,9 @@ classdef CompositeHybridSolution < HybridSolution
             this.subsystem_solutions = subsystem_solutions;
             this.subsystems = subsystems;
         end
-        
+    end
+
+    methods(Hidden)
         function sref = subsref(this,s)
             % Redefine the behavior of parentheses (such as 'sol(1)') to reference subsystem solutions.
             switch s(1).type
@@ -50,8 +58,9 @@ classdef CompositeHybridSolution < HybridSolution
                         'Brace indexing is not supported on CompositeHybridSolution objects.')
             end
         end
-        
+
         function len = length(this)
+
            % Define per this Stackoverflow answer: https://stackoverflow.com/a/29378151/6651650
            
            if isscalar(this)
@@ -62,17 +71,17 @@ classdef CompositeHybridSolution < HybridSolution
            end
         end
         
-        function ndx = end(this,k,n)
+        function ndx = end(this,k,n_ndxs)
            % Define per this Stackoverflow answer: https://stackoverflow.com/a/29378151/6651650
            % k is the index in the expression using the end syntax
-           % n is the total number of indices in the expression
+           % n_ndxs is the total number of indices in the expression
 
            if isscalar(this)
-               assert(n == 1, 'Using multiple indexes (i.e., ''sol(end, 1)'') is not supported on CompositeHybridSolution objects.');
+               assert(n_ndxs == 1, 'Using multiple indexes (i.e., ''sol(end, 1)'') is not supported on CompositeHybridSolution objects.');
                ndx = length(this.subsystem_solutions);
            else
                % Handle the case where 'this' is an array.
-               ndx = builtin('end',this,k,n);
+               ndx = builtin('end',this,k,n_ndxs);
            end
         end
     end

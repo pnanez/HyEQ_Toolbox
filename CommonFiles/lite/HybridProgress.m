@@ -1,4 +1,8 @@
 classdef HybridProgress < handle
+% Abstract class for displaying updates while solving a hybrid system.
+%
+% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
+% © 2021. 
     properties
         tspan % double (1, 2) 
         jspan % integer (1, 2)
