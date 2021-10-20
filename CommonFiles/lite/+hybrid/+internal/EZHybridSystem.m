@@ -22,7 +22,7 @@ classdef EZHybridSystem < HybridSystem
 % verbose approach to constructing an EZHybridSystem.
 %
 % WARNING: Although the function handles passed to the constructor 
-% have variable numbers of arguments, the EZHybridSystem implements 
+% can have 1, 2, or 3 arguments, the EZHybridSystem implements 
 % the abstract HybridSytem functions flowMap, jumpMap, flowSetIndicator,
 % jumpSetIndicator with the four arguments "(this, x, t, j)". 
 %

@@ -734,12 +734,11 @@ else
 end
 
 lgd_count = length(lgd_labels);
-warning_msg = 'Expected %d legend labels but only %d of were provided.';
+warning_msg = 'Expected %d legend label(s) but %d were provided.';
 if expected_count < lgd_count
     id = 'HybridPlotBuilder:TooManyLegends';
-    warning(id, warning_msg, expected_count, lgd_count)
 elseif expected_count > lgd_count
     id = 'HybridPlotBuilder:TooFewLegends';
-    warning(id, warning_msg, expected_count, lgd_count)
 end
+warning(id, warning_msg, expected_count, lgd_count)
 end

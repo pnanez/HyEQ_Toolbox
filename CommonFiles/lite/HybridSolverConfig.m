@@ -76,6 +76,10 @@ classdef HybridSolverConfig < handle
             
             % Error checking is performed in the setter. 
             this.ode_solver = solver;
+            
+            if nargout == 0
+               clear this 
+            end
         end
             
         function set.ode_solver(this, ode_solver)
@@ -99,6 +103,9 @@ classdef HybridSolverConfig < handle
                 priority = HybridPriority.FLOW;
             end
             this.hybrid_priority = HybridPriority(priority);
+            if nargout == 0
+               clear this 
+            end
         end
 
         function this = RelTol(this, relTol)
@@ -109,6 +116,9 @@ classdef HybridSolverConfig < handle
             assert(relTol > 0, 'Hybrid:expectedNonnegative', ...
                 'Relative tolerance must be positive.')
             this.ode_options = odeset(this.ode_options, 'RelTol', relTol);
+            if nargout == 0
+               clear this 
+            end
         end
 
         function this = AbsTol(this, absTol)
@@ -119,6 +129,9 @@ classdef HybridSolverConfig < handle
             assert(absTol > 0, 'Hybrid:expectedNonnegative', ...
                 'Absolute tolerance must be positive.')
             this.ode_options = odeset(this.ode_options, 'AbsTol', absTol);
+            if nargout == 0
+               clear this 
+            end
         end
 
         function this = MaxStep(this, maxStep)
@@ -129,6 +142,9 @@ classdef HybridSolverConfig < handle
             assert(maxStep > 0, 'Hybrid:expectedNonnegative', ...
                 'Max step must be positive.')
             this.ode_options = odeset(this.ode_options, 'MaxStep', maxStep);
+            if nargout == 0
+               clear this 
+            end
         end
 
         function this = Refine(this, refine)
@@ -136,9 +152,14 @@ classdef HybridSolverConfig < handle
             % See documentation for odeset.
             %
             % See also: odeset, ode45.
-            assert(refine > 0, 'Hybrid:expectedNonnegative', ...
+            assert(refine > 0, 'Hybrid:expectedPositive', ...
                 'Refine must be positive.')
+            assert(mod(refine, 1) == 0, 'Hybrid:expectedInteger', ...
+                'Refine must an integer.')
             this.ode_options = odeset(this.ode_options, 'Refine', refine);
+            if nargout == 0
+               clear this 
+            end
         end
         
         function this = odeOption(this, name, value)
@@ -147,6 +168,9 @@ classdef HybridSolverConfig < handle
             %
             % See also: odeset, ode45.
             this.ode_options.(name) = value;
+            if nargout == 0
+               clear this 
+            end
         end
 
         function this = massMatrix(this, mass_matrix)
@@ -154,6 +178,9 @@ classdef HybridSolverConfig < handle
             % 
             % See also: odeset.
             this.mass_matrix = mass_matrix;
+            if nargout == 0
+               clear this 
+            end
         end
         
         function this = progress(this, progress, varargin)
@@ -180,6 +207,9 @@ classdef HybridSolverConfig < handle
                         'The progress listener must be a subclass of HybridProgress, but instead was ''%s''.',...
                         class(progress));
                 end
+                if nargout == 0
+                   clear this 
+                end
                 return;
             end
             switch progress
@@ -191,6 +221,9 @@ classdef HybridSolverConfig < handle
                     error('HybridSolverConfig:InvalidProgress', ...
                         'The progress type ''%s'' was unrecognized. Should be ''popup'' or ''string''.',...
                         progress);
+            end
+            if nargout == 0
+               clear this 
             end
         end
     end

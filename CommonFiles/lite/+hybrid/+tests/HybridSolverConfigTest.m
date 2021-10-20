@@ -52,6 +52,27 @@ classdef HybridSolverConfigTest < matlab.unittest.TestCase
             testCase.assertEqual(config.ode_options, expected_options)
         end
         
+        % Test Refine option
+        
+        function testRefine(testCase)
+            config = HybridSolverConfig();
+            config.Refine(14);
+            expected_options = odeset('Refine', 14);
+            testCase.assertEqual(config.ode_options, expected_options)
+        end
+        
+        function testRefineInvalid(testCase)
+            config = HybridSolverConfig();
+            testCase.verifyError(@() config.Refine(0), 'Hybrid:expectedPositive');
+            testCase.verifyError(@() config.Refine(1.443), 'Hybrid:expectedInteger');
+        end
+        
+        function testRefineInConstructor(testCase)
+            config = HybridSolverConfig('Refine', 12);
+            expected_options = odeset('Refine', 12);
+            testCase.assertEqual(config.ode_options, expected_options)
+        end
+        
         function testOtherOdeOptions(testCase)
             config = HybridSolverConfig();
             config.odeOption('JConstant', true);
@@ -149,6 +170,28 @@ classdef HybridSolverConfigTest < matlab.unittest.TestCase
                 'HybridSolverConfig:InvalidProgress');
         end
 
+        function testNoOutputWhenNoSemicolonAndNoAssignment(testCase)
+            function call()
+                config = HybridSolverConfig();
+                config.progress('popup', 3) % no semicolon.
+                config.odeSolver('ode23s') % no semicolon.
+                config.priority('flow') % no semicolon.
+                config.RelTol(1e-4) % no semicolon.
+                config.AbsTol(1e-4) % no semicolon.
+                config.MaxStep(1e-4) % no semicolon.
+                config.Refine(12) % no semicolon.
+                config.odeOption('Jacobian', eye(2)) % no semicolon.
+                config.massMatrix(magic(3)) % no semicolon.
+                config.progress(SilentHybridProgress()) % no semicolon.
+                config.progress('silent') % no semicolon.
+                config.progress('popup', 4) % no semicolon.
+                fprintf('Finished.');
+            end
+            output = evalc('call');
+            testCase.assertEqual(output, 'Finished.')
+            
+        end
+        
     end
 
 end
