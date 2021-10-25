@@ -68,6 +68,11 @@ classdef HybridPlotBuilder < handle
             this.settings.title_size = size;
         end
 
+        function this = tickLabelSize(this, size)
+            % Set the font size of tick mark labels.
+            this.settings.tick_label_size = size;
+        end
+
         function this = tLabel(this, t_label)
             % Set the label for the continuous time axis.
             %
@@ -105,16 +110,6 @@ classdef HybridPlotBuilder < handle
             this.settings.x_label_format = label_format;
         end
 
-        function this = plot2Function(this, plot_function_2D)
-            % Set the plot function used for drawing 2D graphs. 
-            this.settings.plot_function_2D = str2func(plot_function_2D);
-        end
-
-        function this = plot3Function(this, plot_function_3D)
-            % Set the plot function used for drawing 3D graphs. 
-            this.settings.plot_function_3D = str2func(plot_function_3D);
-        end
-
         function this = legend(this, varargin)
             % Set the legend entry label(s) for the next plot. Optional name-value options for the built-in MATLAB 'legend' function can be included.
             [labels, options] = hybrid.internal.parseStringVararginWithOptionalOptions(varargin{:});
@@ -123,7 +118,7 @@ classdef HybridPlotBuilder < handle
         end
                 
         function this = flowColor(this, color)
-            % FLOWCOLOR Set the color of flow lines.
+            % Set the color of flow lines.
             this.settings.flow_color = color;
         end
 
@@ -139,9 +134,14 @@ classdef HybridPlotBuilder < handle
         end
 
         function this = jumpColor(this, color)
-            % JUMPCOLOR Set the color of jump lines and jump markers.
+            % Set the color of jump lines and jump markers.
             % at each end.
             this.settings.jump_color = color;
+        end
+
+        function this = color(this, color)
+            this.settings.jump_color = color;
+            this.settings.flow_color = color;
         end
 
         function this = jumpLineStyle(this, style)
@@ -209,23 +209,32 @@ classdef HybridPlotBuilder < handle
         
         function this = titleInterpreter(this, interpreter)
             % Set the text interpreter used in titles. 
+            % The choices are 'none', 'tex', and 'latex' (default).
             this.settings.title_interpreter = interpreter;
         end
         
         function this = labelInterpreter(this, interpreter)
             % Set the text interpreter used in time, component, and legend entry labels. 
+            % The choices are 'none', 'tex', and 'latex' (default).
             this.settings.label_interpreter = interpreter;
         end
         
+        function this = tickLabelInterpreter(this, interpreter)
+            % Set the text interpreter used in time, component, and legend entry labels. 
+            this.settings.tick_label_interpreter = interpreter;
+        end
+
         function this = textInterpreter(this, interpreter)
             % Set both the title and legend entry labels.
+            % The choices are 'none', 'tex', and 'latex' (default).
             this.titleInterpreter(interpreter);
             this.labelInterpreter(interpreter);
+            this.tickLabelInterpreter(interpreter);
         end
 
     end
     
-    methods 
+    methods % Plotting functions
         function this = plotFlows(this, varargin)
             % Plot values vs. continuous time 't'.
             hybrid_sol = hybrid.internal.convert_varargin_to_solution_obj(varargin);
@@ -316,7 +325,7 @@ classdef HybridPlotBuilder < handle
         end
 
         function this = plot(this, varargin)
-            % PLOT Plot the hybrid solution in an intelligent way.
+            % Plot the hybrid solution in an intelligent way.
             % The output of depends on the dimension of the system 
             % (or the number of components selected with 'slice()'). 
             % The output is as follows: 
@@ -382,12 +391,21 @@ classdef HybridPlotBuilder < handle
 
         function configureAxes(this, xaxis_id, yaxis_id, zaxis_id)
             narginchk(3, 4)
-            %is2D = nargin == 4;
             is3D = nargin == 4;
             is_x_a_time_axis = any(strcmp(xaxis_id, {'t', 'j'}));
             is_y_a_time_axis = strcmp(yaxis_id, 'j');            
             first_nontime_axis = 1 + is_x_a_time_axis + is_y_a_time_axis;
             
+            % Apply adjustments to tick labels
+            % This section MUST come before we set the label sizes, otherwise
+            % the label sizes will be overwritten when we call
+            %   "ax.XAxis.FontSize = ..."
+            axes=gca();
+            for axis_name = {'XAxis', 'YAxis', 'ZAxis'}
+                axes.(axis_name{1}).FontSize = this.settings.tick_label_size;
+                axes.(axis_name{1}).TickLabelInterpreter = this.settings.tick_label_interpreter;
+            end
+
             % Apply labels
             this.xlabel(xaxis_id)
             this.ylabel(yaxis_id)
@@ -455,7 +473,12 @@ classdef HybridPlotBuilder < handle
             end
             check_legend_count(primary_ndxs, this.settings.component_legend_labels);
             
-            if ~this.settings.auto_subplots
+            if this.settings.auto_subplots
+                % If using auto-subplots, then we use the same arguments for
+                % every plot.
+                flow_args = this.settings.flowArguments();
+                jump_args = this.settings.jumpArguments();
+            else
                 was_hold_on_no_auto_subplots = ishold();
                 % Clear the plot if 'hold off'. Otherwise, this has no effect.
                 plot(nan, nan);
@@ -473,6 +496,11 @@ classdef HybridPlotBuilder < handle
                         plot(nan, nan);
                     end
                     hold on
+                else
+                    % If not using autosubplots, then we update the arguments
+                    % for each plot. 
+                    flow_args = this.settings.flowArguments();
+                    jump_args = this.settings.jumpArguments();
                 end
                 
                 axis1_id = axis1_ids(iplot);
@@ -497,24 +525,24 @@ classdef HybridPlotBuilder < handle
                 j = hybrid_sol.j;
                 flows_x = hybrid.internal.separateFlowsWithNaN(t, j, plot_values);
                 [jumps_x, jumps_befores, jumps_afters] ...
-                    = hybrid.internal.separateJumpsWithNaN(t, j, plot_values);
+                        = hybrid.internal.separateJumpsWithNaN(t, j, plot_values);
                 
                 % We 'plot' an invisible dummy point (NaN values are not
                 % visible in plots), which provides the line and marker
                 % appearance for the corresponding legend entry.
-                plt = plot(nan, nan, ...
-                    this.settings.flowArguments{:}, ...
-                    this.settings.jumpStartArguments{:});
+                dummy_plt = plot(nan, nan, ...
+                    flow_args{:}, ...
+                    jump_args.start{:});
                 legend_label = this.settings.createLegendLabel(primary_ndx);
-                this.addLegendEntry(plt, legend_label);
+                this.addLegendEntry(dummy_plt, legend_label);
                 
                 switch size(plot_values, 2)
                     case 2
-                        this.plotFlow2D(flows_x)
-                        this.plotJump2D(jumps_x, jumps_befores, jumps_afters)
+                        this.plotFlow2D(flows_x, flow_args)
+                        this.plotJump2D(jumps_x, jumps_befores, jumps_afters, jump_args)
                     case 3
-                        this.plotFlow3D(flows_x)
-                        this.plotJump3D(jumps_x, jumps_befores, jumps_afters)
+                        this.plotFlow3D(flows_x, flow_args)
+                        this.plotJump3D(jumps_x, jumps_befores, jumps_afters, jump_args)
                         view(34.8,16.8)
                     otherwise
                         error('plot_values must have 2 or 3 components.')
@@ -547,42 +575,39 @@ classdef HybridPlotBuilder < handle
             end
         end
        
-        function plotFlow2D(this, x)
+        function plotFlow2D(this, x, flow_args)
             if isempty(x)
                return 
             end
-            plot(x(:,1), x(:,2), this.settings.flowArguments{:})
+            plot(x(:,1), x(:,2), flow_args{:})
         end
 
-        function plotFlow3D(this, x)
+        function plotFlow3D(this, x, flow_args)
             if isempty(x)
                return 
             end
-            plot3(x(:,1), x(:,2), x(:,3), this.settings.flowArguments{:});
+            plot3(x(:,1), x(:,2), x(:,3), flow_args{:});
         end
 
-        function plotJump2D(this, x_jump, x_start, x_end)
+        function plotJump2D(this, x_jump, x_start, x_end, jump_args)
             % Plot the line from start to end.
-            plot(x_jump(:,1), x_jump(:,2), this.settings.jumpLineArguments{:});
+            plot(x_jump(:,1), x_jump(:,2), jump_args.line{:});
             % Plot the start of the jump
-            plot(x_start(:,1), x_start(:,2), this.settings.jumpStartArguments{:});
+            plot(x_start(:,1), x_start(:,2), jump_args.start{:});
             % Plot the end of the jump
-            plot(x_end(:,1), x_end(:,2), this.settings.jumpEndArguments{:});
+            plot(x_end(:,1), x_end(:,2), jump_args.end{:});
         end
 
-        function plotJump3D(this, x_jump, x_before, x_after)
+        function plotJump3D(this, x_jump, x_before, x_after, jump_args)
             if isempty(x_before)
                 return % Not a jump
-            end
+            end 
             % Plot jump line
-            plot3(x_jump(:,1), x_jump(:, 2), x_jump(:, 3), ...
-                this.settings.jumpLineArguments{:});
+            plot3(x_jump(:,1), x_jump(:, 2), x_jump(:, 3), jump_args.line{:});
             % Plot the start of the jump
-            plot3(x_before(:,1), x_before(:,2), x_before(:,3), ...
-                this.settings.jumpStartArguments{:});
+            plot3(x_before(:,1), x_before(:,2), x_before(:,3), jump_args.start{:});
             % Plot the end of the jump
-            plot3(x_after(:,1), x_after(:,2), x_after(:,3), ...
-                this.settings.jumpEndArguments{:});   
+            plot3(x_after(:,1), x_after(:,2), x_after(:,3), jump_args.end{:});   
         end
         
         function display_legend(this)
@@ -649,7 +674,7 @@ classdef HybridPlotBuilder < handle
             title_str = this.settings.getTitle(title_id);
             title(title_str, this.settings.titleArguments{:});
             set(gca, 'TitleFontSizeMultiplier', 1.0);
-        end         
+        end        
     end
 
     methods(Hidden) % Hide methods from 'handle' superclass from documentation.
@@ -737,8 +762,9 @@ lgd_count = length(lgd_labels);
 warning_msg = 'Expected %d legend label(s) but %d were provided.';
 if expected_count < lgd_count
     id = 'HybridPlotBuilder:TooManyLegends';
+    warning(id, warning_msg, expected_count, lgd_count)
 elseif expected_count > lgd_count
     id = 'HybridPlotBuilder:TooFewLegends';
+    warning(id, warning_msg, expected_count, lgd_count)
 end
-warning(id, warning_msg, expected_count, lgd_count)
 end

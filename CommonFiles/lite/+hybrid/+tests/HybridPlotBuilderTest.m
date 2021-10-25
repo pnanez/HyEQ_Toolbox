@@ -217,17 +217,26 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
            testCase.assertEqual(pb.settings.title_size, 17);
         end
         
+        function testTickLabelSize(testCase)
+           pb = HybridPlotBuilder();
+           pb.tickLabelSize(17);
+           testCase.assertEqual(pb.settings.tick_label_size, 17);
+        end
+        
         function testSetInterpreters(testCase)
             pb = HybridPlotBuilder();
             % Set individually.
             pb.labelInterpreter('tex');
             pb.titleInterpreter('none');
+            pb.tickLabelInterpreter('tex');
             testCase.assertEqual(pb.settings.label_interpreter, 'tex');
             testCase.assertEqual(pb.settings.title_interpreter, 'none');
+            testCase.assertEqual(pb.settings.tick_label_interpreter, 'tex');
             % Set both.
             pb.textInterpreter('latex');
             testCase.assertEqual(pb.settings.label_interpreter, 'latex');
             testCase.assertEqual(pb.settings.title_interpreter, 'latex');
+            testCase.assertEqual(pb.settings.tick_label_interpreter, 'latex');
         end
         
         function testSetFlowSettings(testCase)
@@ -248,6 +257,12 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             testCase.assertEqual(pb.settings.jump_color, 'g');
             testCase.assertEqual(pb.settings.jump_line_style, ':');
             testCase.assertEqual(pb.settings.jump_line_width, 5);
+        end
+        
+        function testSetColor(testCase)
+            pb = HybridPlotBuilder().color('cyan');
+            testCase.assertEqual(pb.settings.jump_color, 'cyan');
+            testCase.assertEqual(pb.settings.flow_color, 'cyan');
         end
         
         function testSetJumpMarkerSettingsStartAndEndTogether(testCase)
@@ -277,11 +292,13 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             HybridPlotBuilder.defaults.set(...
                 'label Size ', 14, ...
                 'title_size', 17, ...
+                'tick label size', 3, ...
                 'text_scale', scale);
 
             pb = HybridPlotBuilder();
             testCase.assertEqual(pb.settings.label_size, scale*14);
             testCase.assertEqual(pb.settings.title_size, scale*17);
+            testCase.assertEqual(pb.settings.tick_label_size, scale*3);
         end
         
         function testDefaultLineSizes(testCase)
@@ -321,9 +338,11 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         function testDefaultInterpreters(testCase)
             HybridPlotBuilder.defaults.set(...
                 'label interpreter', 'tex', ...
-                'Title Interpreter', 'none'); 
+                'Title Interpreter', 'none', ...
+                'tick label Interpreter', 'none'); 
             pb = HybridPlotBuilder();
             testCase.assertEqual(pb.settings.label_interpreter, 'tex');
+            testCase.assertEqual(pb.settings.title_interpreter, 'none');
             testCase.assertEqual(pb.settings.title_interpreter, 'none');
         end
         

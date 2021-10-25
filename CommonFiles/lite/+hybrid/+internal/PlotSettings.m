@@ -4,8 +4,10 @@ classdef PlotSettings < matlab.mixin.Copyable
         % Text
         label_size
         title_size
+        tick_label_size
         label_interpreter
         title_interpreter
+        tick_label_interpreter
         
         % Text data
         component_titles
@@ -53,8 +55,10 @@ classdef PlotSettings < matlab.mixin.Copyable
         % Text
         DEFAULT_LABEL_SIZE = 10;
         DEFAULT_TITLE_SIZE = 11;
+        DEFAULT_TICK_LABEL_SIZE = 10;
         DEFAULT_LABEL_INTERPRETER = 'latex';
         DEFAULT_TITLE_INTERPRETER = 'latex';
+        DEFAULT_TICK_LABEL_INTERPRETER = 'latex';
         
         % Text data
         DEFAULT_COMPONENT_TITLES = {};
@@ -95,6 +99,27 @@ classdef PlotSettings < matlab.mixin.Copyable
         DEFAULT_TEXT_SCALE = 1.0;
         DEFAULT_LINE_SCALE = 1.0;
         DEFAULT_MARKER_SCALE = 1.0;
+
+        % The default colors used by MATLAB plot functions.
+        % Used for the flow colors when flow_color is set to 'matlab'.
+        MATLAB_DEFAULT_PLOT_COLORS = {
+            [0 0.447 0.741]; % blue
+            [0.85 0.325 0.098]; % red
+            [0.929 0.694 0.125]; % yellow
+            [0.494 0.184 0.556]; % purple
+            [0.466 0.674 0.188]; % green
+            [0.301 0.745 0.933]; % light blue
+            [0.635 0.078 0.184]}; % burgundy
+        % Darkened varients of the default colors used by MATLAB plot functions.
+        % Used for the jump colors when jump_color is set to 'matlab'.
+        MATLAB_DEFAULT_PLOT_COLORS_DARKENED = {
+            0.8*[0 0.447 0.741]; % blue
+            0.8*[0.85 0.325 0.098]; % red
+            0.8*[0.929 0.694 0.125]; % yellow
+            0.6*[0.494 0.184 0.556]; % purple
+            0.8*[0.466 0.674 0.188]; % green
+            0.6*[0.301 0.745 0.933]; % light blue
+            0.6*[0.635 0.078 0.184]}; % burgundy
     end
     
     methods
@@ -179,29 +204,35 @@ classdef PlotSettings < matlab.mixin.Copyable
     
     methods(Access = ?HybridPlotBuilder) % Arguments generation
         function val = flowArguments(this)
-            val = {'Color', this.flow_color, ...
+            if iscell(this.flow_color)
+                color = this.flow_color{1};
+                this.flow_color = circshift(this.flow_color, -1);
+            else
+                color = this.flow_color;
+            end
+            val = {'Color', color, ...
                     'LineStyle', this.flow_line_style, ...
                     'LineWidth', this.flow_line_width};
         end
     
-        function val = jumpLineArguments(this)
-            val = {'Color', this.jump_color, ...
+        function args = jumpArguments(this)
+            if iscell(this.jump_color)
+                color = this.jump_color{1};
+                this.jump_color = circshift(this.jump_color, -1);
+            else
+                color = this.jump_color;
+            end
+            args.line = {'Color', color, ...
                     'LineStyle', this.jump_line_style, ...
                     'LineWidth', this.jump_line_width};
-        end
-    
-        function val = jumpStartArguments(this)
-            val = {'MarkerEdgeColor', this.jump_color, ...
+            args.start = {'MarkerEdgeColor', color, ...
                     'Marker', this.jump_start_marker, ...
                     'MarkerSize', this.jump_start_marker_size};
-        end
-    
-        function val = jumpEndArguments(this)
-            val = {'MarkerEdgeColor', this.jump_color, ...
+            args.end = {'MarkerEdgeColor', color, ...
                     'Marker', this.jump_end_marker, ...
                     'MarkerSize', this.jump_end_marker_size};
-        end 
-    
+        end
+
         function val = labelArguments(this)
             val = {'interpreter', this.label_interpreter, ...
                    'FontSize', this.label_size};
@@ -216,6 +247,11 @@ classdef PlotSettings < matlab.mixin.Copyable
             val = {'Interpreter', this.label_interpreter, ...
                    'FontSize', this.label_size};
            val = [val, this.legend_options];
+        end 
+        
+        function val = tickLabelArguments(this)
+            val = {'TickLabelInterpreter', this.tick_label_interpreter, ...
+                   'TickLabelFontSize', this.tick_label_size};
         end 
         
     end
@@ -233,9 +269,19 @@ classdef PlotSettings < matlab.mixin.Copyable
             this.label_interpreter = char(interpreter);
         end
         
+        function set.tick_label_interpreter(this, interpreter)
+            % Set the text interpreter used in labels and legend entries. 
+            check_interpreter(interpreter);
+            this.tick_label_interpreter = char(interpreter);
+        end
+        
         function set.flow_color(this, color)
-            color = convert_empty_arg_to_none_string(color);
-            this.flow_color = checkColorArg(color);
+            if strcmpi(color, 'matlab')
+                color = this.MATLAB_DEFAULT_PLOT_COLORS;
+            else
+                color = parseColorArgument(color);
+            end
+            this.flow_color = color;
         end
         
         function set.flow_line_style(this, style)
@@ -251,8 +297,12 @@ classdef PlotSettings < matlab.mixin.Copyable
         end
         
         function set.jump_color(this, color)
-            color = convert_empty_arg_to_none_string(color);
-            this.jump_color = checkColorArg(color);
+            if strcmpi(color, 'matlab')
+                color = this.MATLAB_DEFAULT_PLOT_COLORS_DARKENED;
+            else
+                color = parseColorArgument(color);
+            end
+            this.jump_color = color;
         end
         
         function set.jump_line_style(this, style)
@@ -341,6 +391,10 @@ classdef PlotSettings < matlab.mixin.Copyable
         
         function val = get.title_size(this)
            val = this.text_scale*this.title_size;
+        end
+        
+        function val = get.tick_label_size(this)
+           val = this.text_scale*this.tick_label_size;
         end
         
         function val = get.flow_line_width(this)
@@ -561,6 +615,22 @@ if ~ismember(interpreter, INTERPRETERS) % works for both strings and char arrays
 end        
 end
 
+function color = parseColorArgument(color)
+    if iscell(color) && ~isempty(color)
+        
+        for i = 1:length(color)
+            if iscell(color{i}) && ~isempty(color{i})
+               e = MException('Hybrid:InvalidColor', 'Color argument cannot have nested cell arrays.');
+               throwAsCaller(e);
+            end
+            color{i} = parseColorArgument(color{i});
+        end
+    else
+        color = convert_empty_arg_to_none_string(color);
+        color = checkColorArg(color);
+    end
+end
+
 function color = checkColorArg(color)
     if isa(color, 'string')
         color = char(color);
@@ -571,8 +641,8 @@ function color = checkColorArg(color)
         return
     end
     if strcmp(color, 'none')
-       % the validatecolor function fails if color='none', but none is
-       % acceptable for our purposes.
+       % the validatecolor function fails if color='none', but, for our
+       % purposes, 'none' is acceptable .
        return 
     end
     try

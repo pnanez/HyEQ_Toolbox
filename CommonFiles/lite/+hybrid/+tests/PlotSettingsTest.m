@@ -98,13 +98,21 @@ classdef PlotSettingsTest < matlab.unittest.TestCase
         
         function testConvertToNone(testCase)
             import hybrid.internal.*
-            ps = PlotSettings();
+            plot_settings = PlotSettings();
             function check(name)
-               ps.set(name, '')
-               testCase.assertEqual(ps.get(name), 'none')
-               ps.reset();
-               ps.set(name, [])
-               testCase.assertEqual(ps.get(name), 'none')
+               % Set property to empty string.
+               plot_settings.set(name, '')
+               testCase.assertEqual(plot_settings.get(name), 'none')
+               plot_settings.reset();
+               
+               % Set property to empty array.
+               plot_settings.set(name, [])
+               testCase.assertEqual(plot_settings.get(name), 'none')
+               plot_settings.reset();
+               
+               % Set property to empty cell array.
+               plot_settings.set(name, {})
+               testCase.assertEqual(plot_settings.get(name), 'none')
             end
             check('flow_color');
             check('flow_line_style');
@@ -112,7 +120,6 @@ classdef PlotSettingsTest < matlab.unittest.TestCase
             check('jump_line_style');
             check('jump_start_marker');
             check('jump_end_marker');
-            
         end
         
         function testCheckColor(testCase)
@@ -126,16 +133,73 @@ classdef PlotSettingsTest < matlab.unittest.TestCase
             ps.flow_color = 'none';
             ps.flow_color = [];
             ps.flow_color = {};
+            ps.flow_color = {'red', [1 0 0]};
+            ps.flow_color = 'matlab';
+            ps.flow_color = {'r', {}}; % Nested cell array is OK only if the inner array is empty.
             
-            % Check invalid color, except on versions of Matlab before 9.9 (R2020b).
-            if ~verLessThan('matlab', '9.9')
-                testCase.verifyError(@() ps.set('flow_color', 'blurg'),...
+            function assertInvalidColorArg(color_arg)
+                testCase.verifyError(@() ps.set('flow_color', color_arg),...
                     'Hybrid:InvalidColor');
-                testCase.verifyError(@() ps.set('flow_color', [1.5 0 0]),...
-                    'Hybrid:InvalidColor');
-                testCase.verifyError(@() ps.set('flow_color', [0 0.1, 0.2, 0.3]),...
+                testCase.verifyError(@() ps.set('jump_color', color_arg),...
                     'Hybrid:InvalidColor');
             end
+
+            % Check invalid color, except on versions of Matlab before 9.9 (R2020b).
+            if ~verLessThan('matlab', '9.9')
+                
+                assertInvalidColorArg('blurg'); % Not a color name
+                assertInvalidColorArg([1.5 0 0]); % channel  > 1
+                assertInvalidColorArg([0 0.1, 0.2, 0.3]); % Too many entries
+                assertInvalidColorArg({'r', 'blurg'}); % Invalid value in cell array.
+                assertInvalidColorArg({'r', {'b'}}); % Nested nonempty cell arrays.
+            end
+        end
+
+        function testRotatingFlowColors(testCase)
+            import hybrid.internal.*
+            ps = PlotSettings();
+            ps.flow_color = {'r', 'g', 'b'};
+            flow_args1 = ps.flowArguments();
+            flow_args2 = ps.flowArguments();
+            flow_args3 = ps.flowArguments();
+            flow_args4 = ps.flowArguments();
+            color_ndx = find(strcmp(flow_args1, 'Color'), 1) + 1;
+            flow_color_1 = flow_args1{color_ndx};
+            flow_color_2 = flow_args2{color_ndx};
+            flow_color_3 = flow_args3{color_ndx};
+            flow_color_4 = flow_args4{color_ndx};
+            testCase.assertEqual(flow_color_1, 'r')
+            testCase.assertEqual(flow_color_2, 'g')
+            testCase.assertEqual(flow_color_3, 'b')
+            testCase.assertEqual(flow_color_4, 'r') % Loops back to 'r'
+        end
+
+        function testRotatingJumpColors(testCase)
+            import hybrid.internal.*
+            ps = PlotSettings();
+            ps.jump_color = {'r', 'g', 'b'};
+            function checkNext(color_expected)
+                jump_args_struct = ps.jumpArguments();
+                for k = {'line', 'start', 'end'}
+                    jump_args = jump_args_struct.(k{1});
+                    color_ndx = 2; % find(contains(args, 'Color'), 1) + 1;
+                    color_actual = jump_args{color_ndx};
+                    testCase.assertEqual(color_actual, color_expected);
+                end
+            end
+            checkNext('r')
+            checkNext('g')
+            checkNext('b')
+            checkNext('r')
+        end
+
+        function testSetMatlabColorScheme(testCase)
+            import hybrid.internal.*
+            ps = PlotSettings();
+            ps.flow_color = 'matlab';
+            testCase.assertEqual(ps.flow_color, PlotSettings.MATLAB_DEFAULT_PLOT_COLORS)
+            ps.jump_color = 'MATLAB';
+            testCase.assertEqual(ps.jump_color, PlotSettings.MATLAB_DEFAULT_PLOT_COLORS_DARKENED)
         end
         
         function testCheckInterpreters(testCase)
@@ -144,12 +208,15 @@ classdef PlotSettingsTest < matlab.unittest.TestCase
             
             % Strings and char arrays are OK
             ps.set('title_interpreter', 'tex')
-            ps.set('title_interpreter', 'tex')
+            ps.set('label_interpreter', 'tex')
+            ps.set('tick_label_interpreter', 'tex')
             
             % Must be one of 'none', 'text', or 'latex'.
             testCase.verifyError(@() ps.set('title_interpreter', 'blurg'),...
                                     'Hybrid:InvalidInterpreter');
             testCase.verifyError(@() ps.set('label_interpreter', 'blarg'),...
+                                    'Hybrid:InvalidInterpreter');
+            testCase.verifyError(@() ps.set('tick_label_interpreter', 'blorg'),...
                                     'Hybrid:InvalidInterpreter');
         end
         
