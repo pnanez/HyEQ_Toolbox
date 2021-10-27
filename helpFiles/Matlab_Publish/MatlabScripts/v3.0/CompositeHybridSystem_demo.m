@@ -89,7 +89,7 @@ sys = CompositeHybridSystem(subsystem1, subsystem2);
 % Alternatively, names can be given to each subsystem by passing strings before
 % each subsystem in the |CompositeHybridSystem| constructor. If any subsystems
 % are named, then all the subsystems must be named. 
-sys_named = CompositeHybridSystem('Plant', subsystem1, 'Controller', subsystem2)
+sys = CompositeHybridSystem('Plant', subsystem1, 'Controller', subsystem2)
 
 %% Subsystem Identifiers
 % To reference each subsystem, its _subsystem identifier_ are defined as one of
@@ -106,17 +106,11 @@ sys_named = CompositeHybridSystem('Plant', subsystem1, 'Controller', subsystem2)
 % interval of flow and the jump input function determines the input at
 % each jump. 
 % The functions |setFlowInput|, and |setJumpInput| set the
-% respective input functions for a given subsystem and |setInput| sets the flow
-% and jump input to a single function.
+% respective input functions for a given subsystem and |setInput| sets both the flow
+% input and the jump input to a single function.
 % The first argument is a subsystem identifier, described above. 
-% The second argument is the input function, given as a function handle 
-% The function must take between zero and $N+2$ arguments,
-% where $N$ is the number of subsystems. The first $N$ arguments are passed
-% the output values of each corresponding subsystem, the
-% $N+1$ argument is passed the continuous time |t| for the composite system
-% (same as the continuous time of the subsystems), and the $N+2$ argument is passed the discrete
-% time |j| for that subsystem, which is _not_ (in general) the same as the
-% discrete time of the subsystem. That is, the input function must have one of
+% The second argument is the input function, given as a function handle. 
+% The input function must have one of
 % the following forms:
 %
 % * |@()|
@@ -127,45 +121,31 @@ sys_named = CompositeHybridSystem('Plant', subsystem1, 'Controller', subsystem2)
 % * |@(y1, y2, ..., yN, t, j)|
 % where '...' is replaced with the appropriate number of arguments.
 sys.setJumpInput(1, @(y1, y2) y1(1)); 
-sys.setFlowInput(subsystem2, @(y1, y2) y1(1)-y2(1));
-sys_named.setInput('Plant', @(y1, y2) y1(1)-y2(1));
+sys.setInput(subsystem2, @(y1, y2) y1(1)-y2(1));
+sys.setFlowInput('Plant', @(y1, y2) y1(1)-y2(1));
 
 %% 
 % The input functions must have between zero and $N+2$ input arguments,
 % where $N$ is the number of subsystems. The first $N$ arguments are passed
 % the output values of each corresponding subsystem, and, if present, the
 % $N+1$ argument is passed the continuous time |t| for the composite system
-% (same as the continuous time of the subsystems), and the $N+2$ argument is passed the discrete
+% (which equals the continuous time of the subsystems), and the $N+2$ argument is passed the discrete
 % time |j| for that subsystem, which is _not_ (in general) the same as the
-% discrete time of the subsystem.
+% discrete time of the composite system.
 % 
 % For example, we can make downward acceleration ("gravity") of the first
 % ball decrease every time it bounces with the following feedback:
 sys.setFlowInput(1, @(y1, y2, t, j) -9.8/(j+1));
+
+%% Set Output Functions
+% TO-DO
+% Mention "~"s. 
 
 %%
 % The display function prints useful information regarding the connections
 % between the subsystems. Note that by default, feedback functions return a
 % zero vector of the appropriate size.
 disp(sys)
-
-%% Alternative Ways to Reference Subsystems
-% In addition to referencing subsystems by their index number, they can
-% also be referenced by passing the subsystem object.
-% Thus, the command |sys.setJumpInput(1, @(y1, y2) y1(1));| can be replaced
-% by 
-sys.setJumpInput(subsystem1, @(y1, y2) y1(1)); 
-
-%% 
-% If the subsystems are named, we can use the names when setting inputs.
-% Thus, the following three lines are equivalent:
-sys_named.setFlowInput(1, @(y1, y2) -y2);
-sys_named.setFlowInput(subsystem1, @(y1, y2) -y2);
-sys_named.setFlowInput('Plant', @(y1, y2) -y2);
-
-%%
-% Hereafter, we call the collection of these three means of referring to
-% subsystems as _subsystem IDs_.
 
 %% Compute a solution
 % To compute a solution, we call |solve| on the system, similar to a
@@ -197,13 +177,18 @@ HybridPlotBuilder()...
 % parenteses immediately after |sol|.
 sol(1);
 sol(subsystem2);
+sol_plant = sol('Plant');
 
 %% 
-% If names were passed to the constructor when |sys| was created, we could also
-% reference the subsystem references by name, e.g., |sol('Plant')|.
-% Subsystem solutions have all the same properties as a |HybridSolution|, as
-% well as the control input, which is stored in the property |u|. 
-sol(1).termination_cause
+% Subsystem solutions have all the same properties as a |HybridSolution|,
+
+% Currently, this line only works using a string (double quotes) and not a char
+% array (single quotes). 
+sol_plant.termination_cause 
+
+%% 
+% as well as the control input, which is stored in the property |u|. 
+size(sol_plant.u) 
 
 %% 
 % The solutions to the subystems can plotted just like any other solution.
@@ -221,10 +206,23 @@ hpb.flowColor('k').jumpColor('g')...
     .plotFlows(sol(subsystem2));
 
 %% Plotting Control Signal
-% We are still developing easy ways to plot the control signal, but for now
-% you can simply pass the t, j, and u from the 
-% subystem solutions to |plotFlows|.
-HybridPlotBuilder().plotFlows(sol(2), sol(2).u)
+% The control signal for a subsystem can be plotted by passing the subsystem
+% solution object and the control signal to the plotting functions in
+% |HybridPlotBuilder|. If flow inputs and jump inputs are different functions,
+% we recommend plotting flows and jumps separately. In our case, the jump input
+% was not set, so the plot shows that the values are zero.
+
+% One HybridPlotBuilder is used twice so both plots are included in the legend. 
+hpb = HybridPlotBuilder().title('Input Signal').jumpColor('none')...
+    .filter([diff(sol_plant.j) == 0; 0])...
+    .legend('$\kappa_{2C}(y_1, y_2)$')...
+    .plotFlows(sol_plant, sol_plant.u); 
+hold on
+hpb.jumpMarker('*').jumpColor('r').flowColor('none')...
+    .filter([diff(sol_plant.j) == 1; 0])...
+    .legend({'$\kappa_{2D}(y_1, y_2)$'}, 'location', 'southeast')...
+    .plotFlows(sol_plant, sol_plant.u)
+ylim('padded')
 
 %% Example: Single System
 % The |CompositeHybridSystem| class can also be used with a single subsystem
@@ -260,23 +258,21 @@ zoh = hybrid.subsystems.ZeroOrderHold(zoh_dim, sample_time);
 %% 
 % Remark: The creation of the subsystem objects included the full package path
 % to each class (That is 'hybrid.subsystems'). The package path can be omitted
-% if the package is first omitted:
+% if the package is first imported (for clarity, we use the explicit path
+% throughout this document). 
 import hybrid.subsystems.*
 zoh = ZeroOrderHold(zoh_dim, sample_time);
 
-%%
-% For the sake of clarity, we use the explicit path throughout.
-
 %% 
-% Next, we create the composite hybrid system by passing the plant, controller,
+% The composite hybrid system is created by passing the plant, controller,
 % and ZOH subsystems to the |CopoundHybridSystem| constructor.
 cl_sys = CompositeHybridSystem(plant, controller, zoh);
 
 %%
-% Set inputs functions for each subsystem.
+% Set the inputs functions for each subsystem.
 cl_sys.setInput(plant, @(~, ~, y_zoh) y_zoh);
 cl_sys.setInput(controller, @(y_plant, ~, ~) y_plant);
-cl_sys.setInput(zoh, @(~, y_controller, ~) y_controller );
+cl_sys.setInput(zoh, @(~, y_controller, ~) y_controller);
 
 %% 
 % Print the system to check that everything is connected as expected.
@@ -303,8 +299,10 @@ clf
 A = [0, 1; 0, 0];
 B = [0; 1];
 plant = hybrid.subsystems.LinearContinuousSubsystem(A, B);
-controller_0 = hybrid.subsystems.MemorylessSubsystem(2, 1, @(~, z_plant) [-1, -1]*z_plant);
-controller_1 = hybrid.subsystems.MemorylessSubsystem(2, 1, @(~, z_plant) [ 2, -1]*z_plant);
+controller_0 = hybrid.subsystems.MemorylessSubsystem(...
+                                        2, 1, @(~, z_plant) [-1, -1]*z_plant);
+controller_1 = hybrid.subsystems.MemorylessSubsystem(...
+                                        2, 1, @(~, z_plant) [ 2, -1]*z_plant);
 switcher = hybrid.subsystems.SwitchSubsystem(1);
 sys = CompositeHybridSystem(plant, controller_0, controller_1, switcher);
 
@@ -344,5 +342,5 @@ sol = sys.solve(x0, [0, 100], [0, 100]);
 HybridPlotBuilder()....
     .labels('$z_1$', '$z_2$', '$q$')...
     .slice(1:3)... % Ignore j1,j2,j3 components
-    .configurePlots(@(ndx) ylim([-inf, inf]))... % Remove any empty space in vertical dimension
+    .configurePlots(@(ax, ndx) ylim(ax, [-inf, inf]))... % Remove any empty space in vertical dimension
     .plotFlows(sol)

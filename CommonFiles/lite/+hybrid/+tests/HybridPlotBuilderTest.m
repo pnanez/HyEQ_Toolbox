@@ -5,33 +5,37 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         sol_2
         sol_3
         sol_4
+        fig_cleanup
     end
     
     methods
         function this = HybridPlotBuilderTest()
             close all
-            
             figure('visible','off');
+            function cleanupFigure()
+                f = gcf();
+                set(f, 'Visible', 'on')
+                close(f)
+            end
+            this.fig_cleanup = onCleanup(@() cleanupFigure());
             t = [linspace(0, 1, 50)'; linspace(1, 2, 50)'];
             j = [zeros(50, 1); ones(50, 1)];
             x = (t + j).^2;
             this.sol_1 = HybridSolution(t, j, x);
-            this.sol_2 = HybridSolution(t, j, [x, x]);
-            this.sol_3 = HybridSolution(t, j, [x, x, x]);
-            this.sol_4 = HybridSolution(t, j, [x, x, x, x]);
+            this.sol_2 = HybridSolution(t, j, [1.2*x, 2.2*x]);
+            this.sol_3 = HybridSolution(t, j, [1.3*x, 2.3*x, 3.3*x]);
+            this.sol_4 = HybridSolution(t, j, [1.4*x, 2.4*x, 3.4*x, 4.4*x]);
         end
     end
     
     methods(TestMethodSetup)
         function setup(testCase) %#ok<MANU>
-            
             clf
             HybridPlotBuilder.defaults.reset();
         end
     end
     
     methods (Test)
-        
         function testAutoSubplotsDefaultOn(testCase)
             pb = HybridPlotBuilder();
             pb.plotFlows(testCase.sol_3);
@@ -486,10 +490,11 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
                 .plotFlows(testCase.sol_1); % Ignored in second figure
             testCase.assertLegendLabels('First Figure')
             
-            figure('visible','off')
+            figure();
             pb.legend('Second Figure')...
                 .plotFlows(testCase.sol_1); % Still using 'pb'
             testCase.assertLegendLabels('Second Figure')
+            close()
         end
         
         function testPlotConfig(testCase)  
@@ -520,7 +525,7 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             % If there are two or three components, then one plot is drawn and
             % the component id is given as -1.
             plt_fnc_callback = @(pb) pb.autoSubplots('off').plot(testCase.sol_3);
-            testCase.assertConfigurePlotsCallbackCalls(plt_fnc_callback, 1, {-1})
+            testCase.assertConfigurePlotsCallbackCalls(plt_fnc_callback, 1, {[1, 2, 3]})
             
             % If there are four or more components, then defaults to plotFlows
             plt_fnc_callback = @(pb) pb.autoSubplots('off').plot(testCase.sol_4);
@@ -699,7 +704,7 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             % with arguments matching the entries in 'expected_args' when
             % 'plot_fnc_callback' is called.
             callback_count = 0;
-            function config(arg)
+            function config(~, arg)
                 callback_count = callback_count + 1;
                 testCase.assertEqual(arg, expected_args{callback_count});
             end

@@ -238,16 +238,9 @@ classdef HybridPlotBuilder < handle
         function this = plotFlows(this, varargin)
             % Plot values vs. continuous time 't'.
             hybrid_sol = hybrid.internal.convert_varargin_to_solution_obj(varargin);
-            
-            indices_to_plot = this.settings.indicesToPlot(hybrid_sol);
-                        
-            nplot = length(indices_to_plot);
-            axis1_ids = repmat('t', nplot, 1);
-            axis2_ids = indices_to_plot;
-             
-            axis_ids = {axis1_ids, axis2_ids};
-            primary_ndxs = axis2_ids;
-            this.plot_from_ids(hybrid_sol, axis_ids, primary_ndxs);
+            x_ndxs = this.settings.indicesToPlot(hybrid_sol);
+            plot_struct = this.makePlotDataArray(hybrid_sol, x_ndxs, {'t', 'x'});
+            this.plot_from_plot_data_array(plot_struct);
             
             if nargout == 0
                 % Prevent output if function is not terminated with a
@@ -259,15 +252,9 @@ classdef HybridPlotBuilder < handle
         function this = plotJumps(this, varargin)
             % Plot values vs. discrete time 'j'.
             hybrid_sol = hybrid.internal.convert_varargin_to_solution_obj(varargin);
-            indices_to_plot = this.settings.indicesToPlot(hybrid_sol);
-                        
-            nplot = length(indices_to_plot);
-            axis1_ids = repmat('j', nplot, 1);
-            axis2_ids = indices_to_plot;
-             
-            axis_ids = {axis1_ids, axis2_ids};
-            primary_ndxs = axis2_ids;
-            this.plot_from_ids(hybrid_sol, axis_ids, primary_ndxs);
+            x_ndxs = this.settings.indicesToPlot(hybrid_sol);
+            plot_struct = this.makePlotDataArray(hybrid_sol, x_ndxs, {'j', 'x'});
+            this.plot_from_plot_data_array(plot_struct);
             
             if nargout == 0
                 % Prevent output if function is not terminated with a
@@ -279,17 +266,11 @@ classdef HybridPlotBuilder < handle
         function this = plotHybrid(this, varargin)
             % Plot values vs. continuous and discrete time (t, j).
             hybrid_sol = hybrid.internal.convert_varargin_to_solution_obj(varargin);
-            indices_to_plot = this.settings.indicesToPlot(hybrid_sol);
 
-            nplot = length(indices_to_plot);
-            axis1_ids = repmat('t', nplot, 1);
-            axis2_ids = repmat('j', nplot, 1);
-            axis3_ids = indices_to_plot;
-             
-            axis_ids = {axis1_ids, axis2_ids, axis3_ids};
-            primary_ndxs = axis3_ids;
-            this.plot_from_ids(hybrid_sol, axis_ids, primary_ndxs)
-            
+            x_ndxs = this.settings.indicesToPlot(hybrid_sol);
+            plot_struct = this.makePlotDataArray(hybrid_sol, x_ndxs, {'t', 'j', 'x'});
+            this.plot_from_plot_data_array(plot_struct)
+
             if nargout == 0
                 % Prevent output if function is not terminated with a
                 % semicolon.
@@ -306,16 +287,17 @@ classdef HybridPlotBuilder < handle
             % - 3D: a 3D phase plot
             % - otherwise, an error is thrown
             hybrid_sol = hybrid.internal.convert_varargin_to_solution_obj(varargin);
-            sliced_indices = this.settings.indicesToPlot(hybrid_sol);
-            dimensions = length(sliced_indices);
             
-            if dimensions ~= 2 && dimensions ~= 3
-                error('Expected 2 or 3 dimensions.');
-            else
-                sliced_indices_cell = num2cell(sliced_indices');
-                primary_ndxs = -ones(size(sliced_indices_cell));
-                this.plot_from_ids(hybrid_sol, sliced_indices_cell, primary_ndxs);
+            x_ndxs = this.settings.indicesToPlot(hybrid_sol)';
+            switch size(x_ndxs, 2)
+                case 2
+                    plot_struct = this.makePlotDataArray(hybrid_sol, x_ndxs, {'x', 'x'});
+                case 3
+                    plot_struct = this.makePlotDataArray(hybrid_sol, x_ndxs, {'x', 'x', 'x'});
+                otherwise
+                    error('Expected 2 or 3 dimensions.');
             end
+            this.plot_from_plot_data_array(plot_struct)
             
             if nargout == 0
                 % Prevent output if function is not terminated with a
@@ -338,9 +320,9 @@ classdef HybridPlotBuilder < handle
             dimensions = length(sliced_indices);
             
             if dimensions ~= 2 && dimensions ~= 3
-                this.plotFlows(hybrid_sol);
+                this.plotFlows(varargin{:});
             else
-                this.plotPhase(hybrid_sol);
+                this.plotPhase(varargin{:});
             end
             
             if nargout == 0
@@ -350,16 +332,16 @@ classdef HybridPlotBuilder < handle
             end          
         end
 
-        function this = addLegendEntry(this, plt, name)
+        function this = addLegendEntry(this, graphic_obj, label)
             % Add an object to include in the legend. 
             % This function MUST be called while the axes where the object
             % was plotted is still active.
-            if isempty(name) || strcmp('', name)
+            if isempty(label) || strcmp('', label)
                 return
             end
-            plt.DisplayName = char(name);
-            this.plots_for_legend = [this.plots_for_legend, plt];
-            this.axes_for_legend = [this.axes_for_legend, gca()];
+            graphic_obj.DisplayName = char(label);
+            this.plots_for_legend = [this.plots_for_legend, graphic_obj];
+            this.axes_for_legend = [this.axes_for_legend, graphic_obj.Parent];
             this.display_legend();
             if nargout == 0
                 clear this
@@ -388,230 +370,149 @@ classdef HybridPlotBuilder < handle
     end
     
     methods(Access = private)
-
-        function configureAxes(this, xaxis_id, yaxis_id, zaxis_id)
-            narginchk(3, 4)
-            is3D = nargin == 4;
-            is_x_a_time_axis = any(strcmp(xaxis_id, {'t', 'j'}));
-            is_y_a_time_axis = strcmp(yaxis_id, 'j');            
-            first_nontime_axis = 1 + is_x_a_time_axis + is_y_a_time_axis;
-            
-            % Apply adjustments to tick labels
-            % This section MUST come before we set the label sizes, otherwise
-            % the label sizes will be overwritten when we call
-            %   "ax.XAxis.FontSize = ..."
-            axes=gca();
-            for axis_name = {'XAxis', 'YAxis', 'ZAxis'}
-                axes.(axis_name{1}).FontSize = this.settings.tick_label_size;
-                axes.(axis_name{1}).TickLabelInterpreter = this.settings.tick_label_interpreter;
-            end
-
-            % Apply labels
-            this.xlabel(xaxis_id)
-            this.ylabel(yaxis_id)
-            if is3D
-                this.zlabel(zaxis_id)
-            end
-            if ~this.settings.auto_subplots
-                switch first_nontime_axis
-                    case 1
-                        % If the first nontime axis is 1, then the plot is a 2D
-                        % or 3D phase plot, so the component labels should be
-                        % used.
-                    case 2
-                        this.ylabel('single')
-                    case 3
-                        this.zlabel('single')
-                end 
-            end
-            
-            if this.settings.auto_subplots
-                switch first_nontime_axis
-                    case 1
-                        this.applyTitle(xaxis_id)
-                    case 2
-                        this.applyTitle(yaxis_id)
-                    case 3
-                        this.applyTitle(zaxis_id)
-                end
-            else
-                this.applyTitle('single')
-            end
-            
-            % Adjust padding.
-            if is_x_a_time_axis
-                % Make the plot limits 'tight'
-                xlim([-inf, inf])
-            end
-            
-            if is_y_a_time_axis
-                % Make the plot limits 'tight'
-                ylim([-inf, inf])
-            end
-            
-            this.display_legend();
+        function plot_data_array = makePlotDataArray(this, hybrid_sol, x_ndxs, axis_symbols)
+            plot_data_array = hybrid.internal.buildPlotDataArray(axis_symbols, x_ndxs, hybrid_sol, this.settings);
         end
-        
-        function plot_from_ids(this, hybrid_sol, axis_ids, primary_ndxs)
+
+        function plot_from_plot_data_array(this, plot_data_array)
             % axis_ids is a nx1 cell array. The kth entry contains a value that
             % identifies what to plot in the kth dimension. Each entry can
             % contain a scalar or a vector (each entry must have the same length). 
             % The length of each entry is the number of plots to draw. If
             % automatic subplots is on, then each plot is automatically placed
             % into a new subplot.
-            narginchk(3, 4)
-            nplot = size(axis_ids{1}, 1);
-            plt_dimension = length(axis_ids);
-            is2D = plt_dimension == 2;
+            n_plots = size(plot_data_array, 1);
+             
+            % Save the 'hold' status.
+            is_hold_on_before = ishold();
+            hold_status_before = logical2on_off(is_hold_on_before);
             
-            axis1_ids = axis_ids{:, 1};
-            axis2_ids = axis_ids{:, 2};
-            if is2D
-                axis3_ids = [];
-            else
-                axis3_ids = axis_ids{:, 3};
-            end
-            check_legend_count(primary_ndxs, this.settings.component_legend_labels);
+            n_subplots = max([plot_data_array.subplot_ndx]);
             
-            if this.settings.auto_subplots
-                % If using auto-subplots, then we use the same arguments for
-                % every plot.
-                flow_args = this.settings.flowArguments();
-                jump_args = this.settings.jumpArguments();
-            else
-                was_hold_on_no_auto_subplots = ishold();
-                % Clear the plot if 'hold off'. Otherwise, this has no effect.
-                plot(nan, nan);
-                % Turn on hold until the end of plot_from_ids
-                hold on
-            end
-            
-            for iplot = 1:nplot
+            for i_sp = 1:n_subplots
                 if this.settings.auto_subplots
-                    % Save the hold status to apply in subplots.
-                    was_hold_on_outside_subplot = ishold(); 
-                    subplots(iplot) = subplot(nplot, 1, iplot); %#ok<AGROW>
-                    if ~was_hold_on_outside_subplot
+                    axes_array(i_sp) = subplot(n_subplots, 1, i_sp); %#ok<AGROW>
+                else
+                    axes_array = gca();
+                    assert(n_subplots == 1)
+                    assert(i_sp == 1)
+                end
+                
+                if i_sp == 1 || this.settings.auto_subplots 
+                    if ~is_hold_on_before
                         % Clear the plot to emulate 'hold off' behavior.
                         plot(nan, nan);
                     end
                     hold on
-                else
-                    % If not using autosubplots, then we update the arguments
-                    % for each plot. 
-                    flow_args = this.settings.flowArguments();
-                    jump_args = this.settings.jumpArguments();
+                    fh = @() hold(axes_array(i_sp), hold_status_before);
+                    restore_hold_on_cleanup(i_sp) = onCleanup(fh); %#ok<AGROW>
                 end
-                
-                axis1_id = axis1_ids(iplot);
-                axis2_id = axis2_ids(iplot);
-                if is2D
-                    axis3_id = [];
-                else
-                    axis3_id = axis3_ids(iplot);
-                end
-                primary_ndx = primary_ndxs(iplot);
-                plot_values = create_plot_values(hybrid_sol, axis1_id, axis2_id, axis3_id);
-                
-                if ~isempty(this.settings.timesteps_filter)
-                    assert(length(this.settings.timesteps_filter) == size(plot_values, 1), ...
-                        'The length(filter)=%d does not match the timesteps=%d in the HybridSolution.', ...
-                        length(this.settings.timesteps_filter), size(plot_values, 1))
-                    % Set entries that don't match the filter to NaN so they are not plotted.
-                    plot_values(~this.settings.timesteps_filter) = NaN;
-                end
-                
-                t = hybrid_sol.t;
-                j = hybrid_sol.j;
-                flows_x = hybrid.internal.separateFlowsWithNaN(t, j, plot_values);
+            end
+
+            for plt_data = plot_data_array
+                axes = axes_array(plt_data.subplot_ndx);
+                assert(ishold(axes), '''hold on'' should have been automatically activated, but it was not.')
+
+                t = plt_data.t;
+                j = plt_data.j;
+                flows_x = hybrid.internal.separateFlowsWithNaN(t, j, plt_data.plot_values);
                 [jumps_x, jumps_befores, jumps_afters] ...
-                        = hybrid.internal.separateJumpsWithNaN(t, j, plot_values);
-                
+                    = hybrid.internal.separateJumpsWithNaN(t, j, plt_data.plot_values);
+
                 % We 'plot' an invisible dummy point (NaN values are not
                 % visible in plots), which provides the line and marker
                 % appearance for the corresponding legend entry.
-                dummy_plt = plot(nan, nan, ...
-                    flow_args{:}, ...
-                    jump_args.start{:});
-                legend_label = this.settings.createLegendLabel(primary_ndx);
-                this.addLegendEntry(dummy_plt, legend_label);
-                
-                switch size(plot_values, 2)
+                dummy_plt = plot(axes, nan, nan, ...
+                    plt_data.flow_args{:}, ...
+                    plt_data.jump_args.start{:});
+                this.addLegendEntry(dummy_plt, plt_data.legend_label);
+
+                switch size(plt_data.plot_values, 2)
                     case 2
-                        this.plotFlow2D(flows_x, flow_args)
-                        this.plotJump2D(jumps_x, jumps_befores, jumps_afters, jump_args)
+                        this.plotFlow2D(axes, flows_x, plt_data.flow_args)
+                        this.plotJump2D(axes, jumps_x, jumps_befores, jumps_afters, plt_data.jump_args)
                     case 3
-                        this.plotFlow3D(flows_x, flow_args)
-                        this.plotJump3D(jumps_x, jumps_befores, jumps_afters, jump_args)
-                        view(34.8,16.8)
+                        this.plotFlow3D(axes, flows_x, plt_data.flow_args)
+                        this.plotJump3D(axes, jumps_x, jumps_befores, jumps_afters, plt_data.jump_args)
+                        view(axes, 34.8,16.8)
                     otherwise
                         error('plot_values must have 2 or 3 components.')
                 end
-                   
-                this.configureAxes(axis1_id, axis2_id, axis3_id);
-                if this.settings.auto_subplots
-                    if ~was_hold_on_outside_subplot
-                        hold off
-                    end
+
+                % Apply adjustments to tick labels
+                % This section MUST come before we set the label sizes, otherwise
+                % the label sizes will be overwritten when we call
+                %   "ax.XAxis.FontSize = ..."
+                for axis_name = {'XAxis', 'YAxis', 'ZAxis'}
+                    axes.(axis_name{1}).FontSize = this.settings.tick_label_size;
+                    axes.(axis_name{1}).TickLabelInterpreter = this.settings.tick_label_interpreter;
                 end
-                this.settings.plots_callback(primary_ndx);
+
+                % Apply labels
+                this.xlabel(axes, plt_data.xlabel)
+                this.ylabel(axes, plt_data.ylabel)
+                this.zlabel(axes, plt_data.zlabel)
+                this.applyTitle(axes, plt_data.title)
+
+                % Adjust padding.
+                xlim(axes, plt_data.xlim)
+                ylim(axes, plt_data.ylim)
+
+                this.settings.plots_callback(axes, plt_data.state_ndx);
             end
-            
+
             if this.settings.auto_subplots
                 % Link the subplot axes.
-                if is2D && nplot > 1
+                is2D = size(plot_data_array(1).plot_values, 2) == 2;
+                if is2D && n_plots > 1
                     % Link the x-axes of the subplots so zooming and panning
                     % one subplot effects the others.
-                    linkaxes(subplots,'x')
-                elseif nplot > 1
+                    linkaxes(axes_array,'x')
+                elseif n_plots > 1
                     % Link the subplot axes so that the views are sync'ed.
-                    link = linkprop(subplots, {'View', 'XLim', 'YLim'});
+                    link = linkprop(axes_array, {'View', 'XLim', 'YLim'});
                     setappdata(gcf, 'StoreTheLink', link);
-                end
-            else
-                if ~was_hold_on_no_auto_subplots
-                    hold off
                 end
             end
         end
        
-        function plotFlow2D(this, x, flow_args)
+        function plotFlow2D(this, ax, x, flow_args)
             if isempty(x)
                return 
             end
-            plot(x(:,1), x(:,2), flow_args{:})
+            plot(ax, x(:,1), x(:,2), flow_args{:})
         end
 
-        function plotFlow3D(this, x, flow_args)
+        function plotFlow3D(this, ax, x, flow_args)
             if isempty(x)
                return 
             end
-            plot3(x(:,1), x(:,2), x(:,3), flow_args{:});
+            plot3(ax, x(:,1), x(:,2), x(:,3), flow_args{:});
         end
 
-        function plotJump2D(this, x_jump, x_start, x_end, jump_args)
+        function plotJump2D(this, ax, x_jump, x_start, x_end, jump_args)
             % Plot the line from start to end.
-            plot(x_jump(:,1), x_jump(:,2), jump_args.line{:});
+            plot(ax, x_jump(:,1), x_jump(:,2), jump_args.line{:});
             % Plot the start of the jump
-            plot(x_start(:,1), x_start(:,2), jump_args.start{:});
+            plot(ax, x_start(:,1), x_start(:,2), jump_args.start{:});
             % Plot the end of the jump
-            plot(x_end(:,1), x_end(:,2), jump_args.end{:});
+            plot(ax, x_end(:,1), x_end(:,2), jump_args.end{:});
         end
 
-        function plotJump3D(this, x_jump, x_before, x_after, jump_args)
+        function plotJump3D(this, ax, x_jump, x_before, x_after, jump_args)
             if isempty(x_before)
                 return % Not a jump
             end 
             % Plot jump line
-            plot3(x_jump(:,1), x_jump(:, 2), x_jump(:, 3), jump_args.line{:});
+            plot3(ax, x_jump(:,1), x_jump(:, 2), x_jump(:, 3), jump_args.line{:});
             % Plot the start of the jump
-            plot3(x_before(:,1), x_before(:,2), x_before(:,3), jump_args.start{:});
+            plot3(ax, x_before(:,1), x_before(:,2), x_before(:,3), jump_args.start{:});
             % Plot the end of the jump
-            plot3(x_after(:,1), x_after(:,2), x_after(:,3), jump_args.end{:});   
+            plot3(ax, x_after(:,1), x_after(:,2), x_after(:,3), jump_args.end{:});   
         end
         
         function display_legend(this)
-            % LEGEND Add a legend for each call to builder.plots() while 
+            % Add a legend for each call to builder.plots() while 
             % in the current figure. (Plots in other figures will be
             % skipped).
             
@@ -649,31 +550,27 @@ classdef HybridPlotBuilder < handle
             end
         end
                 
-        function xlabel(this, index)
+        function xlabel(this, axes, label)
             % xlabel Add a label to the x-axis for thecreateLegendLabel component at 'index'.
-            label = this.settings.labelFromId(index);
-            xlabel(label, this.settings.labelArguments{:})
-            set(gca, 'LabelFontSizeMultiplier', 1.0);
+            xlabel(axes, label, this.settings.labelArguments{:})
+            set(axes, 'LabelFontSizeMultiplier', 1.0);
         end
 
-        function ylabel(this, index)
+        function ylabel(this, axes, label)
             % ylabel Add a label to the y-axis for the component at 'index'.
-            label = this.settings.labelFromId(index);
-            ylabel(label, this.settings.labelArguments{:})
-            set(gca, 'LabelFontSizeMultiplier', 1.0);
+            ylabel(axes, label, this.settings.labelArguments{:})
+            set(axes, 'LabelFontSizeMultiplier', 1.0);
         end
 
-        function zlabel(this, index)
+        function zlabel(this, axes, label)
             % zlabel Add a label to the z-axis for the component at 'index'.
-            label = this.settings.labelFromId(index);
-            zlabel(label, this.settings.labelArguments{:})
-            set(gca, 'LabelFontSizeMultiplier', 1.0);
+            zlabel(axes, label, this.settings.labelArguments{:})
+            set(axes, 'LabelFontSizeMultiplier', 1.0);
         end
 
-        function applyTitle(this, title_id)
-            title_str = this.settings.getTitle(title_id);
-            title(title_str, this.settings.titleArguments{:});
-            set(gca, 'TitleFontSizeMultiplier', 1.0);
+        function applyTitle(this, axes, title_str)
+            title(axes, title_str, this.settings.titleArguments{:});
+            set(axes, 'TitleFontSizeMultiplier', 1.0);
         end        
     end
 
@@ -720,51 +617,35 @@ end
         
 %%% Local functions %%%
 
-function plot_values = create_plot_values(sol, xaxis_id, yaxis_id, zaxis_id)
-% CREATE_PLOT_VALUES Create an array containing the values from the corresponding id in each column.
-% xaxis_id can take values 't', 'j' or an integer.
-% yaxis_id can take values 'j' or an integer.
-% zaxis_id can take value of an integer or an empty set.
-narginchk(4, 4)
+function axis_ids = generateAxisIds(axis1_id, axis2_id, axis3_id)
+is3D = exist('axis3_id', 'var');
 
-    function values = values_from_id(id)
-        if strcmp(id, 't')
-            values = sol.t;
-        elseif strcmp(id, 'j')
-            values = sol.j;
+plot_dim = 2 + is3D;
+if is3D
+    plot_count = max([length(axis1_id), length(axis2_id), length(axis3_id)]);
+else
+    plot_count = max([length(axis1_id), length(axis2_id)]);
+end
+    function ids_cell = toCell(ids)
+        if isnumeric(ids)
+            ids_cell = num2cell(ids);
         else
-            values = sol.x(:, id);
+            ids_cell = cellstr(repmat(ids, plot_count, 1));
         end
     end
-
-    xvalues = values_from_id(xaxis_id);
-    yvalues = values_from_id(yaxis_id);
-    % If zaxis_id is empty, then zvalues will be as well, which means the
-    % the plot will be only 2D.
-    zvalues = values_from_id(zaxis_id);
-    plot_values = [xvalues, yvalues, zvalues];
-
+axis_ids = cell(plot_count, plot_dim);
+axis_ids(:, 1) = toCell(axis1_id);
+axis_ids(:, 2) = toCell(axis2_id);
+if is3D
+    axis_ids(:, 3) = toCell(axis3_id);
 end
-       
-function check_legend_count(primary_axes, lgd_labels)
-% Print a warning if the number of plots and labels do not match.
-
-if isempty(lgd_labels)
-    return 
-end
-if all(primary_axes == -1)
-    expected_count = 1;
-else
-    expected_count = max(primary_axes);
 end
 
-lgd_count = length(lgd_labels);
-warning_msg = 'Expected %d legend label(s) but %d were provided.';
-if expected_count < lgd_count
-    id = 'HybridPlotBuilder:TooManyLegends';
-    warning(id, warning_msg, expected_count, lgd_count)
-elseif expected_count > lgd_count
-    id = 'HybridPlotBuilder:TooFewLegends';
-    warning(id, warning_msg, expected_count, lgd_count)
-end
+function on_off = logical2on_off(b)
+    % Convert a logical value to 'on' or 'off'
+    if b 
+        on_off = 'on';
+    else
+        on_off = 'off';
+    end
 end

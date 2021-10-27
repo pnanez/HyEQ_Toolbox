@@ -1,6 +1,6 @@
 classdef ExampleBouncingBallHybridSystem < HybridSystem
 
-    properties 
+    properties
         gravity = 9.8;
         bounce_coeff = 0.9;
     end

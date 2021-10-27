@@ -159,19 +159,16 @@ classdef PlotSettingsTest < matlab.unittest.TestCase
             import hybrid.internal.*
             ps = PlotSettings();
             ps.flow_color = {'r', 'g', 'b'};
-            flow_args1 = ps.flowArguments();
-            flow_args2 = ps.flowArguments();
-            flow_args3 = ps.flowArguments();
-            flow_args4 = ps.flowArguments();
-            color_ndx = find(strcmp(flow_args1, 'Color'), 1) + 1;
-            flow_color_1 = flow_args1{color_ndx};
-            flow_color_2 = flow_args2{color_ndx};
-            flow_color_3 = flow_args3{color_ndx};
-            flow_color_4 = flow_args4{color_ndx};
-            testCase.assertEqual(flow_color_1, 'r')
-            testCase.assertEqual(flow_color_2, 'g')
-            testCase.assertEqual(flow_color_3, 'b')
-            testCase.assertEqual(flow_color_4, 'r') % Loops back to 'r'
+            function checkNext(color_expected)
+                flow_args = ps.flowArguments();
+                color_ndx = find(strcmp(flow_args, 'Color'), 1) + 1;
+                color_actual = flow_args{color_ndx};
+                testCase.assertEqual(color_actual, color_expected);
+            end
+            checkNext('r')
+            checkNext('g')
+            checkNext('b')
+            checkNext('r') % Loops back to 'r'
         end
 
         function testRotatingJumpColors(testCase)

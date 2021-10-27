@@ -88,7 +88,7 @@ classdef PlotSettings < matlab.mixin.Copyable
         
         % Subplot Settings
         DEFAULT_AUTO_SUBPLOTS = true;
-        DEFAULT_PLOTS_CALLBACK = @(component) disp('');
+        DEFAULT_PLOTS_CALLBACK = @(ax, component) disp('');
         DEFAULT_MAX_SUBPLOTS = 4;
         
         % Slice and Filter
@@ -149,38 +149,6 @@ classdef PlotSettings < matlab.mixin.Copyable
             property_name = sanitize_property_name(property_name); 
             value = this.(property_name);
         end
-        
-%         function reset(this)
-%             % Text
-%             this.label_size = this.DEFAULT_LABEL_SIZE;
-%             this.title_size = this.DEFAULT_TITLE_SIZE;
-%             this.label_interpreter = this.DEFAULT_LABEL_INTERPRETER;
-%             this.title_interpreter = this.DEFAULT_TITLE_INTERPRETER;
-%             
-%             % Flows
-%             this.flow_color = this.DEFAULT_FLOW_COLOR;
-%             this.flow_line_width = this.DEFAULT_FLOW_LINE_WIDTH;
-%             this.flow_line_style = this.DEFAULT_FLOW_LINE_STYLE;
-%             
-%             % Jumps
-%             this.jump_color = this.DEFAULT_JUMP_COLOR;
-%             this.jump_line_width = this.DEFAULT_JUMP_LINE_WIDTH;
-%             this.jump_line_style = this.DEFAULT_JUMP_LINE_STYLE;
-%             this.jump_start_marker = this.DEFAULT_JUMP_START_MARKER;
-%             this.jump_start_marker_size = this.DEFAULT_JUMP_START_MARKER_SIZE;
-%             this.jump_end_marker = this.DEFAULT_JUMP_END_MARKER;
-%             this.jump_end_marker_size = this.DEFAULT_JUMP_END_MARKER_SIZE;            
-%             
-%             % Axis Labels
-%             this.t_label = this.DEFAULT_T_LABEL;
-%             this.j_label = this.DEFAULT_J_LABEL;
-%             this.x_label_format = this.DEFAULT_X_LABEL_FORMAT;
-%             
-%             % Scaling of text, lines widths, and marker sizes.
-%             this.text_scale = this.DEFAULT_TEXT_SCALE;
-%             this.line_scale = this.DEFAULT_LINE_SCALE;
-%             this.marker_scale = this.DEFAULT_MARKER_SCALE;            
-%         end
 
         function reset(this)
             names = hybrid.internal.PlotSettings.getSettingNames();
@@ -191,18 +159,7 @@ classdef PlotSettings < matlab.mixin.Copyable
         end
     end    
 
-    %%% The following function provides an alternative way to reset defaults
-    %%% that requires less code, but relies on metaclass.
-    % function resetFromPropertyDefaults(this)
-    %    mc = ?hybrid.internal.PlotSettings;
-    %    props = findobj(mc.PropertyList,'Constant',false);
-    %    for i_prop = 1:length(props)
-    %        p = props(i_prop);
-    %        this.(p.Name) = p.DefaultValue ;
-    %    end
-    % end
-    
-    methods(Access = ?HybridPlotBuilder) % Arguments generation
+    methods(Access = {?HybridPlotBuilder,?hybrid.tests.PlotSettingsTest,?hybrid.internal.PlotData}) % Arguments generation
         function val = flowArguments(this)
             if iscell(this.flow_color)
                 color = this.flow_color{1};
@@ -473,7 +430,7 @@ classdef PlotSettings < matlab.mixin.Copyable
         end 
         
         function title = getTitle(this, title_id)
-            if strcmp('single', title_id)
+            if ~isscalar(title_id) || strcmp('single', title_id)
                 if isempty(this.component_titles)
                     title = [];
                 else
@@ -495,27 +452,59 @@ classdef PlotSettings < matlab.mixin.Copyable
             elseif strcmp('j', label_id)
                 label = this.getJLabel();
                 return
-            elseif strcmp('single', label_id)
-                if isempty(this.component_labels)
+            elseif ~isscalar(label_id) || strcmp('single', label_id)
+                if isempty(this.component_labels) || isempty(label_id)
                     label = [];
                 else
-                    label = this.component_labels(1);
+                    label = this.component_labels{1};
                 end
                 return;
             end
 
             if label_id <= length(this.component_labels)
-                label = this.component_labels(label_id);  
+                label = this.component_labels{label_id};  
             else
                 fmt = this.getXLabelFormat();
                 label = sprintf(fmt, label_id);
+            end
+        end
+ 
+        function [xlabel, ylabel, zlabel] = generateLabels(this, axis_ids)
+            % Create axis labels given axis_ids in one of the following forms
+            % {'t', int}, {'j', int}, {'t', 'j', int}, {int, int}, {int, int, int}.
+            x_axis_id = axis_ids{1};
+            y_axis_id = axis_ids{2};
+            if numel(axis_ids) == 3
+                z_axis_id = axis_ids{3};
+            else
+                z_axis_id = [];
+            end
+
+            xlabel = this.labelFromId(x_axis_id);
+            ylabel = this.labelFromId(y_axis_id);
+            zlabel = this.labelFromId(z_axis_id);
+
+            if ~this.auto_subplots
+                is_x_a_time_axis = any(strcmp(x_axis_id, {'t', 'j'}));
+                is_y_a_time_axis = strcmp(y_axis_id, 'j');
+                first_nontime_axis = 1 + is_x_a_time_axis + is_y_a_time_axis;
+                switch first_nontime_axis
+                    case 1
+                        % If the first nontime axis is 1, then the plot is a 2D
+                        % or 3D phase plot, so the component labels should be
+                        % used.
+                    case 2
+                        ylabel = this.labelFromId('single');
+                    case 3
+                        zlabel = this.labelFromId('single');
+                end
             end
         end
     end 
     
     methods % Candidates to move to a 'PlotData' class
         function label = createLegendLabel(this, index)
-            if strcmp('single', index) || index == -1
+            if ~isscalar(index) || strcmp('single', index)
                 if isempty(this.component_legend_labels)
                     label = [];
                 else

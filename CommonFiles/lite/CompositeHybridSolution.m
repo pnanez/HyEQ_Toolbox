@@ -1,7 +1,7 @@
 classdef CompositeHybridSolution < HybridSolution
 % A class of solution objects produced by solving a CompositeHybridSystem.
 %
-% See also: HybridSolution, CompositeHybridSystems, HybridSolutionWithInput.
+% See also: HybridSolution, CompositeHybridSystem, HybridSolutionWithInput.
 %
 % Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
 % © 2021. 
@@ -26,34 +26,37 @@ classdef CompositeHybridSolution < HybridSolution
     end
 
     methods(Hidden)
-        function sref = subsref(this,s)
+        function out = subsref(this,s)
             % Redefine the behavior of parentheses (such as 'sol(1)') to reference subsystem solutions.
             switch s(1).type
                 case '()'
                     if length(s) == 1
                         if isscalar(this)
                             ndx = this.subsystems.getIndex(s.subs{1});
-                            sref = this.subsystem_solutions{ndx};
+                            out = this.subsystem_solutions{ndx};
                         else
-                            % Handle the case where 'this' is an array.
-                            sref = builtin('subsref',this,s);
+                            % If 'this' is an array, then we use the built-in
+                            % referencing. 
+                            out = builtin('subsref',this,s);
                         end
                     else
                         % Call subsref recursively using only the first entry
                         % of 's' to get the subsystem solution.
                         subsol = subsref(this, s(1));
                         try
-                        % Reference properties on the subsystem solution.
-                        sref = builtin('subsref',subsol,s(2:end));
+                            % Reference properties on the subsystem solution.
+                            out = builtin('subsref', subsol, s(2:end));
                         catch e
-                            throwAsCaller(e);
+                            throw(e);
                         end
                     end
                 case '.'
-                    sref = builtin('subsref',this,s);
+                    % Use default behavior.
+                    out = builtin('subsref',this,s);
                 case '{}'
-                    % This does not prevent accessing elements of a cell array
-                    % that contains CompositeHybridSolutions.
+                    % Brace indexing is not supported.
+                    % (This does not prevent accessing elements of a cell array
+                    % that contains CompositeHybridSolutions.)
                     error('CompositeHybridSolution:subsref',...
                         'Brace indexing is not supported on CompositeHybridSolution objects.')
             end

@@ -15,30 +15,54 @@
 % and |jumpSetIndicator| functions. The indicator functions must return |1| 
 % inside their respective sets and |0| otherwise.
 % 
-% Notice that the first argument in each of the functions is |this|. The |this|
+% Notice that the first argument in each function is |this|. The |this|
 % argument provides a reference to the object on which the function was
 % called. The object's properties are referenced using |this.gravity| and
 % |this.bounce_coeff|.
-%% Solve the HybridSystem
-% Now that we have an implementation of the |HybridSystem|, we can create an 
-% instance of it.
 
+% Before we can solve a hybrid system, we create an instance of our
+% subclass of |HybridSystem|.
 bb_system = hybrid.examples.ExampleBouncingBallHybridSystem();
 %% 
 % Values of the properties can be modified using dot indexing on the object:
-
 bb_system.gravity = 3.72;
 bb_system.bounce_coeff = 0.8;
-%% 
+
+%%
+% WARNING: For any given values |(x, t, j)|, the
+% functions |flowMap|, |jumpMap|, |flowSetIndicator|, and |jumpSetIndicator|
+% must always return the same value each time they are called while computing a
+% solution. Modifying global variables or object properties within
+% |flowMap|, |jumpMap|, etc., will produce unpredictable behavior because the hybrid
+% solver sometimes moves backwards in time (e.g., when searching for the time
+% when a jump occurs). Therefore, all values that change during a solution must
+% be included in the state vector |x|.
+% For this reason, we recommend making
+% properties immutable and setting the values in the constructor. 
+% An example of how to implement this is included here:
+ %
+ %   classdef MyHybridSystem < HybridSystem
+ %      properties(SetAccess=immutable)
+ %          my_property % cannot be modified except in the constructor
+ %      end
+ %      methods
+ %          function this = MyHybridSystem(my_property) % Constructor
+ %              this.my_property = my_property; % set property value.
+ %          end
+ %      end
+ %   end
+
+%% Compute Solutions
 % To compute a solution, pass the initial state and time spans to the 
 % |solve| function, which is defined in the |HybridSystem| class (|bb_system| is a 
 % |HybridSystem| object because |ExampleBouncingBallHybridSystem| 
-% is a subclass of |HybridSystem|).
+% is a subclass of |HybridSystem|). Optionally, a |HybridSolverConfig| object
+% can be passed to the solver to set various configurations (see below).
 
 x0 = [10, 0];
 tspan = [0, 30];
 jspan = [0, 100];
-config = HybridSolverConfig('refine', 12); % Improves plot appearance. More on HybridSolverConfig below.
+config = HybridSolverConfig('refine', 12); % Improves plot smoothness.
 sol = bb_system.solve(x0, tspan, jspan, config);
 plotFlows(sol);
 
@@ -77,7 +101,7 @@ sol
 % constructed without the optional arguments |C|, |D|, |tspan|, and |jspan|.
 
 %% Evaluating a Function Along a Solution
-% It is frequently useful to evaluate a function along the
+% It is sometimes useful to evaluate a function along the
 % solution. This functionality is provided by the method |evaluateFunction|
 % in |HybridSolution|.
 energy_fnc = @(x) bb_system.gravity * x(1) + 0.5*x(2)^2;
@@ -88,7 +112,7 @@ energy = sol.evaluateFunction(energy_fnc);
 % passed to any of its plotting functions.
 HybridPlotBuilder().plotFlows(sol, energy_fnc);
 
-%% Configuration Options
+%% Solver Configuration Options
 % To configure the hybrid solver, create a
 % |HybridSolverConfig| object and pass it to |solve| as follows:
 config = HybridSolverConfig(); % Simply the default.
@@ -97,11 +121,8 @@ bb_system.solve(x0, tspan, jspan, config);
 %%
 % By default, the hybrid solver gives precedence to jumps when the solution
 % is in the intersection of the flow and jump sets. This can be changed by
-% setting the |priority| to |HybridPriority.JUMP| or
-% |HybridPriority.FLOW|, or one of the (case insensitive) strings |'flow'| or
+% setting the |priority| to one of the (case insensitive) strings |'flow'| or
 % |'jump'|.
-config.priority(HybridPriority.FLOW);
-config.priority(HybridPriority.JUMP);
 config.priority('flow');
 config.priority('jump');
 
@@ -125,20 +146,14 @@ config.ode_options
 
 %% 
 % Computing a hybrid solution can take considerable time, so progress updates are
-% displayed. The default behavior is to create a popup progress bar. This can be
-% set explicitly like this:
-config.progress('popup');
-
-%%
-% We can modify the number of decimal places displayed for the continuous time
-% |t| in the popup by passing an integer after |'popup'|.
-config.progress('popup', 4); 
-
-%% 
-% Alternatively, progress updates can be disabled by passing |'silent'| to
+% displayed. Progress updates can be disabled by passing |'silent'| to
 % |config.progess()|.
 config.progress('silent');
 
+% To restore the default behavior:
+config.progress('popup');
+
 %% 
-% |'silent'| can be also be passed directly to |solve| in place of |config|.
+% For brevity, |'silent'| can be also be passed directly to |solve| in place of
+% |config|. 
 bb_system.solve(x0, tspan, jspan, 'silent');
