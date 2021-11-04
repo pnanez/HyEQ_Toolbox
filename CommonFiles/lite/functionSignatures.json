@@ -153,7 +153,7 @@
     { "inputs":
         [
             {"name":"this"},
-            {"name":"solution", "kind":"required", "type":"HybridSolutionWithInput", "purpose":"Hybrid solution"}
+            {"name":"solution", "kind":"required", "type":"HybridSubsystemSolution", "purpose":"Hybrid solution"}
         ]
     },
 

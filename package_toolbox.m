@@ -11,7 +11,8 @@ end
 projectFile = 'HybridEquationsToolbox.prj';
 toolbox_dirs = {'CommonFiles/lite', ...
     'CommonFiles/plottingFunctions', ...
-    'CommonFiles/simulinkBased/Library2014b'};
+    'CommonFiles/simulinkBased/Library2014b', ...
+    'helpFiles/Matlab_Publish/MatlabScripts/v3.0'};
 publish_dirs = {'doc', 'helpFiles/Matlab_publish', 'helpFiles/Matlab_Publish/MatlabScripts/v3.0'};
 % Setup path
 for directory = toolbox_dirs
@@ -38,12 +39,19 @@ if do_publish
             assert(isfile(f));
             publish(f);
         end
-        
-        rmpath(directory)
     end
     close all
 end
+
 matlab.addons.toolbox.packageToolbox(projectFile)
+
+% Cleanup publish directories. We do this after packaging the toolbox because
+% some of the demos need to be on the MATLAB path.
+if do_publish    
+    for directory_cell = publish_dirs
+        rmpath(directory)
+    end
+end
 
 % Cleanup path
 for directory = toolbox_dirs

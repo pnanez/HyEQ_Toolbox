@@ -1,5 +1,5 @@
-classdef HybridSolutionWithInput < HybridSolution
-% Class of hybrid solutions that include an input signal.
+classdef HybridSubsystemSolution < HybridSolution
+% Class of hybrid solutions that include input and output signals.
 %
 % See also: HybridSolution, HybridSubsystem, CompositeHybridSolution.
 %
@@ -7,17 +7,21 @@ classdef HybridSolutionWithInput < HybridSolution
 % © 2021. 
 
     properties(SetAccess = immutable)
-        % Input values. 
-        u double % (:, :) 
+        u % Input values (double array)
+        y % Output values (double array)
     end
     
     methods
-        function this = HybridSolutionWithInput(t, j, x, u, varargin)
+        function this = HybridSubsystemSolution(t, j, x, u, y, varargin)
             this = this@HybridSolution(t, j, x, varargin{:});
             assert(size(u, 1) == length(t), ...
                 'length(u)=%d doesn''t match length(t)', ...
                 size(u, 1), length(t))
+            assert(size(y, 1) == length(t), ...
+                'length(y)=%d doesn''t match length(t)', ...
+                size(y, 1), length(t))
             this.u = u;
+            this.y = y;
         end
         
         function out = evaluateFunctionWithInputs(this, func_hand, time_indices)

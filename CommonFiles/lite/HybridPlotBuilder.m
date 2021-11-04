@@ -790,9 +790,14 @@ classdef HybridPlotBuilder < handle
                 % This section MUST come before we set the label sizes, otherwise
                 % the label sizes will be overwritten when we call
                 %   "ax.XAxis.FontSize = ..."
-                for axis_name = {'XAxis', 'YAxis', 'ZAxis'}
-                    axes.(axis_name{1}).FontSize = this.settings.tick_label_size;
-                    axes.(axis_name{1}).TickLabelInterpreter = this.settings.tick_label_interpreter;
+                try
+                    for axis_name = {'XAxis', 'YAxis', 'ZAxis'}
+                        axes.(axis_name{1}).FontSize = this.settings.tick_label_size;
+                        axes.(axis_name{1}).TickLabelInterpreter = this.settings.tick_label_interpreter;
+                    end
+                catch
+                    warning('HybridPlotBuilder:UnsupportedOperation', ...
+                        'Could not set font size or interpreter for ticks. Update to a newer version of MATLAB to use this feature.')
                 end
 
                 % Apply labels

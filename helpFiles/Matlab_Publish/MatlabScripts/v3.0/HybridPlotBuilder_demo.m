@@ -53,7 +53,7 @@ hpb = HybridPlotBuilder();
 %% 
 % Properties are set by calling functions (described below) on the
 % |HybridPlotBuilder| object |hpb|.
-hpb.flowColor("black"); % Set the flow color to black.
+hpb.flowColor('black'); % Set the flow color to black.
 
 %% 
 % To create a plot, one of the plotting functions |plotFlows|, |plotJumps|,
@@ -195,12 +195,14 @@ hpb.legend('$3h$', '$3v$').plotFlows(sol, @(x) 3*x);
 % If auto-subplots is off, then all state components are placed in a
 % single plot, so a single label displayed, which is set by the |label|
 % function. 
+clf
 HybridPlotBuilder()...
     .label('My Label')...
     .plotFlows(sol)
 
 %% 
 % Labels are also displayed for plots in 2D or 3D phase space.
+clf
 HybridPlotBuilder().slice([2 1])...
     .labels('$h$', '$v$')...
     .plotPhase(sol)
@@ -210,6 +212,7 @@ HybridPlotBuilder().slice([2 1])...
 % component-wise. For example, to plot and label only the second and third
 % components, it is necessary to provide three labels (the first is unused,
 % in this case): 
+clf
 HybridPlotBuilder().subplots('on').slice(2:3)...
     .labels('', 'Component 2', 'Component 3')...
     .plotFlows(sol_3D)
@@ -217,6 +220,7 @@ HybridPlotBuilder().subplots('on').slice(2:3)...
 %%
 % If there are a large number of components, it can be more convienient to
 % specify the labels in a cell array, as follows:
+clf
 labels = {}; % Make sure 'labels' starts as an empty array.
 labels{2} = 'Component 2';
 labels{3} = 'Component 3';

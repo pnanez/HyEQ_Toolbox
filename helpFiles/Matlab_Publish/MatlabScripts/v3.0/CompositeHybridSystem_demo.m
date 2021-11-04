@@ -295,7 +295,7 @@ hold on
 hpb.flowColor('k').jumpColor('g')...
     .plotFlows(sol(subsystem2));
 
-%% Plotting Control Signal
+%% Plotting Input and Output Signals
 % The control signal for a subsystem can be plotted by passing the subsystem
 % solution object and the control signal to the plotting functions in
 % |HybridPlotBuilder|. If flow inputs and jump inputs are different functions,
@@ -317,6 +317,13 @@ hpb.jumpMarker('*').jumpColor('r').flowColor('none')...
     .plotFlows(sol_plant, sol_plant.u)
 title('Input')
 ylim('padded')
+
+% Plot Output Signal
+subplot(2, 1, 2)
+HybridPlotBuilder().color('matlab')...
+    .legend({'$y_1$', '$y_2$'}, 'location', 'southeast')...
+    .plotFlows(sol_plant, sol_plant.y)
+title('Output')
 
 %% Example: Single System
 % The |CompositeHybridSystem| class can also be used with a single subsystem

@@ -10,7 +10,7 @@ inspectClass("HybridSubsystem")
 inspectClass("PairHybridSystem")
 
 inspectClass("HybridSolution")
-inspectClass("HybridSolutionWithInput")
+inspectClass("HybridSubsystemSolution")
 inspectClass("CompositeHybridSolution")
 
 inspectClass("HybridPlotBuilder")

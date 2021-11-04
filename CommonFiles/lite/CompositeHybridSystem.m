@@ -189,7 +189,7 @@ classdef CompositeHybridSystem < HybridSystem
                     fprintf('%s \t\t Flow input: %s\n', prop_prefix, func2str(this.kappa_C{i}))
                     fprintf('%s \t\t Jump input: %s\n', prop_prefix, func2str(this.kappa_D{i}))
                 end
-                fprintf('%s \t\t     Output: y%d=%s\n', prop_prefix, i, func2str(ss.output))
+                fprintf('%s \t\t     Output: y%d=%s\n', prop_prefix, i, func2str(ss.output_fnc))
                 fprintf('%s \t\t Dimensions: ', prop_prefix)
                 fprintf('State=%d, Input=%d, Output=%d\n', ...
                     ss.state_dimension, ss.input_dimension, ss.output_dimension)
@@ -366,6 +366,7 @@ classdef CompositeHybridSystem < HybridSystem
             [xs_all, js_all] = this.split_many(x);
             us_jump = {};
             us_flow = {};
+            ys = {};
             % Compute the input values
             for k = 1:length(t)
                 js = [];
@@ -376,7 +377,8 @@ classdef CompositeHybridSystem < HybridSystem
                 end
                 us_jump{k} = evaluateInOrder(this.sorted_names_jumps, ...
                     this.kappa_D, this.outputs, xs, t(k), js); %#ok<AGROW>
-                us_flow{k} = evaluateInOrder(this.sorted_names_flows, ...
+%                 [us, ys] =
+                [us_flow{k}, ys{k}] = evaluateInOrder(this.sorted_names_flows, ...
                     this.kappa_C, this.outputs, xs, t(k), js); %#ok<AGROW>
             end
             for i = 1:this.subsys_n
@@ -384,6 +386,7 @@ classdef CompositeHybridSystem < HybridSystem
                 ss_j = js_all(:, i);
                 ss_x = xs_all(:, this.x_indices{i});
                 ss_u = NaN(length(t), ss.input_dimension);
+                ss_y = NaN(length(t), ss.output_dimension);
                 
                 % Create arrays is_a_ss1_jump_index and is_a_ss2_jump_index,
                 % which contain ones at entry where a jump occured in the
@@ -398,6 +401,8 @@ classdef CompositeHybridSystem < HybridSystem
                         us_k_flow = us_flow{k};
                         ss_u(k, :) = us_k_flow{i}';
                     end
+                    ys_all_at_k = ys{k};
+                    ss_y(k, :) = ys_all_at_k{i};
                 end
                 
                 % In order to find the TerminationCause for the subsystem
@@ -409,7 +414,7 @@ classdef CompositeHybridSystem < HybridSystem
                 ss_jump_count = ss_j(end) - ss_j(1);
                 others_jump_count = total_jump_count - ss_jump_count;
                 ss_jspan = [jspan(1), jspan(end) - others_jump_count];
-                ss_sols{i} = ss.wrap_solution(t, ss_j, ss_x, ss_u, tspan, ss_jspan); %#ok<AGROW>
+                ss_sols{i} = ss.wrap_solution(t, ss_j, ss_x, ss_u, ss_y, tspan, ss_jspan); %#ok<AGROW>
             end
             sol = CompositeHybridSolution(sol, ss_sols, tspan, jspan, this.subsystems);
         end
@@ -419,7 +424,7 @@ classdef CompositeHybridSystem < HybridSystem
             
         function updateOutputsList(this, ~, ~)
             for i = 1:this.subsys_n
-               this.outputs{i} = this.subsystems.get(i).output;
+               this.outputs{i} = this.subsystems.get(i).output_fnc;
             end
             this.updateEvaluationOrder();
         end

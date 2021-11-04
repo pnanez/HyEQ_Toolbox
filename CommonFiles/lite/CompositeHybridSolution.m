@@ -1,7 +1,7 @@
 classdef CompositeHybridSolution < HybridSolution
 % A solution to a composite hybrid system.
 %
-% See also: HybridSolution, CompositeHybridSystem, HybridSolutionWithInput.
+% See also: HybridSolution, CompositeHybridSystem, HybridSubsystemSolution.
 %
 % Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
 % © 2021. 

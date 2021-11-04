@@ -13,7 +13,7 @@ classdef HybridSubsystemBuilderTest < matlab.unittest.TestCase
             testCase.assertEqual(sys.jumpSetIndicator(nan, nan, nan, nan), 0);
 
             % Output returns full state vector.
-            testCase.assertEqual(sys.output(7.6), 7.6);
+            testCase.assertEqual(sys.output_fnc(7.6), 7.6);
         end
 
         function testFunctionSetters(testCase)
@@ -37,7 +37,7 @@ classdef HybridSubsystemBuilderTest < matlab.unittest.TestCase
                 testCase.assertEqual(system.jumpMap(x, NaN, NaN, NaN), g(x));
                 testCase.assertEqual(system.flowSetIndicator(x, NaN, NaN, NaN), C_ind(x));
                 testCase.assertEqual(system.jumpSetIndicator(x, NaN, NaN, NaN), D_ind(x));
-                testCase.assertEqual(system.output(x), output(x));
+                testCase.assertEqual(system.output_fnc(x), output(x));
             end
         end
 
@@ -63,7 +63,7 @@ classdef HybridSubsystemBuilderTest < matlab.unittest.TestCase
                 testCase.assertEqual(system.jumpMap(v_cell{:}), g(v_cell{:}));
                 testCase.assertEqual(system.flowSetIndicator(v_cell{:}), C_ind(v_cell{:}));
                 testCase.assertEqual(system.jumpSetIndicator(v_cell{:}), D_ind(v_cell{:}));
-                testCase.assertEqual(system.output(v_cell{:}), output(v_cell{:}));
+                testCase.assertEqual(system.output_fnc(v_cell{:}), output(v_cell{:}));
             end
         end
 

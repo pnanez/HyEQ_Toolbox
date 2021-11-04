@@ -13,7 +13,8 @@ classdef (Abstract) HybridSubsystem < handle
         input_dimension
         % Dimension of the output 'y'
         output_dimension
-        output
+        % Function that generates 'y' from 'x', and (optionally) 'u', 't', and 'j'.
+        output_fnc
     end
     
     methods
@@ -38,7 +39,7 @@ classdef (Abstract) HybridSubsystem < handle
             end
             this.input_dimension = input_dim;
             this.output_dimension = output_dim;
-            this.output = output_fnc;
+            this.output_fnc = output_fnc;
         end
     end
     
@@ -71,15 +72,15 @@ classdef (Abstract) HybridSubsystem < handle
     end
     
     methods(Hidden)
-        function sol = wrap_solution(this, t, j, x, u, tspan, jspan)
+        function sol = wrap_solution(this, t, j, x, u, y, tspan, jspan)
             % Override this method in subclasses to use other classes than
-            % HybridSolutionWithInput.
+            % HybridSubsystemSolution.
             x_end = x(end, :)';
             u_end = u(end, :)';
             C_end = this.flowSetIndicator(x_end, u_end, t(end), j(end));
             D_end = this.jumpSetIndicator(x_end, u_end, t(end), j(end));
             
-            sol = HybridSolutionWithInput(t, j, x, u, C_end, D_end, tspan, jspan);
+            sol = HybridSubsystemSolution(t, j, x, u, y, C_end, D_end, tspan, jspan);
         end
         
     end
@@ -99,7 +100,7 @@ classdef (Abstract) HybridSubsystem < handle
             % See also: HybridSubsystem.flowMap, HybridSubsystem.jumpMap,
             % HybridSubsystem.flowSetIndicator,
             % HybridSubsystem.jumpSetIndicator.
-            assert(isa(sol, 'HybridSolutionWithInput'))
+            assert(isa(sol, 'HybridSubsystemSolution'))
             t = sol.t;
             j = sol.j;
             x = sol.x;
