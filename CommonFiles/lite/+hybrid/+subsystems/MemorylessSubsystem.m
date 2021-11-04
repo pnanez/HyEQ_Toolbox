@@ -1,4 +1,5 @@
 classdef MemorylessSubsystem < HybridSubsystem
+% Class of subsystems with output that is generated solely from the input (and does not have any state values).
        
     methods
         function obj = MemorylessSubsystem(input_dimension, output_dimension, output)
@@ -7,11 +8,11 @@ classdef MemorylessSubsystem < HybridSubsystem
     end
     
     methods(Sealed)
-        function xdot = flowMap(this, x, u, t, j)   %#ok<INUSD>
+        function xdot = flowMap(this, x, u, t, j) %#ok<INUSD>
            xdot = []; 
         end
 
-        function xplus = jumpMap(this, x, u, t, j)   %#ok<INUSD>
+        function xplus = jumpMap(this, x, u, t, j) %#ok<INUSD>
            xplus = []; 
         end
 

@@ -1,5 +1,5 @@
 classdef CompositeHybridSolution < HybridSolution
-% A class of solution objects produced by solving a CompositeHybridSystem.
+% A solution to a composite hybrid system.
 %
 % See also: HybridSolution, CompositeHybridSystem, HybridSolutionWithInput.
 %

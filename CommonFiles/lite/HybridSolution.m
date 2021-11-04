@@ -1,6 +1,8 @@
 classdef HybridSolution
 % HybridSolution Solution to a hybrid dynamical system, with additional information. 
 %
+% See also: HybridSystem, HybridPlotBuilder, TerminationCause.
+%
 % Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
 % © 2021. 
     
@@ -80,6 +82,9 @@ classdef HybridSolution
             % Arguments 4 through 7 are used to determine the termination cause.
             
             checkVectorSizes(t, j, x);
+            assert(isnumeric(t))
+            assert(isnumeric(j))
+            assert(isnumeric(x))
             this.t = t;
             this.j = j;
             this.x = x;

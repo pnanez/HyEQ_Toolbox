@@ -5,36 +5,27 @@ classdef TerminationCause
 %
 % Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
 % © 2021. 
-
-   properties
-      description
-   end
-   methods
-       function this = TerminationCause(description)
-         this.description = description;
-      end
-   end
    enumeration
       % At least one state vector component is infinite.
-      STATE_IS_INFINITE('Final state is infinite.')
+      STATE_IS_INFINITE
       
       % At least one state vector component is NaN (not a number).
-      STATE_IS_NAN('Final state is NaN.')
+      STATE_IS_NAN
       
       % The final state value is not the flow set 'C' or the jump set 'D'.
-      STATE_NOT_IN_C_UNION_D('Solution left the flow and jump sets.')
+      STATE_NOT_IN_C_UNION_D
       
       % The continuous time 't' reached the end of the given range 'tspan'.
-      T_REACHED_END_OF_TSPAN('Continuous time t reached the end of tspan.')
+      T_REACHED_END_OF_TSPAN
       
       % The discrete time 'j' reached the end of the given range 'jspan'.
-      J_REACHED_END_OF_JSPAN('Discrete time j reached the end of jspan.')
+      J_REACHED_END_OF_JSPAN
       
-      % The hybrid solver was cancelled before completing. 
-      CANCELED('The solver was canceled.')
+      % The hybrid solver was cancelled. 
+      CANCELED
 
       % Insufficient information was provided to determine cause of termination.
-      UNDETERMINED('Insufficient information provided to determine cause of termination.')
+      UNDETERMINED
    end
 
     methods(Static, Hidden)

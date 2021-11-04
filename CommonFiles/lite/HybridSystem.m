@@ -20,9 +20,11 @@ classdef (Abstract) HybridSystem < handle
         % adding "%#ok<INUSD>" (for 'x') or "%#ok<INUSL>" (for "this") at 
         % the end of the line.
 
-        % Flow map 'f' defines continuous evolution of the system. 
-        % Must be implmented in subclasses as either 'flowMap(this, x)',
-        % 'flowMap(this, x, t)', or 'flowMap(this, x, t, j)'. 
+        % Flow map 'f'. Must be implemented in subclasses.
+        %
+        % In a concrete implemention of the HybridSystem class, the flowMap
+        % function must be implemented in subclasses as 
+        % 'flowMap(this, x)', flowMap(this, x, t)', or 'flowMap(this, x, t, j)'. 
         xdot = flowMap(this, x, t, j)  
 
         % Jump map 'g'. Must be implmented in subclasses.
@@ -33,7 +35,7 @@ classdef (Abstract) HybridSystem < handle
         % or jumpMap(this, x, t, j). 
         xplus = jumpMap(this, x, t, j) 
 
-        % Indicator function for flow set 'C'. Must be implmented in subclasses.
+        % Indicator function for flow set 'C'. Must be implemented in subclasses.
         % 
         % In a concrete implemention of the HybridSystem class, the 
         % flowSetIndicator function must be implemented with one of the 
@@ -41,7 +43,7 @@ classdef (Abstract) HybridSystem < handle
         % flowSetIndicator(this, x, t) or flowSetIndicator(this, x, t, j). 
         C = flowSetIndicator(this, x, t, j) 
 
-        % Indicator function for jump set 'D'. Must be implmented in subclasses.
+        % Indicator function for jump set 'D'. Must be implemented in subclasses.
         % 
         % In a concrete implemention of the HybridSystem class, the 
         % jumpSetIndicator function must be implemented with one of the 
@@ -76,6 +78,8 @@ classdef (Abstract) HybridSystem < handle
         end
         
         function sol = solve(this, x0, tspan, jspan, varargin)
+            % Compute a solution to this hybrid system.
+            %
             % Compute a solution to this hybrid system starting from
             % initial state 'x0' over continuous time 'tspan' and discrete
             % time 'jspan'. If 'tspan' and 'jspan' are not supplied, then
@@ -137,8 +141,16 @@ classdef (Abstract) HybridSystem < handle
         function sol = wrap_solution(this, t, j, x, tspan, jspan, solver_config)   
             % Create a HybridSolution object from the data (x, t, j) and given simluation parameters.
             xf = x(end, :)';
-            Cf = this.flowSetIndicator_3args(xf, t(end), j(end));
-            Df = this.jumpSetIndicator_3args(xf, t(end), j(end));
+            try
+                Cf = this.flowSetIndicator_3args(xf, t(end), j(end));
+            catch
+                Cf = NaN;
+            end
+            try
+                Df = this.jumpSetIndicator_3args(xf, t(end), j(end));
+            catch
+                Df = NaN;
+            end
             sol = HybridSolution(t, j, x, Cf, Df, tspan, jspan, solver_config);
         end
     end
@@ -146,7 +158,18 @@ classdef (Abstract) HybridSystem < handle
     methods
         
         function [f_vals, g_vals, C_vals, D_vals] = generateFGCD(this, sol)  
-            % Evaluate the data (f, g, C, D) for this system at each point along a solution.
+            % Compute the values of the data (f, g, C, D) at each point along a given hybrid solution.
+            % 
+            % The flow map 'f' and jump map 'g' are evaluated at each point (including
+            % points not, respectively, in the flow set or jump set). 
+            % If the flow map 'f' (jump map 'g') throws an error and the
+            % solution is not in the flow set (jump set), then the values are set to
+            % NaN, but if the solution is in the flow set (jump set), then the
+            % error is rethrown. 
+            %
+            % HybridSystem.flowMap, HybridSystem.jumpMap,
+            % HybridSystem.flowSetIndicator,
+            % HybridSystem.jumpSetIndicator.
             assert(isa(sol, 'HybridSolution'))
 
             t = sol.t;

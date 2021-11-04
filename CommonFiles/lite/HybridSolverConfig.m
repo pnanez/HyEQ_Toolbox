@@ -44,11 +44,13 @@ classdef HybridSolverConfig < handle
             end
 
             % Parse Name/Value pairs from arguments.
-            parser = inputParser();
+            parser = inputParser(); % Replace this with a for-loop that loops through the varargin.
             addParameter(parser,'RelTol',NaN);
             addParameter(parser,'AbsTol',NaN);
             addParameter(parser,'MaxStep',NaN);
             addParameter(parser,'Refine',NaN);
+            addParameter(parser,'Jacobian', NaN)
+            addParameter(parser,'odeSolver', NaN);
             parse(parser, varargin{:})
             
             % Apply non-NaN values.
@@ -63,6 +65,12 @@ classdef HybridSolverConfig < handle
             end
             if ~isnan(parser.Results.Refine)
                 this.Refine(parser.Results.Refine);
+            end
+            if ~isnan(parser.Results.Jacobian)
+                this.Jacobian(parser.Results.Jacobian);
+            end
+            if ~isnan(parser.Results.odeSolver)
+                this.odeSolver(parser.Results.odeSolver);
             end
         end
         
@@ -92,9 +100,8 @@ classdef HybridSolverConfig < handle
         function this = priority(this, priority)
             % Set the hybrid priority that determines the behavior of solutions in the intersection of the flow set and the jump set.
             %
-            % Value must be either HybridPriority.JUMP or HybridPriority.FLOW,
-            % or the string representation ''jump'' or ''flow'' (case
-            % insensitive).
+            % Value must be ''jump'', ''flow'' (case insensitive),
+            % HybridPriority.JUMP, or HybridPriority.FLOW.
             % 
             % See also: HybridPriority, HybridSystem.solve, HyEQsolver.
             if strcmpi(priority, 'jump') % Case insenstive
@@ -109,7 +116,7 @@ classdef HybridSolverConfig < handle
         end
 
         function this = RelTol(this, relTol)
-            % RelTol  Set the relative tolerance for the ODE solver.
+            % Set the relative tolerance for the ODE solver.
             % See documentation for odeset.
             %
             % See also: odeset, ode45.
@@ -122,7 +129,7 @@ classdef HybridSolverConfig < handle
         end
 
         function this = AbsTol(this, absTol)
-            % AbsTol  Set the absolute tolerance for the ODE solver.
+            % Set the absolute tolerance for the ODE solver.
             % See documentation for odeset.
             %
             % See also: odeset, ode45.
@@ -135,7 +142,7 @@ classdef HybridSolverConfig < handle
         end
 
         function this = MaxStep(this, maxStep)
-            % MaxStep  Set the maximum step size for the ODE solver.
+            % Set the maximum step size for the ODE solver.
             % See documentation for odeset.
             %
             % See also: odeset, ode45.
@@ -148,7 +155,7 @@ classdef HybridSolverConfig < handle
         end
 
         function this = Refine(this, refine)
-            % Refine Solution refinement factor. 
+            % Set solution refinement factor. 
             % See documentation for odeset.
             %
             % See also: odeset, ode45.
@@ -162,11 +169,31 @@ classdef HybridSolverConfig < handle
             end
         end
         
-        function this = odeOption(this, name, value)
-            % Set an arbitrary ODE option via name-value pair.
+        function this = Jacobian(this, jacobian) % Add autocomplete
+            % Set the Jacobian for the ODE solver. 
             % See documentation for odeset.
             %
             % See also: odeset, ode45.
+            this.ode_options = odeset(this.ode_options, 'Jacobian', jacobian);
+            if nargout == 0
+               clear this 
+            end
+        end
+
+        function this = odeOption(this, name, value)
+            % Set an arbitrary ODE option via name-value pair.
+            % See documentation for odeset.
+            % 
+            % The 'Events' function is not supported because we use the
+            % eventing system to detect jumps within the hybrid solver.
+            %
+            % See also: odeset, ode45.
+            if strcmp(name, 'Events')
+                % The 'Events' function is not supported because we use the
+                % eventing system to detect jump events.
+                error('Setting ''Events'' is not supported.')
+            end
+
             this.ode_options.(name) = value;
             if nargout == 0
                clear this 
@@ -175,6 +202,7 @@ classdef HybridSolverConfig < handle
 
         function this = massMatrix(this, mass_matrix)
             % Set the mass matrix.
+            % See documentation for odeset.
             % 
             % See also: odeset.
             this.mass_matrix = mass_matrix;
@@ -185,12 +213,18 @@ classdef HybridSolverConfig < handle
         
         function this = progress(this, progress, varargin)
             % Set the mechanism for progress updates displayed while running the hybrid solver. 
-            % The argument 'progress' must be either an instance of
-            % HybridProgress (including subclasses), or a string equal to
-            % 'popup'(default) or 'silent'. When 'popup' is selected, a graphic
-            % progress bar is displayed. When 'silent' is selected, no progress
-            % updates are shown. This is faster than opening a popup progress bar
-            % and is useful when iterating through many hybrid solutions.
+            %
+            % The argument 'progress' must be one of the following:
+            %   an instance of HybridProgress (including subclasses, 
+            %   the string 'popup'(default),
+            %   or the string 'silent'.
+            % When 'popup' is selected, a graphic
+            % progress bar is displayed and when 'silent' is selected, no progress
+            % updates are shown. Using 'silent' is faster than opening a popup
+            % progress bar and is suggested when iterating through many hybrid solutions.
+            % 
+            % See also: HybridProgress, PopupHybridProgress,
+            % SilentHybridProgress.
             
             if isa(progress, 'string')
                 % Convert progressListener to a string if it is a char

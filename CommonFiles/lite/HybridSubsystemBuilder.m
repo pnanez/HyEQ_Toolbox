@@ -25,20 +25,21 @@ classdef HybridSubsystemBuilder < handle
 %             .outputDim(2);
 %             .build();
 % 
-% This approach is quick and easy to write, but results in slower
-% computations and is harder to debug. HybridSubsystemBuilder is only
+% Using HybridSubsystemBuilder is quick and easy to write, but results in slower
+% computations than writing a new HybridSubsystem subclass and is harder to
+% debug. For this reason, HybridSubsystemBuilder is only  
 % recommended for quick prototyping or demonstrations of simple systems. 
-% Otherwise, it is better to create a subclass of HybridSubsystem in a new file. 
+% Otherwise, it is better to create a subclass of HybridSubsystem in a separate file. 
 %
 % WARNING: For HybridSubsystem objects created by this class, the functions
 % 'flowMap', 'jumpMap', 'flowSetIndicator', and 'jumpSetIndicator' will have the
 % intput arguments '(x, u, t, j)' regardless of the particular input arguments
 % in the function handle used to specify each function. The effect of this will
 % be hidden when solving hybrid systems, but must be accounted
-% for when evaluating the functions directly. The arguments used for the
-% 'output' function are preserved. 
+% for when evaluating the functions directly. On the other hand, input arguments
+% for the 'output' function are preserved. 
 %
-% See also: HybridSubsystem, CompositeHybridSubsystemBuilder, HybridSubsystemBuilder, HybridSubsystemBuilderBuilder.
+% See also: HybridSubsystem, CompositeHybridSystem, HybridSystemBuilder.
 %
 % Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
 % © 2021. 
@@ -56,6 +57,7 @@ end
 
 methods 
     function hybridSystem = build(this)
+        % Create a HybridSystem object with the data (f, g, C, D) set by prior calls to 'flowMap', 'jumpMap', 'flowSetIndicator', 'jumpSetIndicator'.
         hybridSystem = hybrid.internal.EZHybridSubsystem(...
                             this.flowMap_handle, ...
                             this.jumpMap_handle, ...
@@ -68,6 +70,12 @@ methods
     end
 
     function this = flowMap(this, flowMap_handle)
+        % Set the flow map for the hybrid subsystem. 
+        % 
+        % The function handle must have input arguments (x), (x, u), (x, u, t),
+        % or (x, u, t, j). 
+        %
+        % See also HybridSubsystemBuilder.f, HybridSubsystem.flowMap.
         check_handle_argument(flowMap_handle);
         this.flowMap_handle = flowMap_handle;
     end
@@ -77,6 +85,12 @@ methods
     end
 
     function this = jumpMap(this, jumpMap_handle)
+        % Set the jump map 'g' for the hybrid subsystem. 
+        % 
+        % The function handle must have input arguments (x), (x, u), (x, u, t),
+        % or (x, u, t, j). 
+        %
+        % See also HybridSubsystemBuilder.g, HybridSubsystem.JumpMap.
         check_handle_argument(jumpMap_handle);
         this.jumpMap_handle = jumpMap_handle;
     end
@@ -86,6 +100,12 @@ methods
     end
 
     function this = flowSetIndicator(this, flowSetIndicator_handle)
+        % Set the flow set indicator for the hybrid subsystem. 
+        % 
+        % The function handle must have input arguments (x), (x, u), (x, u, t),
+        % or (x, u, t, j). 
+        %
+        % See also HybridSubsystemBuilder.C, HybridSubsystem.flowSetIndicator.
         check_handle_argument(flowSetIndicator_handle);
         this.flowSetIndicator_handle = flowSetIndicator_handle;
     end
@@ -95,6 +115,12 @@ methods
     end
 
     function this = jumpSetIndicator(this, jumpSetIndicator_handle)
+        % Set the jump set indicator for the hybrid subsystem. 
+        % 
+        % The function handle must have input arguments (x), (x, u), (x, u, t),
+        % or (x, u, t, j). 
+        %
+        % See also HybridSubsystemBuilder.D, HybridSubsystem.jumpSetIndicator.
         check_handle_argument(jumpSetIndicator_handle);
         this.jumpSetIndicator_handle = jumpSetIndicator_handle;
     end

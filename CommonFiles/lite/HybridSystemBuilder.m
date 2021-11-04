@@ -22,7 +22,7 @@ classdef HybridSystemBuilder < handle
 %             .D(@(x) x >= 0)...
 %             .build();
 %
-% See also: HybridSystem.
+% See also: HybridSystem, HybridSubsystemBuilder.
 %
 % Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
 % © 2021. 
@@ -37,7 +37,7 @@ classdef HybridSystemBuilder < handle
 
     methods 
         function hybridSystem = build(this)
-            % Create a HybridSystem object with the data (f, g, C, D) set by prior calls to the methods 'flowMap', 'jumpMap', 'flowSetIndicator', 'jumpSetIndicator'. 
+            % Create a HybridSystem object with the data (f, g, C, D) set by prior calls to 'flowMap', 'jumpMap', 'flowSetIndicator', 'jumpSetIndicator'. 
             hybridSystem = hybrid.internal.EZHybridSystem(...
                                            this.flowMap_handle, ...
                                            this.jumpMap_handle, ...

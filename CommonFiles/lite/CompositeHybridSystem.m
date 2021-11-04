@@ -13,6 +13,8 @@ classdef CompositeHybridSystem < HybridSystem
 % the first subsystem, j2 is the discrete time for the second subsystem,
 % and so on. (The subsystems can jump separately of each other, so each has
 % its own discrete time).
+% 
+% See also: HybridSystem, HybridSubsystem, CompositeHybridSolution.
 %
 % Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
 % © 2021. 
@@ -98,6 +100,8 @@ classdef CompositeHybridSystem < HybridSystem
             % 'subsys_id' can be the index of the subsystem, the subsystem
             % object itself, or subsystem names (if names were passed to the
             % constructor).
+            % 
+            % See also: setInput, setJumpInput, getFlowInput.
             ndx = this.subsystems.getIndex(subsys_id);
             this.check_feedback(kappa_C)
             warn_if_input_dim_zero(this, ndx, 'setFlowInput')
@@ -109,6 +113,8 @@ classdef CompositeHybridSystem < HybridSystem
             % 'subsys_id' can be the index of the subsystem, the subsystem
             % object itself, or subsystem names (if names were passed to the
             % constructor).
+            %
+            % See also: setFlowInput.
             ndx = this.subsystems.getIndex(subsys_id);
             kappa_C = this.kappa_C{ndx};
         end
@@ -118,6 +124,8 @@ classdef CompositeHybridSystem < HybridSystem
             % 'subsys_id' can be the index of the subsystem, the subsystem
             % object itself, or subsystem names (if names were passed to the
             % constructor).
+            %
+            % See also: setInput, setFlowInput, getJumpInput.
             ndx = this.subsystems.getIndex(subsys_id);
             warn_if_input_dim_zero(this, ndx, 'setJumpInput')
             this.check_feedback(kappa_D)
@@ -129,6 +137,8 @@ classdef CompositeHybridSystem < HybridSystem
             % 'subsys_id' can be the index of the subsystem, the subsystem
             % object itself, or subsystem names (if names were passed to the
             % constructor).
+            %
+            % See also: setJumpInput.
             ndx = this.subsystems.getIndex(subsys_id);
             kappa_D = this.kappa_D{ndx};
         end
@@ -138,6 +148,8 @@ classdef CompositeHybridSystem < HybridSystem
             % 'subsys_id' can be the index of the subsystem, the subsystem
             % object itself, or subsystem names (if names were passed to the
             % constructor).
+            %
+            % See also: setFlowInput, setJumpInput.
             ndx = this.subsystems.getIndex(subsys_id);
             warn_if_input_dim_zero(this, ndx, 'setInput')
             this.check_feedback(kappa)
@@ -146,7 +158,7 @@ classdef CompositeHybridSystem < HybridSystem
         end
         
         function disp(this)
-            % Print information about the composite system and subsystems to the terminal.
+            % Print information about the composite system and its subsystems to the terminal.
             
             % We use the following pipe characters to draw the subsystem tree. 
             % (The unicode characters are not rendered correctly on some
@@ -188,7 +200,7 @@ classdef CompositeHybridSystem < HybridSystem
     methods(Sealed)
         
         function xdot = flowMap(this, x, t) 
-            % Flow map for composite system. 
+            % Flow map for the composite system. 
             
             [xs, js] = this.split(x);
             % We set xdot to zeros and then fill in the entries
@@ -209,7 +221,7 @@ classdef CompositeHybridSystem < HybridSystem
         end 
 
         function xplus = jumpMap(this, x, t) 
-            % Jump map for composite system.
+            % Jump map for the composite system.
             [xs, js] = this.split(x);
             xplus = NaN(this.state_dimension, 1);
             us = hybrid.internal.evaluateInOrder(this.sorted_names_jumps, ...
@@ -238,7 +250,7 @@ classdef CompositeHybridSystem < HybridSystem
         end
 
         function C = flowSetIndicator(this, x, t) 
-            % Flow set indicator for composite system.
+            % Flow set indicator for the composite system.
             
             % The system can only flow if both subsystems are in their
             % repsective flow sets (priority is honored, if the composite
@@ -266,7 +278,7 @@ classdef CompositeHybridSystem < HybridSystem
         end
 
         function D = jumpSetIndicator(this, x, t)
-            % Jump set indicator for composite system.
+            % Jump set indicator for the composite system.
             D = false; 
             [xs, js] = this.split(x);
             us = hybrid.internal.evaluateInOrder(this.sorted_names_jumps, ...
@@ -295,10 +307,10 @@ classdef CompositeHybridSystem < HybridSystem
         function sol = solve(this, xs_0, tspan, jspan, varargin)
             % Compute the solution to the composite system with the
             % initial states of each subsystem given in a cell array {x0_1,
-            % x0_2, ..., x0_N}. See HybridSystem.solve() for 
+            % x0_2, ..., x0_N}. See documentation of HybridSystem.solve for 
             % explanation of tspan, jspan, and config.
             %
-            % See also HybridSystem.solve
+            % See also: HybridSystem.solve.
             
             % We concatenate the subsystem states and inital j-value to create 
             % the composite state. (The subsystems can jump at separate times, 

@@ -1,8 +1,7 @@
 classdef SwitchSubsystem < HybridSubsystem
-          
-    properties (SetAccess = immutable)
-        
-    end
+% (EXPERIMENTAL) Subsystem for switching the output between two input values.
+% This class is not yet stable and may change in future versions of the toolbox
+% (in particular, to support more than two modes).
     
     properties(GetAccess = private, SetAccess = immutable)
         u0_indices

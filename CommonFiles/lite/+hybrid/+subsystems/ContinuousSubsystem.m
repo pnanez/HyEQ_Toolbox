@@ -1,4 +1,5 @@
 classdef (Abstract) ContinuousSubsystem < HybridSubsystem
+% Hybrid subsystems that do not have discrete dynamics.
     
     methods(Abstract) 
         xdot = flowMap(this, x, u, t, j)  
@@ -19,6 +20,5 @@ classdef (Abstract) ContinuousSubsystem < HybridSubsystem
         function D = jumpSetIndicator(this, x, u, t, j) %#ok<INUSD>
            D = 0; 
         end
-    end
-    
+    end    
 end

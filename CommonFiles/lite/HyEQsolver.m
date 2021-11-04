@@ -1,6 +1,6 @@
 function [t, j, x] = HyEQsolver(f,g,C,D,x0,TSPAN,JSPAN,rule,options,solver,E,progress)
-%HYEQSOLVER solves hybrid equations.
-%   Syntax: [t j x] = HYEQSOLVER(f,g,C,D,x0,TSPAN,JSPAN,rule,options,solver,E)
+% Solves hybrid equations.
+%   Syntax: [t j x] = HyEQsolver(f,g,C,D,x0,TSPAN,JSPAN,rule,options,solver,E)
 %   computes solutions to the hybrid equations
 %
 %   \dot{x} = f(x,t,j)  x \in C x^+ = g(x,t,j)  x \in D
@@ -145,8 +145,7 @@ function [t, j, x] = HyEQsolver(f,g,C,D,x0,TSPAN,JSPAN,rule,options,solver,E,pro
 % http://hybridsimulator.wordpress.com/
 % Filename: HYEQSOLVER.m
 %--------------------------------------------------------------------------
-%   See also HYEQSOLVER, PLOTARC, PLOTARC3, PLOTFLOWS, PLOTHARC,
-%   PLOTHARCCOLOR, PLOTHARCCOLOR3D, PLOTHYBRIDARC, PLOTJUMPS, HybridSystem.
+%   See also HybridSystem, HybridPlotBuilder.
 %   Copyright @ Hybrid Systems Laboratory (HSL),
 %   Revision: 3.0.0 Date: 08/14/2021
 
@@ -248,10 +247,10 @@ while (j < JSPAN(end) && tout(end) < TSPAN(end) && ~progress.is_cancel_solver)
             % Handle the case where the ode solver doesn't step forward in time.
             % This is ony known to happen when the solution is blowing up to
             % infinity. 
-            warning(horzcat('Hybrid solver is not progressing toward solution, ', ...
-                'possibly due to |f(x, t, j)|=%0.3g being very large.  ', ...
+            warning(horzcat('The hybrid solver is not progressing at t=%.4g, j=%d, ', ...
+                'possibly due to |f(x, t, j)|=%0.3g being very large.\n', ...
                 'Aborting solver and setting final value of x to NaN.'), ...
-                vecnorm(f(x_flow', t_flow, j)))
+                t_flow, j, vecnorm(f(x_flow', t_flow, j)))
             tout = [tout; t_flow]; %#ok<AGROW>
             xout = [xout; NaN(size(x_flow))]; %#ok<AGROW>
             jout = [jout; j]; %#ok<AGROW>
@@ -339,6 +338,9 @@ switch rule
         % For flow priority, we terminate flows whenever the solution 
         % leaves C.
         stop = ~insideC;
+end
+if any(isnan(x)) || any(isinf(x))
+    stop = 1;
 end
 isterminal = 1;
 value = 1 - stop;

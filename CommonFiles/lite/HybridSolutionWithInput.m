@@ -1,8 +1,7 @@
 classdef HybridSolutionWithInput < HybridSolution
 % Class of hybrid solutions that include an input signal.
 %
-% See also: HybridSolution, HybridSubsystem, CompositeHybridSolution,
-% CompositeHybridSystem.
+% See also: HybridSolution, HybridSubsystem, CompositeHybridSolution.
 %
 % Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
 % © 2021. 
