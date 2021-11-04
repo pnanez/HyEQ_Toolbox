@@ -470,6 +470,46 @@ classdef HybridPlotBuilder < handle
             this.last_function_call = 'textInterpreter';
         end
 
+        function this = plot2Function(this, plot_function_2D)
+            % (EXPERIMENTAL) Set the plotting function for 2D plots.
+            % The function can be specified using its name as a string, or by
+            % its function handle.
+            % Supported functions include 'plot' (default), 'semilogy',
+            % 'semilogx', and 'loglog'. User-defined functions can also be used,
+            % but must have input and output arguments matching the following
+            % example:
+            %
+            %     function plt = myPolarPlot(axes, data1, data2, varargin)
+            %         x_values = data2.*cos(data1);
+            %         y_values = data2.*sin(data1);
+            %         plt = plot(axes, x_values, y_values, varargin{:});
+            %     end
+            %
+            % See also: plot3Function.
+            this.settings.plot_function_2D = plot_function_2D;
+            this.last_function_call = 'plot2Function';
+        end
+
+        function this = plot3Function(this, plot_function_3D)
+            % (EXPERIMENTAL) Set the plotting function for 3D plots.
+            % The function can be specified using its name as a string, or by
+            % its function handle.
+            % Supported functions include 'plot3' (default). User-defined
+            % functions can also be used, 
+            % but must have input and output arguments matching the following
+            % example:
+            %
+            %     function plt = myCylindricalPlot(axes, data1, data2, data3, varargin)
+            %         x_values = data2.*cos(data1);
+            %         y_values = data2.*sin(data1);
+            %         z_values = data3;
+            %         plt = plot3(axes, x_values, y_values, z_values, varargin{:});
+            %     end
+            %
+            % See also: plot2Function.
+            this.settings.plot_function_3D = plot_function_3D;
+            this.last_function_call = 'plot3Function';
+        end
     end
     
     methods % Plotting functions
@@ -707,7 +747,7 @@ classdef HybridPlotBuilder < handle
                 if i_sp == 1 || this.settings.auto_subplots 
                     if ~is_hold_on_before
                         % Clear the plot to emulate 'hold off' behavior.
-                        plot(nan, nan);
+                        this.settings.plot_function_2D(axes_array(i_sp), nan, nan);
                     end
                     hold on
                     fh = @() hold(axes_array(i_sp), hold_status_before);
@@ -728,7 +768,7 @@ classdef HybridPlotBuilder < handle
                 % We 'plot' an invisible dummy point (NaN values are not
                 % visible in plots), which provides the line and marker
                 % appearance for the corresponding legend entry.
-                dummy_plt = plot(axes, nan, nan, ...
+                dummy_plt = this.settings.plot_function_2D(axes, nan, nan, ...
                     plt_data.flow_args{:}, ...
                     plt_data.jump_args.start{:});
                 this.addLegendEntry(dummy_plt, plt_data.legend_label);
@@ -787,23 +827,23 @@ classdef HybridPlotBuilder < handle
             if isempty(x)
                return 
             end
-            plot(ax, x(:,1), x(:,2), flow_args{:})
+            this.settings.plot_function_2D(ax, x(:,1), x(:,2), flow_args{:})
         end
 
         function plotFlow3D(this, ax, x, flow_args)
             if isempty(x)
                return 
             end
-            plot3(ax, x(:,1), x(:,2), x(:,3), flow_args{:});
+            this.settings.plot_function_3D(ax, x(:,1), x(:,2), x(:,3), flow_args{:});
         end
 
         function plotJump2D(this, ax, x_jump, x_start, x_end, jump_args)
             % Plot the line from start to end.
-            plot(ax, x_jump(:,1), x_jump(:,2), jump_args.line{:});
+            this.settings.plot_function_2D(ax, x_jump(:,1), x_jump(:,2), jump_args.line{:});
             % Plot the start of the jump
-            plot(ax, x_start(:,1), x_start(:,2), jump_args.start{:});
+            this.settings.plot_function_2D(ax, x_start(:,1), x_start(:,2), jump_args.start{:});
             % Plot the end of the jump
-            plot(ax, x_end(:,1), x_end(:,2), jump_args.end{:});
+            this.settings.plot_function_2D(ax, x_end(:,1), x_end(:,2), jump_args.end{:});
         end
 
         function plotJump3D(this, ax, x_jump, x_before, x_after, jump_args)
@@ -811,11 +851,11 @@ classdef HybridPlotBuilder < handle
                 return % Not a jump
             end 
             % Plot jump line
-            plot3(ax, x_jump(:,1), x_jump(:, 2), x_jump(:, 3), jump_args.line{:});
+            this.settings.plot_function_3D(ax, x_jump(:,1), x_jump(:, 2), x_jump(:, 3), jump_args.line{:});
             % Plot the start of the jump
-            plot3(ax, x_before(:,1), x_before(:,2), x_before(:,3), jump_args.start{:});
+            this.settings.plot_function_3D(ax, x_before(:,1), x_before(:,2), x_before(:,3), jump_args.start{:});
             % Plot the end of the jump
-            plot3(ax, x_after(:,1), x_after(:,2), x_after(:,3), jump_args.end{:});   
+            this.settings.plot_function_3D(ax, x_after(:,1), x_after(:,2), x_after(:,3), jump_args.end{:});   
         end
         
         function display_legend(this)

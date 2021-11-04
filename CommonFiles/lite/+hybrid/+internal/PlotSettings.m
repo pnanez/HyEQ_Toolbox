@@ -36,6 +36,10 @@ classdef PlotSettings < matlab.mixin.Copyable
         t_label
         j_label
         
+        % Plotting function
+        plot_function_2D
+        plot_function_3D
+
         % Subplot Settings
         auto_subplots
         plots_callback
@@ -85,6 +89,10 @@ classdef PlotSettings < matlab.mixin.Copyable
         DEFAULT_X_LABEL_FORMAT = [];
         DEFAULT_T_LABEL = []; 
         DEFAULT_J_LABEL = [];
+
+        % PLOTTING FUNCTIONS
+        DEFAULT_PLOT_FUNCTION_2D = @plot;
+        DEFAULT_PLOT_FUNCTION_3D = @plot3;
         
         % Subplot Settings
         DEFAULT_AUTO_SUBPLOTS = false;
@@ -339,6 +347,22 @@ classdef PlotSettings < matlab.mixin.Copyable
                 
         function set.auto_subplots(this, auto_subplots)
             this.auto_subplots = parse_logical_arg(auto_subplots);
+        end
+
+        function set.plot_function_2D(this, plot_function_2D)
+            if isa(plot_function_2D, 'function_handle')
+                this.plot_function_2D = plot_function_2D;
+            else
+                this.plot_function_2D = str2func(plot_function_2D);
+            end
+        end
+
+        function set.plot_function_3D(this, plot_function_3D)
+            if isa(plot_function_3D, 'function_handle')
+                this.plot_function_3D = plot_function_3D;
+            else
+                this.plot_function_3D = str2func(plot_function_3D);
+            end
         end
     end
     
