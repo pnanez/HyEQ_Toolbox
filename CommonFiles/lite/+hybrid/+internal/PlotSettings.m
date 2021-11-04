@@ -87,7 +87,7 @@ classdef PlotSettings < matlab.mixin.Copyable
         DEFAULT_J_LABEL = [];
         
         % Subplot Settings
-        DEFAULT_AUTO_SUBPLOTS = true;
+        DEFAULT_AUTO_SUBPLOTS = false;
         DEFAULT_PLOTS_CALLBACK = @(ax, component) disp('');
         DEFAULT_MAX_SUBPLOTS = 4;
         
@@ -151,6 +151,7 @@ classdef PlotSettings < matlab.mixin.Copyable
         end
 
         function reset(this)
+            % Reset to default values.
             names = hybrid.internal.PlotSettings.getSettingNames();
             for name = names
                 default_name = strcat('DEFAULT_', upper(name));
@@ -521,8 +522,7 @@ classdef PlotSettings < matlab.mixin.Copyable
             end
         end
         
-        function indices_to_plot = indicesToPlot(this, hybrid_sol)
-            n = size(hybrid_sol.x, 2);
+        function indices_to_plot = indicesToPlot(this, n)
             if isempty(this.component_indices)
                 if this.auto_subplots
                     last_index = min(n, this.max_subplots);
@@ -540,6 +540,7 @@ classdef PlotSettings < matlab.mixin.Copyable
                 max(indices_to_plot), n)
             assert(size(indices_to_plot, 2) == 1)
         end
+        
     end
     
     methods(Hidden, Static)

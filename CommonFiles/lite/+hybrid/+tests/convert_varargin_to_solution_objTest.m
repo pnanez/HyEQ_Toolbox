@@ -1,12 +1,13 @@
 classdef convert_varargin_to_solution_objTest < matlab.unittest.TestCase
    
     methods (Test)
-       
         function test_Solution(testCase)
             sol_in = hybrid.examples.ExampleBouncingBallHybridSystem().solve([10, 0]);
             varagin_cell = {sol_in};       
             sol_out = hybrid.internal.convert_varargin_to_solution_obj(varagin_cell);
-            testCase.assertEqual(sol_in, sol_out);
+            testCase.assertEqual(sol_in.t, sol_out.t);
+            testCase.assertEqual(sol_in.j, sol_out.j);
+            testCase.assertEqual(sol_in.x, sol_out.x);
         end
         
         function test_inputs_sol_y(testCase)

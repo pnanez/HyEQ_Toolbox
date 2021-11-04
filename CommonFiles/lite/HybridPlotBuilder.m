@@ -12,10 +12,14 @@ classdef HybridPlotBuilder < handle
         settings % plot settings
     end
     
-    properties(Access = private)
+    properties(Access = {?hybrid.tests.HybridPlotBuilderTest})
         % Legend options
         plots_for_legend = [];
         axes_for_legend = [];
+
+        % last_function_call records the last function called so that we can
+        % warn a user if a plotting function was not called last.
+        last_function_call;
     end
 
     methods
@@ -25,52 +29,74 @@ classdef HybridPlotBuilder < handle
         end
     end
     
-    methods % Setting property setters
+    methods % Property setters for plot settings.
         function this = title(this, title)
             % Set a title for the plot.
+            % 
+            % See also: titles, titleInterpreter, titleSize.
             if iscell(title)
                 e = MException('HybridPlotBuilder:InvalidArgument', ...
                     'For setting multiple titles, use titles()');
                 throwAsCaller(e);
             end
             this.titles(title);
+            this.last_function_call = 'title';
         end
         
         function this = titles(this, varargin)
-            % Set the titles for each subplot.
+            % Set the plot titles.
+            % 
+            % See also: title, titleInterpreter, titleSize.
             titles = hybrid.internal.parseStringVararginWithOptionalOptions(varargin{:});
             this.settings.component_titles = titles;
+            this.last_function_call = 'titles';
         end
 
         function this = label(this, label)
-            % Set a single component label. 
+            % Set an axis label for a single state component.
+            % 
+            % See also: labels, tLabel, jLabel, labelInterpreter, labelSize.
             if iscell(label)
                 e = MException('HybridPlotBuilder:InvalidArgument', ...
                     'For setting multiple labels, use labels()');
                 throwAsCaller(e);
             end
             this.labels(label);
+            this.last_function_call = 'label';
         end
 
         function this = labels(this, varargin)
-            % Set component labels.
+            % Set axis labels for state components.
+            % 
+            % See also: label, tLabel, jLabel, labelInterpreter, labelSize.
             labels = hybrid.internal.parseStringVararginWithOptionalOptions(varargin{:});
             this.settings.component_labels = labels;
+            this.last_function_call = 'labels';
         end
 
         function this = labelSize(this, size)
             % Set the font size of component labels.
+            % 
+            % See also: label, labels, tLabel, jLabel, labelInterpreter,
+            % titleSize, tickLabelSize.
             this.settings.label_size = size;
+            this.last_function_call = 'labelSize';
         end
 
         function this = titleSize(this, size)
             % Set the font size of titles.
+            %
+            % See also: title, titles, titleInterpreter, labelSize, tickLabelSize.
             this.settings.title_size = size;
+            this.last_function_call = 'titleSize';
         end
 
         function this = tickLabelSize(this, size)
             % Set the font size of tick mark labels.
+            %
+            % See also: labelInterpreter, labelSize, titleSize.
             this.settings.tick_label_size = size;
+            this.last_function_call = 'tickLabelSize';
         end
 
         function this = tLabel(this, t_label)
@@ -80,20 +106,27 @@ classdef HybridPlotBuilder < handle
             %  'none': 't'
             %   'tex': 't'
             % 'latex': '$t$'
+            %
+            % See also: jLabel, label, labels, labelInterpreter.
             this.settings.t_label = t_label;
+            this.last_function_call = 'tLabel';
         end
 
         function this = jLabel(this, j_label)
-            % Set the label for the discrete time axis 
+            % Set the label for the discrete time axis 'j'.
             % The default value depends on the label interpreter:
             %  'none': 'j'
             %   'tex': 'j'
             % 'latex': '$j$'
+            %
+            % See also: tLabel, label, labels, labelInterpreter.
             this.settings.j_label = j_label;
+            this.last_function_call = 'jLabel';
         end
 
         function this = xLabelFormat(this, label_format)
-            % Set the string format used for missing component labels in automatic subplots (used only if explicit labels are not specified) .
+            % Set the string format used for missing component labels when using automatic subplots.
+            % The label format is used only if explicit labels are not given.
             %
             % The string 'label_format' must be a valid format for
             %         sprint(label_format, i)
@@ -107,129 +140,334 @@ classdef HybridPlotBuilder < handle
             %  'none': 'x(%d)'
             %   'tex': 'x_{%d}'
             % 'latex': '$x_{%d}$'
+            %
+            % See also: subplots, label, labels, labelInterpreter.
             this.settings.x_label_format = label_format;
+            this.last_function_call = 'xLabelFormat';
         end
 
         function this = legend(this, varargin)
-            % Set the legend entry label(s) for the next plot. Optional name-value options for the built-in MATLAB 'legend' function can be included.
+            % Set the legend entry label(s) for subsequent plots. 
+            % Optional name-value options for the built-in MATLAB 'legend' function can be included.
             [labels, options] = hybrid.internal.parseStringVararginWithOptionalOptions(varargin{:});
             this.settings.component_legend_labels = labels;
             this.settings.legend_options = options;
+            this.last_function_call = 'tLabel';
         end
                 
         function this = flowColor(this, color)
             % Set the color of flow lines.
+            % 
+            % The 'color' argument can be any valid MATLAB color specification: 
+            %    name (e.g., 'red', 'blue'),
+            %    short name (e.g., 'r', 'b'), 
+            %    RGB Triplet (e.g., [1, 0, 0], [0, 0, 1]), or
+            %    hexadecimal color code (e.g., '#FF0000', '#0000FF').
+            % Multiple colors can be set by passing an cell array of color
+            % specifications, such as {'red', 'black', [0.3, 0.1, 0.9]}. If
+            % auto-subplots is 'off', then each state component is plotted in
+            % the next color in the array, looping back to the first when the
+            % end is reached. If auto-subplots is 'on', then all components are
+            % plotted in their respective subplot with each call to a 
+            % plotting function using the next color.
+            %
+            % To use the default MATLAB plot colors, use flowColor('matlab'). 
+            % 
+            % To hide flows, use 'none' or an empty array []. 
+            %
+            % See also: plot, jumpColor, color.
             this.settings.flow_color = color;
+            this.last_function_call = 'flowColor';
         end
 
         function this = flowLineStyle(this, style)
-            % FLOWLINESTYLE Set the style of flow lines.  If 'style'
-            % is an empty string or empty array, then flow lines are hidden. 
+            % Set the style of flow lines. 
+            % 
+            % Options are '-' (default), '--'. ':', '-.', or 'none'.
+            %
+            % See also: flowColor, flowLineWidth.
             this.settings.flow_line_style = style;
+            this.last_function_call = 'flowLineStyle';
         end
 
         function this = flowLineWidth(this, width)
-            % FLOWLINEWIDTH Set the width of flow lines.
+            % Set the width of flow lines.
+            % See also: flowColor, flowLineStyle.
             this.settings.flow_line_width = width;
+            this.last_function_call = 'flowLineWidth';
         end
 
         function this = jumpColor(this, color)
-            % Set the color of jump lines and jump markers.
-            % at each end.
+            % Set the color of jump lines and markers.
+            % 
+            % The 'color' argument can be any valid MATLAB color specification: 
+            %    name (e.g., 'red', 'blue'),
+            %    short name (e.g., 'r', 'b'), 
+            %    RGB Triplet (e.g., [1, 0, 0], [0, 0, 1]), or
+            %    hexadecimal color code (e.g., '#FF0000', '#0000FF').
+            % Multiple colors can be set by passing an cell array of color
+            % specifications, such as {'red', 'black', [0.3, 0.1, 0.9]}. If
+            % auto-subplots is 'off', then each state component is plotted in
+            % the next color in the array, looping back to the first when the
+            % end is reached. If auto-subplots is 'on', then all components are
+            % plotted in their respective subplot with each call to a 
+            % plotting function using the next color.
+            %
+            % To use the default MATLAB plot colors, use jumpColor('matlab'). 
+            % 
+            % To hide jumps, use 'none' or
+            % an empty array []. To hide only jump lines, instead use
+            % jumpLineStyle('none') and to hide only jump markers, use
+            % jumpStartMarker('none'), jumpEndMarker('none'), or jumpMarker('none').  
+            %
+            % See also: jumpLineStyle, jumpStartMarker, jumpEndMarker,
+            % jumpMarker, flowColor, color. 
             this.settings.jump_color = color;
+            this.last_function_call = 'jumpColor';
         end
 
         function this = color(this, color)
+            % Set both the flow and jump colors.
+            %
+            % See also: flowColor, jumpColor.
             this.settings.jump_color = color;
             this.settings.flow_color = color;
+            this.last_function_call = 'color';
         end
 
         function this = jumpLineStyle(this, style)
-            % JUMPLINESTYLE Set the style of lines along jumps. If 'style'
-            % is an empty string or empty array, then jump lines are hidden. 
+            % Set the line style for lines between the start and end of jumps. 
+            % 
+            % Options are '-', '--' (default), ':', '-.', or 'none'.
+            %
+            % See also: jumpColor, jumpLineWidth.
             this.settings.jump_line_style = style;
+            this.last_function_call = 'jumpLineStyle';
         end
 
         function this = jumpLineWidth(this, width)
-            % JUMPLINEWIDTH Set the width of jump lines.
+            % Set the with of lines between the start and end of jumps
+            %
+            % See also: jumpColor, jumpLineStyle.
             this.settings.jump_line_width = width;
+            this.last_function_call = 'jumpLineWidth';
         end
 
         function this = jumpMarker(this, marker)
-            % Set the marker for both sides of jumps.
+            % Set the marker for both the start and end of jumps.
+            %
+            % Options are 
+            % 'none', 
+            % 'o' (circle), 
+            % '+' (plus sign), 
+            % '*' (asterisk), 
+            % '.' (point)
+            % 'x' (cross), 
+            % '_' (horizontal line), 
+            % '|' (vertical line), 
+            % 's' (square), 
+            % 'd' (diamond), 
+            % '^' (upward-pointing triangle), 
+            % 'v' (downward-pointing triangle), 
+            % '>' (right-pointing triangle),
+            % '<' (left-pointing triangle), 
+            % 'p' (pentagram), or 
+            % 'h' (hexagram).
+            %
+            % See also: jumpMarkerSize, jumpStartMarker, jumpEndMarker
             this.jumpStartMarker(marker);
             this.jumpEndMarker(marker);
+            this.last_function_call = 'jumpMarker';
         end
 
         function this = jumpMarkerSize(this, size)
-            % Set the marker size for both sides of jumps.
+            % Set the marker size for both the start and end of jumps.
+            %
+            % See also: jumpMarker, jumpStartMarkerSize, jumpEndMarkerSize.
             this.jumpStartMarkerSize(size);
             this.jumpEndMarkerSize(size);
+            this.last_function_call = 'jumpMarkerSize';
         end
 
         function this = jumpStartMarker(this, marker)
             % Set the marker for the starting point of each jump.
+            %
+            % Options are 
+            % 'none', 
+            % 'o' (circle), 
+            % '+' (plus sign), 
+            % '*' (asterisk), 
+            % '.' (point)
+            % 'x' (cross), 
+            % '_' (horizontal line), 
+            % '|' (vertical line), 
+            % 's' (square), 
+            % 'd' (diamond), 
+            % '^' (upward-pointing triangle), 
+            % 'v' (downward-pointing triangle), 
+            % '>' (right-pointing triangle),
+            % '<' (left-pointing triangle), 
+            % 'p' (pentagram), or 
+            % 'h' (hexagram).
+            %
+            % See also: jumpStartMarkerSize, jumpEndMarker, jumpMarker
             this.settings.jump_start_marker = marker;
+            this.last_function_call = 'jumpStartMarker';
         end
 
         function this = jumpStartMarkerSize(this, size)
             % Set the marker size for the starting point of each jump.
+            %
+            % See also: jumpMarkerSize, jumpEndMarkerSize, jumpStartMarker.
             this.settings.jump_start_marker_size = size;
+            this.last_function_call = 'jumpStartMarkerSize';
         end
 
         function this = jumpEndMarker(this, marker)
             % Set the marker for the end point of each jump.
+            %
+            % Options are 
+            % 'none', 
+            % 'o' (circle), 
+            % '+' (plus sign), 
+            % '*' (asterisk), 
+            % '.' (point)
+            % 'x' (cross), 
+            % '_' (horizontal line), 
+            % '|' (vertical line), 
+            % 's' (square), 
+            % 'd' (diamond), 
+            % '^' (upward-pointing triangle), 
+            % 'v' (downward-pointing triangle), 
+            % '>' (right-pointing triangle),
+            % '<' (left-pointing triangle), 
+            % 'p' (pentagram), or 
+            % 'h' (hexagram).
+            %
+            % See also: jumpEndMarkerSize, jumpStartMarker, jumpMarker
             this.settings.jump_end_marker = marker;
+            this.last_function_call = 'jumpEndMarker';
         end
 
         function this = jumpEndMarkerSize(this, size)
-            % Set the marker size for the end  point of each jump.
+            % Set the marker size for the end point of each jump.
+            %
+            % See also: jumpMarkerSize, jumpStartMarkerSize, jumpEndMarker.
             this.settings.jump_end_marker_size = size;
+            this.last_function_call = 'jumpEndMarkerSize';
         end
 
         function this = slice(this, component_indices)
-            % Pick the state components to plot by providing the corresponding indices. 
+            % Select the components of x to plot. 
+            % 
+            % If plotting a function of the state, such as 
+            %   HybridPlotBuilder().slice(3).plotFlows(sol, @(x3) cos(x3));
+            % then x is sliced before it is passed to the given function, so
+            % the result would be a plot of cosine of the third component of x.
+            % 
+            % To reset to the default value, call slice([]).
+            %
+            % See also: filter.
             this.settings.component_indices = component_indices;
+            this.last_function_call = 'slice';
         end
 
         function this = filter(this, timesteps_filter)
             % Pick the timesteps to display. All others are hidden from plots. 
+            % 
+            % The 'timesteps_filter' argument must must be a column vector with
+            % the same entries as the number of 
+            % time steps in the solution being plotted.
+            %
+            % To reset to the default value, call filter([]).
+            %
+            % See also: slice.
             this.settings.timesteps_filter = timesteps_filter;
+            this.last_function_call = 'filter';
         end
         
-        function this = autoSubplots(this, auto_subplots)
+        function this = subplots(this, auto_subplots)
             % Configure whether to automatically create subplots for each component.
+            % 
+            % Input value can be 'on','off', true, or false. The default value
+            % is 'off'.
+            %
+            % When 'off', all plots are placed in the current axes. The first
+            % 'title' value is used, if provided. For 'plotFlows', 'plotJumps',
+            % and 'plotHybrid', the first 'label' value, if provided, is used to
+            % label the vertical axis. For 'plotPhase', then the 'label' values
+            % corresponding to the plotted component indices are added to each axis, if
+            % provided (otherwise default values are used).
+            %
+            % When 'subplots' is 'on' and 'plotFlows', 'plotJumps',
+            % or 'plotHybrid' is called, then a subplot is created for each
+            % plotted state component. If 'plotPhase' is called, then a single subplot
+            % is create. If the current figure did not, previously, have the
+            % correct number of subplots, then the figure is cleared before plotting. 
+            % For 'plotFlows', 'plotJumps', and 'plotHybrid', the 'title' and
+            % 'label' values corresponding to the component index is applied to
+            % each subplot. For 'plotPhase', the first 'title' value is applied
+            % and the 'label' values corresponding to the plotted components are
+            % added to each axis, if provided (otherwise default values are used).
+            %
+            % See also: slice, configurePlots, titles, labels.
             this.settings.auto_subplots = auto_subplots;
+            this.last_function_call = 'subplots';
+        end
+
+        function this = autoSubplots(this, auto_subplots)
+            % Deprecated: use 'subplots()' instead.
+            warning('Use HybridPlotBuilder.subplots() instead of autoSubplots()')
+            this.subplots(auto_subplots);
+            this.last_function_call = 'autoSubplots';
         end
         
         function this = configurePlots(this, plots_callback)
-            % Provide a function that is called within each subplot to facilitate additional configuration.
+            % Provide a function that is called within each plot (or subplot).
+            % This can be used to perform additional configuration.
+            %
+            % See also: subplots.
            this.settings.plots_callback = plots_callback;
+            this.last_function_call = 'configurePlots';
         end
         
         function this = titleInterpreter(this, interpreter)
             % Set the text interpreter used in titles. 
             % The choices are 'none', 'tex', and 'latex' (default).
+            % 
+            % See also: title, titles, titleSize, textInterpreter.
             this.settings.title_interpreter = interpreter;
+            this.last_function_call = 'titleInterpreter';
         end
         
         function this = labelInterpreter(this, interpreter)
             % Set the text interpreter used in time, component, and legend entry labels. 
             % The choices are 'none', 'tex', and 'latex' (default).
+            % 
+            % See also: label, labels, labelSize, textInterpreter.
             this.settings.label_interpreter = interpreter;
+            this.last_function_call = 'labelInterpreter';
         end
         
         function this = tickLabelInterpreter(this, interpreter)
-            % Set the text interpreter used in time, component, and legend entry labels. 
+            % Set the text interpreter used in time, component, and legend entry labels.
+            %  
+            % See also: textInterpreter.
             this.settings.tick_label_interpreter = interpreter;
+            this.last_function_call = 'tickLabelInterpreter';
+
         end
 
         function this = textInterpreter(this, interpreter)
             % Set both the title and legend entry labels.
             % The choices are 'none', 'tex', and 'latex' (default).
+            % 
+            % See also: titleInterpreter, labelInterpreter,
+            % tickLabelInterpreter.
             this.titleInterpreter(interpreter);
             this.labelInterpreter(interpreter);
             this.tickLabelInterpreter(interpreter);
+            this.last_function_call = 'textInterpreter';
         end
 
     end
@@ -237,10 +475,29 @@ classdef HybridPlotBuilder < handle
     methods % Plotting functions
         function this = plotFlows(this, varargin)
             % Plot values vs. continuous time 't'.
-            hybrid_sol = hybrid.internal.convert_varargin_to_solution_obj(varargin);
-            x_ndxs = this.settings.indicesToPlot(hybrid_sol);
-            plot_struct = this.makePlotDataArray(hybrid_sol, x_ndxs, {'t', 'x'});
+            % Let 'sol' be a HybridSolution object with N time steps (that is,
+            % N = length(sol.t)). Then, the input arguments for plotFlows must
+            % take one of the following forms: 
+            % 'plotFlows(sol)', 
+            % 'plotFlows(sol, x)', 
+            % 'plotFlows(sol, fh)', or
+            % 'plotFlows(t, j, x)', 
+            % where
+            % 'x' is an array with N rows,
+            % 'fh' is a function handle with the inputs |@(x)|, |@(x, t)| or
+            %   |@(x, t, j)| and output that is an array with N rows. The
+            %   evaluation of 'fh' is done via the function
+            %   'HybridSolution.evaluateFunction'.
+            % 't' and 'j' are Nx1 column vectors and 'x' is an array with N
+            % rows.
+            % 
+            % See also: plotJumps, plotHybrid, plotPhase,
+            % HybridSolution.evaluateFunction.
+            import hybrid.internal.*;
+            [hybrid_sol, x_label_ndxs, x_values_ndxs] = convert_varargin_to_solution_obj(varargin, this.settings.component_indices);
+            plot_struct = this.createPlotDataArray(hybrid_sol, x_label_ndxs, x_values_ndxs, {'t', 'x'});
             this.plot_from_plot_data_array(plot_struct);
+            this.last_function_call = [];
             
             if nargout == 0
                 % Prevent output if function is not terminated with a
@@ -251,10 +508,29 @@ classdef HybridPlotBuilder < handle
 
         function this = plotJumps(this, varargin)
             % Plot values vs. discrete time 'j'.
-            hybrid_sol = hybrid.internal.convert_varargin_to_solution_obj(varargin);
-            x_ndxs = this.settings.indicesToPlot(hybrid_sol);
-            plot_struct = this.makePlotDataArray(hybrid_sol, x_ndxs, {'j', 'x'});
+            %
+            % Let 'sol' be a HybridSolution object with N time steps (that is,
+            % N = length(sol.t)). Then, the input arguments for plotJumps must
+            % take one of the following forms: 
+            % 'plotJumps(sol)', 
+            % 'plotJumps(sol, x)', 
+            % 'plotJumps(sol, fh)', or
+            % 'plotJumps(t, j, x)', 
+            % where
+            % 'x' is an array with N rows,
+            % 'fh' is a function handle with the inputs |@(x)|, |@(x, t)| or
+            %   |@(x, t, j)| and output that is an array with N rows. The
+            %   evaluation of 'fh' is done via the function
+            %   'HybridSolution.evaluateFunction'.
+            % 't' and 'j' are Nx1 column vectors and 'x' is an array with N
+            % rows.
+            % 
+            % See also: plotFlows, plotHybrid, plotPhase,
+            % HybridSolution.evaluateFunction.
+            [hybrid_sol, x_label_ndxs, value_ids] = hybrid.internal.convert_varargin_to_solution_obj(varargin, this.settings.component_indices);
+            plot_struct = this.createPlotDataArray(hybrid_sol, x_label_ndxs, value_ids, {'j', 'x'});
             this.plot_from_plot_data_array(plot_struct);
+            this.last_function_call = [];
             
             if nargout == 0
                 % Prevent output if function is not terminated with a
@@ -265,11 +541,29 @@ classdef HybridPlotBuilder < handle
 
         function this = plotHybrid(this, varargin)
             % Plot values vs. continuous and discrete time (t, j).
-            hybrid_sol = hybrid.internal.convert_varargin_to_solution_obj(varargin);
-
-            x_ndxs = this.settings.indicesToPlot(hybrid_sol);
-            plot_struct = this.makePlotDataArray(hybrid_sol, x_ndxs, {'t', 'j', 'x'});
+            %
+            % Let 'sol' be a HybridSolution object with N time steps (that is,
+            % N = length(sol.t)). Then, the input arguments for plotHybrid must
+            % take one of the following forms: 
+            % 'plotHybrid(sol)', 
+            % 'plotHybrid(sol, x)', 
+            % 'plotHybrid(sol, fh)', or
+            % 'plotHybrid(t, j, x)', 
+            % where
+            % 'x' is an array with N rows,
+            % 'fh' is a function handle with the inputs |@(x)|, |@(x, t)| or
+            %   |@(x, t, j)| and output that is an array with N rows. The
+            %   evaluation of 'fh' is done via the function
+            %   'HybridSolution.evaluateFunction'.
+            % 't' and 'j' are Nx1 column vectors and 'x' is an array with N
+            % rows.
+            % 
+            % See also: plotFlows, plotJumps, plotPhase,
+            % HybridSolution.evaluateFunction.
+            [hybrid_sol, x_label_ndxs, x_values_ndxs] = hybrid.internal.convert_varargin_to_solution_obj(varargin, this.settings.component_indices);
+            plot_struct = this.createPlotDataArray(hybrid_sol, x_label_ndxs, x_values_ndxs, {'t', 'j', 'x'});
             this.plot_from_plot_data_array(plot_struct)
+            this.last_function_call = [];
 
             if nargout == 0
                 % Prevent output if function is not terminated with a
@@ -280,24 +574,43 @@ classdef HybridPlotBuilder < handle
 
         function this = plotPhase(this, varargin)
             % Plot a phase plot of the hybrid solution.
+            %
             % The output of depends on the dimension of the system 
             % or the number of components selected with 'slice()'. 
-            % The output is as follows: 
-            % - 2D: a 2D phase plot
-            % - 3D: a 3D phase plot
-            % - otherwise, an error is thrown
-            hybrid_sol = hybrid.internal.convert_varargin_to_solution_obj(varargin);
-            
-            x_ndxs = this.settings.indicesToPlot(hybrid_sol)';
-            switch size(x_ndxs, 2)
+            % The if there are two components, then the plot is a a 2D phase
+            % plot and if there are three components, then it is a 3D phase
+            % plot. Otherwise, an error is thrown.
+            %
+            % Let 'sol' be a HybridSolution object with N time steps (that is,
+            % N = length(sol.t)). Then, the input arguments for plotPhase must
+            % take one of the following forms: 
+            % 'plotPhase(sol)', 
+            % 'plotPhase(sol, x)', 
+            % 'plotPhase(sol, fh)', or
+            % 'plotPhase(t, j, x)', 
+            % where
+            % 'x' is a Nx2 or Nx3 array,
+            % 'fh' is a function handle with the inputs |@(x)|, |@(x, t)| or
+            %   |@(x, t, j)| and output that is a Nx2 or Nx3 array. The
+            %   evaluation of 'fh' is done via the function
+            %   'HybridSolution.evaluateFunction'.
+            % 't' and 'j' are Nx1 column vectors and 'x' is a Nx2 or Nx3 array.
+            % 
+            % See also: plotFlows, plotJumps, plotHybrid,
+            % HybridSolution.evaluateFunction.
+            [hybrid_sol, x_label_ndxs, value_ids] = hybrid.internal.convert_varargin_to_solution_obj(varargin, this.settings.component_indices);
+            x_label_ndxs = x_label_ndxs';
+            value_ids = value_ids';
+            switch size(x_label_ndxs, 2)
                 case 2
-                    plot_struct = this.makePlotDataArray(hybrid_sol, x_ndxs, {'x', 'x'});
+                    plot_struct = this.createPlotDataArray(hybrid_sol, x_label_ndxs, value_ids, {'x', 'x'});
                 case 3
-                    plot_struct = this.makePlotDataArray(hybrid_sol, x_ndxs, {'x', 'x', 'x'});
+                    plot_struct = this.createPlotDataArray(hybrid_sol, x_label_ndxs, value_ids, {'x', 'x', 'x'});
                 otherwise
-                    error('Expected 2 or 3 dimensions.');
+                    error('Expected ''x'' to be 2 or 3 dimensions, instead was %d.', size(x_label_ndxs, 2));
             end
             this.plot_from_plot_data_array(plot_struct)
+            this.last_function_call = [];
             
             if nargout == 0
                 % Prevent output if function is not terminated with a
@@ -306,42 +619,34 @@ classdef HybridPlotBuilder < handle
             end          
         end
 
-        function this = plot(this, varargin)
-            % Plot the hybrid solution in an intelligent way.
-            % The output of depends on the dimension of the system 
-            % (or the number of components selected with 'slice()'). 
-            % The output is as follows: 
-            % - 1D: a 1D plot generated using plotFlows
-            % - 2D: a 2D phase plot
-            % - 3D: a 3D phase plot
-            % - 4D+: a set of 1D subplots generated using plotFlows.
-            hybrid_sol = hybrid.internal.convert_varargin_to_solution_obj(varargin);
-            sliced_indices = this.settings.indicesToPlot(hybrid_sol);
-            dimensions = length(sliced_indices);
-            
-            if dimensions ~= 2 && dimensions ~= 3
-                this.plotFlows(varargin{:});
-            else
-                this.plotPhase(varargin{:});
-            end
-            
-            if nargout == 0
-                % Prevent output if function is not terminated with a
-                % semicolon.
-                clear this
-            end          
+        function plot(~, varargin)
+            % This function has been removed. Please use plotFlows or plotPhase
+            % explicitly.
+            error(['This function has been removed. Please use ' ...
+                'plotFlows or plotPhase explicitly.'])                     
         end
 
-        function this = addLegendEntry(this, graphic_obj, label)
-            % Add an object to include in the legend. 
-            % This function MUST be called while the axes where the object
-            % was plotted is still active.
+        function this = addLegendEntry(this, graphic_obj_handle, label)
+            % Add a graphic object to the legend. 
+            % 
+            % This function is used to add an object to the legend generated by
+            % HybridPlotBuilder. 'graphic_obj_handle' can be the output of a builtin
+            % MATLAB plotting function, such as 'plot' or 'contour' (note that
+            % for 'contour', the _second_ output is the handle).
+            %
+            % Example: 
+            %
+            %     plt_handle = plot(0, 0, '*');
+            %     pb.addLegendEntry(plt_handle, 'Origin');
+            %
+            % See also: HybridPlotBuilder.legend,
+            % HybridPlotBuilder.labelInterpreter.
             if isempty(label) || strcmp('', label)
                 return
             end
-            graphic_obj.DisplayName = char(label);
-            this.plots_for_legend = [this.plots_for_legend, graphic_obj];
-            this.axes_for_legend = [this.axes_for_legend, graphic_obj.Parent];
+            graphic_obj_handle.DisplayName = char(label);
+            this.plots_for_legend = [this.plots_for_legend, graphic_obj_handle];
+            this.axes_for_legend = [this.axes_for_legend, graphic_obj_handle.Parent];
             this.display_legend();
             if nargout == 0
                 clear this
@@ -370,8 +675,9 @@ classdef HybridPlotBuilder < handle
     end
     
     methods(Access = private)
-        function plot_data_array = makePlotDataArray(this, hybrid_sol, x_ndxs, axis_symbols)
-            plot_data_array = hybrid.internal.buildPlotDataArray(axis_symbols, x_ndxs, hybrid_sol, this.settings);
+        function plot_data_array = createPlotDataArray(this, hybrid_sol, x_ndxs, value_ids, axis_symbols)
+            plot_data_array = hybrid.internal.buildPlotDataArray(...
+                                axis_symbols, x_ndxs, value_ids, hybrid_sol, this.settings);
         end
 
         function plot_from_plot_data_array(this, plot_data_array)
@@ -381,12 +687,12 @@ classdef HybridPlotBuilder < handle
             % The length of each entry is the number of plots to draw. If
             % automatic subplots is on, then each plot is automatically placed
             % into a new subplot.
-            n_plots = size(plot_data_array, 1);
+            n_plots = size(plot_data_array, 2);
              
             % Save the 'hold' status.
             is_hold_on_before = ishold();
             hold_status_before = logical2on_off(is_hold_on_before);
-            
+
             n_subplots = max([plot_data_array.subplot_ndx]);
             
             for i_sp = 1:n_subplots
@@ -435,6 +741,7 @@ classdef HybridPlotBuilder < handle
                         this.plotFlow3D(axes, flows_x, plt_data.flow_args)
                         this.plotJump3D(axes, jumps_x, jumps_befores, jumps_afters, plt_data.jump_args)
                         view(axes, 34.8,16.8)
+
                     otherwise
                         error('plot_values must have 2 or 3 components.')
                 end
@@ -464,11 +771,11 @@ classdef HybridPlotBuilder < handle
             if this.settings.auto_subplots
                 % Link the subplot axes.
                 is2D = size(plot_data_array(1).plot_values, 2) == 2;
-                if is2D && n_plots > 1
+                if is2D
                     % Link the x-axes of the subplots so zooming and panning
                     % one subplot effects the others.
                     linkaxes(axes_array,'x')
-                elseif n_plots > 1
+                else
                     % Link the subplot axes so that the views are sync'ed.
                     link = linkprop(axes_array, {'View', 'XLim', 'YLim'});
                     setappdata(gcf, 'StoreTheLink', link);
@@ -574,13 +881,27 @@ classdef HybridPlotBuilder < handle
         end        
     end
 
+    methods(Hidden)
+        function delete(this)
+            % Warn users if they changed plot settings without subsequently
+            % calling a plot function.
+            if ~isempty(this.last_function_call)
+                warning(['The function ''%s'' was called on a HybridPlotBuilder ' ...
+                    'object without a subsequent call to a plotting function.\nIn ' ...
+                    'order for ''%s'' to have an effect, it must be called prior to plotting.'], ...
+                    this.last_function_call, this.last_function_call)
+            end
+            delete@HybridPlotBuilder(this);
+        end
+    end
+
     methods(Hidden) % Hide methods from 'handle' superclass from documentation.
         function addlistener(varargin)
              addlistener@HybridPlotBuilder(varargin{:});
         end
-        function delete(varargin)
-             delete@HybridPlotBuilder(varargin{:});
-        end
+%         function delete(varargin)
+%              delete@HybridPlotBuilder(varargin{:});
+%         end
         function eq(varargin)
             error('Not supported')
         end
@@ -616,30 +937,6 @@ classdef HybridPlotBuilder < handle
 end
         
 %%% Local functions %%%
-
-function axis_ids = generateAxisIds(axis1_id, axis2_id, axis3_id)
-is3D = exist('axis3_id', 'var');
-
-plot_dim = 2 + is3D;
-if is3D
-    plot_count = max([length(axis1_id), length(axis2_id), length(axis3_id)]);
-else
-    plot_count = max([length(axis1_id), length(axis2_id)]);
-end
-    function ids_cell = toCell(ids)
-        if isnumeric(ids)
-            ids_cell = num2cell(ids);
-        else
-            ids_cell = cellstr(repmat(ids, plot_count, 1));
-        end
-    end
-axis_ids = cell(plot_count, plot_dim);
-axis_ids(:, 1) = toCell(axis1_id);
-axis_ids(:, 2) = toCell(axis2_id);
-if is3D
-    axis_ids(:, 3) = toCell(axis3_id);
-end
-end
 
 function on_off = logical2on_off(b)
     % Convert a logical value to 'on' or 'off'

@@ -2,10 +2,10 @@ classdef PlotSettings_generateLabelsTest < matlab.unittest.TestCase
         
     methods (Test)
 
-
         function testTJXAutoSubplotsOn(testCase)
             import hybrid.internal.*;
             ps = PlotSettings();
+            ps.auto_subplots = true; 
             ps.t_label = 'T';
             ps.j_label = 'J';
             ps.component_labels = {'label 1', 'label 2'};
@@ -19,6 +19,7 @@ classdef PlotSettings_generateLabelsTest < matlab.unittest.TestCase
         function testTXAutoSubplotsOn(testCase)
             import hybrid.internal.*;
             ps = PlotSettings();
+            ps.auto_subplots = true; 
             ps.t_label = 'T';
             ps.component_labels = {'label 1', 'label 2'};
             [xlabel, ylabel, zlabel] = ps.generateLabels({'t', 1});
@@ -31,6 +32,7 @@ classdef PlotSettings_generateLabelsTest < matlab.unittest.TestCase
         function testXXAutoSubplotsOn(testCase)
             import hybrid.internal.*;
             ps = PlotSettings();
+            ps.auto_subplots = true; 
             ps.component_labels = {'label 1', 'label 2'};
             [xlabel, ylabel, zlabel] = ps.generateLabels({2, 1});
 
@@ -42,6 +44,7 @@ classdef PlotSettings_generateLabelsTest < matlab.unittest.TestCase
         function testXXXAutoSubplotsOn(testCase)
             import hybrid.internal.*;
             ps = PlotSettings();
+            ps.auto_subplots = true; 
             ps.component_labels = {'label 1', 'label 2', 'label 3'};
             [xlabel, ylabel, zlabel] = ps.generateLabels({2, 1, 3});
 
@@ -53,7 +56,7 @@ classdef PlotSettings_generateLabelsTest < matlab.unittest.TestCase
         function testTJXAutoSubplotsOff(testCase)
             import hybrid.internal.*;
             ps = PlotSettings();
-            ps.auto_subplots = false; 
+            % ps.auto_subplots = false; % Default
             ps.t_label = 'T';
             ps.j_label = 'J';
             ps.component_labels = {'label 1', 'label 2'};
@@ -67,7 +70,7 @@ classdef PlotSettings_generateLabelsTest < matlab.unittest.TestCase
         function testTXAutoSubplotsOff(testCase)
             import hybrid.internal.*;
             ps = PlotSettings();
-            ps.auto_subplots = false; 
+            % ps.auto_subplots = false; % Default
             ps.t_label = 'T';
             ps.component_labels = {'label 1', 'label 2'};
             [xlabel, ylabel, zlabel] = ps.generateLabels({'t', 3});
@@ -80,7 +83,7 @@ classdef PlotSettings_generateLabelsTest < matlab.unittest.TestCase
         function testXXAutoSubplotsOff(testCase)
             import hybrid.internal.*;
             ps = PlotSettings();
-            ps.auto_subplots = false; 
+            % ps.auto_subplots = false; % Default
             ps.component_labels = {'label 1', 'label 2'};
             [xlabel, ylabel, zlabel] = ps.generateLabels({2, 1});
 
@@ -92,7 +95,7 @@ classdef PlotSettings_generateLabelsTest < matlab.unittest.TestCase
         function testXXXAutoSubplotsOff(testCase)
             import hybrid.internal.*;
             ps = PlotSettings();
-            ps.auto_subplots = false; 
+            % ps.auto_subplots = false; % Default
             ps.component_labels = {'label 1', 'label 2', 'label 3'};
             [xlabel, ylabel, zlabel] = ps.generateLabels({2, 1, 3});
 

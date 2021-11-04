@@ -4,14 +4,14 @@ classdef makeAxisIdsTest < matlab.unittest.TestCase
        
         function testTSymbolPreserved(testCase)
             import hybrid.internal.*
-            x_ndxs = 1;
+            x_ndxs = double.empty(1, 0);
             axis_ids = makeAxisIds(x_ndxs, {'t'});
             testCase.assertEqual(axis_ids, {'t'});
         end
 
         function testJSymbolPreserved(testCase)
             import hybrid.internal.*
-            x_ndxs = 1;
+            x_ndxs = double.empty(1, 0);
             axis_ids = makeAxisIds(x_ndxs, {'j'});
             testCase.assertEqual(axis_ids, {'j'});
         end

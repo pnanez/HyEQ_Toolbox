@@ -11,7 +11,7 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
     methods
         function this = HybridPlotBuilderTest()
             close all
-            figure('visible','off');
+            figure('visible','on');
             function cleanupFigure()
                 f = gcf();
                 set(f, 'Visible', 'on')
@@ -36,16 +36,24 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
     end
     
     methods (Test)
-        function testAutoSubplotsDefaultOn(testCase)
+        function testSubplotsDefaultOff(testCase)
             pb = HybridPlotBuilder();
+            pb.plotFlows(testCase.sol_3);
+            testCase.assertSubplotCount(1)
+            testCase.assertSubplotTitles('')
+            testCase.assertSubplotYLabels('')
+        end
+
+        function testSubplotsOn(testCase)
+            pb = HybridPlotBuilder().subplots('on');
             pb.plotFlows(testCase.sol_3);
             testCase.assertSubplotCount(3)
             testCase.assertSubplotTitles('', '', '')
             testCase.assertSubplotYLabels('$x_{1}$', '$x_{2}$', '$x_{3}$')
         end
         
-        function testWithoutAutoSubplots(testCase)
-            pb = HybridPlotBuilder().autoSubplots('off')...
+        function testWithoutSubplots(testCase)
+            pb = HybridPlotBuilder().subplots('off')...
                 .title('Title')...
                 .label('Label');
             
@@ -68,8 +76,8 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             testCase.assertSubplotZLabels('Label')
         end
         
-        function testSlice(testCase)
-            pb = HybridPlotBuilder()...
+        function testSliceWithSubplots(testCase)
+            pb = HybridPlotBuilder().subplots('on')...
                 .titles('Title 1', 'Title 2', 'Title 3')...
                 .labels('A', 'B', 'C')...
                 .slice([1 3]);
@@ -86,8 +94,8 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             testCase.check3PlottingFunctions(pb, testCase.sol_3, @check)
         end
         
-        function testSliceSwitchedOrder(testCase)
-            pb = HybridPlotBuilder()...
+        function testSliceSwitchedOrderWithSubplots(testCase)
+            pb = HybridPlotBuilder().subplots('on')...
                 .titles('Title 1', 'Title 2', 'Title 3')...
                 .labels('A', 'B', 'C')...
                 .slice([3 1]);
@@ -105,8 +113,8 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             testCase.check3PlottingFunctions(pb, testCase.sol_3, @check)
         end
         
-        function testAutomaticTimeLabels(testCase)
-            pb = HybridPlotBuilder();
+        function testAutomaticTimeLabelsWithSubplots(testCase)
+            pb = HybridPlotBuilder().subplots('on');
             function verify(testCase, pb, tlabel, jlabel)
                 pb.plotFlows(testCase.sol_2);
                 testCase.assertSubplotXLabels(tlabel, tlabel)
@@ -140,32 +148,14 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             testCase.assert3DSubplots()
         end
         
-        function testPlotAdjustsToDimension(testCase)
-            % When there is one dimension, then plotFlows is used, so we
-            % expect a 2D plot.
-            HybridPlotBuilder().plot(testCase.sol_1)
-            testCase.assert2DSubplots()
-            
-            % When there are two or three dimensions, then the dimension of
-            % the plot matches the dimension of the solution.
-            HybridPlotBuilder().plot(testCase.sol_2)
-            testCase.assert2DSubplots()
-            HybridPlotBuilder().plot(testCase.sol_3)
-            testCase.assert3DSubplots()
-            
-            % When there are four dimensions, then plotFlows is used, so we
-            % expect a 2D plot.
-            HybridPlotBuilder().plot(testCase.sol_4)
-            testCase.assert2DSubplots()
-        end
-        
         function testPlotTJX(testCase)
             % This is just a smoke test. The selection of the values to plot are
             % tested in convert_varargin_to_solution_objTest.m
             sol = testCase.sol_2;
-            HybridPlotBuilder().plotJumps(sol.t, sol.j, -sol.x);
+            HybridPlotBuilder().subplots('on').plotJumps(sol.t, sol.j, -sol.x);
             testCase.assertSubplotCount(2);
-            HybridPlotBuilder().plot(sol.t, sol.j, -sol.x);
+            clf
+            HybridPlotBuilder().plotPhase(sol.t, sol.j, -sol.x);
             testCase.assertSubplotCount(1);
         end
         
@@ -173,9 +163,10 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             % This is just a smoke test. The selection of the values to plot are
             % tested in convert_varargin_to_solution_objTest.m
             sol = testCase.sol_3;
-            HybridPlotBuilder().plotHybrid(sol, -sol.x);
+            HybridPlotBuilder().subplots('on').plotHybrid(sol, -sol.x);
             testCase.assertSubplotCount(3);
-            HybridPlotBuilder().plot(sol, -sol.x);
+            clf
+            HybridPlotBuilder().plotPhase(sol, -sol.x);
             testCase.assertSubplotCount(1);
         end
         
@@ -183,9 +174,10 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             % This is just a smoke test. The selection of the values to plot are
             % tested in convert_varargin_to_solution_objTest.m
             sol = testCase.sol_4;
-            HybridPlotBuilder().plotFlows(sol, @(x) [x(2); x(1)]);
+            HybridPlotBuilder().subplots('on').plotFlows(sol, @(x) [x(2); x(1)]);
             testCase.assertSubplotCount(2);
-            HybridPlotBuilder().plot(sol, @(x) [x(2); x(1)]);
+            clf
+            HybridPlotBuilder().plotPhase(sol, @(x) [x(2); x(1)]);
             testCase.assertSubplotCount(1);
         end
         
@@ -193,9 +185,10 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             % This is just a smoke test. The selection of the values to plot are
             % tested in convert_varargin_to_solution_objTest.m
             sol = testCase.sol_4;
-            HybridPlotBuilder().plotHybrid(sol, @(x, t) [x(2)-t; x(1)]);
+            HybridPlotBuilder().subplots('on').plotHybrid(sol, @(x, t) [x(2)-t; x(1)]);
             testCase.assertSubplotCount(2);
-            HybridPlotBuilder().plot(sol, @(x, t) [x(2)-t; x(1)+t]);
+            clf
+            HybridPlotBuilder().plotPhase(sol, @(x, t) [x(2)-t; x(1)+t]);
             testCase.assertSubplotCount(1);
         end
         
@@ -203,9 +196,10 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             % This is just a smoke test. The selection of the values to plot are
             % tested in convert_varargin_to_solution_objTest.m
             sol = testCase.sol_4;
-            HybridPlotBuilder().plotJumps(sol, @(x, t, j) [x(2)-t*j; x(4)-j]);
+            HybridPlotBuilder().subplots('on').plotJumps(sol, @(x, t, j) [x(2)-t*j; x(4)-j]);
             testCase.assertSubplotCount(2);
-            HybridPlotBuilder().plot(sol, @(x, t, j) [x(2); t*j; x(1)+t-j]);
+            clf
+            HybridPlotBuilder().plotPhase(sol, @(x, t, j) [x(2); t*j; x(1)+t-j]);
             testCase.assertSubplotCount(1);
         end
         
@@ -213,18 +207,21 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
            pb = HybridPlotBuilder();
            pb.labelSize(17);
            testCase.assertEqual(pb.settings.label_size, 17);
+           pb.last_function_call = []; % To prevent a warning.
         end
         
         function testTitleSize(testCase)
            pb = HybridPlotBuilder();
            pb.titleSize(17);
            testCase.assertEqual(pb.settings.title_size, 17);
+           pb.last_function_call = []; % To prevent a warning.
         end
         
         function testTickLabelSize(testCase)
            pb = HybridPlotBuilder();
            pb.tickLabelSize(17);
            testCase.assertEqual(pb.settings.tick_label_size, 17);
+           pb.last_function_call = []; % To prevent a warning.
         end
         
         function testSetInterpreters(testCase)
@@ -241,6 +238,8 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             testCase.assertEqual(pb.settings.label_interpreter, 'latex');
             testCase.assertEqual(pb.settings.title_interpreter, 'latex');
             testCase.assertEqual(pb.settings.tick_label_interpreter, 'latex');
+
+            pb.last_function_call = []; % To prevent a warning.
         end
         
         function testSetFlowSettings(testCase)
@@ -251,6 +250,7 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             testCase.assertEqual(pb.settings.flow_color, 'r');
             testCase.assertEqual(pb.settings.flow_line_style, ':');
             testCase.assertEqual(pb.settings.flow_line_width, 5);
+            pb.last_function_call = []; % To prevent a warning.
         end
         
         function testSetJumpLineSettings(testCase)
@@ -261,12 +261,14 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             testCase.assertEqual(pb.settings.jump_color, 'g');
             testCase.assertEqual(pb.settings.jump_line_style, ':');
             testCase.assertEqual(pb.settings.jump_line_width, 5);
+            pb.last_function_call = []; % To prevent a warning.
         end
         
         function testSetColor(testCase)
             pb = HybridPlotBuilder().color('cyan');
             testCase.assertEqual(pb.settings.jump_color, 'cyan');
             testCase.assertEqual(pb.settings.flow_color, 'cyan');
+            pb.last_function_call = []; % To prevent a warning.
         end
         
         function testSetJumpMarkerSettingsStartAndEndTogether(testCase)
@@ -277,6 +279,7 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             testCase.assertEqual(pb.settings.jump_end_marker, 'square');
             testCase.assertEqual(pb.settings.jump_start_marker_size, 12.3);
             testCase.assertEqual(pb.settings.jump_end_marker_size, 12.3);
+            pb.last_function_call = []; % To prevent a warning.
         end
         
         function testSetJumpSettingsStartAndEndSeparately(testCase)
@@ -289,6 +292,7 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             testCase.assertEqual(pb.settings.jump_end_marker, '+');
             testCase.assertEqual(pb.settings.jump_start_marker_size, 0.1);
             testCase.assertEqual(pb.settings.jump_end_marker_size, 10);
+            pb.last_function_call = []; % To prevent a warning.
         end
         
         function testDefaultTextSize(testCase)
@@ -350,33 +354,35 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             testCase.assertEqual(pb.settings.title_interpreter, 'none');
         end
         
-        function testSetXLabelFormat(testCase)
-            HybridPlotBuilder()...
+        function testSetXLabelFormatWithSubplots(testCase)
+            HybridPlotBuilder().subplots('on')...
                 .xLabelFormat('$z_{%d}$')...
                 .slice([1 3])...
                 .plotFlows(testCase.sol_3);
             testCase.assertSubplotYLabels('$z_{1}$', '$z_{3}$')
         end
         
-        function testTitlesAsCellArray(testCase)
+        function testTitlesAsCellArrayWithSubplots(testCase)
             titles{1} = 'Title 1';
             titles{3} = 'Title 3';
-            HybridPlotBuilder()...
+            HybridPlotBuilder().subplots('on')...
                 .titles(titles)...
                 .plotFlows(testCase.sol_3);
             testCase.assertSubplotTitles('Title 1', '', 'Title 3')
         end
         
-        function testErrorTitlesWithOptions(testCase)
+        function testErrorTitlesWithOptionsWithSubplots(testCase)
             titles = {'Title 1', 'Title 2'};
-            fh = @() HybridPlotBuilder().titles(titles, 'FontSize', 3);
+            pb = HybridPlotBuilder().subplots('on');
+            fh = @() pb.titles(titles, 'FontSize', 3);
             testCase.verifyError(fh, 'Hybrid:UnexpectedOptions');
+            pb.last_function_call = []; % To prevent a warning.
         end
         
-        function testLabelsAsCellArray(testCase)
+        function testLabelsAsCellArrayWithSubplots(testCase)
             labels{1} = 'Label 1';
             labels{3} = 'Label 3';
-            HybridPlotBuilder()...
+            HybridPlotBuilder().subplots('on')...
                 .labels(labels)...
                 .plotFlows(testCase.sol_3);
             testCase.assertSubplotYLabels('Label 1', '', 'Label 3')
@@ -404,14 +410,14 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         end
         
         function testLegendsInTwoSubplots(testCase)
-            HybridPlotBuilder()...
+            HybridPlotBuilder().subplots('on')...
                 .legend('Subplot 1', 'Subplot 2')...
                 .plotFlows(testCase.sol_2);
             testCase.assertLegendLabels('Subplot 1', 'Subplot 2');
         end
         
         function testTwoLegendsInTwoSubplots(testCase)
-            pb = HybridPlotBuilder();
+            pb = HybridPlotBuilder().subplots('on');
             pb.legend('Subplot 1.1', 'Subplot 2.1')...
                 .plotFlows(testCase.sol_2);
             hold on
@@ -422,7 +428,7 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         end
         
         function testTwoLegendsInOneSubplot(testCase)
-            pb = HybridPlotBuilder();
+            pb = HybridPlotBuilder().subplots('on');
             pb.legend('Legend 1')...
                 .plotFlows(testCase.sol_1);
             hold on
@@ -434,32 +440,34 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         function testMultipleLegendsIn3DPlot(testCase)
             pb = HybridPlotBuilder();
             pb.legend('Plot 1')...
-                .plot(testCase.sol_3);
+                .plotPhase(testCase.sol_3);
             hold on
             pb.legend('Plot 2')...
-                .plot(testCase.sol_3);
+                .plotPhase(testCase.sol_3);
             testCase.assertLegendLabels({'Plot 1', 'Plot 2'})
         end
         
         function testLegendWithoutHold(testCase)
             pb = HybridPlotBuilder();
             pb.legend('Plot 1')...
-                .plot(testCase.sol_3);
+                .plotPhase(testCase.sol_3);
             hold off
             pb.legend('Plot 2')...
-                .plot(testCase.sol_2);
+                .plotPhase(testCase.sol_2);
             testCase.assertLegendLabels('Plot 2')
         end
         
         function testWarnTooManyLegendLabelsInPlotFlows(testCase)
-            pb = HybridPlotBuilder().legend('Subplot 1', 'Subplot 2', 'Subplot 3');
+            pb = HybridPlotBuilder().subplots('on')...
+                .legend('Subplot 1', 'Subplot 2', 'Subplot 3');
             testCase.verifyWarning(@() pb.plotJumps(testCase.sol_2), 'HybridPlotBuilder:TooManyLegends');
             testCase.assertLegendLabels('Subplot 1', 'Subplot 2');
         end
         
         function testTooManyLegendLabelsInPhasePlot(testCase)
-            pb = HybridPlotBuilder().legend('Subplot 1', 'Subplot 2');
-            testCase.verifyWarning(@() pb.plot(testCase.sol_2), ...
+            pb = HybridPlotBuilder().subplots('on')...
+                .legend('Subplot 1', 'Subplot 2');
+            testCase.verifyWarning(@() pb.plotPhase(testCase.sol_2), ...
                 'HybridPlotBuilder:TooManyLegends');
             testCase.assertLegendLabels('Subplot 1')
         end
@@ -472,7 +480,8 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         end
         
         function testAddLegendEntry(testCase)
-            pb = HybridPlotBuilder().legend('Subplot 1', 'Subplot 2');
+            pb = HybridPlotBuilder().subplots('on')...
+                .legend('Subplot 1', 'Subplot 2');
             pb.plotJumps(testCase.sol_2);
             hold on
             plt = plot([1, 5], [0, 8]);
@@ -514,8 +523,8 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
                 length(slice_ndxs), num2cell(slice_ndxs))
         end
         
-        function testPlotConfigNoAutoSubplots(testCase)
-            plt_fnc_callback = @(pb) pb.autoSubplots('off')...
+        function testPlotConfigNosubplots(testCase)
+            plt_fnc_callback = @(pb) pb.subplots('off')...
                                         .slice([3, 2])...
                                         .plotFlows(testCase.sol_3);
             testCase.assertConfigurePlotsCallbackCalls(plt_fnc_callback, 2, {3, 2})
@@ -524,34 +533,37 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         function testPlotConfigForPlotFunction(testCase)       
             % If there are two or three components, then one plot is drawn and
             % the component id is given as -1.
-            plt_fnc_callback = @(pb) pb.autoSubplots('off').plot(testCase.sol_3);
+            plt_fnc_callback = @(pb) pb.subplots('off').plotPhase(testCase.sol_3);
             testCase.assertConfigurePlotsCallbackCalls(plt_fnc_callback, 1, {[1, 2, 3]})
             
             % If there are four or more components, then defaults to plotFlows
-            plt_fnc_callback = @(pb) pb.autoSubplots('off').plot(testCase.sol_4);
+            plt_fnc_callback = @(pb) pb.subplots('off').plotFlows(testCase.sol_4);
             testCase.assertConfigurePlotsCallbackCalls(plt_fnc_callback, 4, {1, 2, 3, 4})
         end
                
-        function testHoldOnMaintainedWithAutoSubplots(testCase)
+        function testHoldOnMaintainedWithsubplots(testCase)
             hold on
-            pb = HybridPlotBuilder().autoSubplots('on');
+            pb = HybridPlotBuilder().subplots('on');
+
             pb.plotFlows(testCase.sol_2)
             testCase.assertTrue(ishold())
+
             pb.plotJumps(testCase.sol_2)
             testCase.assertTrue(ishold())
+
             pb.plotHybrid(testCase.sol_2)
             testCase.assertTrue(ishold())
-            testCase.assertSubplotCount(2);
             
-            % 'plot' also preserves hold on but resets subplots
-            pb.plot(testCase.sol_3);
+            % 'plotPhase' also preserves hold on but resets subplots
+            testCase.assertSubplotCount(2);
+            pb.plotPhase(testCase.sol_3);
             testCase.assertTrue(ishold())
             testCase.assertSubplotCount(1);
         end
                
-        function testHoldOnMaintainedWithoutAutoSubplots(testCase)
+        function testHoldOnMaintainedWithoutsubplots(testCase)
             hold on
-            pb = HybridPlotBuilder().autoSubplots('off');
+            pb = HybridPlotBuilder().subplots('off');
             pb.plotFlows(testCase.sol_2)
             testCase.assertTrue(ishold())
             pb.plotJumps(testCase.sol_2)
@@ -561,14 +573,14 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             testCase.assertSubplotCount(1);
             
             % Check 'plot' also preserves hold on and subplots
-            pb.plot(testCase.sol_3);
+            pb.plotPhase(testCase.sol_3);
             testCase.assertTrue(ishold())
             testCase.assertSubplotCount(1);
         end
         
-        function testHoldOffMaintainedWithAutoSubplots(testCase)
+        function testHoldOffMaintainedWithsubplots(testCase)
             hold off
-            pb = HybridPlotBuilder().autoSubplots('on');
+            pb = HybridPlotBuilder().subplots('on');
             pb.plotFlows(testCase.sol_2)
             testCase.assertFalse(ishold())
             pb.plotJumps(testCase.sol_2)
@@ -578,14 +590,14 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             testCase.assertSubplotCount(2);
             
             % 'plot' also preserves hold off
-            pb.plot(testCase.sol_3);
+            pb.plotPhase(testCase.sol_3);
             testCase.assertFalse(ishold())
             testCase.assertSubplotCount(1);
         end
         
-        function testHoldOffMaintainedWithoutAutoSubplots(testCase)
+        function testHoldOffMaintainedWithoutsubplots(testCase)
             hold off
-            pb = HybridPlotBuilder().autoSubplots('off');
+            pb = HybridPlotBuilder().subplots('off');
             pb.plotFlows(testCase.sol_2)
             testCase.assertFalse(ishold())
             pb.plotJumps(testCase.sol_2)
@@ -595,7 +607,7 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             testCase.assertSubplotCount(1);
             
             % 'plot' also preserves hold off
-            pb.plot(testCase.sol_3);
+            pb.plotPhase(testCase.sol_3);
             testCase.assertFalse(ishold())
             testCase.assertSubplotCount(1);
         end        
@@ -719,13 +731,18 @@ end
 function [nrows, ncols] = subplotCount(fig_hand)
 subplots = findobj(fig_hand,'type','axes');
 N = length(subplots);
-for n = 1:N
-    pos1(n) = subplots(n).Position(1); %#ok<*AGROW>
-    pos2(n) = subplots(n).Position(2);
+if N == 0
+    ncols = 0;
+    nrows = 0;
+else
+    for n = 1:N
+        pos1(n) = subplots(n).Position(1); %#ok<*AGROW>
+        pos2(n) = subplots(n).Position(2);
+    end
+    ncols = numel(unique(pos1));
+    nrows= numel(unique(pos2));
 end
-ncols = numel(unique(pos1));
-nrows= numel(unique(pos2));
-end   
+end
 
 function forEachSubplot(callback)
 nrows = subplotCount(gcf());

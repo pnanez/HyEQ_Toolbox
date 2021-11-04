@@ -77,6 +77,7 @@ classdef PlotDataTest < matlab.unittest.TestCase
             % PlotSettings_generateLabelsTest.
             import hybrid.internal.*;
             ps = PlotSettings();
+            ps.auto_subplots = true; 
             ps.t_label = 'T';
             ps.j_label = 'J';
             ps.component_labels = {'label 1', 'label 2'};

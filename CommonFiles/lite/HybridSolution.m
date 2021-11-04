@@ -118,31 +118,69 @@ classdef HybridSolution
             end
         end
 
-        function plot(varargin)
-            % Shortcut for HybridPlotBuilder.plot function.
-            HybridPlotBuilder().plot(varargin{:});
+        function l = length(this)
+            % Get the number of time-steps in this HybridSolution.
+            if isscalar(this)
+                l = numel(this.t);
+            else 
+                builtin('length', this);
+            end
         end
 
-        function plotFlows(varargin)
-            % Shortcut for HybridPlotBuilder.plotFlows function.
-            HybridPlotBuilder().plotFlows(varargin{:});
+        function plot(this, varargin)
+            % Deprecated: Do not use.
+            HybridPlotBuilder.plot(this)
         end
 
-        function plotJumps(varargin)
-            % Shortcut for HybridPlotBuilder.plotJumps function.
-            HybridPlotBuilder().plotJumps(varargin{:});
+        function plotFlows(this, varargin)
+            % Shortcut for HybridPlotBuilder.plotFlows function with automatic formatting based on the number of state components.
+            %
+            % See also: HybridPlotBuilder.plotFlows.
+            this.plotByFnc('plotFlows', varargin{:})
+        end
+
+        function plotJumps(this, varargin)
+            % Shortcut for HybridPlotBuilder.plotJumps function with automatic formatting based on the number of state components.
+            %
+            % See also: HybridPlotBuilder.plotJumps.
+            this.plotByFnc('plotJumps', varargin{:})
         end
         
-        function plotHybrid(varargin)
-            % Shortcut for HybridPlotBuilder.plotHybrid function.
-            HybridPlotBuilder().plotHybrid(varargin{:});
+        function plotHybrid(this, varargin)
+            % Shortcut for HybridPlotBuilder.plotHybrid function with automatic formatting based on the number of state components.
+            %
+            % See also: HybridPlotBuilder.plotHybrid.
+            this.plotByFnc('plotHybrid', varargin{:})
         end
         
-        function plotPhase(varargin)
+        function plotPhase(this, varargin)
             % Shortcut for HybridPlotBuilder.plotPhase function.
-            HybridPlotBuilder().plotPhase(varargin{:});
+            %
+            % See also: HybridPlotBuilder.plotPhase.
+            this.plotByFnc('plotPhase', varargin{:})
         end
-        
+
+    end
+
+    methods(Access = private)
+        function plotByFnc(this, plt_fnc, varargin)
+            % Shortcut for HybridPlotBuilder.plot function.
+            [~, x_ndxs] = hybrid.internal.convert_varargin_to_solution_obj([{this}, varargin(:)'], 1:size(this.x, 2));
+            MAX_COMPONENTS_FOR_SUBPLOTS = 4;
+            if length(x_ndxs) <= MAX_COMPONENTS_FOR_SUBPLOTS
+                HybridPlotBuilder()...
+                    .subplots('on')...
+                    .(plt_fnc)(this, varargin{:});
+            else
+                legend_labels = num2cell(x_ndxs);
+                legend_labels = cellfun(@(n) {sprintf('$x_{%d}$', n)},legend_labels);
+                HybridPlotBuilder()...
+                    .subplots('off')...
+                    .color('matlab')...
+                    .legend(legend_labels)...
+                    .(plt_fnc)(this, varargin{:});
+            end
+        end
     end
     
     methods(Hidden)

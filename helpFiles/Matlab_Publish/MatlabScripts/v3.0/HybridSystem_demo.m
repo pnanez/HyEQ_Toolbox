@@ -51,6 +51,12 @@ bb_system.bounce_coeff = 0.8;
  %          end
  %      end
  %   end
+ %
+% The value of |my_property| is set when a system is constructed:
+ % 
+ %   sys = MyHybridSystem(3.14); 
+ %
+ 
 
 %% Compute Solutions
 % To compute a solution, pass the initial state and time spans to the 
@@ -66,7 +72,7 @@ config = HybridSolverConfig('refine', 12); % Improves plot smoothness.
 sol = bb_system.solve(x0, tspan, jspan, config);
 plotFlows(sol);
 
-%% Information About Solution
+%% Information About Solutions
 % The return value of the |solve| method is a |HybridSolution| object that contains 
 % information about the solution.
 sol
@@ -110,12 +116,14 @@ energy = sol.evaluateFunction(energy_fnc);
 %%
 % |HybridPlotBuilder| calls |evaluateFunction| internally if a function handle is
 % passed to any of its plotting functions.
+clf
 HybridPlotBuilder().plotFlows(sol, energy_fnc);
+title('Total Energy')
 
 %% Solver Configuration Options
 % To configure the hybrid solver, create a
 % |HybridSolverConfig| object and pass it to |solve| as follows:
-config = HybridSolverConfig(); % Simply the default.
+config = HybridSolverConfig('silent', 'AbsTol', 1e-3);
 bb_system.solve(x0, tspan, jspan, config);
 
 %%

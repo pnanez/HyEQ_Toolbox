@@ -1,5 +1,5 @@
 function [us, ys] = evaluateInOrder(order, inputs, outputs, xs, t, js)
-% EVALUATEINORDER Evaluates given input and output functions in a specified order.
+% Evaluates given input and output functions in a specified order.
 %
 % Arguments:
 % order (char array): Contains a row for each entry in 'inputs' and each entry in

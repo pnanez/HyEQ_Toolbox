@@ -2,6 +2,11 @@
 homedir = char(java.lang.System.getProperty('user.home'));
 proj_root = fullfile(homedir, 'code', 'hybrid-toolbox');
 
+if ~isempty(which('HyEQsolver'))
+    warning('A version of the toolbox is already setup.')
+    return
+end
+
 toolbox_dirs = {...
     fullfile(proj_root, 'CommonFiles', 'lite'), ...
     fullfile(proj_root, 'CommonFiles', 'plottingFunctions'), ...

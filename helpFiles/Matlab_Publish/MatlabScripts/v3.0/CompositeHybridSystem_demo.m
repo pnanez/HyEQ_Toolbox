@@ -4,7 +4,7 @@
 % Consider the controlled hybrid systems $\mathcal H_1$ and $\mathcal H_2$ with 
 % data $(f_1, g_1, C_1, D_1)$ and $(f_2, g_2, C_2, D_2)$ and state spaces 
 % $\mathcal X_1$ and $\mathcal X_2.$ Let $x_1 \in \mathcal X_1$ and $x_2 \in \mathcal X_2.$
-% The dynamics of $\mathcal H_1$
+% The dynamics of $\mathcal H_1$ are
 % 
 % $$ \left\{\begin{array}{ll} 
 %    \dot{x}_1 = f_1(x_1, u_1, t, j_1) \quad &(x_1, u_1) \in C'_1 \times U_{C1} =: C_1 \\
@@ -19,7 +19,8 @@
 % \end{array} \right. $$
 %
 % Note that $\mathcal H_1$ and $\mathcal H_2$ use the same continuous time
-% $t$ but different discrete times $j_1$ and $j_2.$ 
+% $t$ but different discrete times $j_1$ and $j_2$ because they jump separately
+% of each other.
 %
 % To create feedback connections between $\mathcal H_1$ and $\mathcal H_2,$ 
 % we choose the inputs
@@ -28,16 +29,16 @@
 % $u_2 = \kappa_{2C}(x_1, x_2)$ when $x_2 \in C'_2$; and 
 % $u_2 = \kappa_{2D}(x_1, x_2)$ when $x_2 \in D'_2$. 
 %
-% We now define the system $\tilde H$ that is the composition of subsystems 
+% We define the system $\tilde H$ that is the composition of subsystems 
 % $\mathcal H_1$ and $\mathcal H_2.$ The state $\tilde x$ of $\tilde H$ is the
 % concatenation of $x_1$ and $x_2$ along with $j_1, j_2\in N$
 % that track the discrete times of the subsystems (since they can jump at
 % different times). That is, $\tilde x = (x_1, x_2, j_1, j_2).$ 
-% We want the system to flow whenever both subsystems are in their respective 
-% flow sets and to jump whenever either is in their jump set. Priority
-% is given to jumps.
+% The system will flow when both subsystems are in their respective 
+% flow sets and to jump whenever either is in their jump set.
 % Thus, we use the flow set $\tilde C := C_1' \times C_2',$ and the jump set 
-% $\tilde D = (D_1'\times \mathcal X_2) \bigcup (\mathcal X_1 \times D_2').$
+% $\tilde D = (D_1'\times \mathcal X_2) \bigcup (\mathcal X_1 \times D_2').$ 
+% In simulations, priority is given to jumps when $x$ in the intesection of $C$ and $D$.
 % The flow map is 
 %
 % $$ \dot{\tilde{x}} = \tilde{f}(\tilde x):= \left[\begin{array}{c}
@@ -54,20 +55,107 @@
 %       g_1(x_1, \kappa_{1D}(x_1, x_2), t, j_1) \\ 
 %       x_2 \\ 
 %       j_1 + 1 \\ 
-%       j_2 \end{array}\right]$$
+%       j_2 \end{array}\right],$$
 %
-% and if $\tilde x \in \mathcal X_1 \times D_2',$ then
+% if $\tilde x \in \mathcal X_1 \times D_2',$ then
 %
 % $$\tilde x^+ = \tilde{g}_2(\tilde x):= \left[\begin{array}{c}
 %       x_1 \\ 
 %       g_2(x_2, \kappa_{2D}(x_1, x_2), t, j_2) \\ 
 %       j_1 \\ 
+%       j_2 + 1 \end{array}\right],$$
+% 
+% and if $\tilde x \in D_1' \times D_2',$
+% then 
+% 
+% $$\tilde x^+ = \tilde{g}_2(\tilde x):= \left[\begin{array}{c}
+%       g_1(x_1, \kappa_{1D}(x_1, x_2), t, j_1) \\ 
+%       g_2(x_2, \kappa_{2D}(x_1, x_2), t, j_2) \\ 
+%       j_1 + 1\\ 
 %       j_2 + 1 \end{array}\right].$$
+% 
 
-%% Implement a Hybrid Subsystem
-% To create a composition of two hybrid subsystems, we first write subclasses of
-% the |HybridSubsystem| class. In the following example, we
-% will use |ExampleHybridSubsystem|, which is a bouncing ball-like
+%% Creating Subsystems
+% In the Hybrid Equations Toolbox, hybrid subsystems, such as $\mathcal{H}_1$ and
+% $\mathcal{H}_2$ above, are represented by the |HybridSubsystem| class.  
+% |HybridSubsystem| is an abstract class, which means that some of its methods
+% are not fully defined, so a |HybridSubsystem| object cannot be created directly.
+% Instead, it is necessary to implement of subclass of |HybridSubsystem| (or use
+% an existing subclass) that provides the full definitions of the abstract
+% methods in |HybridSubsystem|. 
+% In this tutorial, we use several |HybridSubsystem| subclasses located in the
+% |hybrid.subsystems| package. 
+help hybrid.subsystems
+
+%% 
+% Remark: Referencing class from the hybrid.subsystems requires 
+% the full package path to each class. 
+% For example, to use |ZeroOrderHold|, 
+% it must be referenced as |hybrid.subsystems.ZeroOrderHold|. 
+% The package path can be omitted
+% if the package is first imported by calling 
+import hybrid.subsystems.*
+
+%%
+% For clarity, however, we use the explicit path
+% throughout this document.
+
+%% Example: Zero-order Hold
+% As a case study in creating a composition of hybrid systems, consider the
+% following example. First, we create a linear time-invariant plant. The
+% class |hybrid.subsystems.LinearContinuousSubsystem| is a subclass of
+% |HybridSubsystem|. 
+
+A_c = [0, 1; -1, 0];
+B_c = [0; 1];
+plant = hybrid.subsystems.LinearContinuousSubsystem(A_c, B_c);
+     
+%% 
+% Create a linear feedback for the plant that asymptotically stabilizes the
+% origin of the closed loop system.
+K = [0, -2];
+controller = hybrid.subsystems.MemorylessSubsystem(2, 1, @(x, u) K*u);
+
+%% 
+% Next, we create a zero-order hold subsystem. 
+zoh_dim = plant.input_dimension;
+sample_time = 0.3;
+zoh = hybrid.subsystems.ZeroOrderHold(zoh_dim, sample_time);
+
+%% 
+% The composite hybrid system is created by passing the plant, controller,
+% and ZOH subsystems to the |CompositeHybridSystem| constructor.
+cl_sys = CompositeHybridSystem(plant, controller, zoh);
+
+%%
+% Set the inputs functions for each subsystem.
+cl_sys.setInput(plant, @(~, ~, y_zoh) y_zoh);
+cl_sys.setInput(controller, @(y_plant, ~, ~) y_plant);
+cl_sys.setInput(zoh, @(~, y_controller, ~) y_controller);
+
+%% 
+% Print the system to check that everything is connected as expected.
+cl_sys
+
+%% 
+% Finally, simulate and plot.
+sol = cl_sys.solve({[10; 0], [], [0; zoh.sample_time]}, [0, 10], [0, 100]);
+HybridPlotBuilder().subplots('on')...
+    .slice(1:3).labels('$x_1$', '$x_2$', '$u_{ZOH}$')...
+    .plotFlows(sol)
+
+%% 
+% The subsystem solutions can also be plotted in isolation.
+HybridPlotBuilder().subplots('on')...
+    .title('Trajectory of Plant State')...
+    .plotPhase(sol(plant))
+axis equal
+axis padded
+
+%% Bouncing Ball Example
+% 
+% In the following example, we
+% use |ExampleHybridSubsystem|, which is a bouncing ball-like
 % system, except that gravity is not constant, rather it is controlled by
 % the input. 
 % 
@@ -168,6 +256,7 @@ sol
 % Plotting |sol|, we see that the system jumped whenever the first or third
 % components reached zero.
 HybridPlotBuilder()...
+    .subplots('on')...
     .labels('$h_1$', '$v_1$', '$h_2$', '$v_2$')...
     .slice(1:4)... % Only plot subsystem state vectors, not j1, j2.
     .plotFlows(sol);
@@ -197,6 +286,7 @@ size(sol_plant.u)
 
 figure()
 hpb = HybridPlotBuilder()...
+    .subplots('on')...
     .labels('$h$', '$v$')...
     .legend('$\mathcal H_1$', '$\mathcal H_1$')...
     .titles('Height', 'Velocity');
@@ -212,16 +302,20 @@ hpb.flowColor('k').jumpColor('g')...
 % we recommend plotting flows and jumps separately. In our case, the jump input
 % was not set, so the plot shows that the values are zero.
 
-% One HybridPlotBuilder is used twice so both plots are included in the legend. 
+clf
+% Plot Input Signal
+subplot(2, 1, 1)
+% A single HybridPlotBuilder is used twice so both plots are included in the legend. 
 hpb = HybridPlotBuilder().title('Input Signal').jumpColor('none')...
     .filter([diff(sol_plant.j) == 0; 0])...
-    .legend('$\kappa_{2C}(y_1, y_2)$')...
+    .legend('$\kappa_{2C}(y_1(t), y_2(t))$')...
     .plotFlows(sol_plant, sol_plant.u); 
 hold on
 hpb.jumpMarker('*').jumpColor('r').flowColor('none')...
     .filter([diff(sol_plant.j) == 1; 0])...
-    .legend({'$\kappa_{2D}(y_1, y_2)$'}, 'location', 'southeast')...
+    .legend({'$\kappa_{2D}(y_1(t), y_2(t))$'}, 'location', 'southeast')...
     .plotFlows(sol_plant, sol_plant.u)
+title('Input')
 ylim('padded')
 
 %% Example: Single System
@@ -232,78 +326,18 @@ sys_1 = CompositeHybridSystem(subsystem1);
 sys_1.setFlowInput(1, @(y1, t, j) -5);   
 sys_1.setJumpInput(1, @(y1, t, j) 0);   
 sol_1 = sys_1.solve({x1_initial}, tspan, jspan);
-
-%% Example: Zero-order Hold
-% As a case study in creating a composition of hybrid systems, consider the
-% following example. First, we create a linear time-invariant plant. The
-% class |hybrid.subsystems.LinearContinuousSubsystem| is a subclass of
-% |HybridSubsystem|. 
-
-A_c = [0, 1; -1, 0];
-B_c = [0; 1];
-plant = hybrid.subsystems.LinearContinuousSubsystem(A_c, B_c);
-     
-%% 
-% Create a linear feedback for the plant that asymptotically stabilizes the
-% origin of the closed loop system.
-K = [0, -2];
-controller = hybrid.subsystems.MemorylessSubsystem(2, 1, @(x, u) K*u);
-
-%% 
-% Next, we create a zero-order hold subsystem. 
-zoh_dim = plant.input_dimension;
-sample_time = 0.3;
-zoh = hybrid.subsystems.ZeroOrderHold(zoh_dim, sample_time);
- 
-%% 
-% Remark: The creation of the subsystem objects included the full package path
-% to each class (That is 'hybrid.subsystems'). The package path can be omitted
-% if the package is first imported (for clarity, we use the explicit path
-% throughout this document). 
-import hybrid.subsystems.*
-zoh = ZeroOrderHold(zoh_dim, sample_time);
-
-%% 
-% The composite hybrid system is created by passing the plant, controller,
-% and ZOH subsystems to the |CopoundHybridSystem| constructor.
-cl_sys = CompositeHybridSystem(plant, controller, zoh);
-
-%%
-% Set the inputs functions for each subsystem.
-cl_sys.setInput(plant, @(~, ~, y_zoh) y_zoh);
-cl_sys.setInput(controller, @(y_plant, ~, ~) y_plant);
-cl_sys.setInput(zoh, @(~, y_controller, ~) y_controller);
-
-%% 
-% Print the system to check that everything is connected as expected.
-cl_sys
-
-%% 
-% Finally, simulate and plot.
-sol_zoh = cl_sys.solve({[10; 0], [], [0; zoh.sample_time]}, [0, 10], [0, 100]);
-HybridPlotBuilder().slice(1:3).labels('$x_1$', '$x_2$', '$u_{ZOH}$')...
-    .plotFlows(sol_zoh)
-
-%% 
-% The subsystem solutions can also be plotted in isolation.
-HybridPlotBuilder()...
-    .title('Trajectory of Plant State')...
-    .plot(sol_zoh(plant))
-axis equal
-axis padded
-
 %% Example: Switched System
 % We create a composite system that consists of a plant, two controllers, and a
 % switch that toggles between the controllers based on some criteria. 
-clf 
 A = [0, 1; 0, 0];
 B = [0; 1];
+K0 = [-1, -1];
+K1 = [ 2, -1];
+input_dim = 1;
 plant = hybrid.subsystems.LinearContinuousSubsystem(A, B);
-controller_0 = hybrid.subsystems.MemorylessSubsystem(...
-                                        2, 1, @(~, z_plant) [-1, -1]*z_plant);
-controller_1 = hybrid.subsystems.MemorylessSubsystem(...
-                                        2, 1, @(~, z_plant) [ 2, -1]*z_plant);
-switcher = hybrid.subsystems.SwitchSubsystem(1);
+controller_0 = hybrid.subsystems.MemorylessSubsystem(2, 1, @(~, z_plant) K0*z_plant);
+controller_1 = hybrid.subsystems.MemorylessSubsystem(2, 1, @(~, z_plant) K1*z_plant);
+switcher = hybrid.subsystems.SwitchSubsystem(input_dim);
 sys = CompositeHybridSystem(plant, controller_0, controller_1, switcher);
 
 %% 
@@ -339,7 +373,9 @@ sys.setInput(plant, @(~, ~, ~, u_switched) u_switched);
 x0 = {[10; 0], [], [], 1};
 sol = sys.solve(x0, [0, 100], [0, 100]);
 
+clf 
 HybridPlotBuilder()....
+    .subplots('on')...
     .labels('$z_1$', '$z_2$', '$q$')...
     .slice(1:3)... % Ignore j1,j2,j3 components
     .configurePlots(@(ax, ndx) ylim(ax, [-inf, inf]))... % Remove any empty space in vertical dimension
