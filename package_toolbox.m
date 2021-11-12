@@ -9,19 +9,22 @@ if ~endsWith(pwd(), 'hybrid-toolbox')
 end
 
 projectFile = 'HybridEquationsToolbox.prj';
-toolbox_dirs = {'CommonFiles/lite', ...
-    'CommonFiles/plottingFunctions', ...
-    'CommonFiles/simulinkBased/Library2014b', ...
-    'helpFiles/Matlab_Publish/MatlabScripts/v3.0'};
+toolbox_dirs = {'matlab', ...
+    'matlab/legacyPlottingFunctions', ...
+    'simulink/Library2014b', ...
+    'doc'};
 publish_dirs = {'doc', 'helpFiles/Matlab_publish', 'helpFiles/Matlab_Publish/MatlabScripts/v3.0'};
 % Setup path
 for directory = toolbox_dirs
     addpath(directory{1})
 end
 
+functionSignituresAutocompleteInfoPath_dev = 'matlab/functionSignatures.json';
+functionSignituresAutocompleteInfoPath_package = 'matlab/functionSignatures_disabled.json';
+
 if do_tests
     nTestsFailed = hybrid.tests.run();
-    validateFunctionSignaturesJSON('CommonFiles/lite/functionSignatures.json')
+    validateFunctionSignaturesJSON(functionSignituresAutocompleteInfoPath_dev)
 else
     nTestsFailed = -1;
 end

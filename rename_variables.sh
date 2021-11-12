@@ -21,5 +21,12 @@ function rename() {
 #rename CompoundHybridSolution CompositeHybridSolution
 #rename ZOHController hybrid.subsystems.ZeroOrderHold
 
-# 3.0.0.13 to 3.0.0.14
-rename HybridSolutionWithInput HybridSubsystemSolution
+# 3.0.0.13 to 3.0.0.20
+# rename HybridSolutionWithInput HybridSubsystemSolution
+
+# 3.0.0.20 to 3.0.0.21
+#rename HybridProgress hybrid.ProgressUpdater
+#rename SilentHybridProgress hybrid.SilentProgressUpdater
+#rename PopupHybridProgress hybrid.PopupProgressUpdater
+#rename HybridPriority hybrid.Priority
+#rename TerminationCause hybrid.TerminationCause
