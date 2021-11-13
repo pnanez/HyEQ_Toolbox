@@ -170,7 +170,7 @@ classdef HybridSolution
     methods(Access = private)
         function plotByFnc(this, plt_fnc, varargin)
             % Shortcut for HybridPlotBuilder.plot function.
-            [~, x_ndxs] = hybrid.internal.convert_varargin_to_solution_obj([{this}, varargin(:)'], 1:size(this.x, 2));
+            [~, x_ndxs] = hybrid.internal.convert_varargin_to_solution_obj([{this}, varargin(:)']);
             MAX_COMPONENTS_FOR_SUBPLOTS = 4;
             if length(x_ndxs) <= MAX_COMPONENTS_FOR_SUBPLOTS
                 HybridPlotBuilder()...

@@ -1,5 +1,5 @@
 classdef MemorylessSubsystem < HybridSubsystem
-% Class of subsystems with output that is generated solely from the input (and does not have any state values).
+% Hybrid subsystems with output that is generated solely from the input (no state values).
        
     methods
         function obj = MemorylessSubsystem(input_dimension, output_dimension, output)

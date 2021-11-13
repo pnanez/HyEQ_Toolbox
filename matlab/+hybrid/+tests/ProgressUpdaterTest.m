@@ -5,7 +5,7 @@ classdef ProgressUpdaterTest < matlab.unittest.TestCase
         function testTimeSpans(testCase)
             import hybrid.tests.internal.*  
             hp = AutoCancelProgressUpdater();
-            sys = hybrid.examples.ExampleBouncingBallHybridSystem();
+            sys = hybrid.examples.BouncingBall();
             config = HybridSolverConfig().progress(hp);
             tspan = [0, 10];
             jspan = [0, 10];
@@ -23,7 +23,7 @@ classdef ProgressUpdaterTest < matlab.unittest.TestCase
             
             max_step = 1e-2;
             config = HybridSolverConfig('MaxStep', 1e-2).progress(hp);
-            sys = hybrid.examples.ExampleBouncingBallHybridSystem();
+            sys = hybrid.examples.BouncingBall();
             tspan = [0, 10];
             jspan = [0, 10];
             sol = sys.solve([10; 0], tspan, jspan, config);
@@ -38,7 +38,7 @@ classdef ProgressUpdaterTest < matlab.unittest.TestCase
             hp.t_cancel = Inf;
             hp.j_cancel = 3;
             
-            sys = hybrid.examples.ExampleBouncingBallHybridSystem();
+            sys = hybrid.examples.BouncingBall();
             config = HybridSolverConfig().progress(hp);
             tspan = [0, 10];
             jspan = [0, 10];
@@ -52,7 +52,7 @@ classdef ProgressUpdaterTest < matlab.unittest.TestCase
             hp = AutoCancelProgressUpdater();
             hp.t_cancel = Inf;
             hp.j_cancel = Inf;
-            sys = hybrid.examples.ExampleBouncingBallHybridSystem();
+            sys = hybrid.examples.BouncingBall();
             config = HybridSolverConfig().progress(hp);
             sol = sys.solve([10; 0], [0, 10], [0, 10], config);
             
@@ -64,7 +64,7 @@ classdef ProgressUpdaterTest < matlab.unittest.TestCase
             hp.min_delay = 0;
             
             config = HybridSolverConfig().progress(hp);
-            sys = hybrid.examples.ExampleBouncingBallHybridSystem();
+            sys = hybrid.examples.BouncingBall();
             tspan = [0, 1];
             jspan = [0, 1];
             sys.solve([10; 0], tspan, jspan, config);
@@ -78,7 +78,7 @@ classdef ProgressUpdaterTest < matlab.unittest.TestCase
             hp.t_decimal_places = 1;
             
             config = HybridSolverConfig('MaxStep', 1e-2).progress(hp);
-            sys = hybrid.examples.ExampleBouncingBallHybridSystem();
+            sys = hybrid.examples.BouncingBall();
             tspan = [0, 1];
             jspan = [0, 1];
             sys.solve([10; 0], tspan, jspan, config);
@@ -91,7 +91,7 @@ classdef ProgressUpdaterTest < matlab.unittest.TestCase
             hp.min_delay = Inf;
             
             config = HybridSolverConfig().progress(hp);
-            sys = hybrid.examples.ExampleBouncingBallHybridSystem();
+            sys = hybrid.examples.BouncingBall();
             tspan = [0, 1];
             jspan = [0, 1];
             sys.solve([10; 0], tspan, jspan, config);

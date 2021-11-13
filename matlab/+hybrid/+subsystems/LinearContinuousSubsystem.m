@@ -1,5 +1,5 @@
 classdef LinearContinuousSubsystem < HybridSubsystem
-% Class of hybrid subsystems that have linear continuous dynamics and no discrete dynamics.
+% Hybrid subsystems that have linear continuous dynamics and no discrete dynamics.
     
     properties(SetAccess = immutable)
         A % State matrix.

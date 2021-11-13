@@ -2,13 +2,19 @@
 %% Setup
 % We first create several solutions that are used in
 % subsequent examples.
-system = hybrid.examples.ExampleBouncingBallHybridSystem();
+system = hybrid.examples.BouncingBall();
 system_3D = hybrid.examples.Example3DHybridSystem();
 config = HybridSolverConfig('Refine', 15); % 'Refine' option makes the plots smoother.
 sol = system.solve([10, 0], [0 30], [0 30], config);
 sol_3D = system_3D.solve([0; 1; 0], [0, 20], [0, 100], config);
 sol_8D = HybridSolution(sol.t, sol.j, sol.x(:, 1)*(1:8));
 
+%%
+
+% HybridPlotBuilder().jumpColor('none').slice(1).title('Bouncing Ball Trajectory').label('height').plotFlows(sol);
+% ylim([0, 10.5])
+% box on 
+% saveExampleFigure('bouncing_ball', 400, 250)
 %% Basic Plotting
 % The Hybrid Equations Toolbox provides two approaches to plotting hybrid
 % solutions, depending the level of control required. The first approach,
@@ -89,6 +95,7 @@ HybridPlotBuilder().subplots('on').plotFlows(sol)
 % The |slice| function selects which components to plot and which order to plot them.
 % To plot components 1 and 2, pass the array |[1, 2]| to |slice| 
 % (equivalently, |slice(1:2)|).
+clf
 HybridPlotBuilder().slice([1,2]).plotPhase(sol_3D);
 
 %% 

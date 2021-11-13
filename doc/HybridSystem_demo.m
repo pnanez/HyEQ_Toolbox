@@ -2,12 +2,12 @@
 %% Create a HybridSystem Subclass
 % In this tutorial, we walk through how to create and solve a hybrid system 
 % using the |HybridSystem| class. To demonstrate, consider the bouncing ball system 
-% defined in |ExampleBouncingBallHybridSystem.m|:
+% defined in |BouncingBall.m|:
 % 
-% <include>ExampleBouncingBallHybridSystem.m</include>
+% <include>BouncingBall.m</include>
 %% 
-% In the first line of file, |"classdef ExampleBouncingBallHybridSystem  < 
-% HybridSystem"| specifies that |ExampleBouncingBallHybridSystem| is a
+% In the first line of file, |"classdef BouncingBall  < 
+% HybridSystem"| specifies that |BouncingBall| is a
 % subclass of the |HybridSystem| class, 
 % which means it inherits all the methods and properties of that class. Next, 
 % we define several variables in the |properties| block and functions in the |methods| 
@@ -22,7 +22,7 @@
 
 % Before we can solve a hybrid system, we create an instance of our
 % subclass of |HybridSystem|.
-bb_system = hybrid.examples.ExampleBouncingBallHybridSystem();
+bb_system = hybrid.examples.BouncingBall();
 %% 
 % Values of the properties can be modified using dot indexing on the object:
 bb_system.gravity = 3.72;
@@ -61,7 +61,7 @@ bb_system.bounce_coeff = 0.8;
 %% Compute Solutions
 % To compute a solution, pass the initial state and time spans to the 
 % |solve| function, which is defined in the |HybridSystem| class (|bb_system| is a 
-% |HybridSystem| object because |ExampleBouncingBallHybridSystem| 
+% |HybridSystem| object because |BouncingBall| 
 % is a subclass of |HybridSystem|). Optionally, a |HybridSolverConfig| object
 % can be passed to the solver to set various configurations (see below).
 

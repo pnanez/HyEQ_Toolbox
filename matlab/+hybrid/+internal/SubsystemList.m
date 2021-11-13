@@ -111,8 +111,15 @@ classdef SubsystemList
             end
             
             if isempty(ndx)
+                if  ischar(subsys_id) || isa(subsys_id, 'string')
+                    arg_str = ['''', subsys_id, ''''];
+                elseif isnumeric(subsys_id)
+                    arg_str = num2str(subsys_id);
+                else
+                    arg_str = ['with class ''', class(subsys_id), ''''];
+                end
                 e = MException('CompositeHybridSystem:NotASubsystem', ...
-                    'Argument was not a subsystem in this system.');
+                    'Argument %s was not a subsystem in this system.', arg_str);
                 throwAsCaller(e);
             elseif length(ndx) > 1
                 e = MException('CompositeHybridSystem:AmbiguousArgument', ...

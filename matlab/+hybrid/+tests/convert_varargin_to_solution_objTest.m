@@ -2,7 +2,7 @@ classdef convert_varargin_to_solution_objTest < matlab.unittest.TestCase
    
     methods (Test)
         function test_Solution(testCase)
-            sol_in = hybrid.examples.ExampleBouncingBallHybridSystem().solve([10, 0]);
+            sol_in = hybrid.examples.BouncingBall().solve([10, 0]);
             varagin_cell = {sol_in};       
             sol_out = hybrid.internal.convert_varargin_to_solution_obj(varagin_cell);
             testCase.assertEqual(sol_in.t, sol_out.t);
@@ -11,7 +11,7 @@ classdef convert_varargin_to_solution_objTest < matlab.unittest.TestCase
         end
         
         function test_inputs_sol_y(testCase)
-            sol_in = hybrid.examples.ExampleBouncingBallHybridSystem().solve([10, 0]);
+            sol_in = hybrid.examples.BouncingBall().solve([10, 0]);
             y_in = ones(length(sol_in.t), 3);
             varagin_cell = {sol_in, y_in};       
             sol_out = hybrid.internal.convert_varargin_to_solution_obj(varagin_cell);
@@ -21,7 +21,7 @@ classdef convert_varargin_to_solution_objTest < matlab.unittest.TestCase
         end
         
         function test_inputs_t_j_y(testCase)
-            sol_in = hybrid.examples.ExampleBouncingBallHybridSystem().solve([10, 0]);
+            sol_in = hybrid.examples.BouncingBall().solve([10, 0]);
             y_in = rand(length(sol_in.t), 3);
             varagin_cell = {sol_in.t, sol_in.j, y_in};       
             sol_out = hybrid.internal.convert_varargin_to_solution_obj(varagin_cell);
@@ -31,7 +31,7 @@ classdef convert_varargin_to_solution_objTest < matlab.unittest.TestCase
         end
         
         function test_inputs_sol_1arg(testCase)
-            sol_in = hybrid.examples.ExampleBouncingBallHybridSystem().solve([10, 0]);
+            sol_in = hybrid.examples.BouncingBall().solve([10, 0]);
             y_func = @(x) -x;
             varagin_cell = {sol_in, y_func};       
             sol_out = hybrid.internal.convert_varargin_to_solution_obj(varagin_cell);

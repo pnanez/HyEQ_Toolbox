@@ -1,4 +1,4 @@
-classdef ExampleBouncingBallHybridSystem < HybridSystem
+classdef BouncingBall < HybridSystem
 
     properties
         gravity = 9.8;
@@ -8,6 +8,10 @@ classdef ExampleBouncingBallHybridSystem < HybridSystem
     methods 
         % To define the data of the system, we implement 
         % the abstract functions from HybridSystem.m
+
+        function this = BouncingBall()
+            this = this@HybridSystem(2);
+        end
 
         function xdot = flowMap(this, x, t, j)
             xdot = [x(2); -this.gravity];

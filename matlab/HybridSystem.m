@@ -104,6 +104,14 @@ classdef (Abstract) HybridSystem < handle
                     'jspan must be an array of two values in the form [jstart, jend]');
                 throwAsCaller(e);
             end
+            if tspan(1) > tspan(2)
+                warning('HybridSystem:BackwardTSPAN', ...
+                    'The second entry of tspan was smaller than the first.');
+            end
+            if jspan(1) > jspan(2)
+                warning('HybridSystem:BackwardTSPAN', ...
+                    'The second entry of jspan was smaller than the first.');
+            end
             if ~isempty(varargin) && isa(varargin{1}, 'HybridSolverConfig')
                 assert(numel(varargin) == 1, ...
                     'If a HybridSolverConfig is provided in the 4th argument, then there cannot be any more arguments.')

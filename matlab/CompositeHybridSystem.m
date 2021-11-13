@@ -55,7 +55,9 @@ classdef CompositeHybridSystem < HybridSystem
         % where N is the number of subsystems.
         kappa_D
         
-        outputs
+
+        flow_outputs
+        jump_outputs
         
         sorted_names_flows
         sorted_names_jumps
@@ -92,7 +94,13 @@ classdef CompositeHybridSystem < HybridSystem
            obj.kappa_C = generate_default_feedbacks(subsystems);
            obj.kappa_D = generate_default_feedbacks(subsystems);
            
-           obj.updateOutputsList()
+%            obj.updateOutputsList()
+
+            for i = 1:obj.subsys_n
+               obj.flow_outputs{i} = obj.subsystems.get(i).flows_output_fnc;
+               obj.jump_outputs{i} = obj.subsystems.get(i).jumps_output_fnc;
+            end
+            obj.updateEvaluationOrder();
         end
         
         function setFlowInput(this, subsys_id, kappa_C)
@@ -184,12 +192,18 @@ classdef CompositeHybridSystem < HybridSystem
                     fprintf('%s Subsystem %d: (%s)\n', subsys_prefix, i, class(ss))
                 end
                 if isequal(this.kappa_C{i}, this.kappa_D{i})
-                    fprintf('%s \t\t      Input: %s\n', prop_prefix, func2str(this.kappa_D{i}))
+                    fprintf('%s \t\t       Input: %s\n', prop_prefix, func2str(this.kappa_D{i}))
                 else
-                    fprintf('%s \t\t Flow input: %s\n', prop_prefix, func2str(this.kappa_C{i}))
-                    fprintf('%s \t\t Jump input: %s\n', prop_prefix, func2str(this.kappa_D{i}))
+                    fprintf('%s \t\t  Flow input: %s\n', prop_prefix, func2str(this.kappa_C{i}))
+                    fprintf('%s \t\t  Jump input: %s\n', prop_prefix, func2str(this.kappa_D{i}))
                 end
-                fprintf('%s \t\t     Output: y%d=%s\n', prop_prefix, i, func2str(ss.output_fnc))
+
+                if isequal(ss.flows_output_fnc, ss.jumps_output_fnc)
+                    fprintf('%s \t\t      Output: y%d=%s\n', prop_prefix, i, func2str(ss.flows_output_fnc))
+                else
+                    fprintf('%s \t\t Flow output: y%d=%s\n', prop_prefix, i, func2str(ss.flows_output_fnc))
+                    fprintf('%s \t\t Jump output: y%d=%s\n', prop_prefix, i, func2str(ss.jumps_output_fnc))
+                end
                 fprintf('%s \t\t Dimensions: ', prop_prefix)
                 fprintf('State=%d, Input=%d, Output=%d\n', ...
                     ss.state_dimension, ss.input_dimension, ss.output_dimension)
@@ -208,14 +222,17 @@ classdef CompositeHybridSystem < HybridSystem
             % the entries corresponding to the j-values.  
             xdot = zeros(this.state_dimension, 1); 
             us = hybrid.internal.evaluateInOrder(this.sorted_names_flows, ...
-                                        this.kappa_C, this.outputs, xs, t, js);
+                                        this.kappa_C, this.flow_outputs, xs, t, js);
             for i=1:length(this.subsystems)
                ss = this.subsystems.get(i);
                u = us{i};
                j = js(i);
                assert_control_length(length(u), ss.input_dimension, i)
                xdot_ss = ss.flowMap(xs{i}, u, t, j);
-               assert_state_length(length(xdot_ss), ss.state_dimension, i)
+               assert_state_length(size(xdot_ss, 1), ss.state_dimension, i)
+               if ~iscolumn(xdot_ss) && ~isempty(xdot_ss)
+                   error('xdot was not a column vector.')
+               end
                xdot(this.x_indices{i}) = xdot_ss;
             end
         end 
@@ -225,7 +242,7 @@ classdef CompositeHybridSystem < HybridSystem
             [xs, js] = this.split(x);
             xplus = NaN(this.state_dimension, 1);
             us = hybrid.internal.evaluateInOrder(this.sorted_names_jumps, ...
-                                        this.kappa_D, this.outputs, xs, t, js);
+                                        this.kappa_D, this.jump_outputs, xs, t, js);
             for i=1:length(this.subsystems)
                ss = this.subsystems.get(i);
                u = us{i};
@@ -258,7 +275,7 @@ classdef CompositeHybridSystem < HybridSystem
             C = true; 
             [xs, js] = this.split(x);
             us = hybrid.internal.evaluateInOrder(this.sorted_names_flows, ...
-                                        this.kappa_C, this.outputs, xs, t, js);
+                                        this.kappa_C, this.flow_outputs, xs, t, js);
             for i=1:length(this.subsystems)
                ss = this.subsystems.get(i);
                u = us{i};
@@ -282,7 +299,7 @@ classdef CompositeHybridSystem < HybridSystem
             D = false; 
             [xs, js] = this.split(x);
             us = hybrid.internal.evaluateInOrder(this.sorted_names_jumps, ...
-                                        this.kappa_D, this.outputs, xs, t, js);
+                                        this.kappa_D, this.jump_outputs, xs, t, js);
             for i=1:length(this.subsystems)
                ss = this.subsystems.get(i);
                u = us{i};
@@ -343,6 +360,8 @@ classdef CompositeHybridSystem < HybridSystem
             
             x0 = [xs_0; js_0];
                    
+            % Update the evaluation order in case any inputs have been changed
+            % since this was constructed or the last time 'solve' was called.
             this.updateEvaluationOrder();
             sol = this.solve@HybridSystem(x0, tspan, jspan, varargin{:});
 
@@ -366,7 +385,8 @@ classdef CompositeHybridSystem < HybridSystem
             [xs_all, js_all] = this.split_many(x);
             us_jump = {};
             us_flow = {};
-            ys = {};
+            flow_ys = {};
+            jump_ys = {};
             % Compute the input values
             for k = 1:length(t)
                 js = [];
@@ -375,11 +395,10 @@ classdef CompositeHybridSystem < HybridSystem
                     xs{end+1} = xs_all(k, this.x_indices{i})'; %#ok<AGROW>
                     js(end+1) = js_all(k, i); %#ok<AGROW>
                 end
-                us_jump{k} = evaluateInOrder(this.sorted_names_jumps, ...
-                    this.kappa_D, this.outputs, xs, t(k), js); %#ok<AGROW>
-%                 [us, ys] =
-                [us_flow{k}, ys{k}] = evaluateInOrder(this.sorted_names_flows, ...
-                    this.kappa_C, this.outputs, xs, t(k), js); %#ok<AGROW>
+                [us_jump{k}, jump_ys{k}] = evaluateInOrder(this.sorted_names_jumps, ...
+                    this.kappa_D, this.jump_outputs, xs, t(k), js); %#ok<AGROW>
+                [us_flow{k}, flow_ys{k}] = evaluateInOrder(this.sorted_names_flows, ...
+                    this.kappa_C, this.flow_outputs, xs, t(k), js); %#ok<AGROW>
             end
             for i = 1:this.subsys_n
                 ss = this.subsystems.get(i);
@@ -397,11 +416,12 @@ classdef CompositeHybridSystem < HybridSystem
                     if is_jump(k)
                         us_k_jump = us_jump{k};
                         ss_u(k, :) = us_k_jump{i}';
+                        ys_all_at_k = jump_ys{k};
                     else % is flow
                         us_k_flow = us_flow{k};
                         ss_u(k, :) = us_k_flow{i}';
+                        ys_all_at_k = flow_ys{k};
                     end
-                    ys_all_at_k = ys{k};
                     ss_y(k, :) = ys_all_at_k{i};
                 end
                 
@@ -421,18 +441,11 @@ classdef CompositeHybridSystem < HybridSystem
     end
 
     methods(Access = private)
-            
-        function updateOutputsList(this, ~, ~)
-            for i = 1:this.subsys_n
-               this.outputs{i} = this.subsystems.get(i).output_fnc;
-            end
-            this.updateEvaluationOrder();
-        end
         
         function updateEvaluationOrder(this)
             import hybrid.internal.*
-            this.sorted_names_flows = sortInputAndOutputFunctionNames(this.kappa_C, this.outputs);
-            this.sorted_names_jumps = sortInputAndOutputFunctionNames(this.kappa_D, this.outputs);
+            this.sorted_names_flows = sortInputAndOutputFunctionNames(this.kappa_C, this.flow_outputs);
+            this.sorted_names_jumps = sortInputAndOutputFunctionNames(this.kappa_D, this.jump_outputs);
         end
         
         function [xs, js] = split(this, x)

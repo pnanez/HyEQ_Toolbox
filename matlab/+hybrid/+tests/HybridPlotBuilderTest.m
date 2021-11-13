@@ -11,13 +11,6 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
     methods
         function this = HybridPlotBuilderTest()
             close all
-            figure('visible','on');
-            function cleanupFigure()
-                f = gcf();
-                set(f, 'Visible', 'on')
-                close(f)
-            end
-            this.fig_cleanup = onCleanup(@() cleanupFigure());
             t = [linspace(0, 1, 50)'; linspace(1, 2, 50)'];
             j = [zeros(50, 1); ones(50, 1)];
             x = (t + j).^2;

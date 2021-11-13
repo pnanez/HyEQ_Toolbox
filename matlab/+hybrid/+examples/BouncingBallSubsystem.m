@@ -1,18 +1,21 @@
-classdef ExampleHybridSubsystem < HybridSubsystem
+classdef BouncingBallSubsystem < HybridSubsystem
         
     properties
         bounce_coef = 0.9; 
+        gravity = -9.8;
     end
     
     methods
-        function obj = ExampleHybridSubsystem()
+        function obj = BouncingBallSubsystem() % Constructor.
             state_dim = 2;
             input_dim = 1;
-            obj = obj@HybridSubsystem(state_dim, input_dim);
+            output_dim = 2; % Matches default.
+            output_fnc = @(x) x; % Matches default.
+            obj = obj@HybridSubsystem(state_dim, input_dim, output_dim, output_fnc);
         end
         
-        function xdot = flowMap(~, x, u, ~, ~)  
-            xdot = [x(2); u];
+        function xdot = flowMap(this, x, u, t, j)  
+            xdot = [x(2); this.gravity];
         end
 
         function xplus = jumpMap(this, x, u, t, j) 
@@ -20,7 +23,7 @@ classdef ExampleHybridSubsystem < HybridSubsystem
         end 
 
         function C = flowSetIndicator(this, x, u, t, j)
-            C = 1;
+            C = x(1) >= 0 || x(2) >= 0;
         end 
 
         function D = jumpSetIndicator(this, x, u, t, j)

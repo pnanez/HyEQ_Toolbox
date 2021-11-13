@@ -62,6 +62,23 @@ classdef CompositeHybridSolution < HybridSolution
             end
         end
 
+        function n = numArgumentsFromSubscript(obj,s,indexingContext) %#ok<INUSD> 
+            % Subscripts always return a single (possibly array) object.
+            n = 1;
+        end
+        
+        function n = numel(this)
+
+           % Define per this Stackoverflow answer: https://stackoverflow.com/a/29378151/6651650
+           
+           if isscalar(this)
+               n = numel(this.subsystem_solutions);
+           else
+               % Handle the case where 'this' is an array.
+               n = builtin('numel',this);
+           end
+        end
+
         function len = length(this)
 
            % Define per this Stackoverflow answer: https://stackoverflow.com/a/29378151/6651650

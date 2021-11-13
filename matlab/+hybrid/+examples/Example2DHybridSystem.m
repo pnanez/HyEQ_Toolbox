@@ -3,6 +3,10 @@ classdef Example2DHybridSystem < HybridSystem
  % Sanfelice, and Teel.
 
     methods
+        function this = Example2DHybridSystem()
+            this = this@HybridSystem(2);
+        end
+
         function xdot = flowMap(this, x) %#ok<INUSL>
             xdot = [x(2); -x(1)];
         end

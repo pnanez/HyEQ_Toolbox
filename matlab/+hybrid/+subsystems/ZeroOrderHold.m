@@ -1,5 +1,8 @@
 classdef ZeroOrderHold < HybridSubsystem
-% Periodically samples the input to generate a continuous-time output using constant interpolation between sample times. 
+% Hybrid subsystems that periodically sample the input to generate a piecewise continuous output.
+% 
+% Constant interpolation is used between sample times. 
+
 
     properties
         sample_time;

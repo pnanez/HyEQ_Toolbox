@@ -1,10 +1,13 @@
 classdef HybridSubsystemBuilderTest < matlab.unittest.TestCase
 
-    % Test Method Block
     methods (Test)
 
-        function testDefaultBuilder(testCase)
+        function testDefaultBuilderWithStateDim1(testCase)
             sys = HybridSubsystemBuilder().build();
+
+            testCase.assertEqual(sys.state_dimension, 1);
+            testCase.assertEqual(sys.input_dimension, 0);
+            testCase.assertEqual(sys.output_dimension, 1);
 
             % Functions (g, f, C_indicator, D_indicator) return 0 by default.
             testCase.assertEqual(sys.flowMap(nan, nan, nan, nan), 0);
@@ -13,7 +16,39 @@ classdef HybridSubsystemBuilderTest < matlab.unittest.TestCase
             testCase.assertEqual(sys.jumpSetIndicator(nan, nan, nan, nan), 0);
 
             % Output returns full state vector.
-            testCase.assertEqual(sys.output_fnc(7.6), 7.6);
+            testCase.assertEqual(sys.output(7.6), 7.6);
+            testCase.assertEqual(sys.flowOutput(17.6), 17.6);
+            testCase.assertEqual(sys.jumpOutput(2.6), 2.6);
+        end
+
+        function testOutputDimTruncatesStateIfOutputFunctionsNotSet(testCase)
+            sys = HybridSubsystemBuilder()...
+                .stateDimension(3)...
+                .outputDimension(1).build();
+            testCase.assertEqual(sys.output([1.1; 2.2; 3.3]), 1.1);
+        end
+
+        function testFullStateOutputIfOutputDimAndOutputFunctionsNotSet(testCase)
+            sys = HybridSubsystemBuilder().stateDimension(2).build();
+            testCase.assertEqual(sys.output([1.1; 2.2]), [1.1; 2.2]);
+        end
+
+        function testBuilderPropertiesNotModifiedIfDefaultsUsed(testCase)
+            hsb = HybridSubsystemBuilder();
+            hsb.build(); % Call build.
+            testCase.assertEmpty(hsb.flow_output_handle);
+            testCase.assertEmpty(hsb.jump_output_handle);
+            testCase.assertEmpty(hsb.output_dim);
+        end
+
+        function testErrorIfOutputDimLargerThanStateDimAndNoOutputFncs(testCase)
+            hsb = HybridSubsystemBuilder().stateDimension(1).outputDimension(2);
+            testCase.verifyError(@() hsb.build(), 'HybridSubsystemBuilder:InvalidOutput')
+            hsb.jumpOutput(@(x) [x; x]);
+            testCase.verifyError(@() hsb.build(), 'HybridSubsystemBuilder:InvalidOutput')
+            hsb.jumpOutput([]);
+            hsb.flowOutput(@(x) [x; x]);
+            testCase.verifyError(@() hsb.build(), 'HybridSubsystemBuilder:InvalidOutput')
         end
 
         function testFunctionSetters(testCase)
@@ -37,7 +72,9 @@ classdef HybridSubsystemBuilderTest < matlab.unittest.TestCase
                 testCase.assertEqual(system.jumpMap(x, NaN, NaN, NaN), g(x));
                 testCase.assertEqual(system.flowSetIndicator(x, NaN, NaN, NaN), C_ind(x));
                 testCase.assertEqual(system.jumpSetIndicator(x, NaN, NaN, NaN), D_ind(x));
-                testCase.assertEqual(system.output_fnc(x), output(x));
+                testCase.assertEqual(system.output(x), output(x));
+                testCase.assertEqual(system.flowOutput(x), output(x));
+                testCase.assertEqual(system.jumpOutput(x), output(x));
             end
         end
 
@@ -63,7 +100,9 @@ classdef HybridSubsystemBuilderTest < matlab.unittest.TestCase
                 testCase.assertEqual(system.jumpMap(v_cell{:}), g(v_cell{:}));
                 testCase.assertEqual(system.flowSetIndicator(v_cell{:}), C_ind(v_cell{:}));
                 testCase.assertEqual(system.jumpSetIndicator(v_cell{:}), D_ind(v_cell{:}));
-                testCase.assertEqual(system.output_fnc(v_cell{:}), output(v_cell{:}));
+                testCase.assertEqual(system.output(v_cell{:}), output(v_cell{:}));
+                testCase.assertEqual(system.flowOutput(v_cell{:}), output(v_cell{:}));
+                testCase.assertEqual(system.jumpOutput(v_cell{:}), output(v_cell{:}));
             end
         end
 

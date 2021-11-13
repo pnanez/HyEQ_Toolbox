@@ -1,5 +1,7 @@
 function plotFlowLengths(sol)
-% Plot the length for each interval of flow for a given solution object. 
+% Plot the length for each interval of flow for a given HybridSolution object. 
+%
+% Argument: sol - A HybridSolution object.
 
 values = sol.flow_lengths;
 indices = 1:length(values);
