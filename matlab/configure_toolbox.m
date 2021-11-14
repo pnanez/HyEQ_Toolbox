@@ -5,20 +5,27 @@ elseif isempty(hyeqsolver_path)
     error('Hybrid Equations Toolbox is not installed.')
 end
 
-if verLessThan('matlab','9.10')
-    disable_enhanced_autocomplete(hyeqsolver_path)
+if ~verLessThan('matlab','9.10')
+    enable_enhanced_autocomplete(hyeqsolver_path)
 end
 
 disp('Hybrid Equations Toolbox is ready to use.')
 
-function disable_enhanced_autocomplete(hyeqsolver_path)
-assert(contains(hyeqsolver_path, 'Hybrid Equations Toolbox'))
+function enable_enhanced_autocomplete(hyeqsolver_path)
+% assert(contains(hyeqsolver_path, 'Hybrid Equations Toolbox'))
 
 hyeqsolver_path = hyeqsolver_path{1}; % De-cell
-src_path = replace(replace(hyeqsolver_path,'/HyEQsolver.m',''),'\HyEQsolver.m','');
-p_before = fullfile(src_path, 'functionSignatures.json');
-p_after = fullfile(src_path, 'functionSignatures_unused.json');
+src_path = replace(hyeqsolver_path,'HyEQsolver.m','');
+p_before = fullfile(src_path, 'functionSignatures_disabled.json');
+p_after = fullfile(src_path, 'functionSignatures.json');
 if exist(p_before, 'file') == 2
     movefile(p_before, p_after);
+elseif ~exist(p_after, 'file')
+    warning(['Could not find autocomplete information source file \n\t''%s'' \n' ...
+        'nor destination file \n\t''%s''.'], ...
+        p_before, p_after)
+end
+if exist(p_after, 'file')
+    disp('Autocomplete information enabled for Hybrid Equations Toolbox.')
 end
 end

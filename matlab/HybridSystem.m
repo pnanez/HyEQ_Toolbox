@@ -3,7 +3,7 @@ classdef (Abstract) HybridSystem < handle
 %
 % See also: HybridSystemBuilder.
 
-    properties
+    properties% (SetAccess = immutable) Making state_dimension immutable breaks the CompositeHybridSystem constructor.
         % Dimension of the state space (optional).
         % If set, additional error-checking is enabled.
         state_dimension;

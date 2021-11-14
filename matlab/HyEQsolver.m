@@ -351,7 +351,9 @@ end
 function [j, tout, jout, xout] = jump(g,j,tout,jout,xout)
 % Jump
 j = j+1;
+n = size(xout, 2);
 y = g(xout(end,:).',tout(end),jout(end)); 
+assert(size(y, 1) == n, 'Output of jump map was expected to be %d but instead was %d', n, size(y, 1))
 % Save results
 tout = [tout; tout(end)];
 xout = [xout; y.'];

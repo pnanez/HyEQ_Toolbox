@@ -53,6 +53,7 @@ classdef CompositeHybridSolution < HybridSolution
                 case '.'
                     % Use default behavior.
                     out = builtin('subsref',this,s);
+                    % Add throwAsCaller.
                 case '{}'
                     % Brace indexing is not supported.
                     % (This does not prevent accessing elements of a cell array

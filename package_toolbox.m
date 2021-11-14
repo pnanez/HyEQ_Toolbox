@@ -46,7 +46,17 @@ if do_publish
     close all
 end
 
+% Move the function signatures file so that it is unused in the packaged version
+% until 'configure_toolbox' is run after installation on an appropriate version
+% of MATLAB.
+movefile(functionSignituresAutocompleteInfoPath_dev, functionSignituresAutocompleteInfoPath_package)
+
+% Create the .mltbx file.
 matlab.addons.toolbox.packageToolbox(projectFile)
+
+% Move the function signitures file back so that it is enabled during
+% development.
+movefile(functionSignituresAutocompleteInfoPath_package, functionSignituresAutocompleteInfoPath_dev)
 
 % Cleanup publish directories. We do this after packaging the toolbox because
 % some of the demos need to be on the MATLAB path.
