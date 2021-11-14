@@ -1,3 +1,5 @@
+% Script for finishing the installation of the Hybrid Equations Toolbox.
+
 hyeqsolver_path = which('HyEQsolver', '-all');
 if length(hyeqsolver_path) > 1
     error('Multiple versions of HyEQsolver() are on the MATLAB path. Have you uninstalled the previous version of the HybridEquationSolver?')
@@ -9,7 +11,23 @@ if ~verLessThan('matlab','9.10')
     enable_enhanced_autocomplete(hyeqsolver_path)
 end
 
-disp('Hybrid Equations Toolbox is ready to use.')
+promptMessage = sprintf(['Do you want to run automated tests?\n' ...
+                    'The tests will take less than a minute.']);
+button = questdlg(promptMessage, 'Run Tests', 'Run Tests', 'Skip Tests', 'Run Tests');
+if strcmpi(button, 'Run Tests')
+  nFailed = hybrid.tests.run;
+  if nFailed > 0
+    fprintf(['\nThe Hybrid Equations Toolbox is installed but %d tests failed. ' ...
+            'Some features will not work as expected.\n'], nFailed);
+    return
+  else 
+    disp('All tests passed.');
+  end
+end
+
+fprintf('\nThe Hybrid Equations Toolbox is ready to use.\n')
+
+% ========= Local Functions ========= %
 
 function enable_enhanced_autocomplete(hyeqsolver_path)
 % assert(contains(hyeqsolver_path, 'Hybrid Equations Toolbox'))

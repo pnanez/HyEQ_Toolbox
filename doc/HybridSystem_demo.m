@@ -28,6 +28,30 @@ bb_system = hybrid.examples.BouncingBall();
 bb_system.gravity = 3.72;
 bb_system.bounce_coeff = 0.8;
 
+%% 
+% We can test that the data for the subsystems return values of the correct sizes.
+
+% Evaluate functions at origin and output checks sizes.
+bb_system.checkFunctions(); 
+
+% Evaluate functions at x=[10;0] and check output sizes.
+bb_system.checkFunctions([10; 0]); 
+%%
+% To verify whether particular points are in $C$ or $D$, we use the
+% functions |assertInC|, |assertNotInC|, |assertInD|, |assertNotInD|.
+
+% Above ground.
+bb_system.assertInC([1; 0]);    
+bb_system.assertNotInD([1; 0]);
+
+% At ground, stationary.
+bb_system.assertInC([0; 0]); 
+bb_system.assertInD([0; 0]);
+
+% Below ground, moving down.
+bb_system.assertNotInC([-1; -1]); 
+bb_system.assertInD([-1; -1]);
+
 %%
 % WARNING: For any given values |(x, t, j)|, the
 % functions |flowMap|, |jumpMap|, |flowSetIndicator|, and |jumpSetIndicator|
@@ -40,23 +64,22 @@ bb_system.bounce_coeff = 0.8;
 % For this reason, we recommend making
 % properties immutable and setting the values in the constructor. 
 % An example of how to implement this is included here:
- %
- %   classdef MyHybridSystem < HybridSystem
- %      properties(SetAccess=immutable)
- %          my_property % cannot be modified except in the constructor
- %      end
- %      methods
- %          function this = MyHybridSystem(my_property) % Constructor
- %              this.my_property = my_property; % set property value.
- %          end
- %      end
- %   end
- %
-% The value of |my_property| is set when a system is constructed:
- % 
- %   sys = MyHybridSystem(3.14); 
- %
- 
+%
+%   classdef MyHybridSystem < HybridSystem
+%      properties(SetAccess=immutable)
+%          my_property % cannot be modified except in the constructor
+%      end
+%      methods
+%          function this = MyHybridSystem(my_property) % Constructor
+%              this.my_property = my_property; % set property value.
+%          end
+%      end
+%   end
+%
+% The value of |my_property| is set when a |MyHybridSystem| is constructed:
+% 
+%   sys = MyHybridSystem(3.14); 
+%
 
 %% Compute Solutions
 % To compute a solution, pass the initial state and time spans to the 
@@ -107,7 +130,7 @@ sol
 % constructed without the optional arguments |C|, |D|, |tspan|, and |jspan|.
 
 %% Evaluating a Function Along a Solution
-% It is sometimes useful to evaluate a function along the
+% It is sometimes useful to evaluate a function at each point along a
 % solution. This functionality is provided by the method |evaluateFunction|
 % in |HybridSolution|.
 energy_fnc = @(x) bb_system.gravity * x(1) + 0.5*x(2)^2;

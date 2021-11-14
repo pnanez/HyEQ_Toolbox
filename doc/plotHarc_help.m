@@ -9,7 +9,14 @@
 
 %% Load a hybrid arc
 
-load Data_Example_1_2_BB
+sys = hybrid.examples.BouncingBall();
+x0 = [1; 0];
+tspan = [0, 30];
+jspan = [0, 30];
+sol = sys.solve(x0, tspan, jspan);
+t = sol.t;
+j = sol.j;
+x = sol.x;
 
 %% Plot the hybrid arc Vs the hybrid time domain (t,j)
 figure(1)

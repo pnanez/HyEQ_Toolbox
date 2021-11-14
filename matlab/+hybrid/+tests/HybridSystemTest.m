@@ -35,15 +35,99 @@ classdef HybridSystemTest < matlab.unittest.TestCase
             testCase.verifyError(fh, 'Hybrid:InvalidMethodArgumentName')
         end
         
-        %%%%%%%%%%%%%%%% Test JumpTime calculations %%%%%%%%%%%%%%%%%
+        function testCheckFunctions_NoArgsGiven_OK(~)
+            ss = HybridSystemBuilder() ...
+                    .flowMap(@(x) zeros(2, 1)) ...
+                    .jumpMap(@(x, u) zeros(2, 1)) ...
+                    .stateDimension(2) ...
+                    .build();
+            ss.checkFunctions();
+        end
         
-%         function testSingleJumpTime(testCase)
-%             t = linspace(0, 12, 3)'; % Values not important
-%             j = [0; 1; 1]; % Jump at second index
-%             x = zeros(3, 1); % Not important
-%             sol = HybridSolution([], t, j, x, [0, 100], [0, 100]);
-%             testCase.assertEqual(sol.jump_times, t(2))
-%         end
+        function testCheckFunctions_ArgsGiven_OK(~)
+            ss = HybridSystemBuilder() ...
+                    .flowMap(@(x) zeros(2, 1)) ...
+                    .jumpMap(@(x, u) zeros(2, 1)) ...
+                    .stateDimension(2) ...
+                    .build();
+            ss.checkFunctions([1; 2], 0, 1);
+        end
+
+        function testCheckFunctions_flowMapWrongSizeOut(testCase)
+            ss = HybridSystemBuilder().flowMap(@(x) [x;x]).build();
+            testCase.verifyError(@() ss.checkFunctions(), ...
+                                'HybridSystem:FlowMapWrongSizeOutput');
+            testCase.verifyError(@() ss.checkFunctions([1;2]), ...
+                                'HybridSystem:FlowMapWrongSizeOutput');
+        end
+
+        function testCheckFunctions_jumpMapWrongSizeOut(testCase)
+            ss = HybridSystemBuilder().jumpMap(@(x) [x;x]).build();
+            testCase.verifyError(@() ss.checkFunctions(), ...
+                                'HybridSystem:JumpMapWrongSizeOutput');
+            testCase.verifyError(@() ss.checkFunctions([1;4]), ...
+                                 'HybridSystem:JumpMapWrongSizeOutput');
+        end
+
+        function testCheckFunctions_jumpMapNotNumeric(testCase)
+            ss = HybridSystemBuilder().jumpMap(@(x) 'hello').build();
+            testCase.verifyError(@() ss.checkFunctions(), 'HybridSystem:JumpMapNotNumeric');
+        end
+
+        function testCheckFunctions_CNotScalar(testCase)
+            ss = HybridSystemBuilder().flowSetIndicator(@(x) [x;x]).build();
+            testCase.verifyError(@() ss.checkFunctions(), ....
+                'HybridSystem:FlowSetIndicatorNonScalar');
+        end
+
+        function testCheckFunctions_DNotLogical(testCase)
+            a_function_handle = @(x) x;
+            ss = HybridSystemBuilder().jumpSetIndicator(@(x) a_function_handle).build();
+            testCase.verifyError(@() ss.checkFunctions(), ....
+                'HybridSystem:JumpSetIndicatorNotLogical');
+        end
+
+        % Test assertInC
+
+        function testAssertInC(testCase)
+            ss = HybridSystemBuilder() ...
+                    .flowSetIndicator(@(x) x >= 0)...
+                    .build();
+            ss.assertInC(1, nan, nan);
+            testCase.verifyError(@() ss.assertInC(-1, nan, nan), ...
+                                 'HybridSystem:AssertInCFailed')
+        end
+
+        % Test assertNotInC
+        function testAssertNotInC(testCase)
+            ss = HybridSystemBuilder() ...
+                    .flowSetIndicator(@(x) x >= 0)...
+                    .build();
+            ss.assertNotInC(-1, nan, nan);
+            testCase.verifyError(@() ss.assertNotInC(1, nan, nan), ...
+                                'HybridSystem:AssertNotInCFailed')
+        end
+
+        % Test assertInD
+        function testAssertInD(testCase)
+            ss = HybridSystemBuilder() ...
+                    .jumpSetIndicator(@(x) x >= 0)...
+                    .build();
+            ss.assertInD(1, nan, nan);
+            testCase.verifyError(@() ss.assertInD(-1, nan, nan), ...
+                                    'HybridSystem:AssertInDFailed')
+        end
+
+        % Test assertNotInC
+        function testAssertNotInD(testCase)
+            ss = HybridSystemBuilder() ...
+                    .jumpSetIndicator(@(x, t, j) j > 0)...
+                    .build();
+            ss.assertNotInD(nan, nan, 0);
+            testCase.verifyError(@() ss.assertNotInD(nan, nan, 1), ...
+                                    'HybridSystem:AssertNotInDFailed')
+        end
+
     end
 
 end

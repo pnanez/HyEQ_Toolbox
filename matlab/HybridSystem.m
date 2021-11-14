@@ -208,6 +208,162 @@ classdef (Abstract) HybridSystem < handle
                 end
             end
         end
+
+        function checkFunctions(this, varargin)
+            % Check the user-defined functions for this HybridSystem for the given arguments.
+            %
+            % Verify that the functions 'flowMap', 'flowSetIndicator',
+            % 'jumpMap', and 'jumpSetIndicator' can
+            % be evaluated with the arguments 'x', 'x, t', 
+            % or 'x, t, j' (any arguments not used by a particular
+            % function are properly ignored). If varargin is empty, then 
+            % zero vectors of the appropriate size. are used. The output values
+            % of each function is checked to verify that they are the correct
+            % shape. If any outputs are incorrect, then an error is thrown.
+            %
+            % Example: 
+            %
+            %   x_test = [10;0]
+            %   t_test = 0;
+            %   j_test = 0;
+            %   sys.checkFunctions(x_test, t_test, j_test);
+            %
+            % If none of the functions use the arguments 't' or 'j', then they
+            % can be omitted, e.g.:
+            %
+            %   x_test = [10;0]
+            %   sys.checkFunctions(x_test);
+            %
+            this.checkPoint('flow', this.flowMap_3args, this.flowSetIndicator_3args, varargin{:});
+            this.checkPoint('jump', this.jumpMap_3args, this.jumpSetIndicator_3args, varargin{:});
+        end
+
+        function assertInC(this, varargin)
+            % Check that a given point is in the flow set. An error is thrown otherwise.
+            % See also: flowSetIndicator, assertNotInC, assertInD, assertNotInD.
+            inC = this.checkPoint('flow', this.flowMap_3args, ...
+                                    this.flowSetIndicator_3args, varargin{:});
+            if ~inC
+                error('HybridSystem:AssertInCFailed', ... 
+                      'Point was expected to be inside C but was not.');
+            end
+        end
+
+        function assertNotInC(this, varargin)
+            % Check that a given point is in the flow set. An error is thrown otherwise.
+            % See also: flowSetIndicator, assertInC, assertInD, assertNotInD.
+            inC = this.checkPoint('flow', [], this.flowSetIndicator_3args, varargin{:});
+            if inC
+                error('HybridSystem:AssertNotInCFailed', ...
+                    'Point was expected to not be inside C but actually was.');
+            end
+        end
+
+        function assertInD(this, varargin)
+            % Check that a given point is in the jump set. An error is thrown otherwise.
+            % See also: jumpSetIndicator, assertInC, assertNotInC, assertNotInD.
+            inD = this.checkPoint('jump', this.jumpMap_3args, ...
+                                  this.jumpSetIndicator_3args, varargin{:});
+            if ~inD
+                error('HybridSystem:AssertInDFailed', ... 
+                      'Point was expected to be inside D but was not.');
+            end
+        end
+
+        function assertNotInD(this, varargin)
+            % Check that a given point is in the jump set. An error is thrown otherwise.
+            % See also: jumpSetIndicator, assertInC, assertNotInC, assertInD.
+            inD = this.checkPoint('jump', [], this.jumpSetIndicator_3args, varargin{:});
+            if inD
+                error('HybridSystem:AssertNotInDFailed', ...
+                    'Point was expected to not be inside D but actually was.');
+            end
+        end
+    end
+
+    methods(Access = private)
+        function is_inside = checkPoint(this, flow_or_jump_str, ...
+                                        f_or_g, C_or_D_indicator, varargin)
+            % Check that the given functions can be evaluated with the arguments
+            % given in varargin. Returns the output value of 'C_or_D_indicator'.
+            % Input arguments: 
+            %   * flow_or_jump_str: either 'flow' or 'jump'. Used in error
+            %     messages.
+            %   * f_or_g: function handle for the flow map or jump map, or an
+            %       empty array (to skip checks).
+            %   * C_or_D_indicator: function handle for the flow or jump set
+            %     indicator (cannot be empty).
+            %   * varargin: arguments for each function in the form (x),
+            %     (x, t), or (x, t, j). If empty, then functions are
+            %     tested with zero vectors of the appropriate sizes.
+
+            switch flow_or_jump_str
+                case 'flow'
+                    err_id_base = 'HybridSystem:Flow';
+                case 'jump'
+                    err_id_base = 'HybridSystem:Jump';
+            end
+            assert(length(varargin) <= 3, 'Too many arguments. Must be at most (x, t, j).')
+
+            % Get value for 'x'
+            if ~isempty(varargin)
+                test_point_x = varargin{1};
+                assert(isnumeric(test_point_x), 'test_point_x is not numeric')
+                assert(isempty(test_point_x) || iscolumn(test_point_x), ...
+                                        'test_point_x is not a column vector')
+            else % Use default value
+                test_point_x = zeros(this.state_dimension, 1);
+            end
+
+            % Get value for 't'
+            if length(varargin) >= 2
+                test_t = varargin{2};
+                assert(isnumeric(test_t), 'test_t is not numeric')
+                assert(isscalar(test_t), 'test_t is not a scalar')
+            else % Use default value
+                test_t = 0;
+            end
+
+            % Get value for 'j'
+            if length(varargin) >= 3
+                test_j = varargin{3};
+                assert(isnumeric(test_j), 'test_j is not numeric')
+                assert(isscalar(test_j), 'test_j is not a scalar')
+            else % Use default value
+                test_j = 0;
+            end
+            args = {test_point_x, test_t, test_j};
+
+            if ~isempty(f_or_g)
+                % Check flow or jump map.
+                x_out = f_or_g(args{:});
+                if ~isnumeric(x_out)
+                    err_id = [err_id_base, 'MapNotNumeric'];
+                    error(err_id, 'The %s map return a ''%s'' instead of a numeric value or array.',...
+                        flow_or_jump_str, class(x_out));
+                end
+                if ~all(size(x_out) == [this.state_dimension, 1])
+                    err_id = [err_id_base, 'MapWrongSizeOutput'];
+                    error(err_id, 'The %s map return a %dx%d array, but the state dimension is %d.',...
+                        flow_or_jump_str, this.state_dimension, ...
+                        size(x_out, 1), size(x_out, 2));
+                end
+            end
+
+            % Check set indicator function.
+            is_inside = C_or_D_indicator(args{:});
+            if ~isscalar(is_inside)
+                err_id = [err_id_base, 'SetIndicatorNonScalar'];
+                error(err_id, 'The %s set indicator returned a nonscalar value.')
+            end
+            try
+                logical(is_inside);
+            catch e
+                err_id = [err_id_base, 'SetIndicatorNotLogical'];
+                error(err_id, ['The %s set indicator returned a value that could not ' ...
+                       'be converted to type ''logical''.']);
+            end
+        end
     end
 
     properties(SetAccess = private, Hidden)

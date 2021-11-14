@@ -100,10 +100,9 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
                 'CompositeHybridSystem:FlowPriorityNotSupported')
         end
         
-%         % This test is disabled because it is testing unsupported
+%         % These tests are disabled because they test unsupported
 %         % functionallity, namely using flow priority with
-%         CompositeHybridSystem, and turning off warnings was causing the
-%         testFlowPriorityWarning test to fail intermittently.
+%         CompositeHybridSystem.
 %         function testFlowsWhenAllSubsystemsInFlowSetAndFlowPriority(testCase)
 %                            % Size of: (x, u, y)
 %             sub1 = MockHybridSubsystem(1, 1, 1);
@@ -120,27 +119,27 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
 %             testCase.assertEqual(sol.t(end), tspan(end), 'AbsTol', 1e-6)
 %             warning('on','CompositeHybridSystem:FlowPriorityNotSupported')
 %         end
-        
-        function testJumpsWhenAnySubsystemsNotInFlowSetAndFlowPriority(testCase)
-            import hybrid.tests.internal.*
-            % This test case fails because CompositeHybridSystem cannot
-            % correctly handle flow priority when one subsystem is in C \ D
-            % and another is in C \cap D.
-            assumeFail(testCase)
-                           % Size of: (x, u, y)
-            sub1 = MockHybridSubsystem(1, 1, 1);
-            sub2 = MockHybridSubsystem(1, 1, 1);
-            sys = CompositeHybridSystem(sub1, sub2);
-            sub1.C_indicator = @(x, u, t, j) t <= 2.0 + 100*j;
-            tspan = [0, 10];
-            jspan = [0,  2];
-            config = HybridSolverConfig('silent').flowPriority();
-            sol = sys.solve({0, 0}, tspan, jspan, config);
-            expected_jumps = 2.0;
-            testCase.assertEqual(sol.jump_times, expected_jumps, 'AbsTol', 1e-6)
-            testCase.assertEqual(sol(1).jump_times, expected_jumps, 'AbsTol', 1e-6)
-            testCase.assertEmpty(sol(2).jump_times) % Fails
-        end
+%         
+%         function testJumpsWhenAnySubsystemsNotInFlowSetAndFlowPriority(testCase)
+%             import hybrid.tests.internal.*
+%             % This test case fails because CompositeHybridSystem cannot
+%             % correctly handle flow priority when one subsystem is in C \ D
+%             % and another is in C \cap D.
+%             assumeFail(testCase)
+%                            % Size of: (x, u, y)
+%             sub1 = MockHybridSubsystem(1, 1, 1);
+%             sub2 = MockHybridSubsystem(1, 1, 1);
+%             sys = CompositeHybridSystem(sub1, sub2);
+%             sub1.C_indicator = @(x, u, t, j) t <= 2.0 + 100*j;
+%             tspan = [0, 10];
+%             jspan = [0,  2];
+%             config = HybridSolverConfig('silent').flowPriority();
+%             sol = sys.solve({0, 0}, tspan, jspan, config);
+%             expected_jumps = 2.0;
+%             testCase.assertEqual(sol.jump_times, expected_jumps, 'AbsTol', 1e-6)
+%             testCase.assertEqual(sol(1).jump_times, expected_jumps, 'AbsTol', 1e-6)
+%             testCase.assertEmpty(sol(2).jump_times) % Fails
+%         end
         
         function testWrongNumberOfInitialStates(testCase)
             import hybrid.tests.internal.*

@@ -1,4 +1,5 @@
 classdef PlotSettings < matlab.mixin.Copyable
+% Data object class containing settings used by HybridPlotBuilder.
     
     properties
         % Text

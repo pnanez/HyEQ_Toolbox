@@ -1,5 +1,5 @@
 function [jump_t, jump_start_j, jump_start_indices, is_jump_start] = jumpTimes(t, j)
-% JUMPTIMES Takes the t and j vectors output by HyEQsolver to find the time
+% Takes the t and j vectors output by HyEQsolver to find the time
 % values where jump events occur. Also returns the corresponding values
 % of j, the indices of the events, and an array containing ones in each
 % entry where a jump did occured and a zero otherwise.

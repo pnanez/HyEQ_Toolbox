@@ -1,5 +1,5 @@
 classdef HybridSolution
-% HybridSolution Solution to a hybrid dynamical system, with additional information. 
+% Solution to a hybrid dynamical system, with additional information. 
 %
 % See also: HybridSystem, HybridPlotBuilder, hybrid.TerminationCause.
 %

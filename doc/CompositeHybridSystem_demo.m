@@ -193,6 +193,30 @@ controller_subsys = HybridSubsystemBuilder()...
                     .outputDimension(1)...
                     .build();
 
+%% 
+% We can test that the data for the subsystems
+% return values of the correct sizes and assert whether particular points are
+% inside $C$ or $D$.
+
+ % Evaluates functions at origin and checks output sizes.
+ball_subsys.checkFunctions();
+
+% Evaluate functions at x=[10;0] and check output sizes.
+ball_subsys.checkFunctions([10; 0]); 
+
+% Above ground.
+ball_subsys.assertInC([1; 0]);
+ball_subsys.assertNotInD([1; 0]);
+
+% At ground, stationary.
+ball_subsys.assertInC([0; 0]); 
+ball_subsys.assertInD([0; 0]);
+
+% Below ground, moving down.
+ball_subsys.assertNotInC([-1; -1]); 
+ball_subsys.assertInD([-1; -1]);
+disp('All checks passed.')
+
 %%
 % Now that we have two subsystems, we pass these to the
 % |CompositeHybridSystem| constructor to create a coupled system.

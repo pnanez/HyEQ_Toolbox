@@ -213,7 +213,7 @@ classdef (Abstract) HybridSubsystem < handle
         end
 
         function checkFunctions(this, varargin)
-            % Check the user-defined functions for this HybridSystem for the given arguments.
+            % Check the user-defined functions for this HybridSubsystem for the given arguments.
             %
             % Verify that the functions 'flowMap', 'flowSetIndicator',
             % 'flowOutput', 'jumpMap', 'jumpSetIndicator', and 'jumpOutput' can
@@ -221,7 +221,8 @@ classdef (Abstract) HybridSubsystem < handle
             % or 'x, u, t, j' (any arguments not used by a particular
             % function are properly ignored). If varargin is empty, then 
             % zero vectors of the appropriate size. are used. The output values
-            % of each function is checked to verify that 
+            % of each function is checked to verify that they are the correct
+            % shape. An error is thrown if any problems are identified.
             %
             % Example: 
             %
@@ -229,11 +230,11 @@ classdef (Abstract) HybridSubsystem < handle
             %   u_test = 1;
             %   t_test = 0;
             %   j_test = 0;
-            %   sol.checkFunctions(x_test, u_test, t_test, j_test);
+            %   sys.checkFunctions(x_test, u_test, t_test, j_test);
             %
             % If none of the functions use 'u', 't' or 'j', then they can be omitted: 
             %
-            %   sol.checkFunctions(x_test);
+            %   sys.checkFunctions(x_test);
             %
             this.checkPoint('flow', @this.flowMap, @this.flowSetIndicator,...
                                     this.flows_output_fnc, varargin{:});
@@ -242,7 +243,7 @@ classdef (Abstract) HybridSubsystem < handle
         end
 
         function assertInC(this, varargin)
-            % Check that a given point is in the flow set. 
+            % Check that a given point is in the flow set. An error is thrown otherwise.
             % See also: flowSetIndicator, assertNotInC, assertInD, assertNotInD.
             inC = this.checkPoint('flow', @this.flowMap, @this.flowSetIndicator,...
                                     this.flows_output_fnc, varargin{:});
@@ -253,7 +254,7 @@ classdef (Abstract) HybridSubsystem < handle
         end
 
         function assertNotInC(this, varargin)
-            % Check that a given point is in the flow set.
+            % Check that a given point is in the flow set. An error is thrown otherwise.
             % See also: flowSetIndicator, assertInC, assertInD, assertNotInD.
             inC = this.checkPoint('flow', [], @this.flowSetIndicator, [], varargin{:});
             if inC
@@ -263,7 +264,7 @@ classdef (Abstract) HybridSubsystem < handle
         end
 
         function assertInD(this, varargin)
-            % Check that a given point is in the jump set. 
+            % Check that a given point is in the jump set. An error is thrown otherwise.
             % See also: jumpSetIndicator, assertInC, assertNotInC, assertNotInD.
             inD = this.checkPoint('jump', @this.jumpMap, @this.jumpSetIndicator,...
                                     this.jumps_output_fnc, varargin{:});
@@ -274,7 +275,7 @@ classdef (Abstract) HybridSubsystem < handle
         end
 
         function assertNotInD(this, varargin)
-            % Check that a given point is in the jump set. 
+            % Check that a given point is in the jump set. An error is thrown otherwise.
             % See also: jumpSetIndicator, assertInC, assertNotInC, assertInD.
             inD = this.checkPoint('jump', [], @this.jumpSetIndicator, [], varargin{:});
             if inD
@@ -333,8 +334,8 @@ classdef (Abstract) HybridSubsystem < handle
             % Get value for 't'
             if length(varargin) >= 3
                 test_t = varargin{3};
-                assert(isscalar(test_t), 'test_t is not a scalar')
                 assert(isnumeric(test_t), 'test_t is not numeric')
+                assert(isscalar(test_t), 'test_t is not a scalar')
             else % Use default value
                 test_t = 0;
             end
@@ -342,8 +343,8 @@ classdef (Abstract) HybridSubsystem < handle
             % Get value for 'j'
             if length(varargin) >= 4
                 test_j = varargin{4};
-                assert(isscalar(test_j), 'test_j is not a scalar')
                 assert(isnumeric(test_j), 'test_j is not numeric')
+                assert(isscalar(test_j), 'test_j is not a scalar')
             else % Use default value
                 test_j = 0;
             end
