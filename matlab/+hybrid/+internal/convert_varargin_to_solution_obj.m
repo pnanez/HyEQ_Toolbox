@@ -1,9 +1,9 @@
-function [hybrid_sol, label_ids, value_ids] = convert_varargin_to_solution_obj(varargin_cell, slice_ndxs)
-% Given varargin to a HybridSolution object according to the following pattern:
-%     (sol) -> HybridSolution(sol.t, sol.j, sol.x(:, slice_ndxs))
-%  (sol, x) -> HybridSolution(sol.t, sol.j,x(:, slice_ndxs))
-% (sol, fh) -> HybridSolution(sol.t, sol.j, fh(sol.x(:, slice_ndxs)), or
-% (t, j, x) -> HybridSolution(t, j, x(:, slice_ndxs)),
+function [hybrid_arc, label_ids, value_ids] = convert_varargin_to_solution_obj(varargin_cell, slice_ndxs)
+% Given varargin to a HybridArc object according to the following pattern:
+%     (sol) -> HybridArc(sol.t, sol.j, sol.x(:, slice_ndxs))
+%  (sol, x) -> HybridArc(sol.t, sol.j,x(:, slice_ndxs))
+% (sol, fh) -> HybridArc(sol.t, sol.j, fh(sol.x(:, slice_ndxs)), or
+% (t, j, x) -> HybridArc(t, j, x(:, slice_ndxs)),
 % 
 % If 'slice_ndxs' is not provided, then the entire x array is used.
 % % 
@@ -13,7 +13,7 @@ function [hybrid_sol, label_ids, value_ids] = convert_varargin_to_solution_obj(v
 % The value of 'value_ids' is set to 1:length(x).
 
 % Parse the base values of t, j, x.
-if isa(varargin_cell{1}, 'HybridSolution')
+if isa(varargin_cell{1}, 'HybridArc')
     assert(length(varargin_cell) <= 2)
     hybrid_sol_in = varargin_cell{1};
     t = hybrid_sol_in.t;
@@ -22,7 +22,7 @@ if isa(varargin_cell{1}, 'HybridSolution')
 else 
     if length(varargin_cell) ~= 3
         throw(MException('Hybrid:InvalidArgument', ...
-            ['If the first argument is not a HybridSolution, then there must be ' ...
+            ['If the first argument is not a HybridArc, then there must be ' ...
             'three input arguments. Instead there were %d.'], length(varargin_cell)))
     end
     t = varargin_cell{1};
@@ -52,29 +52,29 @@ else
     label_ids = slice_ndxs';
     value_ids = (1:size(x, 2))';
 end
-hybrid_sol = HybridSolution(t, j, x);
+hybrid_arc = HybridArc(t, j, x);
 
-assert(length(label_ids) == size(hybrid_sol.x, 2))
+assert(length(label_ids) == size(hybrid_arc.x, 2))
 switch length(varargin_cell)
     case 1
-        if ~isa(varargin_cell{1}, 'HybridSolution')
+        if ~isa(varargin_cell{1}, 'HybridArc')
             e = MException('Hybrid:InvalidArgument', ...
-            'When passing one argument, it must be a HybridSolution. Instead it was a %s.', ...
+            'When passing one argument, it must be a HybridArc. Instead it was a %s.', ...
             class(hybrid_sol_in));
             throwAsCaller(e);
         end
         return
     case 2
-        if ~isa(varargin_cell{1}, 'HybridSolution')
+        if ~isa(varargin_cell{1}, 'HybridArc')
             e = MException('Hybrid:InvalidArgument', ...
             ['When passing two arguments, the first argument must be a ' ...
-            'HybridSolution. Instead it was a %s.'], ...
+            'HybridArc. Instead it was a %s.'], ...
             class(varargin_cell{1}));
             throwAsCaller(e);
         end
         if isa(varargin_cell{2}, 'function_handle')
             fh = varargin_cell{2};
-            x = hybrid_sol.evaluateFunction(fh);
+            x = hybrid_arc.evaluateFunction(fh);
         elseif isnumeric(varargin_cell{2})
             x = varargin_cell{2}; % Replace x with second argument
 
@@ -86,9 +86,9 @@ switch length(varargin_cell)
         end
         label_ids = (1:size(x, 2))';
         value_ids = (1:size(x, 2))';
-        hybrid_sol = HybridSolution(t, j, x);
+        hybrid_arc = HybridArc(t, j, x);
     case 3
-        hybrid_sol = HybridSolution(t, j, x);
+        hybrid_arc = HybridArc(t, j, x);
     otherwise
         error('Hybrid:InvalidArgument', 'Expected 1, 2, or 3 arguments.')
 end
@@ -101,6 +101,6 @@ if length(t) ~= size(x, 1)
     throwAsCaller(e)
 end
 
-assert(size(hybrid_sol.x, 2) == numel(label_ids))
+assert(size(hybrid_arc.x, 2) == numel(label_ids))
 
 end

@@ -8,7 +8,7 @@ methods(Test)
         y = rand(n_timesteps, 5);
         t = linspace(0, 10, n_timesteps)';
         j = zeros(n_timesteps, 1);
-        sol = HybridSubsystemSolution(t, j, x, u, y);
+        sol = HybridSubsystemSolution(t, j, x, u, y, 0, 0, [0 0], [0 0]);
 
         function out = function_handle_with_checks(x, u, t, j)
             testCase.assertSize(x, [3, 1])

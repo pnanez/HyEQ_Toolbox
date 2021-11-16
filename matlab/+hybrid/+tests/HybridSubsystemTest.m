@@ -10,7 +10,7 @@ classdef HybridSubsystemTest < matlab.unittest.TestCase
             y = rand(n_timesteps, 4);
             t = linspace(0, 10, n_timesteps)';
             j = zeros(n_timesteps, 1);
-            sol = HybridSubsystemSolution(t, j, x, u, y);
+            sol = HybridSubsystemSolution(t, j, x, u, y, 0, 0, [0 0], [0 0]);
             
             subsys = MockHybridSubsystem(3, 2, 1);
             subsys.f = @(x, u, t, j) x + j;

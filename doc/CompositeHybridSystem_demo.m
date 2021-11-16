@@ -172,25 +172,42 @@ HybridSubsystemBuilder()...
 % execution slower and dubugging more difficult.
 
 %% Creating a Composition of Hybrid Subsystems
-% Then, we can create two instances (here they happen to both be the same class, 
-% but they will generally be different classes):
-bounce_coeff = 0.7;
-gravity = -9.8;
+% In this example, two subsystems are created. The first is a bouncing ball with
+% controlled impulses applied at each bounce. 
+ball_subsys = hybrid.examples.BouncingBallSubsystem();
+
+%%
+% The second subsystem is a controller that decides the strength of each
+% impluse with the goal of achieving periodic bouncing. The control strategy is
+% very simple. At each bounce, the controller resets a timer. If the timer at
+% the next bounce is less than the target period, then the strength of the
+% impulse is increased, and if it is less, then the impulse is decreased.
+% The state of the controller is $(p, \tau)$ where $p$ is the strength of the
+% impulse that will be applied at the next jump and $\tau$ is the timer. Let $T$
+% be the desired period. Then, the dynamics of the controller are chosen to be
+% 
+% $$\left\{ \begin{array}{ll} \left[\matrix{ \dot p \\ \dot \tau } \right] =
+% \left[\matrix{0 \\ 1}\right] & u \in C := \{0\} \\ \left[\matrix{p^+ \\ \tau^+ } \right] =
+% \left[\matrix{\max\{0, p + (T-\tau)\} \\ 0}\right] & u \in D := \{1\} \end{array} \right. .$$
 target_period = 2.0;
 
-% The jump set contiains points where the height and velocity are negative, 
-% which indicates the ball should bounce.
-D_indicator = @(x) x(1) <= 0 && x(2) <= 0; 
-ball_subsys = hybrid.examples.BouncingBallSubsystem();
+% For clarity, we name the indices for each component in the state vector.
+p_ndx = 1;
+tau_ndx = 2;
+
+% At each jump, the controller updates first component based on whether the
+% timer was more or less than the target period.
+g = @(x, u) [max(0, x(p_ndx) + target_period-x(tau_ndx)); 0];
+
 controller_subsys = HybridSubsystemBuilder()...
+                    .stateDimension(2)... % state: p and \tau
+                    .inputDimension(1)... % input: u=1 if ball should bounce and 0 otherwise.
+                    .outputDimension(1)... % output: impulse p
                     .flowMap(@(x) [0; 1])... % udot = 0, taudot = 1.
-                    .jumpMap(@(x, u) [max(0, x(1) + target_period-x(2)); 0])...
+                    .jumpMap(g)...
                     .flowSetIndicator(@(x) 1)...
-                    .jumpSetIndicator(@(~, u) u)...
-                    .output(@(x) x(1))...
-                    .stateDimension(2)...
-                    .inputDimension(1)...
-                    .outputDimension(1)...
+                    .jumpSetIndicator(@(~, u) u)... % 'u' will be 1 when the ball bounces.
+                    .output(@(x) x(p_ndx))... % Output 'p'
                     .build();
 
 %% 
@@ -366,15 +383,13 @@ clf
 subplot(2, 1, 1)
 % A single HybridPlotBuilder is used twice so both plots are included in the legend. 
 hpb = HybridPlotBuilder().title('Input Signal').jumpColor('none')...
-    .filter([diff(sol_bb.j) == 0; 0])...
+    .filter(~sol_bb.is_jump_start)...
     .legend('$u_{C}$')...
-    ....legend('$\kappa_{2C}(y_1(t), y_2(t))$')...
     .plotFlows(sol_bb, sol_bb('Ball').u); 
 hold on
 hpb.jumpMarker('*').jumpColor('r').flowColor('none')...
-    .filter([diff(sol_bb.j) == 1; 0])...
+    .filter(sol_bb.is_jump_start)...
     .legend({'$u_D$'}, 'location', 'northeast')...
-    ....legend({'$\kappa_{2D}(y_1(t), y_2(t))$'}, 'location', 'northeast')...
     .plotFlows(sol_bb, sol_bb('Ball').u)
 title('Input')
 ylim('padded')
@@ -382,7 +397,7 @@ ylim('padded')
 % Plot Output Signal
 subplot(2, 1, 2)
 HybridPlotBuilder().color('matlab')...
-    ....legend({'$y_1$', '$y_2$'}, 'location', 'southeast')...
+    .legend({'$h$', '$v$'}, 'location', 'southeast')...
     .plotFlows(sol_bb, sol_bb('Ball').y)
 title('Output')
 

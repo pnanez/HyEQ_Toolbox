@@ -7,14 +7,10 @@ system_3D = hybrid.examples.Example3DHybridSystem();
 config = HybridSolverConfig('Refine', 15); % 'Refine' option makes the plots smoother.
 sol = system.solve([10, 0], [0 30], [0 30], config);
 sol_3D = system_3D.solve([0; 1; 0], [0, 20], [0, 100], config);
-sol_8D = HybridSolution(sol.t, sol.j, sol.x(:, 1)*(1:8));
+sol_8D = HybridArc(sol.t, sol.j, sol.x(:, 1)*(1:8));
 
 %%
 
-% HybridPlotBuilder().jumpColor('none').slice(1).title('Bouncing Ball Trajectory').label('height').plotFlows(sol);
-% ylim([0, 10.5])
-% box on 
-% saveExampleFigure('bouncing_ball', 400, 250)
 %% Basic Plotting
 % The Hybrid Equations Toolbox provides two approaches to plotting hybrid
 % solutions, depending the level of control required. The first approach,

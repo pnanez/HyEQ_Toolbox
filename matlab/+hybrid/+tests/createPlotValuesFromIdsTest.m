@@ -12,10 +12,10 @@ classdef createPlotValuesFromIdsTest < matlab.unittest.TestCase
             t = [linspace(0, 1, 50)'; linspace(1, 2, 50)'];
             j = [zeros(50, 1); ones(50, 1)];
             x = (t + j).^2;
-            this.sol_1 = HybridSolution(t, j, x);
-            this.sol_2 = HybridSolution(t, j, [1.2*x, 2.2*x]);
-            this.sol_3 = HybridSolution(t, j, [1.3*x, 2.3*x, 3.3*x]);
-            this.sol_4 = HybridSolution(t, j, [1.4*x, 2.4*x, 3.4*x, 4.4*x]);
+            this.sol_1 = HybridArc(t, j, x);
+            this.sol_2 = HybridArc(t, j, [1.2*x, 2.2*x]);
+            this.sol_3 = HybridArc(t, j, [1.3*x, 2.3*x, 3.3*x]);
+            this.sol_4 = HybridArc(t, j, [1.4*x, 2.4*x, 3.4*x, 4.4*x]);
         end
     end
 

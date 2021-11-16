@@ -4,7 +4,14 @@ function [jump_t, jump_start_j, jump_start_indices, is_jump_start] = jumpTimes(t
 % of j, the indices of the events, and an array containing ones in each
 % entry where a jump did occured and a zero otherwise.
 assert(length(t) == length(j), 'length(t)=%d ~= length(j)=%d', length(t), length(j))
-assert(~isempty(t), 't and j are empty')
+
+if isempty(t)
+    jump_t = [];
+    jump_start_j = [];
+    jump_start_indices = [];
+    is_jump_start = [];
+    return
+end
 
 if length(t) == 1 % Handle the case of a trivial solution.
     jump_t = [];
