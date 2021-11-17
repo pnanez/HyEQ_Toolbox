@@ -54,8 +54,7 @@ classdef CompositeHybridSystem < HybridSystem
         %    u = kappa_D(x1, x2, ..., xN, t, j)
         % where N is the number of subsystems.
         kappa_D
-        
-
+       
         flow_outputs
         jump_outputs
         

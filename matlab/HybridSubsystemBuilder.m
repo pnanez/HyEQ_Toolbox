@@ -291,23 +291,23 @@ methods
        this.outputDimension(output_dim); 
     end
     
-    function this = xDim(this, state_dim)
-        % Abbreviation for 'stateDimension'.
-        % See also: stateDimension.
-       this.stateDimension(state_dim); 
-    end
-    
-    function this = uDim(this, input_dim)
-        % Abbreviation for 'inputDimension'.
-        % See also: inputDimension.
-       this.inputDimension(input_dim); 
-    end
-    
-    function this = yDim(this, output_dim)
-        % Abbreviation for 'outputDimension'.
-        % See also: outputDimension.
-       this.outputDimension(output_dim); 
-    end
+%     function this = xDim(this, state_dim)
+%         % Abbreviation for 'stateDimension'.
+%         % See also: stateDimension.
+%        this.stateDimension(state_dim); 
+%     end
+%     
+%     function this = uDim(this, input_dim)
+%         % Abbreviation for 'inputDimension'.
+%         % See also: inputDimension.
+%        this.inputDimension(input_dim); 
+%     end
+%     
+%     function this = yDim(this, output_dim)
+%         % Abbreviation for 'outputDimension'.
+%         % See also: outputDimension.
+%        this.outputDimension(output_dim); 
+%     end
 end
 
 methods(Hidden) % Hide methods from 'handle' superclass from documentation.

@@ -359,7 +359,7 @@ sol_bb('Ball').termination_cause
 
 %% 
 % as well as the input and output values, which are stored in the properties |u|
-% and |y|, respectivley.
+% and |y|, respectively.
 size(sol_bb('Ball').u) 
 size(sol_bb('Ball').y) 
 

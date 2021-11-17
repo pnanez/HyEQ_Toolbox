@@ -541,11 +541,11 @@ HybridPlotBuilder()...
     .configurePlots(@apply_plot_settings)...
     .plotFlows(sol);
 
-function apply_plot_settings(ax, component)
-    title(ax, sprintf('This is the plot of component %d', component))
+function apply_plot_settings(ax, component_ndxs)
+    title(ax, sprintf('This is the plot of component %d', component_ndxs))
     subtitle(ax, 'An Insightful Subtitle','FontAngle','italic')
     % Set the location of the legend in each plot to different positions.
-    switch component 
+    switch component_ndxs 
         case 1
             ax.Legend.Location = 'northeast';
         case 2

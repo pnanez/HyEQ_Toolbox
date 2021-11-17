@@ -145,14 +145,54 @@ classdef HybridPlotBuilder < handle
             this.settings.x_label_format = label_format;
             this.last_function_call = 'xLabelFormat';
         end
+        
+        function this = labelInterpreter(this, interpreter)
+            % Set the text interpreter used in time, component, and legend entry labels. 
+            % The choices are 'none', 'tex', and 'latex' (default).
+            % 
+            % See also: label, labels, labelSize, textInterpreter.
+            this.settings.label_interpreter = interpreter;
+            this.last_function_call = 'labelInterpreter';
+        end
+        
+        function this = tickLabelInterpreter(this, interpreter)
+            % Set the text interpreter used in time, component, and legend entry labels.
+            %  
+            % See also: textInterpreter.
+            this.settings.tick_label_interpreter = interpreter;
+            this.last_function_call = 'tickLabelInterpreter';
+        end
+        
+        function this = titleInterpreter(this, interpreter)
+            % Set the text interpreter used in titles. 
+            % The choices are 'none', 'tex', and 'latex' (default).
+            % 
+            % See also: title, titles, titleSize, textInterpreter.
+            this.settings.title_interpreter = interpreter;
+            this.last_function_call = 'titleInterpreter';
+        end
+
+        function this = textInterpreter(this, interpreter)
+            % Set both the title and legend entry labels.
+            % The choices are 'none', 'tex', and 'latex' (default).
+            % 
+            % See also: titleInterpreter, labelInterpreter,
+            % tickLabelInterpreter.
+            this.titleInterpreter(interpreter);
+            this.labelInterpreter(interpreter);
+            this.tickLabelInterpreter(interpreter);
+            this.last_function_call = 'textInterpreter';
+        end
 
         function this = legend(this, varargin)
-            % Set the legend entry label(s) for subsequent plots. 
-            % Optional name-value options for the built-in MATLAB 'legend' function can be included.
+            % Set the legend entry label(s) for each state component. 
+            % If the legend labels are given in a cell array as the first
+            % argument, than name-value options for the built-in MATLAB
+            % 'legend' function can be included in subsequent arguments.
             [labels, options] = hybrid.internal.parseStringVararginWithOptionalOptions(varargin{:});
             this.settings.component_legend_labels = labels;
             this.settings.legend_options = options;
-            this.last_function_call = 'tLabel';
+            this.last_function_call = 'legend';
         end
                 
         function this = flowColor(this, color)
@@ -356,35 +396,6 @@ classdef HybridPlotBuilder < handle
             this.settings.jump_end_marker_size = size;
             this.last_function_call = 'jumpEndMarkerSize';
         end
-
-        function this = slice(this, component_indices)
-            % Select the components of x to plot. 
-            % 
-            % If plotting a function of the state, such as 
-            %   HybridPlotBuilder().slice(3).plotFlows(sol, @(x3) cos(x3));
-            % then x is sliced before it is passed to the given function, so
-            % the result would be a plot of cosine of the third component of x.
-            % 
-            % To reset to the default value, call slice([]).
-            %
-            % See also: filter.
-            this.settings.component_indices = component_indices;
-            this.last_function_call = 'slice';
-        end
-
-        function this = filter(this, timesteps_filter)
-            % Pick the timesteps to display. All others are hidden from plots. 
-            % 
-            % The 'timesteps_filter' argument must must be a column vector with
-            % the same entries as the number of 
-            % time steps in the solution being plotted.
-            %
-            % To reset to the default value, call filter([]).
-            %
-            % See also: slice.
-            this.settings.timesteps_filter = timesteps_filter;
-            this.last_function_call = 'filter';
-        end
         
         function this = subplots(this, auto_subplots)
             % Configure whether to automatically create subplots for each component.
@@ -421,53 +432,46 @@ classdef HybridPlotBuilder < handle
             this.subplots(auto_subplots);
             this.last_function_call = 'autoSubplots';
         end
+
+        function this = slice(this, component_indices)
+            % Select the components of x to plot. 
+            % 
+            % If plotting a function of the state, such as 
+            %   HybridPlotBuilder().slice(3).plotFlows(sol, @(x3) cos(x3));
+            % then x is sliced before it is passed to the given function, so
+            % the result would be a plot of cosine of the third component of x.
+            % 
+            % To reset to the default value, call slice([]).
+            %
+            % See also: filter.
+            this.settings.component_indices = component_indices;
+            this.last_function_call = 'slice';
+        end
+
+        function this = filter(this, timesteps_filter)
+            % Pick the timesteps to display. All others are hidden from plots. 
+            % 
+            % The 'timesteps_filter' argument must must be a column vector with
+            % the same entries as the number of 
+            % time steps in the solution being plotted.
+            %
+            % To reset to the default value, call filter([]).
+            %
+            % See also: slice.
+            this.settings.timesteps_filter = timesteps_filter;
+            this.last_function_call = 'filter';
+        end
         
         function this = configurePlots(this, plots_callback)
-            % Provide a function that is called within each plot (or subplot).
-            % This can be used to perform additional configuration.
+            % Provide a function handle that is called within each plot (or subplot).
+            % This can be used to perform additional configuration. The function
+            % handle must take two arguments. The first argument 'ax' is the axes of
+            % the plot being configured and the second is the compoenent index or
+            % component indices of state that were plotted in the 'ax'.
             %
             % See also: subplots.
            this.settings.plots_callback = plots_callback;
             this.last_function_call = 'configurePlots';
-        end
-        
-        function this = titleInterpreter(this, interpreter)
-            % Set the text interpreter used in titles. 
-            % The choices are 'none', 'tex', and 'latex' (default).
-            % 
-            % See also: title, titles, titleSize, textInterpreter.
-            this.settings.title_interpreter = interpreter;
-            this.last_function_call = 'titleInterpreter';
-        end
-        
-        function this = labelInterpreter(this, interpreter)
-            % Set the text interpreter used in time, component, and legend entry labels. 
-            % The choices are 'none', 'tex', and 'latex' (default).
-            % 
-            % See also: label, labels, labelSize, textInterpreter.
-            this.settings.label_interpreter = interpreter;
-            this.last_function_call = 'labelInterpreter';
-        end
-        
-        function this = tickLabelInterpreter(this, interpreter)
-            % Set the text interpreter used in time, component, and legend entry labels.
-            %  
-            % See also: textInterpreter.
-            this.settings.tick_label_interpreter = interpreter;
-            this.last_function_call = 'tickLabelInterpreter';
-
-        end
-
-        function this = textInterpreter(this, interpreter)
-            % Set both the title and legend entry labels.
-            % The choices are 'none', 'tex', and 'latex' (default).
-            % 
-            % See also: titleInterpreter, labelInterpreter,
-            % tickLabelInterpreter.
-            this.titleInterpreter(interpreter);
-            this.labelInterpreter(interpreter);
-            this.tickLabelInterpreter(interpreter);
-            this.last_function_call = 'textInterpreter';
         end
 
         function this = plot2Function(this, plot_function_2D)

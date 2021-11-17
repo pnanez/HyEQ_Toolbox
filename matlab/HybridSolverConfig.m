@@ -215,9 +215,9 @@ classdef HybridSolverConfig < handle
             % Set the mechanism for progress updates displayed while running the hybrid solver. 
             %
             % The argument 'progress' must be one of the following:
-            %   an instance of hybrid.ProgressUpdater (including subclasses, 
-            %   the string 'popup'(default),
-            %   or the string 'silent'.
+            %   1. an instance of hybrid.ProgressUpdater (including subclasses), 
+            %   2. the string 'popup'(default), or
+            %   3. the string 'silent'.
             % When 'popup' is selected, a graphic
             % progress bar is displayed and when 'silent' is selected, no progress
             % updates are shown. Using 'silent' is faster than opening a popup

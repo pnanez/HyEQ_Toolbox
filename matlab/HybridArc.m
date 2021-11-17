@@ -24,10 +24,10 @@ classdef HybridArc
         % The continuous time of each jump (column vector).
         jump_times % double (:, 1)
         
-        % The length of the shortest interval of flow.
+        % The duration (in ordinary time) of the shortest interval of flow.
         shortest_flow_length % double
         
-        % The cumulative length of all intervals of flow.
+        % The cumulative duration of all intervals of flow.
         total_flow_length % double
         
         % The number of jumps in the solution.
@@ -73,7 +73,7 @@ classdef HybridArc
         end
 
         function transformed_arc = transform(this, f)
-            % Transform the values of x by the function x.
+            % Transform the values of x by the function f(x).
             x_transformed = this.evaluateFunction(f);
             transformed_arc = HybridArc(this.t, this.j, x_transformed);
         end

@@ -24,29 +24,74 @@
 
 "_comment": "================================================================",
 "_comment": "================================================================",
-"_comment": "========== Auto complete information for HybridSystem ==========",
+"_comment": "=========== Auto complete information for HybridArc ============",
 "_comment": "================================================================",
 "_comment": "================================================================",
-"HybridSystem.solve": 
+"HybridArc.HybridArc": 
     { "inputs":
         [
-            {"name":"this"},
-            {"name":"x0", "kind":"required", "type":["real", "vector"], "purpose":"Initial state"},
-            {"name":"tspan", "kind":"required", "type":["real", "vector"], "purpose":"Continuous time span"},
-            {"name":"jspan", "kind":"required", "type":["integer", "vector"], "purpose":"Discrete time span"},
-            {"name":"config", "kind":"ordered", "type":[["HybridSolverConfig"],["choices={'silent'}"]], 
-             "purpose":"Solver configuration"}
+            {"name":"t", "kind":"required", "type":["real", "vector"]},
+            {"name":"j", "kind":"required", "type":["real", "vector"]},
+            {"name":"x", "kind":"required", "type":["real", "vector"]}
         ],
      "outputs":
         [
-            {"name": "solution", "type":"HybridSolution"}
+            {"name": "this", "type":"HybridArc"}
           ]
     },
-"HybridSystem.generateFGCD": 
+"HybridArc.transform": 
     { "inputs":
         [
-            {"name":"this"},
-            {"name":"solution", "kind":"required", "type":"HybridSolution", "purpose":"Hybrid solution"}
+            {"name":"this", "kind":"required", "type":"HybridArc"},
+            {"name":"fh", "kind":"required", "type":"function_handle"}
+        ],
+     "outputs":
+        [
+            {"name": "transformed_arc", "type":"HybridArc"}
+          ]
+    },
+"HybridArc.slice": 
+    { "inputs":
+        [
+            {"name":"this", "kind":"required", "type":"HybridArc"},
+            {"name":"ndxs", "kind":"required", "type":["integer", "vector"], "purpose":"Component indices."}
+        ],
+     "outputs":
+        [
+            {"name": "transformed_arc", "type":"HybridArc"}
+          ]
+    },
+"HybridArc.restrictT": 
+    { "inputs":
+        [
+            {"name":"this", "kind":"required", "type":"HybridArc"},
+            {"name":"tspan", "kind":"required", "type":["real", "vector"], "purpose":"Ordinary time interval."}
+        ],
+     "outputs":
+        [
+            {"name": "restricted_sol", "type":"HybridArc"}
+          ]
+    },
+"HybridArc.restrictJ": 
+    { "inputs":
+        [
+            {"name":"this", "kind":"required", "type":"HybridArc"},
+            {"name":"tspan", "kind":"required", "type":["integer", "vector"], "purpose":"Discrete time values or interval."}
+        ],
+     "outputs":
+        [
+            {"name": "restricted_sol", "type":"HybridArc"}
+          ]
+    },
+"HybridArc.evaluateFunction": 
+    { "inputs":
+        [
+            {"name":"this", "kind":"required", "type":"HybridArc"},
+            {"name":"f", "kind":"required", "type":"function_handle", "purpose":"f(x), f(x, t), or f(x, t, j)."}
+        ],
+     "outputs":
+        [
+            {"name": "out", "type":["real", "vector"]}
         ]
     },
 
@@ -91,6 +136,20 @@
             {"name":"kappa_C", "kind":"required", "type":"function_handle"}
         ]
     },
+"CompositeHybridSystem.getFlowInput": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"subsys_id", "kind":"required", 
+             "type":[["HybridSubsystem"], 
+                     ["choices=this.subsystems.names"], 
+                     ["choices=num2cell(1:length(this.subsystems))"]], "purpose":"Subsystem identifier"}
+        ],
+     "outputs":
+        [
+            {"name":"kappa_C", "type":"function_handle"}
+          ]
+    },
 "CompositeHybridSystem.setJumpInput": 
     { "inputs":
         [
@@ -101,6 +160,20 @@
                      ["choices=num2cell(1:length(this.subsystems))"]], "purpose":"Subsystem identifier"},
             {"name":"kappa_D", "kind":"required", "type":"function_handle"}
         ]
+    },
+"CompositeHybridSystem.getJumpInput": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"subsys_id", "kind":"required", 
+             "type":[["HybridSubsystem"], 
+                     ["choices=this.subsystems.names"], 
+                     ["choices=num2cell(1:length(this.subsystems))"]], "purpose":"Subsystem identifier"}
+        ],
+     "outputs":
+        [
+            {"name":"kappa_D", "type":"function_handle"}
+          ]
     },
 "CompositeHybridSystem.setInput": 
     { "inputs":
@@ -194,13 +267,65 @@
 "_comment": "======= Auto complete information for HybridPlotBuilder ========",
 "_comment": "================================================================",
 "_comment": "================================================================",
+"_comment": "We intentionally omit 'type' from input arguments when the input",
+"_comment": "is expected to be given as a literal (i.e., 'My title'). Otherwise,",
+"_comment": "MATLAB suggests whatever variables happen to be present in the ",
+"_comment": "workspace, which is rarely what the user wants.",
 "HybridPlotBuilder.title": 
     { "inputs":
      [{"name":"this"},
       {"name":"title",
        "kind":"required",
-       "type":[["char"], ["string"]],
-       "purpose":"Title of plot or subplot"
+       "purpose":"Title of plot"
+      }], 
+     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
+    },
+"HybridPlotBuilder.titles": 
+    { "inputs":
+     [{"name":"this"},
+      {"name":"title",
+       "kind":"required",
+       "repeating":true,
+       "purpose":"Titles of plot or subplots"
+      }], 
+     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
+    },
+"HybridPlotBuilder.titles": 
+    { "inputs":
+     [{"name":"this"},
+      {"name":"title",
+       "kind":"required",
+       "type":"cell",
+       "purpose":"Titles of plot or subplots"
+      }], 
+     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
+    },
+"HybridPlotBuilder.label": 
+    { "inputs":
+     [{"name":"this"},
+      {"name":"label",
+       "kind":"required",
+       "purpose":"State component label"
+      }], 
+     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
+    },
+"HybridPlotBuilder.labels": 
+    { "inputs":
+     [{"name":"this"},
+      {"name":"label", 
+       "kind":"required", 
+       "repeating":true,
+       "purpose":"State component label"
+      }], 
+     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
+    },
+"HybridPlotBuilder.labels": 
+    { "inputs":
+     [{"name":"this"},
+      {"name":"label",
+       "kind":"required",
+       "type":"cell",
+       "purpose":"State component label"
       }], 
      "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
     },
@@ -220,7 +345,44 @@
       ], 
      "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
     },
+"HybridPlotBuilder.tickLabelSize": 
+    { "inputs":
+     [{"name":"this"},
+      {"name":"font size", "kind":"required",
+       "type":"choices={10}", "purpose":"Font size of tick labels (positive real number)"}
+      ], 
+     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
+    },
+"HybridPlotBuilder.tLabel": 
+    { "inputs":
+     [{"name":"this"},
+      {"name":"label", "kind":"required", 
+       "type":"choices={'t', 't [s]', 't [sec]', '$t$ [sec]'}"}
+      ], 
+     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
+    },
+"HybridPlotBuilder.jLabel": 
+    { "inputs":
+     [{"name":"this"},
+      {"name":"label", "kind":"required", "type":"choices={'j', '$j$'}"}
+      ], 
+     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
+    },
+"HybridPlotBuilder.xLabelFormat": 
+    { "inputs":
+     [{"name":"this"},
+      {"name":"fmt", "kind":"required", "type":"choices={'$x_{%d}$', 'y_{%d}', 'z{%d}'}"}
+      ], 
+     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
+    },
 "HybridPlotBuilder.labelInterpreter": 
+    { "inputs":
+     [{"name":"this"},
+      {"name":"interpreter", "kind":"required", "type":"choices={'none', 'tex', 'latex'}"}
+      ], 
+     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
+    },
+"HybridPlotBuilder.tickLabelInterpreter": 
     { "inputs":
      [{"name":"this"},
       {"name":"interpreter", "kind":"required", "type":"choices={'none', 'tex', 'latex'}"}
@@ -234,10 +396,44 @@
       ], 
      "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
     },
+"HybridPlotBuilder.textInterpreter": 
+    { "inputs":
+     [{"name":"this"},
+      {"name":"interpreter", "kind":"required", "type":"choices={'none', 'tex', 'latex'}"}
+      ], 
+     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
+    },
+"HybridPlotBuilder.legend": 
+    { "inputs":
+     [{"name":"this"},
+      {"name":"label",
+       "kind":"required",
+       "repeating":true,
+       "purpose":"Legend label(s)"
+      }], 
+     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
+    },
+"HybridPlotBuilder.legend": 
+    { "inputs":
+     [{"name":"this"},
+      {"name":"label", "kind":"required", 
+       "type":"cell", "purpose":"State component label"},
+      {"name":"Location",  "kind":"namevalue",
+       "type":"choices={'north', 'south', 'east', 'west', 'northeast','northwest','southeast','southwest','northoutside','southoutside','eastoutside','westoutside', 'best'}",
+       "purpose":"Location of legend"},
+      {"name":"NumColumns",  "kind":"namevalue",
+       "type":"choices={1, 2, 3}",
+       "purpose":"Maximum number of columns in legend."},
+      {"name":"ornt",  "kind":"namevalue",
+       "type":"choices={'vertical', 'horizontal'}",
+       "purpose":"Entry layout orientation."}
+     ], 
+     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
+    },
 "HybridPlotBuilder.flowColor": 
     { "inputs":
      [{"name":"this"},
-      {"name":"color", "type":"choices={'red', 'green', 'blue', 'c', 'm', 'y', 'black', 'white', 'none'}"}
+      {"name":"color", "type":[["choices={'red', 'green', 'blue', 'cyan', 'magenta', 'yellow', 'black', 'white', 'none'}"], ["cell"]]}
       ], 
      "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
     },
@@ -258,7 +454,21 @@
 "HybridPlotBuilder.jumpColor": 
     { "inputs":
      [{"name":"this"},
-      {"name":"color", "type":"choices={'red', 'green', 'blue', 'c', 'm', 'y', 'black', 'white', 'none'}"}
+      {"name":"color", "type":[["choices={'red', 'green', 'blue', 'cyan', 'magenta', 'yellow', 'black', 'white', 'none'}"], ["cell"]]}
+      ], 
+     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
+    },
+"HybridPlotBuilder.color": 
+    { "inputs":
+     [{"name":"this"},
+      {"name":"color", "type":[["choices={'red', 'green', 'blue', 'cyan', 'magenta', 'yellow', 'black', 'white', 'none'}"], ["cell"]]}
+      ], 
+     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
+    },
+"HybridPlotBuilder.color": 
+    { "inputs":
+     [{"name":"this"},
+      {"name":"color", "type":"choices={'matlab'}"}
       ], 
      "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
     },
@@ -318,31 +528,49 @@
       ], 
      "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
     },
-"HybridPlotBuilder.xLabelFormat": 
-    { "inputs":
-     [{"name":"this"},
-      {"name":"fmt", "kind":"required", "type":"choices={'$x_{%d}$', 'y_{%d}', 'z{%d}'}"}
-      ], 
-     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
-    },
-"HybridPlotBuilder.tLabel": 
-    { "inputs":
-     [{"name":"this"},
-      {"name":"label", "kind":"required", "type":"choices={'t', 't [s]', 't [sec]', '$t$ [sec]'}"}
-      ], 
-     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
-    },
-"HybridPlotBuilder.jLabel": 
-    { "inputs":
-     [{"name":"this"},
-      {"name":"label", "kind":"required", "type":"choices={'j', '$j$'}"}
-      ], 
-     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
-    },
-"HybridPlotBuilder.autoSubplots": 
+"HybridPlotBuilder.subplots": 
     { "inputs":
      [{"name":"this"},
       {"name":"on/off", "kind":"required", "type":"choices={'on', 'off'}"}
+      ], 
+     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
+    },
+"HybridPlotBuilder.slice": 
+    { "inputs":
+     [{"name":"this"},
+      {"name":"ndxs", "kind":"required", "type":["integer", "vector"], "purpose":"Component indices."}
+      ], 
+     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
+    },
+"HybridPlotBuilder.filter": 
+    { "inputs":
+     [{"name":"this"},
+      {"name":"timesteps_filter", "kind":"required", "type":["integer", "vector"], "purpose":"Timesteps to show."}
+      ], 
+     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
+    },
+"HybridPlotBuilder.configurePlots": 
+    { "inputs":
+     [{"name":"this"},
+      {"name":"plots_callback", "kind":"required", "type":"function_handle", "purpose":"Function handle: fh = @(ax, ndxs) <configure 'ax'>."}
+      ], 
+     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
+    },
+"HybridPlotBuilder.plot2Function": 
+    { "inputs":
+     [{"name":"this"},
+      {"name":"plot_function_2D", "kind":"required",
+       "type":[["choices={'plot', 'semilogy', 'semilogx', 'loglog'}"], ["function_handle"]],
+       "purpose":"Plot function name or handle"}
+      ], 
+     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
+    },
+"HybridPlotBuilder.plot3Function": 
+    { "inputs":
+     [{"name":"this"},
+      {"name":"plot_function_3D", "kind":"required",
+       "type":[["choices={'plot3'}"], ["function_handle"]],
+       "purpose":"Plot function name or handle"}
       ], 
      "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
     },
@@ -357,8 +585,8 @@
         {"name":"this"},
         {"name":"sol", "kind":"required", "type":"HybridSolution", "purpose":"Solution to plot (or use as hybrid time domain)"},
         {"mutuallyExclusiveGroup": [
-            {"name":"alt values", "kind":"ordered", "type":"numeric", "purpose":"Values to plot along solution's domain"},
-            {"name":"alt fnc", "kind":"ordered", "type":"function_handle", "purpose":"Function of solution state vector"}
+            {"name":"values", "kind":"ordered", "type":"numeric", "purpose":"Values to plot along solution's domain"},
+            {"name":"f(x)", "kind":"ordered", "type":"function_handle", "purpose":"Function of solution state vector"}
         ]}
     ], 
      "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]},
@@ -368,8 +596,8 @@
         {"name":"t", "kind":"required", "type":["real", "column"], "purpose":"Continuous component of hybrid time domain"},
         {"name":"j", "kind":"required", "type":"numeric", "purpose":"Discrete component of hybrid time domain"},
         {"mutuallyExclusiveGroup": [
-            {"name":"alt values", "kind":"required", "type":"numeric", "purpose":"Values to plot along solution's domain"},
-            {"name":"alt fnc", "kind":"required", "type":"function_handle", "purpose":"Function of solution state vector"}
+            {"name":"values", "kind":"required", "type":"numeric", "purpose":"Values to plot along solution's domain"},
+            {"name":"f(x)", "kind":"required", "type":"function_handle", "purpose":"Function of solution state vector"}
         ]}
     ], 
      "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]},
@@ -383,8 +611,8 @@
         {"name":"this"},
         {"name":"sol", "kind":"required", "type":"HybridSolution", "purpose":"Solution to plot (or use as hybrid time domain)"},
         {"mutuallyExclusiveGroup": [
-            {"name":"alt values", "kind":"ordered", "type":"numeric", "purpose":"Values to plot along solution's domain"},
-            {"name":"alt fnc", "kind":"ordered", "type":"function_handle", "purpose":"Function of solution state vector"}
+            {"name":"values", "kind":"ordered", "type":"numeric", "purpose":"Values to plot along solution's domain"},
+            {"name":"f(x)", "kind":"ordered", "type":"function_handle", "purpose":"Function of solution state vector"}
         ]}
     ], 
      "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]},
@@ -394,8 +622,8 @@
         {"name":"t", "kind":"required", "type":["real", "column"],"purpose":"Continuous component of hybrid time domain"},
         {"name":"j", "kind":"required", "type":"numeric", "purpose":"Discrete component of hybrid time domain"},
         {"mutuallyExclusiveGroup": [
-            {"name":"alt values", "kind":"required", "type":"numeric", "purpose":"Values to plot along solution's domain"},
-            {"name":"alt fnc", "kind":"required", "type":"function_handle", "purpose":"Function of solution state vector"}
+            {"name":"values", "kind":"required", "type":"numeric", "purpose":"Values to plot along solution's domain"},
+            {"name":"f(x)", "kind":"required", "type":"function_handle", "purpose":"Function of solution state vector"}
         ]}
     ], 
      "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]},
@@ -410,8 +638,8 @@
         {"name":"this"},
         {"name":"sol", "kind":"required", "type":"HybridSolution", "purpose":"Solution to plot (or use as hybrid time domain)"},
         {"mutuallyExclusiveGroup": [
-            {"name":"alt values", "kind":"ordered", "type":"numeric", "purpose":"Values to plot along solution's domain"},
-            {"name":"alt fnc", "kind":"ordered", "type":"function_handle", "purpose":"Function of solution state vector"}
+            {"name":"values", "kind":"ordered", "type":"numeric", "purpose":"Values to plot along solution's domain"},
+            {"name":"f(x)", "kind":"ordered", "type":"function_handle", "purpose":"Function of solution state vector"}
         ]}
     ], 
      "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]},
@@ -421,8 +649,8 @@
         {"name":"t", "kind":"required", "type":["real", "column"],"purpose":"Continuous component of hybrid time domain"},
         {"name":"j", "kind":"required", "type":"numeric", "purpose":"Discrete component of hybrid time domain"},
         {"mutuallyExclusiveGroup": [
-            {"name":"alt values", "kind":"required", "type":"numeric", "purpose":"Values to plot along solution's domain"},
-            {"name":"alt fnc", "kind":"required", "type":"function_handle", "purpose":"Function of solution state vector"}
+            {"name":"values", "kind":"required", "type":"numeric", "purpose":"Values to plot along solution's domain"},
+            {"name":"f(x)", "kind":"required", "type":"function_handle", "purpose":"Function of solution state vector"}
         ]}
     ], 
      "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]},
@@ -437,8 +665,8 @@
         {"name":"this"},
         {"name":"sol", "kind":"required", "type":"HybridSolution", "purpose":"Solution to plot (or use as hybrid time domain)"},
         {"mutuallyExclusiveGroup": [
-            {"name":"alt values", "kind":"ordered", "type":"numeric", "purpose":"Values to plot along solution's domain"},
-            {"name":"alt fnc", "kind":"ordered", "type":"function_handle", "purpose":"Function of solution state vector"}
+            {"name":"values", "kind":"ordered", "type":"numeric", "purpose":"Values to plot along solution's domain"},
+            {"name":"f(x)", "kind":"ordered", "type":"function_handle", "purpose":"Function of solution state vector"}
         ]}
     ], 
      "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]},
@@ -448,38 +676,19 @@
         {"name":"t", "kind":"required", "type":["real", "column"],"purpose":"Continuous component of hybrid time domain"},
         {"name":"j", "kind":"required", "type":"numeric", "purpose":"Discrete component of hybrid time domain"},
         {"mutuallyExclusiveGroup": [
-            {"name":"alt values", "kind":"required", "type":"numeric", "purpose":"Values to plot along solution's domain"},
-            {"name":"alt fnc", "kind":"required", "type":"function_handle", "purpose":"Function of solution state vector"}
+            {"name":"values", "kind":"required", "type":"numeric", "purpose":"Values to plot along solution's domain"},
+            {"name":"f(x)", "kind":"required", "type":"function_handle", "purpose":"Function of solution state vector"}
         ]}
     ], 
      "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]},
-"HybridPlotBuilder.plot":
-    { "inputs": [
-        {"name":"this"},
-        {"name":"sol", "kind":"required", "type":"HybridSolution", "purpose":"Solution to plot (or use as hybrid time domain)"}
-    ], 
-     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]},
-"HybridPlotBuilder.plot":
-    { "inputs": [
-        {"name":"this"},
-        {"name":"sol", "kind":"required", "type":"HybridSolution", "purpose":"Solution to plot (or use as hybrid time domain)"},
-        {"mutuallyExclusiveGroup": [
-            {"name":"alt values", "kind":"ordered", "type":"numeric", "purpose":"Values to plot along solution's domain"},
-            {"name":"alt fnc", "kind":"ordered", "type":"function_handle", "purpose":"Function of solution state vector"}
-        ]}
-    ], 
-     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]},
-"HybridPlotBuilder.plot":
-    { "inputs": [
-        {"name":"this"},
-        {"name":"t", "kind":"required", "type":["real", "column"],"purpose":"Continuous component of hybrid time domain"},
-        {"name":"j", "kind":"required", "type":"numeric", "purpose":"Discrete component of hybrid time domain"},
-        {"mutuallyExclusiveGroup": [
-            {"name":"alt values", "kind":"required", "type":"numeric", "purpose":"Values to plot along solution's domain"},
-            {"name":"alt fnc", "kind":"required", "type":"function_handle", "purpose":"Function of solution state vector"}
-        ]}
-    ], 
-     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]},
+"HybridPlotBuilder.addLegendEntry": 
+    { "inputs":
+     [{"name":"this"},
+      {"name":"graphic_obj_handle", "kind":"required", "purpose":"Graphic object."},
+      {"name":"label", "kind":"required", "purpose":"Legend entry label."}
+      ], 
+     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
+    },
 
 "_comment": "================================================================",
 "_comment": "================================================================",
@@ -494,7 +703,9 @@
             {"name":"RelTol",   "kind":"namevalue"},
             {"name":"AbsTol",   "kind":"namevalue"},
             {"name":"MaxStep",  "kind":"namevalue"},
-            {"name":"Refine",   "kind":"namevalue", "type":"choices={1, 4, 16}"}
+            {"name":"Refine",   "kind":"namevalue", "type":"choices={1, 4, 16}"},
+            {"name":"Jacobian", "kind":"namevalue"},
+            {"name":"odeSolver","kind":"namevalue", "type":"choices={'ode45', 'ode23', 'ode23s', 'ode15s'}"}
         ], 
      "outputs": [{"name": "this", "type":"HybridSolverConfig"}]
     },
@@ -518,6 +729,63 @@
         ], 
      "outputs": [{"name": "this", "type":"HybridSolverConfig"}]
     },
+"HybridSolverConfig.RelTol": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"relTol", "kind":"required"}
+        ], 
+     "outputs": [{"name": "this", "type":"HybridSolverConfig"}]
+    },
+"HybridSolverConfig.AbsTol": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"absTol", "kind":"required"}
+        ], 
+     "outputs": [{"name": "this", "type":"HybridSolverConfig"}]
+    },
+"HybridSolverConfig.MaxStep": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"maxStep", "kind":"required"}
+        ], 
+     "outputs": [{"name": "this", "type":"HybridSolverConfig"}]
+    },
+"HybridSolverConfig.Refine": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"refine", "kind":"required"}
+        ], 
+     "outputs": [{"name": "this", "type":"HybridSolverConfig"}]
+    },
+"HybridSolverConfig.Jacobian": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"jacobian", "kind":"required"}
+        ], 
+     "outputs": [{"name": "this", "type":"HybridSolverConfig"}]
+    },
+"HybridSolverConfig.odeOption": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"option name", "kind":"required"},
+            {"name":"option value", "kind":"required"}
+        ], 
+     "outputs": [{"name": "this", "type":"HybridSolverConfig"}]
+    },
+"HybridSolverConfig.massMatrix": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"massMatrix", "kind":"required"}
+        ], 
+     "outputs": [{"name": "this", "type":"HybridSolverConfig"}]
+    },
 "HybridSolverConfig.progress": 
     { "inputs":
         [
@@ -527,6 +795,421 @@
              "purpose":"Progress updates mode."}
         ], 
      "outputs": [{"name": "this", "type":"HybridSolverConfig"}]
+    },
+
+"_comment": "================================================================",
+"_comment": "================================================================",
+"_comment": "======== Auto complete information for HybridSubsystem =========",
+"_comment": "================================================================",
+"_comment": "================================================================",
+"HybridSubsystem.HybridSubsystem": 
+    { "inputs":
+        [
+            {"name":"state_dim", "kind":"required", "type":["integer", "scalar"]},
+            {"name":"input_dim", "kind":"required", "type":["integer", "scalar"]},
+            {"name":"output_dim", "kind":"ordered", "type":["integer", "scalar"]},
+            {"name":"output_fnc", "kind":"ordered", "type":"function_handle"}
+        ],
+     "outputs":
+        [
+            {"name": "this", "type":"HybridSubsystem"}
+          ]
+    },
+"HybridSubsystem.HybridSubsystem": 
+    { "inputs":
+        [
+            {"name":"state_dim", "kind":"required", "type":["integer", "scalar"]},
+            {"name":"input_dim", "kind":"required", "type":["integer", "scalar"]},
+            {"name":"output_dim", "kind":"ordered", "type":["integer", "scalar"]},
+            {"name":"flow_output_fnc", "kind":"ordered", "type":"function_handle"},
+            {"name":"jump_output_fnc", "kind":"ordered", "type":"function_handle"}
+        ],
+     "outputs":
+        [
+            {"name": "this", "type":"HybridSubsystem"}
+          ]
+    },
+"HybridSubsystem.generateFGCD": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"solution", "kind":"required", "type":"HybridSubsystemSolution", "purpose":"Hybrid solution"}
+
+        ],
+     "outputs":
+        [
+            {"name": "f_vals"},
+            {"name": "g_vals"},
+            {"name": "C_vals"},
+            {"name": "D_vals"}
+        ]
+    },
+"HybridSubsystem.checkFunctions": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"x", "kind":"ordered", "type":["real", "vector"], "purpose":"Test value for 'x'"},
+            {"name":"u", "kind":"ordered", "type":["real", "vector"], "purpose":"Test value for 'u'"},
+            {"name":"t", "kind":"ordered", "type":["real", "scalar"], "purpose":"Test value for 't'"},
+            {"name":"j", "kind":"ordered", "type":["integer", "scalar"], "purpose":"Test value for 'j'"}
+        ]
+    },
+"HybridSubsystem.assertInC": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"x", "kind":"ordered", "type":["real", "vector"], "purpose":"Test value for 'x'"},
+            {"name":"u", "kind":"ordered", "type":["real", "vector"], "purpose":"Test value for 'u'"},
+            {"name":"t", "kind":"ordered", "type":["real", "scalar"], "purpose":"Test value for 't'"},
+            {"name":"j", "kind":"ordered", "type":["integer", "scalar"], "purpose":"Test value for 'j'"}
+        ]
+    },
+"HybridSubsystem.assertNotInC": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"x", "kind":"ordered", "type":["real", "vector"], "purpose":"Test value for 'x'"},
+            {"name":"u", "kind":"ordered", "type":["real", "vector"], "purpose":"Test value for 'u'"},
+            {"name":"t", "kind":"ordered", "type":["real", "scalar"], "purpose":"Test value for 't'"},
+            {"name":"j", "kind":"ordered", "type":["integer", "scalar"], "purpose":"Test value for 'j'"}
+        ]
+    },
+"HybridSubsystem.assertInD": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"x", "kind":"ordered", "type":["real", "vector"], "purpose":"Test value for 'x'"},
+            {"name":"u", "kind":"ordered", "type":["real", "vector"], "purpose":"Test value for 'u'"},
+            {"name":"t", "kind":"ordered", "type":["real", "scalar"], "purpose":"Test value for 't'"},
+            {"name":"j", "kind":"ordered", "type":["integer", "scalar"], "purpose":"Test value for 'j'"}
+        ]
+    },
+"HybridSubsystem.assertNotInD": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"x", "kind":"ordered", "type":["real", "vector"], "purpose":"Test value for 'x'"},
+            {"name":"u", "kind":"ordered", "type":["real", "vector"], "purpose":"Test value for 'u'"},
+            {"name":"t", "kind":"ordered", "type":["real", "scalar"], "purpose":"Test value for 't'"},
+            {"name":"j", "kind":"ordered", "type":["integer", "scalar"], "purpose":"Test value for 'j'"}
+        ]
+    },
+
+"_comment": "================================================================",
+"_comment": "================================================================",
+"_comment": "===== Auto complete information for HybridSubsystemBuilder =====",
+"_comment": "================================================================",
+"_comment": "================================================================",
+"HybridSubsystemBuilder.build": 
+    { "inputs":
+        [
+            {"name":"this"}
+        ],
+     "outputs":
+        [
+            {"name": "subsys", "type":"HybridSubsystem"}
+        ]
+    },
+"HybridSubsystemBuilder.flowMap": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"flowMap", "kind":"required", "type":"function_handle"}
+        ],
+     "outputs":
+        [
+            {"name": "this", "type":"HybridSubsystemBuilder"}
+          ]
+    },
+"HybridSubsystemBuilder.f": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"flowMap", "kind":"required", "type":"function_handle"}
+        ],
+     "outputs":
+        [
+            {"name": "this", "type":"HybridSubsystemBuilder"}
+          ]
+    },
+"HybridSubsystemBuilder.jumpMap": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"flowMap", "kind":"required", "type":"function_handle"}
+        ],
+     "outputs":
+        [
+            {"name": "this", "type":"HybridSubsystemBuilder"}
+          ]
+    },
+"HybridSubsystemBuilder.g": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"flowMap", "kind":"required", "type":"function_handle"}
+        ],
+     "outputs":
+        [
+            {"name": "this", "type":"HybridSubsystemBuilder"}
+          ]
+    },
+"HybridSubsystemBuilder.flowSetIndicator": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"flowMap", "kind":"required", "type":"function_handle"}
+        ],
+     "outputs":
+        [
+            {"name": "this", "type":"HybridSubsystemBuilder"}
+          ]
+    },
+"HybridSubsystemBuilder.C": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"flowMap", "kind":"required", "type":"function_handle"}
+        ],
+     "outputs":
+        [
+            {"name": "this", "type":"HybridSubsystemBuilder"}
+          ]
+    },
+"HybridSubsystemBuilder.jumpSetIndicator": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"flowMap", "kind":"required", "type":"function_handle"}
+        ],
+     "outputs":
+        [
+            {"name": "this", "type":"HybridSubsystemBuilder"}
+          ]
+    },
+"HybridSubsystemBuilder.D": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"flowMap", "kind":"required", "type":"function_handle"}
+        ],
+     "outputs":
+        [
+            {"name": "this", "type":"HybridSubsystemBuilder"}
+        ]
+    },
+"HybridSubsystemBuilder.output": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"output_fnc", "kind":"required", "type":"function_handle"}
+        ],
+     "outputs":
+        [
+            {"name": "this", "type":"HybridSubsystemBuilder"}
+        ]
+    },
+"HybridSubsystemBuilder.flowOutput": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"output_fnc", "kind":"required", "type":"function_handle"}
+        ],
+     "outputs":
+        [
+            {"name": "this", "type":"HybridSubsystemBuilder"}
+        ]
+    },
+"HybridSubsystemBuilder.jumpOutput": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"output_fnc", "kind":"required", "type":"function_handle"}
+        ],
+     "outputs":
+        [
+            {"name": "this", "type":"HybridSubsystemBuilder"}
+        ]
+    },
+"HybridSubsystemBuilder.stateDimension": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"state_dim", "kind":"required", "type":["integer", "scalar"]}
+        ],
+     "outputs":
+        [
+            {"name": "this", "type":"HybridSubsystemBuilder"}
+        ]
+    },
+"HybridSubsystemBuilder.inputDimension": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"input_dim", "kind":"required", "type":["integer", "scalar"]}
+        ],
+     "outputs":
+        [
+            {"name": "this", "type":"HybridSubsystemBuilder"}
+        ]
+    },
+"HybridSubsystemBuilder.outputDimension": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"output_dim", "kind":"required", "type":["integer", "scalar"]}
+        ],
+     "outputs":
+        [
+            {"name": "this", "type":"HybridSubsystemBuilder"}
+        ]
+    },
+"HybridSubsystemBuilder.stateDim": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"state_dim", "kind":"required", "type":["integer", "scalar"]}
+        ],
+     "outputs":
+        [
+            {"name": "this", "type":"HybridSubsystemBuilder"}
+        ]
+    },
+"HybridSubsystemBuilder.inputDim": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"input_dim", "kind":"required", "type":["integer", "scalar"]}
+        ],
+     "outputs":
+        [
+            {"name": "this", "type":"HybridSubsystemBuilder"}
+        ]
+    },
+"HybridSubsystemBuilder.outputDim": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"output_dim", "kind":"required", "type":["integer", "scalar"]}
+        ],
+     "outputs":
+        [
+            {"name": "this", "type":"HybridSubsystemBuilder"}
+        ]
+    },
+
+"_comment": "================================================================",
+"_comment": "================================================================",
+"_comment": "==== Auto complete information for HybridSubsystemSolution =====",
+"_comment": "================================================================",
+"_comment": "================================================================",
+"HybridSubsystemSolution.evaluateFunctionWithInputs": 
+    { "inputs":
+        [
+            {"name":"this", "kind":"required", "type":"HybridArc"},
+            {"name":"f", "kind":"required", "type":"function_handle", "purpose":"f(x), f(x, u), f(x, u, t), or f(x, u, t, j)."}
+        ],
+     "outputs":
+        [
+            {"name": "out", "type":["real", "vector"]}
+        ]
+    },
+    
+"_comment": "================================================================",
+"_comment": "================================================================",
+"_comment": "========== Auto complete information for HybridSystem ==========",
+"_comment": "================================================================",
+"_comment": "================================================================",
+
+"HybridSystem": 
+    { "inputs":
+        [
+            {"name":"f", "type":"function_handle"},
+            {"name":"g", "type":"function_handle"},
+            {"name":"C", "type":"function_handle"},
+            {"name":"D", "type":"function_handle"}
+        ],
+     "outputs":
+        [
+            {"name": "sys", "type":"HybridSystem"}
+          ]
+    },
+"HybridSystem.HybridSystem": 
+    { "inputs":
+        [
+            {"name":"state_dim", "kind":"ordered", "type":["integer", "scalar"]}
+        ],
+     "outputs":
+        [
+            {"name": "this", "type":"HybridSystem"}
+          ]
+    },
+"HybridSystem.solve": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"x0", "kind":"required", "type":["real", "vector"], "purpose":"Initial state"},
+            {"name":"tspan", "kind":"required", "type":["real", "vector"], "purpose":"Continuous time span"},
+            {"name":"jspan", "kind":"required", "type":["integer", "vector"], "purpose":"Discrete time span"},
+            {"name":"config", "kind":"ordered", "type":[["HybridSolverConfig"],["choices={'silent'}"]], 
+             "purpose":"Solver configuration"}
+        ],
+     "outputs":
+        [
+            {"name": "solution", "type":"HybridSolution"}
+          ]
+    },
+"HybridSystem.generateFGCD": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"solution", "kind":"required", "type":"HybridSolution", "purpose":"Hybrid solution"}
+        ]
+    },
+"HybridSystem.checkFunctions": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"x", "kind":"ordered", "type":["real", "vector"], "purpose":"Test value for 'x'"},
+            {"name":"t", "kind":"ordered", "type":["real", "scalar"], "purpose":"Test value for 't'"},
+            {"name":"j", "kind":"ordered", "type":["integer", "scalar"], "purpose":"Test value for 'j'"}
+        ]
+    },
+"HybridSystem.assertInC": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"x", "kind":"ordered", "type":["real", "vector"], "purpose":"Test value for 'x'"},
+            {"name":"t", "kind":"ordered", "type":["real", "scalar"], "purpose":"Test value for 't'"},
+            {"name":"j", "kind":"ordered", "type":["integer", "scalar"], "purpose":"Test value for 'j'"}
+        ]
+    },
+"HybridSystem.assertNotInC": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"x", "kind":"ordered", "type":["real", "vector"], "purpose":"Test value for 'x'"},
+            {"name":"t", "kind":"ordered", "type":["real", "scalar"], "purpose":"Test value for 't'"},
+            {"name":"j", "kind":"ordered", "type":["integer", "scalar"], "purpose":"Test value for 'j'"}
+        ]
+    },
+"HybridSystem.assertInD": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"x", "kind":"ordered", "type":["real", "vector"], "purpose":"Test value for 'x'"},
+            {"name":"t", "kind":"ordered", "type":["real", "scalar"], "purpose":"Test value for 't'"},
+            {"name":"j", "kind":"ordered", "type":["integer", "scalar"], "purpose":"Test value for 'j'"}
+        ]
+    },
+"HybridSystem.assertNotInD": 
+    { "inputs":
+        [
+            {"name":"this"},
+            {"name":"x", "kind":"ordered", "type":["real", "vector"], "purpose":"Test value for 'x'"},
+            {"name":"t", "kind":"ordered", "type":["real", "scalar"], "purpose":"Test value for 't'"},
+            {"name":"j", "kind":"ordered", "type":["integer", "scalar"], "purpose":"Test value for 'j'"}
+        ]
     },
 
 "_comment": "================================================================",

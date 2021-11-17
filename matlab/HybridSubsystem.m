@@ -168,7 +168,7 @@ classdef (Abstract) HybridSubsystem < handle
     methods
         
         function [f_vals, g_vals, C_vals, D_vals] = generateFGCD(this, sol)
-            % Compute the values of the data (f, g, C, D) at each point along a given hybrid solution.
+            % Compute the values of the data (f, g, C, D) at each point along a given hybrid subsystem solution.
             % 
             % The flow map 'f' and jump map 'g' are evaluated at each point, including
             % points not in the flow set or jump set, respectively. 
@@ -180,7 +180,7 @@ classdef (Abstract) HybridSubsystem < handle
             % See also: HybridSubsystem.flowMap, HybridSubsystem.jumpMap,
             % HybridSubsystem.flowSetIndicator,
             % HybridSubsystem.jumpSetIndicator.
-            assert(isa(sol, 'HybridSubsystemSolution'))
+            assert(isa(sol, 'HybridSubsystemSolution'), '''sol'' must be a HybridSubsystemSolution')
             t = sol.t;
             j = sol.j;
             x = sol.x;

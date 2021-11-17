@@ -1,4 +1,5 @@
 function subsys = convertToSubsystem(hybrid_system)
+% Convert a HybridSystem object into a HybridSubsystem object with no inputs (EXPERIMENTAL).
 
     assert(~isempty(hybrid_system.state_dimension), 'State dimension not set.')
     subsys = HybridSubsystemBuilder()...
