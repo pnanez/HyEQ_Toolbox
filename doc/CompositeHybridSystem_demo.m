@@ -86,6 +86,28 @@
 %       j_2 + 1 \end{array}\right].$$
 % 
 
+%% Implementation Introduction
+% To implement a composite hyrbid system, we use the 
+% |CompositeHybridSubsystem| and |HybridSubsytem| classes. Each
+% |CompositeHybridSubsystem| contains one or more |HybridSubsystem| objects.
+% The following diagram shows the relationship between classes. An open
+% arrowhead indicates a subclass/superclass relationship. (Note that
+% |HybridSubsystem| is not a subclass of |HybridSystem|.)
+% 
+% <<system_hierarchy.svg>>
+% 
+% Implementing a composite system consists of three steps:
+%
+% # Create one or more |HybridSubsystem| objects, either by writing custom
+% subclasses or using existing classes (such as those in |hybrid.subsystems|).
+% # Create a |CompositeHybridSystem| from the collection of |HybridSubsystem|
+% objets.
+% # Define input functions for each subsystem.
+%
+% A solution to a |CompositeHybridSystem| can be computed and plotted just like
+% any other |HybridSystem| object. Information about subsystem state, input, and
+% output values are also provided.
+
 %% Creating Subsystems
 % In the Hybrid Equations Toolbox, hybrid subsystems, such as $\mathcal{H}_1$ and
 % $\mathcal{H}_2$ above, are represented by the |HybridSubsystem| class.  
@@ -353,8 +375,13 @@ sol_bb(1);
 sol_bb(controller_subsys);
 sol_bb('Ball');
 
+%%
+% 
+% <<solution_hierarchy.svg>>
+% 
+
 %% 
-% Subsystem solutions have all the same properties as a |HybridSolution|,
+% Subsystem solutions have all the same properties as a |HybridSolution|, e.g.,
 sol_bb('Ball').termination_cause 
 
 %% 
@@ -364,7 +391,7 @@ size(sol_bb('Ball').u)
 size(sol_bb('Ball').y) 
 
 %% 
-% The solutions to the subystems can plotted just like any other solution.
+% The subsystem solutions can plotted just like any other |HybridSolution|.
 clf
 hpb = HybridPlotBuilder().subplots('on')...
     .labels('$h$', '$v$')...
