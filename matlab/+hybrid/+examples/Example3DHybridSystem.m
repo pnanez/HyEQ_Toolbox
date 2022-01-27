@@ -1,6 +1,6 @@
 classdef Example3DHybridSystem < HybridSystem
- % Example 6.20 from Hybrid Dynamical Systems textbook by Goebel, 
- % Sanfelice, and Teel, modified by adding a third state component that is
+ % Based on Example 6.20 from Hybrid Dynamical Systems textbook by Goebel, 
+ % Sanfelice, and Teel. Modified by adding a third state component that is
  % equal to time.
 
     methods

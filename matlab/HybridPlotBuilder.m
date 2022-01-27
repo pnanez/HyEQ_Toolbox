@@ -1,6 +1,8 @@
 classdef HybridPlotBuilder < handle
 % Class for creating plots of hybrid solutions
 %
+% See also: <a href="matlab: showdemo HybridPlotBuilder_demo">Demo: Creating plots with HybridPlotBuilder</a>.
+
 % Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
 % © 2021. 
 
@@ -538,9 +540,10 @@ classdef HybridPlotBuilder < handle
             % See also: plotJumps, plotHybrid, plotPhase,
             % HybridSolution.evaluateFunction.
             import hybrid.internal.*;
-            [hybrid_sol, x_label_ndxs, x_values_ndxs] = convert_varargin_to_solution_obj(varargin, this.settings.component_indices);
-            plot_struct = this.createPlotDataArray(hybrid_sol, x_label_ndxs, x_values_ndxs, {'t', 'x'});
-            this.plot_from_plot_data_array(plot_struct);
+            [hybrid_sol, x_label_ndxs, x_values_ndxs] ...
+                = convert_varargin_to_solution_obj(varargin, this.settings.component_indices);
+            plot_data = this.createPlotDataArray(hybrid_sol, x_label_ndxs, x_values_ndxs, {'t', 'x'});
+            this.plot_from_plot_data_array(plot_data);
             this.last_function_call = [];
             
             if nargout == 0
@@ -801,7 +804,8 @@ classdef HybridPlotBuilder < handle
                     end
                 catch
                     warning('HybridPlotBuilder:UnsupportedOperation', ...
-                        'Could not set font size or interpreter for ticks. Update to a newer version of MATLAB to use this feature.')
+                        ['Could not set font size or interpreter for ticks. ' ...
+                        'This might be fixed by updating to a newer version of MATLAB.'])
                 end
 
                 % Apply labels

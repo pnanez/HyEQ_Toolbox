@@ -1,8 +1,8 @@
 classdef HybridArc
-% Solution to a hybrid dynamical system, with additional information. 
+% A numerical representation of a hybrid arc. 
 %
-% See also: HybridSystem, HybridPlotBuilder, hybrid.TerminationCause.
-%
+% See also: HybridSolution, <a href="matlab: showdemo HybridSystem_demo">Demo: How to Implement and Solve a Hybrid System</a>.
+
 % Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
 % © 2021. 
     
@@ -37,6 +37,7 @@ classdef HybridArc
     properties(SetAccess = immutable, Hidden)
         % Column vector containing a 1 at each entry where a jump starts and 0 otherwise.
         is_jump_start
+        jump_indices
     end
     
     methods
@@ -64,7 +65,8 @@ classdef HybridArc
                 this.flow_lengths = [];
                 this.shortest_flow_length = 0;
             else
-                [this.jump_times, ~, ~, this.is_jump_start] = hybrid.internal.jumpTimes(t, j);
+                [this.jump_times, ~, this.jump_indices, this.is_jump_start] ...
+                                            = hybrid.internal.jumpTimes(t, j);
                 this.total_flow_length = t(end) - t(1);
                 this.jump_count = length(this.jump_times);
                 this.flow_lengths = hybrid.internal.flowLengths(t, j);
@@ -73,7 +75,7 @@ classdef HybridArc
         end
 
         function transformed_arc = transform(this, f)
-            % Transform the values of x by the function f(x).
+            % Replace the values of x by the function f(x).
             x_transformed = this.evaluateFunction(f);
             transformed_arc = HybridArc(this.t, this.j, x_transformed);
         end
@@ -85,6 +87,10 @@ classdef HybridArc
         end
 
         function restricted_sol = restrictT(this, tspan)
+            % Restrict the domain in ordinary time to the interval 'tspan'.
+            % 'tspan' must be a 2x1 array of real numbers. 
+            % 
+            % See also: HybridArc/restrictJ
             assert(isnumeric(tspan), 'tspan must be numeric')
             assert(all(size(tspan) == [1 2]), 'tspan must be a 1x2 array.')
             ndxs_in_span = this.t >= tspan(1) & this.t <= tspan(2);
@@ -95,6 +101,10 @@ classdef HybridArc
         end
 
         function restricted_sol = restrictJ(this, jspan)
+            % Restrict the domain in discrete time to the interval 'jspan'.
+            % 'jspan' must be either a 2x1 array of integers or a single integer. 
+            % 
+            % See also: HybridArc/restrictT
             assert(isnumeric(jspan), 'jspan must be numeric')
             if isscalar(jspan)
                 jspan = [jspan jspan];
@@ -114,11 +124,6 @@ classdef HybridArc
             else 
                 builtin('length', this);
             end
-        end
-
-        function plot(this, varargin)
-            % Deprecated: Do not use.
-            HybridPlotBuilder.plot(this)
         end
 
         function plotFlows(this, varargin)
@@ -186,6 +191,11 @@ classdef HybridArc
         function plotHybridArc(varargin)
             warning('Please use the plotHybrid function instead of plotHybridArc.')
             this.plotHybrid(varargin{:});
+        end
+
+        function plot(this, varargin)
+            % Deprecated: Do not use.
+            HybridPlotBuilder.plot(this)
         end
     end
     

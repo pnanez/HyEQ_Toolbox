@@ -1,7 +1,7 @@
 classdef (Abstract) HybridSystem < handle
 % Abstract class of hybrid systems. A concrete hybrid system is defined by writing a subclass of HybridSystem.
 %
-% See also: HybridSystemBuilder.
+% See also: HybridSystemBuilder, <a href="matlab: showdemo HybridSystem_demo">Demo: How to Implement and Solve a Hybrid System</a>.
 
     properties% (SetAccess = immutable) Making state_dimension immutable breaks the CompositeHybridSystem constructor.
         % Dimension of the state space (optional).

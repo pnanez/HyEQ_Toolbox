@@ -1,8 +1,8 @@
 classdef PopupProgressUpdater < hybrid.ProgressUpdater
-% Defines a mechanism that displays progress updates while solving hybrid systems in a popup box with a progress bar.
+% A progress updater for the hybrid equation solver that shows a progress bar in a popup window.
 %
 % See also: HybridSolverConfig, hybrid.ProgressUpdater, hybrid.SilentProgressUpdater.
-%
+
 % Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
 % © 2021. 
     

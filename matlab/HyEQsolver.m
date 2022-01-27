@@ -143,11 +143,12 @@ function [t, j, x] = HyEQsolver(f,g,C,D,x0,TSPAN,JSPAN,rule,options,solver,E,pro
 % Matlab M-file Project: HyEQ Toolbox @ Hybrid Systems Laboratory (HSL),
 % https://hybrid.soe.ucsc.edu/software
 % http://hybridsimulator.wordpress.com/
-% Filename: HYEQSOLVER.m
-%--------------------------------------------------------------------------
-%   See also HybridSystem, HybridPlotBuilder.
+% Filename: HyEQsolver.m
 %   Copyright @ Hybrid Systems Laboratory (HSL),
 %   Revision: 3.0.0 Date: 08/14/2021
+%--------------------------------------------------------------------------
+%   See also HybridSystem, HybridPlotBuilder, <a href="matlab: showdemo HybridSystem_demo">Demo: How to Implement and Solve a Hybrid System</a>.
+
 
 if ~exist('rule','var')
     rule = 1;

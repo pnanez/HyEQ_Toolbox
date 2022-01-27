@@ -9,8 +9,8 @@ classdef BouncingBallSubsystem < HybridSubsystem
         function obj = BouncingBallSubsystem() % Constructor.
             state_dim = 2;
             input_dim = 1;
-            output_dim = 2; % Matches default.
-            output_fnc = @(x) x; % Matches default.
+            output_dim = 2; % Matches state_dim (default).
+            output_fnc = @(x) x; % Full-state output (default).
             obj = obj@HybridSubsystem(state_dim, input_dim, output_dim, output_fnc);
         end
         

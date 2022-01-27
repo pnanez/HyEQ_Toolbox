@@ -9,8 +9,6 @@ sol = system.solve([10, 0], [0 30], [0 30], config);
 sol_3D = system_3D.solve([0; 1; 0], [0, 20], [0, 100], config);
 sol_8D = HybridArc(sol.t, sol.j, sol.x(:, 1)*(1:8));
 
-%%
-
 %% Basic Plotting
 % The Hybrid Equations Toolbox provides two approaches to plotting hybrid
 % solutions, depending the level of control required. The first approach,
@@ -70,12 +68,12 @@ hpb.plotFlows(sol)
 
 %%
 % If the plot builder is only used once, it can be used immediately without
-% assign it to a variable by _chaining_ a series of function calls.
+% assigning it to a variable by _chaining_ a series of function calls.
 clf() % Clear figure
 HybridPlotBuilder().flowColor('black').plotFlows(sol);
 
 %% 
-% WARNING: prior to MATLAB version R2016a, function calls cannot be chained
+% Prior to MATLAB version R2016a, function calls cannot be chained
 % directly after a constructor, so the code above must be 
 % split into a variable assignment, followed by the function calls:
 % 

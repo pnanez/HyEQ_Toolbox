@@ -1,8 +1,8 @@
 classdef HybridSolution < HybridArc
 % Solution to a hybrid dynamical system, with additional information. 
 %
-% See also: HybridSystem, HybridPlotBuilder, hybrid.TerminationCause.
-%
+% See also: HybridSystem, HybridPlotBuilder, hybrid.TerminationCause, <a href="matlab: showdemo HybridSystem_demo">Demo: How to Implement and Solve a Hybrid System</a>.
+
 % Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
 % © 2021. 
     

@@ -76,7 +76,7 @@
     { "inputs":
         [
             {"name":"this", "kind":"required", "type":"HybridArc"},
-            {"name":"tspan", "kind":"required", "type":["integer", "vector"], "purpose":"Discrete time values or interval."}
+            {"name":"jspan", "kind":"required", "type":["integer", "vector"], "purpose":"Discrete time values or interval."}
         ],
      "outputs":
         [
@@ -560,7 +560,7 @@
     { "inputs":
      [{"name":"this"},
       {"name":"plot_function_2D", "kind":"required",
-       "type":[["choices={'plot', 'semilogy', 'semilogx', 'loglog'}"], ["function_handle"]],
+       "type":[["choices={'plot', 'semilogy', 'semilogx', 'loglog', 'stairs'}"], ["function_handle"]],
        "purpose":"Plot function name or handle"}
       ], 
      "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]

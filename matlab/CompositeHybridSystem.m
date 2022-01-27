@@ -14,8 +14,9 @@ classdef CompositeHybridSystem < HybridSystem
 % and so on. (The subsystems can jump separately of each other, so each has
 % its own discrete time).
 % 
-% See also: HybridSystem, HybridSubsystem, CompositeHybridSolution.
-%
+% See also: HybridSystem, HybridSubsystem, CompositeHybridSolution, <a href="matlab: 
+% showdemo CompositeHybridSystem_demo">Demo: Create and Simulate Multiple Interlinked Hybrid Systems</a>.
+
 % Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
 % © 2021. 
 

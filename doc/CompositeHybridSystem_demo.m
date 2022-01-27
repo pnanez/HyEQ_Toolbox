@@ -88,8 +88,8 @@
 
 %% Implementation Introduction
 % To implement a composite hyrbid system, we use the 
-% |CompositeHybridSubsystem| and |HybridSubsytem| classes. Each
-% |CompositeHybridSubsystem| contains one or more |HybridSubsystem| objects.
+% |CompositeHybridSystem| and |HybridSubsytem| classes. Each
+% |CompositeHybridSystem| contains one or more |HybridSubsystem| objects.
 % The following diagram shows the relationship between classes. An open
 % arrowhead indicates a subclass/superclass relationship. (Note that
 % |HybridSubsystem| is not a subclass of |HybridSystem|.)

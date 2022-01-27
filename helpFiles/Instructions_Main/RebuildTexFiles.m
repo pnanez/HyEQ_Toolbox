@@ -4,7 +4,7 @@
 
 % Open the simulator source file
 
-Str   = fileread('../../CommonFiles/lite/HyEQsolver.m');
+Str   = fileread('../../matlab/HyEQsolver.m');
 CStr  = regexp(Str, '\n', 'split');
 
 %% Search functions
@@ -12,9 +12,10 @@ Index = [find(strncmp(CStr, 'function', 8)), length(CStr) + 1];
 
 %% Save functions by name
 filenames = {'HyEQsolver_inst','zeroevents_inst','jump_inst', 'fun_wrap_inst'};
-for iP = 1:length(Index) - 1;
+for iP = 1:min(length(Index), length(filenames)) - 1
     FID = fopen(sprintf(['Matlab2tex/',filenames{iP},'.m']), 'w');
-    if FID == - 1, error('Cannot open file for writing');
+    if FID == - 1
+        error('Cannot open file for writing');
     end
     fprintf(FID,'%s\n', CStr{Index(iP):Index(iP + 1)-1});
     fclose(FID);

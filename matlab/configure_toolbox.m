@@ -1,14 +1,38 @@
 % Script for finishing the installation of the Hybrid Equations Toolbox.
+hyeqsolver_paths = which('HyEQsolver', '-all');
+if length(hyeqsolver_paths) > 1
 
-hyeqsolver_path = which('HyEQsolver', '-all');
-if length(hyeqsolver_path) > 1
-    error('Multiple versions of HyEQsolver() are on the MATLAB path. Have you uninstalled the previous version of the HybridEquationSolver?')
-elseif isempty(hyeqsolver_path)
-    error('Hybrid Equations Toolbox is not installed.')
+    try
+        for i = 1:length(hyeqsolver_paths)
+            path_to_solver = fileparts(hyeqsolver_paths{i});
+
+            toolbox_root_path_candidate = what(fullfile(path_to_solver, '..', '..')).path;
+            uninstall_script_candidate_path = fullfile(toolbox_root_path_candidate, 'tbclean.m');
+
+            if exist(uninstall_script_candidate_path, 'file') == 2
+                uninstall_script_path = uninstall_script_candidate_path;
+                disp(['A previous version of the Hybrid Equations Toolbox was found at "', toolbox_root_path_candidate, '".'])
+                disp(['Click <a href="matlab:run(''', uninstall_script_path,''')">here</a> to start the unstallation. ', ...
+                    'Afterwards, please run <a href="matlab:run(''configure_toolbox'')">configure_toolbox.m</a> again.'])
+                return
+            end
+        end
+    catch e
+        warning('Hybrid:FailedAutomaticUninstall', ...
+            ['The following error occured when to start the automatic removal of ' ...
+            'old toolbox versions: %s. Please uninstall old versions manually.'], e.message)
+        disp('Multiple versions of the HyEQsolver function were found on the MATLAB path at the following locations:')
+        hyeqsolver_paths %#ok<NOPTS> 
+
+        error(['Previously installed versions of the Hybrid Equations Toolbox ' ...
+            'must be removed before the newest version can be used.'])
+    end
+elseif isempty(hyeqsolver_paths)
+    error('The Hybrid Equations Toolbox is not installed.')
 end
 
 if ~verLessThan('matlab','9.10')
-    enable_enhanced_autocomplete(hyeqsolver_path)
+    enable_enhanced_autocomplete(hyeqsolver_paths)
 end
 
 promptMessage = sprintf(['Do you want to run automated tests?\n' ...
@@ -23,6 +47,8 @@ if strcmpi(button, 'Run Tests')
   else 
     disp('All tests passed.');
   end
+else 
+    disp('Tests skipped.')
 end
 
 fprintf('\nThe Hybrid Equations Toolbox is ready to use.\n')
@@ -44,6 +70,6 @@ elseif ~exist(p_after, 'file')
         p_before, p_after)
 end
 if exist(p_after, 'file')
-    disp('Autocomplete information enabled for Hybrid Equations Toolbox.')
+    disp('Autocomplete information is enabled for the Hybrid Equations Toolbox.')
 end
 end

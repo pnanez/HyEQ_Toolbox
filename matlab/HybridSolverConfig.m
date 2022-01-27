@@ -1,8 +1,8 @@
 classdef HybridSolverConfig < handle
-% Class containing settings for the HybridSystem.solve() function. 
+% Settings for the HybridSystem.solve() function. 
 %
-% See also: HybridSystem.solve, CompositeHybridSystem.solve.
-%
+% See also: HybridSystem.solve, CompositeHybridSystem.solve, <a href="matlab: showdemo HybridSystem_demo">Demo: How to Implement and Solve a Hybrid System</a>.
+
 % Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
 % © 2021. 
 

@@ -1,13 +1,13 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration build-checksum="4009313989" file="C:\Users\pwintz\code\hybrid-toolbox\HybridEquationsToolbox.prj" location="C:\Users\pwintz\code\hybrid-toolbox" name="HybridEquationsToolbox" target="target.toolbox" target-name="Package Toolbox">
+  <configuration build-checksum="3943893848" file="C:\Users\pwintz\code\hybrid-toolbox\HybridEquationsToolbox.prj" location="C:\Users\pwintz\code\hybrid-toolbox" name="HybridEquationsToolbox" target="target.toolbox" target-name="Package Toolbox">
     <param.appname>Hybrid Equations Toolbox</param.appname>
-    <param.authnamewatermark />
+    <param.authnamewatermark>Paul Wintz</param.authnamewatermark>
     <param.email>pwintz@ucsc.edu</param.email>
     <param.company>Hybrid System Laboratory; UC, Santa Cruz</param.company>
     <param.summary />
     <param.description />
     <param.screenshot />
-    <param.version>3.0.0.21</param.version>
+    <param.version>3.0.0.22</param.version>
     <param.output>${PROJECT_ROOT}\Hybrid Equations Toolbox.mltbx</param.output>
     <param.products.name />
     <param.products.id />
@@ -135,7 +135,7 @@ configure_development_path.m
     <param.required.addons />
     <param.matlab.project.id />
     <param.matlab.project.name />
-    <param.release.start>R2016a</param.release.start>
+    <param.release.start>R2014b</param.release.start>
     <param.release.end>latest</param.release.end>
     <param.release.current.only>false</param.release.current.only>
     <param.compatiblity.windows>true</param.compatiblity.windows>
@@ -149,7 +149,6 @@ configure_development_path.m
     <param.additional.sw.mac.url />
     <param.additional.sw.linux.url />
     <unset>
-      <param.authnamewatermark />
       <param.email />
       <param.summary />
       <param.description />
@@ -191,8 +190,8 @@ configure_development_path.m
       <file>${PROJECT_ROOT}\helpFiles</file>
       <file>${PROJECT_ROOT}\HyEQ_Toolbox_v204.pdf</file>
       <file>${PROJECT_ROOT}\info.xml</file>
+      <file>${PROJECT_ROOT}\LICENSE.txt</file>
       <file>${PROJECT_ROOT}\matlab</file>
-      <file>${PROJECT_ROOT}\plot_positioning_bug.m</file>
       <file>${PROJECT_ROOT}\rename_variables.sh</file>
       <file>${PROJECT_ROOT}\simulink</file>
     </fileset.rootfiles>

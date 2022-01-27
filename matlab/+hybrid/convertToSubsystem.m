@@ -1,6 +1,6 @@
 function subsys = convertToSubsystem(hybrid_system)
 % Convert a HybridSystem object into a HybridSubsystem object with no inputs (EXPERIMENTAL).
-
+    assert(isa(hybrid_system, 'HybridSystem'), 'Input was not a HybridSystem.')
     assert(~isempty(hybrid_system.state_dimension), 'State dimension not set.')
     subsys = HybridSubsystemBuilder()...
         .flowMap(@(x, ~, t, j) hybrid_system.flowMap_3args(x, t, j))...

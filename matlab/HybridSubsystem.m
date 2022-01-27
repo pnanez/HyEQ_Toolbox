@@ -1,8 +1,9 @@
 classdef (Abstract) HybridSubsystem < handle
 % Class of hybrid subsystems with inputs and outputs, used in the construction of composite hybrid systems.
 %
-% See also: CompositeHybridSystem, HybridSystem, HybridSubsystemBuilder, hybrid.subsystems.
-%
+% See also: CompositeHybridSystem, HybridSystem, HybridSubsystemBuilder, hybrid.subsystems, <a href="matlab: 
+% showdemo CompositeHybridSystem_demo">Demo: Create and Simulate Multiple Interlinked Hybrid Systems</a>.
+
 % Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
 % © 2021. 
 
