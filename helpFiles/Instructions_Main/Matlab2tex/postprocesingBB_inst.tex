@@ -1,31 +1,0 @@
-% This file was automatically created from the m-file 
-% "m2tex.m" written by USL. 
-% The fontencoding in this file is UTF-8. 
-%  
-% You will need to include the following two packages in 
-% your LaTeX-Main-File. 
-%  
-% \usepackage{color} 
-% \usepackage{fancyvrb} 
-%  
-% It is advised to use the following option for Inputenc 
-% \usepackage[utf8]{inputenc} 
-%  
-  
-% definition of matlab colors: 
-\definecolor{mblue}{rgb}{0,0,1} 
-\definecolor{mgreen}{rgb}{0.13333,0.5451,0.13333} 
-\definecolor{mred}{rgb}{0.62745,0.12549,0.94118} 
-\definecolor{mgrey}{rgb}{0.5,0.5,0.5} 
-\definecolor{mdarkgrey}{rgb}{0.25,0.25,0.25} 
-  
-\DefineShortVerb[fontfamily=courier,fontseries=m]{\$} 
-\DefineShortVerb[fontfamily=courier,fontseries=b]{\#} 
-  
-\begin{Verbatim}[commandchars=\$\{\},numbers=left,numbersep=2pt] 
-    $textcolor{mgreen}{%postprocessing for the bouncing ball example}     $textcolor{mgreen}{% plot solution}     figure(1)     clf     subplot(2,1,1),plotflows(t,j,x)     grid $textcolor{mred}{on}     ylabel($textcolor{mred}{'x'})     subplot(2,1,2),plotjumps(t,j,x)     grid $textcolor{mred}{on}     ylabel($textcolor{mred}{'x'})     $textcolor{mgreen}{% plot hybrid arc}     figure(2)     plotHybridArc(t,j,x)     xlabel($textcolor{mred}{'j'})     ylabel($textcolor{mred}{'t'})     zlabel($textcolor{mred}{'x'})     grid $textcolor{mred}{on}     view(37.5,30)  
-\end{Verbatim}  
-  
-\UndefineShortVerb{\$} 
-\UndefineShortVerb{\#} 
- 

@@ -3,7 +3,15 @@ function latex2html() {
         echo "Please specify one file"
         return
     fi
-    #htlatex Example_1_2.tex "xhtml,mathml-" " -cmozhtf" "-cvalidate" > html_htlatex.log
+    
+    # The htlatex command assumes the form
+    #
+    #    htlatex filename "options1" "option2" "options3" "options4"
+    #
+    # where "options1" is for the tex4ht.sty and *.4ht style files, 
+    #       "option2" is for the tex4ht postprocessor, 
+    #       "option3" is for the t4ht postprocessor, and 
+    #       "option4" is for the LaTeX compiler.
     echo "Compiling $1"
     htlatex $1 "xhtml,mathml-" " -cmozhtf" "--interaction=nonstopmode" > html_htlatex.log
 }

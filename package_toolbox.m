@@ -1,7 +1,9 @@
 close all
 
-do_publish = true;
-do_tests = true;
+configure_development_path
+
+do_publish = false;
+do_tests = false;
 do_package = true;
 
 if ~endsWith(pwd(), 'hybrid-toolbox')
@@ -37,10 +39,11 @@ if do_publish
         root_path = dir(fullfile(directory,'*.m'));
         
         for i = 1:numel(root_path)
-            f = fullfile(root_path(i).folder, root_path(i).name);
+            file = fullfile(root_path(i).folder, root_path(i).name);
             outdir = fullfile(root_path(i).folder, 'html');
-            assert(isfile(f));
-            publish(f);
+            assert(isfile(file));
+            publish(file);
+            fprintf('Published %s to HTML.\n', file)
         end
     end
     close all
@@ -49,14 +52,14 @@ end
 % Move the function signatures file so that it is unused in the packaged version
 % until 'configure_toolbox' is run after installation on an appropriate version
 % of MATLAB.
-movefile(functionSignituresAutocompleteInfoPath_dev, functionSignituresAutocompleteInfoPath_package)
+copyfile(functionSignituresAutocompleteInfoPath_dev, functionSignituresAutocompleteInfoPath_package)
 
 % Create the .mltbx file.
 matlab.addons.toolbox.packageToolbox(projectFile)
 
 % Move the function signitures file back so that it is enabled during
 % development.
-movefile(functionSignituresAutocompleteInfoPath_package, functionSignituresAutocompleteInfoPath_dev)
+delete(functionSignituresAutocompleteInfoPath_dev)
 
 % Cleanup publish directories. We do this after packaging the toolbox because
 % some of the demos need to be on the MATLAB path.
@@ -72,4 +75,9 @@ for directory = toolbox_dirs
 end
 
 close all
-fprintf('Packaging complete. %d tests failed.\n', nTestsFailed)
+fprintf('Packaging complete. ')
+if nTestsFailed >= 0
+    fprintf('%d tests failed.\n', nTestsFailed)
+else
+    fprintf('Tests were skipped.\n')
+end

@@ -12,7 +12,8 @@ Index = [find(strncmp(CStr, 'function', 8)), length(CStr) + 1];
 
 %% Save functions by name
 filenames = {'HyEQsolver_inst','zeroevents_inst','jump_inst', 'fun_wrap_inst'};
-for iP = 1:min(length(Index), length(filenames)) - 1
+assert(length(Index) >= length(filenames))
+for iP = 1:length(filenames)
     FID = fopen(sprintf(['Matlab2tex/',filenames{iP},'.m']), 'w');
     if FID == - 1
         error('Cannot open file for writing');
@@ -23,16 +24,14 @@ end
 
 %%
 % Folder Matlab2tex
-
-m2tex('Matlab2tex/config_inst.m','num')
-m2tex('Matlab2tex/HyEQsolver_inst.m','num')
-m2tex('Matlab2tex/initialization_inst.m','num')
-m2tex('Matlab2tex/initializationBB_inst.m','num')
-m2tex('Matlab2tex/jump_inst.m','num')
-m2tex('Matlab2tex/postprocesing_inst.m','num')
-m2tex('Matlab2tex/postprocesingBB_inst.m','num')
-m2tex('Matlab2tex/zeroevents_inst.m','num')
-m2tex('Matlab2tex/fun_wrap_inst.m','num')
+% The following code appears to use the MATLAB add-on "m-code to LaTeX converter" 
+% (https://www.mathworks.com/matlabcentral/fileexchange/24515-m-code-to-latex-converter),
+% but the output is not correctly formatted by htlatex, so it may be that either
+% an older version or a different add-on is necessary.
+for name_prefix = ["config", "HyEQsolver", "initialization", "initializationBB", ...
+                    "jump", "postprocesing", "postprocesingBB", "zeroevents", "fun_wrap"]
+    m2tex(sprintf('Matlab2tex/%s_inst.m', name_prefix),'num')
+end
 
 
 %%
@@ -54,11 +53,11 @@ m2tex('Matlab2tex_1_2/f.m','num')
 m2tex('Matlab2tex_1_2/g.m','num')
 m2tex('Matlab2tex_1_2/run.m','num')
 
-delete('../../helpFiles/Instructions_Main/Matlab2tex_1_2/C.m');
-delete('../../helpFiles/Instructions_Main/Matlab2tex_1_2/D.m');
-delete('../../helpFiles/Instructions_Main/Matlab2tex_1_2/f.m');
-delete('../../helpFiles/Instructions_Main/Matlab2tex_1_2/g.m');
-delete('../../helpFiles/Instructions_Main/Matlab2tex_1_2/run.m');
+% delete('../../helpFiles/Instructions_Main/Matlab2tex_1_2/C.m');
+% delete('../../helpFiles/Instructions_Main/Matlab2tex_1_2/D.m');
+% delete('../../helpFiles/Instructions_Main/Matlab2tex_1_2/f.m');
+% delete('../../helpFiles/Instructions_Main/Matlab2tex_1_2/g.m');
+% delete('../../helpFiles/Instructions_Main/Matlab2tex_1_2/run.m');
 
 
 %%

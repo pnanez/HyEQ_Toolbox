@@ -23,5 +23,5 @@ fprintf(fid, '%s\r\n', script);
 fclose(fid);
 close_system(simsys);
 m2tex(mfilename,'num')
-delete(mfilename)
+% delete(mfilename)
 end

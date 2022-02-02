@@ -1,21 +1,9 @@
 <productinfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.mathworks.com/namespace/info/v1/info.xsd">
 <?xml-stylesheet type="text/xsl" href="http://www.mathworks.com/namespace/info/v1/info.xsd"?>
 
-<matlabrelease>R2012a</matlabrelease>
+<matlabrelease>R2014b</matlabrelease>
 <name>Hybrid Equations</name><!-- "Toolbox" is appended in the displayed text-->
-<type>toolbox</type>
-<icon>$toolbox/matlab/general/matlabicon.gif</icon>
-<help_location>helpFiles/</help_location>
-<help_contents_icon>$toolbox/matlab/icons/bookicon.gif</help_contents_icon>
-
-<list>
-
-<listitem>
-<label>Help</label>
-<callback>web('HyEQ_Toolbox_v204.html')/</callback>
-<icon>$toolbox/matlab/general/bookicon.gif</icon>
-</listitem>
-
-</list>
-
+    <type>toolbox</type>
+    <icon>$toolbox/matlab/general/matlabicon.gif</icon><!--"icon" doesn't do anything but is required by XML schema.-->
+    <help_location>doc</help_location>
 </productinfo>

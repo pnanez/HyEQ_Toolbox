@@ -27,6 +27,11 @@ demos.xml
 *.cb2
 .*.lb
 
+*.bbl
+*.synctex.gz
+*.fdb_latexmk
+*.blg
+
 ## Intermediate documents:
 *.dvi
 *.xdv
@@ -130,4 +135,7 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/matlab,windows,macos
+
+# Temporary files.
 temp*.m
+*_temp.*

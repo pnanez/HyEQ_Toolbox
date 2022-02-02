@@ -11,7 +11,7 @@ function sorted_names = sortInputAndOutputFunctionNames(inputs, outputs)
 n_ss = length(inputs); % number of subsystems
 
 if n_ss > 9
-    warning("CompositeHybridSystem is not expected to work with more than 9 subsystems.")
+    warning('CompositeHybridSystem is not expected to work with more than 9 subsystems.')
 end
 
 in_dependence_on_out = NaN(n_ss);

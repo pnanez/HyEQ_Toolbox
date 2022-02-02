@@ -1,31 +1,0 @@
-% This file was automatically created from the m-file 
-% "m2tex.m" written by USL. 
-% The fontencoding in this file is UTF-8. 
-%  
-% You will need to include the following two packages in 
-% your LaTeX-Main-File. 
-%  
-% \usepackage{color} 
-% \usepackage{fancyvrb} 
-%  
-% It is advised to use the following option for Inputenc 
-% \usepackage[utf8]{inputenc} 
-%  
-  
-% definition of matlab colors: 
-\definecolor{mblue}{rgb}{0,0,1} 
-\definecolor{mgreen}{rgb}{0.13333,0.5451,0.13333} 
-\definecolor{mred}{rgb}{0.62745,0.12549,0.94118} 
-\definecolor{mgrey}{rgb}{0.5,0.5,0.5} 
-\definecolor{mdarkgrey}{rgb}{0.25,0.25,0.25} 
-  
-\DefineShortVerb[fontfamily=courier,fontseries=m]{\$} 
-\DefineShortVerb[fontfamily=courier,fontseries=b]{\#} 
-  
-\begin{Verbatim}[commandchars=\$\{\},numbers=left,numbersep=2pt] 
-    $textcolor{mblue}{function} v  = C(x, u)           $textcolor{mgreen}{%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%}     $textcolor{mgreen}{% Matlab Function  Author: Ricardo Sanfelice }     $textcolor{mgreen}{%}     $textcolor{mgreen}{% Project: Simulation of a hybrid system (interconnection)}     $textcolor{mgreen}{%}     $textcolor{mgreen}{% Name: C.m}     $textcolor{mgreen}{%}     $textcolor{mgreen}{% Description: Flow set}     $textcolor{mgreen}{%}     $textcolor{mgreen}{% Version: 1.0}     $textcolor{mgreen}{% Required files: - }     $textcolor{mgreen}{%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%}          $textcolor{mgreen}{% state}     xi1 = x(1);     xi2 = x(2);          $textcolor{mgreen}{%input}     y2 = u(1);     v11 = u(2);     v12 = u(3);          $textcolor{mblue}{if} (xi1 >= y2)  $textcolor{mgreen}{% flow condition}         v = 1;  $textcolor{mgreen}{% report flow}     $textcolor{mblue}{else}         v = 0;   $textcolor{mgreen}{% do not report flow}     $textcolor{mblue}{end}  
-\end{Verbatim}  
-  
-\UndefineShortVerb{\$} 
-\UndefineShortVerb{\#} 
- 
