@@ -12,7 +12,6 @@
 %   Copyright @ Hybrid Systems Laboratory (HSL),
 %   Revision: 0.0.0.3 Date: 05/20/2015 3:42:00
 
-
 clear all                                                               
 clc                                                                       
 % parameters
@@ -25,13 +24,13 @@ k2 = -10;
 
 A = [0 1;
      0 -b/m];
-B = [1;
+B = [0;
      1/m];
 C = [1 0;
      0 1];
 K = [k1 k2];
 
-ctes = [A,B,C,K'];
+parameters = [A,B,C,K'];
 
 % initial conditions                                                    
 x0  = [1;1];
