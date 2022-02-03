@@ -18,8 +18,10 @@ classdef HybridSubsystemTest < matlab.unittest.TestCase
             subsys.C_indicator = @(x, u, t, j) norm(u) < 0.2;
             subsys.D_indicator = @(x, u, t, j) norm(u) > 0.6;
             [f_vals, g_vals, C_vals, D_vals] = subsys.generateFGCD(sol);
-            testCase.assertEqual(f_vals, x + j);
-            testCase.assertEqual(g_vals, x - t);
+            testCase.assertEqual(f_vals, x + [j, j, j]);
+            testCase.assertEqual(g_vals, x - [t, t, t]);
+            
+            assumeVersion(testCase,'R2021b') % The function vecnorm was added in R2017b.
             testCase.assertEqual(C_vals, double(vecnorm(u, 2, 2) < 0.2));
             testCase.assertEqual(D_vals, double(vecnorm(u, 2, 2) > 0.6));
         end

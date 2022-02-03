@@ -59,7 +59,7 @@ matlab.addons.toolbox.packageToolbox(projectFile)
 
 % Move the function signitures file back so that it is enabled during
 % development.
-delete(functionSignituresAutocompleteInfoPath_dev)
+delete(functionSignituresAutocompleteInfoPath_package)
 
 % Cleanup publish directories. We do this after packaging the toolbox because
 % some of the demos need to be on the MATLAB path.

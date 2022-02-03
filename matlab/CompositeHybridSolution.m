@@ -6,6 +6,11 @@ classdef CompositeHybridSolution < HybridSolution
 % Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
 % © 2021. 
 
+    properties(SetAccess = immutable)
+        % Number of subsystem solutions.
+        subsys_count 
+    end
+
     properties(SetAccess = immutable, Hidden)
         subsystem_solutions 
     end
@@ -21,6 +26,7 @@ classdef CompositeHybridSolution < HybridSolution
             cs = composite_solution;
             this = this@HybridSolution(cs.t, cs.j, cs.x, cs.C_end, cs.D_end, tspan, jspan, cs.solver_config);
             this.subsystem_solutions = subsystem_solutions;
+            this.subsys_count = length(subsystem_solutions);
             this.subsystems = subsystems;
         end
     end
@@ -62,34 +68,10 @@ classdef CompositeHybridSolution < HybridSolution
                         'Brace indexing is not supported on CompositeHybridSolution objects.')
             end
         end
-
+            
         function n = numArgumentsFromSubscript(obj,s,indexingContext) %#ok<INUSD> 
             % Subscripts always return a single (possibly array) object.
             n = 1;
-        end
-        
-        function n = numel(this)
-
-           % Define per this Stackoverflow answer: https://stackoverflow.com/a/29378151/6651650
-           
-           if isscalar(this)
-               n = numel(this.subsystem_solutions);
-           else
-               % Handle the case where 'this' is an array.
-               n = builtin('numel',this);
-           end
-        end
-
-        function len = length(this)
-
-           % Define per this Stackoverflow answer: https://stackoverflow.com/a/29378151/6651650
-           
-           if isscalar(this)
-               len = length(this.subsystem_solutions);
-           else
-               % Handle the case where 'this' is an array.
-               len = builtin('length',this);
-           end
         end
         
         function ndx = end(this,k,n_ndxs)

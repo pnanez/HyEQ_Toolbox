@@ -22,14 +22,14 @@ classdef CompositeHybridSystem < HybridSystem
 
     properties(SetAccess = immutable)
         subsystems % hybrid.internal.SubsystemList; 
+
+        % Number of subsystems
+        subsys_count;
     end
     
     properties(GetAccess = private, SetAccess = immutable, Hidden) 
         % The following properties are private because they might change in
         % future implementations. 
-        
-        % Number of subsystems
-        subsys_n;
         
         % Indicies within the composite state of each subsystem's state 
         x_indices % cell (:, :) 
@@ -69,10 +69,10 @@ classdef CompositeHybridSystem < HybridSystem
            obj = obj@HybridSystem();
            subsystems = hybrid.internal.SubsystemList(varargin{:});
            obj.subsystems = subsystems;
-           subsys_n = length(subsystems);
-           obj.subsys_n = subsys_n;
+           subsys_count = length(subsystems);
+           obj.subsys_count = subsys_count;
            ndx = 1; % Start index for ith subsystem state variable.
-           for i = 1:subsys_n
+           for i = 1:subsys_count
                ss = subsystems.get(i) ;
                ss_n = ss.state_dimension;
                obj.x_indices{i} = uint32(ndx : (ndx + ss_n - 1));
@@ -85,7 +85,7 @@ classdef CompositeHybridSystem < HybridSystem
                assert(~isempty(ss_n), 'State dimension for subsystem %d has not been set', i);
                ndx = ndx + ss_n;
            end
-           for i = 1:subsys_n
+           for i = 1:subsys_count
               obj.j_index(i) = ndx;
               ndx = ndx + 1;
            end
@@ -96,7 +96,7 @@ classdef CompositeHybridSystem < HybridSystem
            
 %            obj.updateOutputsList()
 
-            for i = 1:obj.subsys_n
+            for i = 1:obj.subsys_count
                obj.flow_outputs{i} = obj.subsystems.get(i).flows_output_fnc;
                obj.jump_outputs{i} = obj.subsystems.get(i).jumps_output_fnc;
             end
@@ -179,8 +179,8 @@ classdef CompositeHybridSystem < HybridSystem
             disp(strcat(class(this), ':'))
             subsys_prefix = char(9500); % i.e. '├'
             prop_prefix = char(9474); % i.e. '|'
-            for i = 1:this.subsys_n
-                if i == this.subsys_n
+            for i = 1:this.subsys_count
+                if i == this.subsys_count
                     subsys_prefix = char(9492); % i.e. '└'
                     prop_prefix = ' ';
                 end
@@ -340,13 +340,13 @@ classdef CompositeHybridSystem < HybridSystem
                 throwAsCaller(e);
             end
             
-            if length(xs_0) ~= this.subsys_n
+            if length(xs_0) ~= this.subsys_count
                 e = MException('CompositeHybridSystem:WrongNumberOfInitialStates', ...
                     'Wrong number of initial states. Expected=%d, actual=%d', ...
-                    this.subsys_n, length(xs_0));
+                    this.subsys_count, length(xs_0));
                 throwAsCaller(e);
             end
-            for i=1:this.subsys_n
+            for i=1:this.subsys_count
                 ss_dim = this.subsystems.get(i).state_dimension;
                 if any((size(xs_0{i}) ~= [ss_dim, 1])) && ~(ss_dim == 0 && size(xs_0{i}, 1) == 0)
                     e = MException('CompositeHybridSystem:WrongNumberOfInitialStates', '%s',...
@@ -391,7 +391,7 @@ classdef CompositeHybridSystem < HybridSystem
             for k = 1:length(t)
                 js = [];
                 xs = {};
-                for i = 1:this.subsys_n
+                for i = 1:this.subsys_count
                     xs{end+1} = xs_all(k, this.x_indices{i})'; %#ok<AGROW>
                     js(end+1) = js_all(k, i); %#ok<AGROW>
                 end
@@ -400,7 +400,7 @@ classdef CompositeHybridSystem < HybridSystem
                 [us_flow{k}, flow_ys{k}] = evaluateInOrder(this.sorted_names_flows, ...
                     this.kappa_C, this.flow_outputs, xs, t(k), js); %#ok<AGROW>
             end
-            for i = 1:this.subsys_n
+            for i = 1:this.subsys_count
                 ss = this.subsystems.get(i);
                 ss_j = js_all(:, i);
                 ss_x = xs_all(:, this.x_indices{i});
@@ -480,7 +480,7 @@ classdef CompositeHybridSystem < HybridSystem
             rows = size(x, 1);
             xs = NaN(rows, x_cols);
             js = NaN(rows, j_cols);
-            for i = 1:this.subsys_n
+            for i = 1:this.subsys_count
                 xs(:, this.x_indices{i}) = x(:, this.x_indices{i});
                 js(:, i) = x(:, this.j_index(i));
             end
@@ -488,11 +488,11 @@ classdef CompositeHybridSystem < HybridSystem
         
         function check_feedback(this, kappa)
             nargs = nargin(kappa);
-            is_wrong_nargs = nargs > this.subsys_n + 2;
+            is_wrong_nargs = nargs > this.subsys_count + 2;
             if is_wrong_nargs
                e = MException('CompositeHybridSystem:WrongNumberInputArgs', ...
                    'Wrong number of input arguments. Expected=%d, %d, or %d, actual=%d.',...
-                   this.subsys_n, this.subsys_n + 1, this.subsys_n + 2, nargs);
+                   this.subsys_count, this.subsys_count + 1, this.subsys_count + 2, nargs);
                throwAsCaller(e);
             end
         end

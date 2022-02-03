@@ -117,15 +117,6 @@ classdef HybridArc
                                         this.x(ndxs_in_span, :));
         end
 
-        function len = length(this)
-            % Get the number of time-steps in this HybridSolution.
-            if isscalar(this)
-                len = numel(this.t);
-            else 
-                builtin('length', this);
-            end
-        end
-
         function plotFlows(this, varargin)
             % Shortcut for HybridPlotBuilder.plotFlows function with automatic formatting based on the number of state components.
             %

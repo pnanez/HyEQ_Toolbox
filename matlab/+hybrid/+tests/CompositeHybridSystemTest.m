@@ -13,7 +13,7 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
             tspan = [0, 10];
             jspan = [0, 10];
             sol = sys.solve({1, 2}, tspan, jspan);
-            testCase.assertLength(sol, 2)
+            testCase.assertEqual(sol.subsys_count, 2)
             testCase.assertLength(sol.x(1, :), 2+2);
         end
        
@@ -33,7 +33,7 @@ classdef CompositeHybridSystemTest < matlab.unittest.TestCase
             tspan = [0, 10];
             jspan = [0, 10];
             sol = sys.solve({ones(4, 1), ones(4, 1), ones(4, 1)}, tspan, jspan);
-            testCase.assertLength(sol, 3)
+            testCase.assertEqual(sol.subsys_count, 3)
             testCase.assertLength(sol.x(1, :), ...
                 sub1.state_dimension+sub2.state_dimension+sub3.state_dimension+3);
         end
