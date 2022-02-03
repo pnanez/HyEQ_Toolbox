@@ -4,19 +4,16 @@ function latex2html() {
         return
     fi
     
-    # The htlatex command assumes the form
-    #
-    #    htlatex filename "options1" "option2" "options3" "options4"
-    #
-    # where "options1" is for the tex4ht.sty and *.4ht style files, 
-    #       "option2" is for the tex4ht postprocessor, 
-    #       "option3" is for the t4ht postprocessor, and 
-    #       "option4" is for the LaTeX compiler.
-    echo "Compiling $1"
-    htlatex $1 "xhtml,mathml-" " -cmozhtf" "--interaction=nonstopmode" > html_htlatex.log
+    echo "Compiling $1 to PDF"
+
+    # See this StackOverflow answer for details about translating MATLAB code 
+    # into HTML: 
+    #   https://tex.stackexchange.com/questions/631906/include-matlab-code-listing-compiled-into-html-with-correct-colors
+    # 
+    make4ht -c config.cfg --output-dir ../../doc/html $1
 }
 
-echo "Generating PDFs"
+echo "Generating HTML"
 latex2html Example_1_2.tex
 latex2html Example_1_3.tex 
 latex2html Example_1_4.tex 
@@ -28,5 +25,4 @@ latex2html Example_4_0.tex
 latex2html Example_4_1.tex 
 latex2html Example_4_2.tex
 latex2html Example_4_3.tex
-latex2html HyEQ_Toolbox_v204.tex
-cat html_htlatex.log
+latex2html HyEQ_Toolbox.tex

@@ -2,7 +2,7 @@ close all
 
 configure_development_path
 
-do_publish = false;
+do_publish = true;
 do_tests = false;
 do_package = true;
 
