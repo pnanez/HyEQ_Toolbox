@@ -2,7 +2,7 @@
 matlab -batch "RebuildTexFiles"
 
 # Compile the LaTeX documents.
-latexmk  -output-directory=../../doc -output-format=pdf -aux-directory=artifacts Example*.tex HyEQ_Toolbox.tex
+latexmk  -output-directory=.. -output-format=pdf -aux-directory=artifacts Example*.tex HyEQ_Toolbox.tex
 
 # Cleanup extra files.
-rm ../../doc/*.fls
+rm ../*.fls

@@ -1,0 +1,6 @@
+# The following files are not generated based on any other code, so we have to store them in git.
+!config_inst.m
+!initialization_inst.m
+!initializationBB_inst.m
+!postprocesing_inst.m
+!postprocesingBB_inst.m

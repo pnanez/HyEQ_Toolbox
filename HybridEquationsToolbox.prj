@@ -7,7 +7,7 @@
     <param.summary />
     <param.description />
     <param.screenshot />
-    <param.version>3.0.0.33</param.version>
+    <param.version>3.0.0.34</param.version>
     <param.output>${PROJECT_ROOT}\Hybrid Equations Toolbox.mltbx</param.output>
     <param.products.name />
     <param.products.id />
@@ -20,14 +20,11 @@
 %
 % A single file in the toolbox folder:
 % .svn
-install.m
-makeinstall.rc
 package_toolbox.m
-InspectClasses.m
 temp.m
 readme.rtf
 configure_development_path.m
-helpFiles
+doc/src
 *_temp.*
 .git*
 % A single file in a subfolder of the toolbox folder:

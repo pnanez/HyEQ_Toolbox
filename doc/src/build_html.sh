@@ -4,7 +4,7 @@ function latex2html() {
         return
     fi
     
-    echo "Compiling $1 to PDF"
+    echo "====== Compiling $1 to PDF ======"
 
     # See this StackOverflow answer for details about translating MATLAB code 
     # into HTML: 
@@ -13,7 +13,10 @@ function latex2html() {
     make4ht -c config.cfg --output-dir ../../doc/html $1
 }
 
-echo "Generating HTML"
+# Create the .tex and .m files in the Matlab2tex*/ directories.
+matlab -batch "RebuildTexFiles"
+
+echo "===== Generating HTML ======"
 latex2html Example_1_2.tex
 latex2html Example_1_3.tex 
 latex2html Example_1_4.tex 
