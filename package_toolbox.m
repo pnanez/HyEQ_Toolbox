@@ -10,21 +10,23 @@
 
 close all
 
-% configure_development_path
+configure_development_path
 
 do_publish = true;
-do_tests = false;
+do_tests = true;
 do_package = true;
-
-if ~isfile(fullfile(pwd(), 'HybridEquationsToolbox.prj'))
-   error('The working directory is not the root of the HyEQ toolbox.') 
-end
 
 projectFile = 'HybridEquationsToolbox.prj';
 toolbox_dirs = {'matlab', ...
                 'matlab/legacyPlottingFunctions', ...
                 'simulink/Library2014b', ...
                 'doc'};
+
+% Check that the working dirctory is the root of the HyEQ toolbox by checking
+% that it contains the project file "HybridEquationsToolbox.prj".
+proj_root = pwd();
+assert(isfile(fullfile(proj_root, projectFile)), ...
+        'The working directory is not the root of the HyEQ toolbox.')
 
 % Setup path
 for directory = toolbox_dirs
@@ -75,9 +77,11 @@ end
 copyfile(functionSignituresAutocompleteInfoPath_dev, functionSignituresAutocompleteInfoPath_package)
 
 % Create the .mltbx file.
-matlab.addons.toolbox.packageToolbox(projectFile)
+if do_package
+    matlab.addons.toolbox.packageToolbox(projectFile)
+end
 
-% Move the function signitures file back so that it is enabled during
+% Move the function signatures file back so that it is enabled during
 % development.
 delete(functionSignituresAutocompleteInfoPath_package)
 
