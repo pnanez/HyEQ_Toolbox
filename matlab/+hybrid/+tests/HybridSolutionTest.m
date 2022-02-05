@@ -36,6 +36,47 @@ classdef HybridSolutionTest < matlab.unittest.TestCase
                     'HybridArc:WrongShape')
         end
 
+        function testInterpolationConstantxNoJumps(testCase)
+            x = ones(10,1);
+            t = linspace(0,9,10)';
+            j = zeros(10,1);
+            t_grid = linspace(0,9);
+            sol = HybridArc(t, j, x);
+            interpolated_sol = sol.interpolate(t_grid);
+            testCase.assertEqual(interpolated_sol, ones(size(interpolated_sol)))
+        end
+
+        function testInterpolationConstantxOneJump(testCase)
+            x = ones(10,1);
+            t = [0; 1; 2; 3; 4; 4; 5; 6; 7; 8]; % jump at t=4
+            j = [0; 0; 0; 0; 0; 1; 1; 1; 1; 1];
+            t_grid = linspace(0,8);
+            sol = HybridArc(t,j,x);
+            interpolated_sol = sol.interpolate(t_grid);
+            testCase.assertEqual(interpolated_sol, ones(size(interpolated_sol)))
+        end
+
+        function testInterpolationLinearxNoJump(testCase)
+            x = linspace(0,100,51)';
+            t = linspace(0,50,51)';
+            j = zeros(51,1);
+            t_grid = linspace(0,50,101);
+            sol = HybridArc(t,j,x);
+            interpolated_sol = sol.interpolate(t_grid);
+            testCase.assertEqual(interpolated_sol, 2*t_grid) % slope of 2
+        end
+
+        function testInterpolationLinearxOneJump(testCase)
+            x = [linspace(0,50,26)'; linspace(0,45,10)'];
+            t = [linspace(0,25,26)'; linspace(25,34,10)'];
+            j = [zeros(26,1); ones(10,1)];
+            t_grid = linspace(0,34,18);
+            sol = HybridArc(t,j,x);
+            interpolated_sol = sol.interpolate(t_grid);
+            testCase.assertEqual(interpolated_sol(:,13), 2 * t_grid(:,13)) % slope of 2
+            testCase.assertEqual(interpolated_sol(:, 14:end), 5 * t_grid(:, 14:end) - 25*5) % slope of 5
+        end
+
     end
 
 end

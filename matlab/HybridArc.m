@@ -5,35 +5,35 @@ classdef HybridArc
 
 % Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
 % © 2021. 
-    
+
     properties(SetAccess = immutable)
         % A column vector containing the continuous time value for each entry in the solution.
-        t % double (:, 1) 
-        
+        t % double (:, 1)
+
         % A column vector containing the discrete time value for each entry in the solution.
-        j % double (:, 1) 
-        
+        j % double (:, 1)
+
         % An array containing the state vector for each entry in the solution.
         % Each row i of x contains the transposed state vector at the ith
-        % timestep. 
-        x % double (:, :) 
-        
+        % timestep.
+        x % double (:, :)
+
         % The duration of each interval of flow.
         flow_lengths % double (:, 1)
-        
+
         % The continuous time of each jump (column vector).
         jump_times % double (:, 1)
-        
+
         % The duration (in ordinary time) of the shortest interval of flow.
         shortest_flow_length % double
-        
+
         % The cumulative duration of all intervals of flow.
         total_flow_length % double
-        
+
         % The number of jumps in the solution.
         jump_count % integer
     end
-    
+
     properties(SetAccess = immutable, Hidden)
         % Column vector containing a 1 at each entry where a jump starts and 0 otherwise.
         is_jump_start
@@ -41,17 +41,17 @@ classdef HybridArc
         jump_start_indices
         jump_end_indices
     end
-    
+
     methods
         function this = HybridArc(t, j, x)
-            % Construct a HybridArc object. 
+            % Construct a HybridArc object.
             %
             % Input arguments:
             % 1) t: a column vector containing the continuous time at each time step.
             % 2) j: a column vector containing the discrete time at each time step.
             % 3) x: an array where each row contains the transpose of the state
             % vector at that time step.
-            
+
             checkVectorSizes(t, j, x);
 
             this.t = t;
@@ -193,14 +193,14 @@ classdef HybridArc
             % See also: HybridPlotBuilder.plotJumps.
             this.plotByFnc('plotJumps', varargin{:})
         end
-        
+
         function plotHybrid(this, varargin)
             % Shortcut for HybridPlotBuilder.plotHybrid function with automatic formatting based on the number of state components.
             %
             % See also: HybridPlotBuilder.plotHybrid.
             this.plotByFnc('plotHybrid', varargin{:})
         end
-        
+
         function plotPhase(this, varargin)
             % Shortcut for HybridPlotBuilder.plotPhase function.
             %
@@ -214,6 +214,23 @@ classdef HybridArc
             % See also: HybridPlotBuilder.plotTimeDomain.
             this.plotByFnc('plotTimeDomain', varargin{:})
         end
+
+        function interpolated_x = interpolate(this, t_grid)
+          % Interpolate a function at each point along the solution.
+          % 't_grid' is a list of times for interpolation.
+          % Returns a display of the interpolated x-values at t_grid times.
+          interpolated_x = NaN(1, length(t_grid));
+          counter = 1;
+          for jump = 0:this.jump_count % for each jump
+            t_in_jump = this.t(this.j == jump); % column vector of all timesteps in jump
+            x_in_jump = this.x(this.j == jump, :); % array of all x in jump
+            t_grid_in_jump = t_grid((t_grid >= t_in_jump(1,1)) & (t_grid <= t_in_jump(length(t_in_jump), 1))); % column vector of all t_grid in jump
+            interp_x_in_jump = interp1(t_in_jump, x_in_jump, t_grid_in_jump, 'spline'); % array of interpolated x in jump
+            interpolated_x(:,counter:counter + length(interp_x_in_jump) - 1) = interp_x_in_jump;
+            counter = counter + length(interp_x_in_jump);
+          end
+        end
+
 
     end
 
@@ -237,7 +254,7 @@ classdef HybridArc
             end
         end
     end
-    
+
     methods(Hidden)
         function sliced_arc = slice(this, ndxs)
             % Create a new HybridArc with only the selected component indicies (DEPRECATED). 
@@ -258,7 +275,7 @@ classdef HybridArc
             warning('Please use the plotJumps function instead of plotjumps.')
             this.plotJumps(varargin{:});
         end
-        
+
         function plotHybridArc(varargin)
             warning('Please use the plotHybrid function instead of plotHybridArc.')
             this.plotHybrid(varargin{:});
@@ -269,9 +286,9 @@ classdef HybridArc
             HybridPlotBuilder.plot(this)
         end
     end
-    
+
     methods
-        
+
         function out = evaluateFunction(this, func_hand, time_indices)
             % Evaluate a function at each point along the solution.
             % The function handle 'func_hand' is evaluated with the
@@ -281,35 +298,35 @@ classdef HybridArc
             % 'time_indices', if provided). Each row of the output array
             % contains the vector returned by 'func_hand' at the
             % corresponding entry in this HybridSolution.
-            % 
+            %
             % The argument 'func_hand' must be a function handle
             % that has the input arguments "x", "x, t", or "x, t, j", and
             % returns a column vector of fixed length.
             % The argument "time_indices" is optional. If supplied, the
             % function is evaluated only at the indices specificed and the
-            % "out" vector matches the legnth of "time_indices." 
+            % "out" vector matches the legnth of "time_indices."
             assert(isa(func_hand, 'function_handle'), ...
                 'The ''func_hand'' argument must be a function_handle. Instead it was %s.', class(func_hand))
-            
+
             if ~exist('indices', 'var')
                 time_indices = 1:length(this.t);
             end
-            
-            if isempty(time_indices) 
+
+            if isempty(time_indices)
                 out = [];
                 return
             end
-            
+
             assert(length(time_indices) <= length(this.t), ...
                 'The length of time_indices (%d) is greater than the length of this solution (%d).', ...
                 length(time_indices), length(this.t))
-            
+
             ndx0 = time_indices(1);
             val0 = evaluate_function(func_hand, this.x(ndx0, :)', this.t(ndx0), this.j(ndx0))';
             assert(isvector(val0), 'Function handle does not return a vector')
-            
+
             out = NaN(length(time_indices), length(val0));
-            
+
             for k=time_indices
                 out(k, :) = evaluate_function(func_hand, this.x(k, :)', this.t(k), this.j(k))';
             end
