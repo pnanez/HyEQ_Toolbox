@@ -3,10 +3,10 @@
 % Initial conditions
 x0 = [1; 0];
           
-% Physical variables
-global gamma lambda
-gamma = -9.81;  % gravity constant
-lambda = 0.8;   % restitution coefficent
+% % Physical variables
+% global gravity lambda
+% gravity = -9.81;  % gravity constant
+% lambda = 0.8;   % restitution coefficent
 
 % Simulation horizon
 T = 10;
@@ -20,4 +20,4 @@ rule = 1;
                                                                         
 %solver tolerances
 RelTol = 1e-6;
-MaxStep = 1e-3;
+MaxStep = 1e-2;

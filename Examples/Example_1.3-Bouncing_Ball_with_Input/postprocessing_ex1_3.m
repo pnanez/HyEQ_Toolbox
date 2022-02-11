@@ -8,7 +8,8 @@ sol = HybridArc(t, j, x); %#ok<IJCL> suppress warning about 'j'.
 % Plot the solution vs. t.
 figure(1)
 clf
-plotFlows(sol)
+hpb = HybridPlotBuilder();
+hpb.subplots('on').titles('Height', 'Velocity').plotFlows(sol)
 
 % Plot the solution in the phase plane.
 figure(2)

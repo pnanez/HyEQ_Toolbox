@@ -56,16 +56,22 @@ if do_publish
 
     % Publish help files via 'publish' command.
     directory = 'doc';
-    addpath(directory)
-    m_file_path = dir(fullfile(directory,'*.m'));
-    for i = 1:numel(m_file_path)
-        file = fullfile(m_file_path(i).folder, m_file_path(i).name);
-        outdir = fullfile(m_file_path(i).folder, 'html');
+    cd(directory);
+    m_demo_paths = dir(fullfile('*.m'));
+    for i = 1:numel(m_demo_paths)
+        file = fullfile(m_demo_paths(i).folder, m_demo_paths(i).name);
+        outdir = fullfile(m_demo_paths(i).folder, 'html');
         assert(isfile(file));
-        html_file = publish(file);
+        
+        if startsWith(m_demo_paths(i).name, 'Example')
+            html_file = publish(file, 'showCode', false);
+        else
+            html_file = publish(file);
+        end
         fprintf(['Published %s \n' ...
-                 '       to %s.\n'], file, html_file)
+            '       to %s.\n'], file, html_file)
     end
+    cd(hybrid.getFolderLocation('root'));
 
     % Close all the figures that were opened.
     close all

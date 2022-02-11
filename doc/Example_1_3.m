@@ -1,11 +1,12 @@
 %% Example 1.3: Bouncing Ball with Input in Simulink
-% Description: In this example, a bouncing ball on a moving platform is 
+% In this example, a bouncing ball on a moving platform is 
 % modeled in Simulink as a hybrid system with an input, where the input
 % determines the height of the platform.
 % 
-% * Example location: <matlab:hybrid.open('Example_1.3-Bouncing_Ball_with_Input') Examples/Example_1.3-Bouncing_Ball_with_Input>
-% * Main file: <matlab:hybrid.open('Example_1.3-Bouncing_Ball_with_Input','Example1_3.slx') Open Simulink model.>
-% 
+% Click
+% <matlab:hybrid.open('Example_1.3-Bouncing_Ball_with_Input','Example1_3.slx') here> 
+% to change your working directory to the Example 1.3 folder and open the
+% Simulink model. 
 %% Mathematical Model
 % 
 % The bouncing ball system on a moving platform is modeled as a hybrid system
@@ -30,20 +31,28 @@
 % 
 % The following procedure is used to simulate this example using the model in the file |Example_1_2a.slx|:
 % 
-% * Open <matlab:hybrid.open('Example_1.3-Bouncing_Ball_with_Input','Example1_3.slx') |Example_1_3.slx|> in Simulink. 
+% * Navigate to the directory <matlab:hybrid.open('Example_1.3-Bouncing_Ball_with_Input') Examples/Example_1.3-Bouncing_Ball_with_Input>
+% (clicking this link changes your working directory).
+% * Open
+% <matlab:hybrid.open('Example_1.3-Bouncing_Ball_with_Input','Example1_3.slx') |Example_1_3.slx|> 
+% in Simulink (clicking this link changes your working directory and opens the model).   
 % * Double-click the block labeled _Double Click to Initialize_.
 % * To start the simulation, click the _run_ button or select |Simulation>Run|.
-% * Once the simulation finishes, click the block labeled _Double Click to Plot Solutions_.
+% * Once the simulation finishes, click the block labeled _Double Click to Plot
+% Solutions_. Several plots of the computed solution will open.
 % 
 
-%%
+% Change working directory to the example folder.
 wd_before = hybrid.open('Example_1.3-Bouncing_Ball_with_Input');
+
+% Run the initialization script.
 initialization_ex1_3
+
+% Run the Simulink model.
 sim('Example1_3')
 
-% Convert the values t, j, and x output by the simulation into a HybridArc
-% object.
-sol = HybridArc(t, j, x); %#ok<IJCL> suppress a warning about 'j'.
+% Convert the values t, j, and x output by the simulation into a HybridArc object.
+sol = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j')
 
 %% Simulink Model
 % The following diagram shows the Simulink model of the bouncing ball. The
@@ -75,11 +84,11 @@ open_system('Example1_3/HS')
 % <include>src/Matlab2tex_1_3/D.m</include>
 
 %% Example Output
-% Let the input function be $u(t,j) = 0.6$ for $t \in [0, 2)$ and $u(t, j) = 0$
-% for $t \geq 2$, and let $\gamma = 9.81$ and $\lambda=0.8$. 
+% Let the input function be $u(t,j) = 0.5$ for $t \in [0, 2.5)$ and $u(t, j) = 0$
+% for $t \geq 2.5$, and let $\gamma = 9.81$ and $\lambda=0.8$. 
 % The solution to the bouncing ball system from $x(0,0)=[1,0]^\top$ and with
-% |T=10, J=20, rule=1| shows that the ball bounces at a height of |0.6| until $t
-% = 2$, when the platform drops to $0$.
+% |T=10, J=20, rule=1| shows that the ball bounces at a height of |0.5| until $t
+% = 2.5$, when the platform drops to $0$.
 
 clf
 plotFlows(sol)
@@ -101,7 +110,7 @@ view(37.5, 30)
 %   and editing the script.  
 %   The flow time and jump horizons, |T| and |J| are defined as well as the
 %   initial conditions for the state vector, $x_0$, and input vector, $u_0$, and
-%   a rule for jumps, $rule$.
+%   a rule for jumps, |rule|.
 % * The postprocessing script |postprocessing.m| is edited by opening the file
 %   and editing the script. Flows and jumps may be plotted by calling the
 %   functions |plotflows| and |plotjumps|, respectively. The hybrid arc
@@ -110,14 +119,15 @@ view(37.5, 30)
 %   values defined in |initialization.m| by selecting |Simulation>Configuration
 %   Parameters>Solver| and inputting |T|, |RelTol|, |MaxStep|, etc..  
 % * The masked integrator system is double-clicked and the simulation horizons
-% and initial conditions are set as desired. 
-
+%   and initial conditions are set as desired. 
 
 %% 
 
 % Clean up. It's important to include an empty line before this comment so it's
 % not included in the HTML. 
-close_system
+
+% Close the Simulink file.
+close_system 
 
 % Restore previous working directory.
 cd(wd_before) 
