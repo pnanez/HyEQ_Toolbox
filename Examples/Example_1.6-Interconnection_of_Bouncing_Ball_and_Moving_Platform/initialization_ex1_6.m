@@ -1,30 +1,16 @@
-%--------------------------------------------------------------------------
-% Matlab M-file Project: HyEQ Toolbox @  Hybrid Systems Laboratory (HSL), 
-% https://hybrid.soe.ucsc.edu/software
-% http://hybridsimulator.wordpress.com/
-% Filename: initialization_ex1_6.m
-%--------------------------------------------------------------------------
 % Project: Simulation of a bouncing ball and moving platform 
 % Description: initialization for the interconnection of bouncing ball and
 % moving platform example
-%--------------------------------------------------------------------------
-%--------------------------------------------------------------------------
-%   See also HYEQSOLVER, PLOTARC, PLOTARC3, PLOTFLOWS, PLOTHARC,
-%   PLOTHARCCOLOR, PLOTHARCCOLOR3D, PLOTHYBRIDARC, PLOTJUMPS.
-%   Copyright @ Hybrid Systems Laboratory (HSL),
-%   Revision: 0.0.0.3 Date: 05/20/2015 3:42:00
-
-% clear all                                                               
-                                                                        
-% initial conditions                                                    
+                                                         
+% Initial conditions                                                    
 x1_0 = [1; 0];                                                          
-x2_0 = [.5; 0];                                                                                                           
+x2_0 = [0.5; 0];                                                                                                           
                                                                         
-% simulation horizon                                                    
+% Simulation horizon                                                    
 T = 18;                                                                 
 J = 20;                                                                 
-                                                                        
-% rule for jumps                                                        
+
+% Set the behavior of the simulation in the intersection of C and D.                                                      
 % rule = 1 -> priority for jumps                                        
 % rule = 2 -> priority for flows                                        
 % rule = 3 -> no priority, random selection when simultaneous conditions
@@ -32,4 +18,4 @@ rule = 1;
     
 %solver tolerances
 RelTol = 1e-8;
-MaxStep = .005;                                                  
+MaxStep = 0.01;                                                  

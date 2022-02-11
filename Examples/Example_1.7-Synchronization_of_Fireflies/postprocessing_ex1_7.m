@@ -1,60 +1,53 @@
-%--------------------------------------------------------------------------
-% Matlab M-file Project: HyEQ Toolbox @  Hybrid Systems Laboratory (HSL), 
-% https://hybrid.soe.ucsc.edu/software
-% http://hybridsimulator.wordpress.com/
-% Filename: postprocessing_ex1_7.m
-%--------------------------------------------------------------------------
-% Project: Simulation of synchronization of fireflies
-% Description: postprocessing for synchronization of fireflies example
-%--------------------------------------------------------------------------
-%--------------------------------------------------------------------------
-%   See also HYEQSOLVER, PLOTARC, PLOTARC3, PLOTFLOWS, PLOTHARC,
-%   PLOTHARCCOLOR, PLOTHARCCOLOR3D, PLOTHYBRIDARC, PLOTJUMPS.
-%   Copyright @ Hybrid Systems Laboratory (HSL),
-%   Revision: 0.0.0.3 Date: 05/20/2015 3:42:00
+% Postprocessing script for Example 1.7: Synchronization of Fireflies
 
-% Individual plots                    
+% Construct HybridArc objects for the trajectory of each subsystem, 
+% as computed by Simulink, so that we can use the plotting tools associated
+% with HybridArcs, namely HybridPlotBuilder.
+sol_1 = HybridArc(t1, j1, x1);
+sol_2 = HybridArc(t2, j2, x2);
+
+% Individual plots 
 figure(1) % H1 Flows and Jumps        
 clf                                   
-subplot(2,1,1),plotflows(t1,j1,x);     
-grid on                               
-ylabel('tau1')                          
+subplot(2,1,1)   
+hpb = HybridPlotBuilder();
+hpb.color([0 0.447 0.741]).label('$\tau_1$').title('Firefly 1 (Flows)');
+hpb.plotFlows(sol_1)
+grid on                         
                                       
-subplot(2,1,2),plotjumps(t1,j1,x);     
-grid on                               
-ylabel('tau1')                          
-                                      
+subplot(2,1,2)
+hpb.title('Firefly 1 (Jumps)');
+hpb.plotJumps(sol_1)     
+grid on                                 
+               
+%%
 figure(2) % H2 Flows and Jumps        
-clf                                   
-subplot(2,1,1),plotflows(t2,j2,x3);    
-grid on                               
-ylabel('tau2')                          
+clf                            
+subplot(2,1,1)   
+hpb = HybridPlotBuilder();
+hpb.color([0.85 0.325 0.098]).label('$\tau_2$').title('Firefly 2 (Flows)');
+hpb.plotFlows(sol_2)
+grid on                         
                                       
-subplot(2,1,2),plotjumps(t2,j2,x3);    
-grid on                               
-ylabel('tau2')                          
+subplot(2,1,2)
+hpb.title('Firefly 2 (Jumps)');
+hpb.plotJumps(sol_2)     
+grid on                                 
                                       
-                                      
+%%                                  
 figure(3) % H1 and H2, Flows and Jumps
-clf                                   
-subplot(2,1,1),plotflows(t1,j1,x);     
-hold on                               
-subplot(2,1,1),plotflows(t2,j2,x3) ;   
+clf                  
+                                
+subplot(2,1,1)   
+hpb = HybridPlotBuilder();
+hpb.color('matlab').title('Fireflies (Flows)');
+hpb.legend('Firefly 1 ($\tau_1$)').plotFlows(sol_1)
+hold on
+hpb.legend('Firefly 2 ($\tau_2$)').plotFlows(sol_2)                        
                                       
-grid on                               
-ylabel('tau1, tau2')                      
-                                      
-subplot(2,1,2),plotjumps(t1,j1,x);     
-hold on                               
-subplot(2,1,2),plotjumps(t2,j2,x3);    
-                                      
-grid on                               
-ylabel('tau1, tau2')              
-
-
-figure(4) % H1 and H2, Flows and Jumps
-clf
-plotarc([t1,t2],[j1,j2],[x,x3]);
-grid on                               
-ylabel('tau1, tau2')      
-legend('tau1','tau2')
+subplot(2,1,2)
+hpb.color('matlab').title('Fireflies (Jumps)');
+hpb.legend('Firefly 1 ($\tau_1$)').plotJumps(sol_1)
+hold on
+hpb.legend('Firefly 2 ($\tau_2)$').plotJumps(sol_2)   
+xlim([0, 7])

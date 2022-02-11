@@ -1,34 +1,18 @@
-%--------------------------------------------------------------------------
-% Matlab M-file Project: HyEQ Toolbox @  Hybrid Systems Laboratory (HSL), 
-% https://hybrid.soe.ucsc.edu/software
-% http://hybridsimulator.wordpress.com/
-% Filename: initialization_ex1_5.m
-%--------------------------------------------------------------------------
-% Project: Simulation of a vehicle on a track with boundaries
-% Description: initialization for the vehicle on a track with boundaries example
-%--------------------------------------------------------------------------
-%--------------------------------------------------------------------------
-%   See also HYEQSOLVER, PLOTARC, PLOTARC3, PLOTFLOWS, PLOTHARC,
-%   PLOTHARCCOLOR, PLOTHARCCOLOR3D, PLOTHYBRIDARC, PLOTJUMPS.
-%   Copyright @ Hybrid Systems Laboratory (HSL),
-%   Revision: 0.0.0.3 Date: 05/20/2015 3:42:00
-
-
-% clear all                                                               
+% Initialization script for Example 1.5: A Vehicle on a Track with Boundaries.
+                                                                                                                                 
+% Initial conditions                                                    
+x0 = [0; 0; pi/4; 2];                                                                                               
                                                                         
-% initial conditions                                                    
-x0 = [0;0;pi/4;2];                                                                                               
-                                                                        
-% simulation horizon                                                    
+% Simulation horizon                                                    
 T = 15;                                                                 
 J = 20;                                                                 
-                                                                        
-% rule for jumps                                                        
+                                                                       
+% Set the behavior of the simulation in the intersection of C and D.                                                      
 % rule = 1 -> priority for jumps                                        
 % rule = 2 -> priority for flows                                        
 % rule = 3 -> no priority, random selection when simultaneous conditions
 rule = 1;                                                               
 
-%solver tolerances
+% Solver tolerances
 RelTol = 1e-8;
-MaxStep = .01;
+MaxStep = 0.01;

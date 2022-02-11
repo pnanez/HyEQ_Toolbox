@@ -2,32 +2,33 @@ classdef FireflySubsystem < HybridSubsystem
     
 % Adapted from Simulink example by Ricardo Sanfelice.
     
-    properties (SetAccess = immutable) 
-        state_dimension = 1;
-        input_dimension = 1;
-        output_dimension = 1;
-        e = 0.3;
+    properties 
+        epsilon = 0.3;
     end
     
     %%%%%% System Data %%%%%% 
     methods 
         
-        function taudot = flowMap(this, tau, u, t, j) 
+        function this = FireflySubsystem()
+            this = this@HybridSubsystem(1, 1);
+        end
+
+        function taudot = flowMap(~, ~, ~, ~, ~) 
             taudot = 1;
         end
 
-        function tauplus = jumpMap(this, tau, u, t, j)             
+        function tauplus = jumpMap(this, tau, ~, ~, ~)             
             % jump map
-            if (1+this.e)*tau < 1
-                tauplus = (1+this.e)*tau;
-            elseif (1+this.e)*tau >= 1
+            if (1+this.epsilon)*tau < 1
+                tauplus = (1+this.epsilon)*tau;
+            elseif (1+this.epsilon)*tau >= 1
                 tauplus = 0;
             else
                 tauplus = tau;   
             end
         end 
 
-        function C = flowSetIndicator(this, tau, u, t, j) 
+        function C = flowSetIndicator(~, tau, u, ~, ~) 
             if ((tau >= 0) && (tau <= 1)) || ((u > 0) && (u <= 1))  % flow condition
                 C = 1;  % report flow
             else
@@ -35,7 +36,7 @@ classdef FireflySubsystem < HybridSubsystem
             end
         end
 
-        function D = jumpSetIndicator(this, tau, u, t, j)
+        function D = jumpSetIndicator(~, tau, u, ~, ~)
             if tau >= 1 || u >= 1 % jump condition
                 D = 1;  % report jump
             else

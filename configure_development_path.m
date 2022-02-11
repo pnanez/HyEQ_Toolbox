@@ -9,8 +9,15 @@ end
 % Check that the working dirctory is the root of the HyEQ toolbox by checking
 % that it contains the file "HybridEquationsToolbox.prj".
 proj_root = pwd();
-assert(isfile(fullfile(proj_root, 'HybridEquationsToolbox.prj')), ...
+if verLessThan('MATLAB', '8.5')
+    % The function 'isfile' did not exist on R2014b (and maybe later
+    % versions), so we skip the assertion on existence of
+    % HybridEquationsToolbox.prj.
+    warning('Skipping check that the working directory is the root of the HyEQ toolbox.')
+else
+    assert(isfile(fullfile(proj_root, 'HybridEquationsToolbox.prj')), ...
         'The working directory is not the root of the HyEQ toolbox.') 
+end
 
 toolbox_dirs = {...
     fullfile(proj_root, 'doc'), ...

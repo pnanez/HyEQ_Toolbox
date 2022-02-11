@@ -108,6 +108,10 @@ codegen/
 # Octave session info
 octave-workspace
 
+# Simulink previous version saves
+*.slx.r2012a
+.slx.r2011a
+
 ### Windows ###
 # Windows thumbnail cache files
 Thumbs.db

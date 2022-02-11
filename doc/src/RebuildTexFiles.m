@@ -32,34 +32,19 @@ end
 % an older version or a different add-on is necessary.
 for name_prefix = ["config", "HyEQsolver", "initialization", "initializationBB", ...
                     "jump", "postprocesing", "postprocesingBB", "zeroevents", "fun_wrap"]
-    m2tex(sprintf('Matlab2tex/%s_inst.m', name_prefix),'num')
+    %m2tex(sprintf('Matlab2tex/%s_inst.m', name_prefix),'num')
 end
 
 
 %%
 % Folder Matlab2tex_1_2
-
-copyfile '../../Examples/Example_1.2a-Bouncing_Ball_with_simulink_External_files/C_ex1_2a.m'...
-    './Matlab2tex_1_2/C.m'
-copyfile '../../Examples/Example_1.2a-Bouncing_Ball_with_simulink_External_files/D_ex1_2a.m'...
-    './Matlab2tex_1_2/D.m'
-copyfile '../../Examples/Example_1.2a-Bouncing_Ball_with_simulink_External_files/f_ex1_2a.m'...
-    './Matlab2tex_1_2/f.m'
-copyfile '../../Examples/Example_1.2a-Bouncing_Ball_with_simulink_External_files/g_ex1_2a.m'...
-    './Matlab2tex_1_2/g.m'
-copyfile '../../Examples/Example_1.2a-Bouncing_Ball_with_simulink_External_files/run_ex1_2a.m'...
-    './Matlab2tex_1_2/run.m'
-m2tex('Matlab2tex_1_2/C.m','num')
-m2tex('Matlab2tex_1_2/D.m','num')
-m2tex('Matlab2tex_1_2/f.m','num')
-m2tex('Matlab2tex_1_2/g.m','num')
-m2tex('Matlab2tex_1_2/run.m','num')
-
-% delete('./Matlab2tex_1_2/C.m');
-% delete('./Matlab2tex_1_2/D.m');
-% delete('./Matlab2tex_1_2/f.m');
-% delete('./Matlab2tex_1_2/g.m');
-% delete('./Matlab2tex_1_2/run.m');
+example_dir = hybrid.getFolderLocation('Examples', 'Example_1.2-Bouncing_Ball');
+out_dir = hybrid.getFolderLocation('doc', 'src', 'Matlab2tex_1_2');
+copyfile(fullfile(example_dir, 'C_ex1_2.m'), out_dir, 'f')
+copyfile(fullfile(example_dir, 'D_ex1_2.m'), out_dir, 'f')
+copyfile(fullfile(example_dir, 'f_ex1_2.m'), out_dir, 'f')
+copyfile(fullfile(example_dir, 'g_ex1_2.m'), out_dir, 'f')
+copyfile(fullfile(example_dir, 'run_ex1_2.m'), out_dir, 'f')
 
 
 %%

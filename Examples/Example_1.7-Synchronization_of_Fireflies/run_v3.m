@@ -9,8 +9,8 @@ tspan = [0, 6];
 jspan = [0, 40];
 x0 = {0.5, 0};
 sol = sys.solve(x0, tspan, jspan);
-ff1_sol = sol.subsys_sols{1};
-ff2_sol = sol.subsys_sols{2};
+ff1_sol = sol(1);
+ff2_sol = sol(2);
 
 % Plot
 clf

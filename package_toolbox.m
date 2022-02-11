@@ -28,7 +28,7 @@ proj_root = pwd();
 assert(isfile(fullfile(proj_root, projectFile)), ...
         'The working directory is not the root of the HyEQ toolbox.')
 
-% Setup path
+% Setup path.
 for directory = toolbox_dirs
     addpath(directory{1})
 end

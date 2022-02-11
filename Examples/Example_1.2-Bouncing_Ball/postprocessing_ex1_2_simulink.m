@@ -1,9 +1,9 @@
-% Postprocessing script for the bouncing ball with input example.
+% Postprocessing for Example 1.2: Bouncing Ball.
 
 % Construct a HybridArc object from (t, j, x) computed by Simulink so that we
 % can use the plotting tools associated with HybridArcs, namely
 % HybridPlotBuilder.
-sol = HybridArc(t, j, x); %#ok<IJCL> suppress warning about 'j'.
+sol = HybridArc(t, j, x);
 
 % Plot the solution vs. t.
 figure(1)
@@ -21,4 +21,4 @@ figure(3)
 clf
 plotHybrid(sol.slice(1))     
 grid on
-view(37.5, 30)       
+view(37.5,30)
