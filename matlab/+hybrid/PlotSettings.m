@@ -173,7 +173,8 @@ classdef PlotSettings < matlab.mixin.Copyable
         function val = flowArguments(this)
             if iscell(this.flow_color)
                 color = this.flow_color{1};
-                this.flow_color = circshift(this.flow_color, [0, -1]);
+                shift_dim = 2; % shift columns
+                this.flow_color = circshift(this.flow_color, -1, shift_dim);
             else
                 color = this.flow_color;
             end
@@ -185,7 +186,8 @@ classdef PlotSettings < matlab.mixin.Copyable
         function args = jumpArguments(this)
             if iscell(this.jump_color)
                 color = this.jump_color{1};
-                this.jump_color = circshift(this.jump_color, [0, -1]);
+                shift_dim = 2; % shift columns
+                this.jump_color = circshift(this.jump_color, -1, shift_dim);
             else
                 color = this.jump_color;
             end
