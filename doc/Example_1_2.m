@@ -64,9 +64,6 @@ wd_before = hybrid.open('Example_1.2-Bouncing_Ball');
 % is included below.
 
 %% Example Code
-% *run_ex1_2.m:*
-%
-% <include>../Examples/Example_1.2-Bouncing_Ball/run_ex1_2.m</include>
 %
 % *f_ex1_2.m:*
 % 

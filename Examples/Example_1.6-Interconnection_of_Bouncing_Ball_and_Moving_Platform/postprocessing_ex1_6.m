@@ -5,10 +5,6 @@
 sol1 = HybridArc(t1, j1, x1);
 sol2 = HybridArc(t2, j2, x2);
 
-xi1 = x1(:,1);                        
-xi2 = x1(:,2);                                                 
-eta1 = x2(:,1);                       
-eta2 = x2(:,2); 
 xi1_arc = sol1.slice(1);                   
 xi2_arc = sol1.slice(2);               
 eta1_arc = sol2.slice(1);            

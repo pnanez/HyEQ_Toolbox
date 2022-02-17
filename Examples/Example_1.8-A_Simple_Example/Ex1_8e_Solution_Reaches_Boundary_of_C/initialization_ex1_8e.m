@@ -6,15 +6,7 @@
 %--------------------------------------------------------------------------
 % Project: Simple Example
 % Description: initialization for Simple Example (boundary of C)
-%--------------------------------------------------------------------------
-%--------------------------------------------------------------------------
-%   See also HYEQSOLVER, PLOTARC, PLOTARC3, PLOTFLOWS, PLOTHARC,
-%   PLOTHARCCOLOR, PLOTHARCCOLOR3D, PLOTHYBRIDARC, PLOTJUMPS.
-%   Copyright @ Hybrid Systems Laboratory (HSL),
-%   Revision: 0.0.0.3 Date: 05/20/2015 3:42:00
-
-clear all                                                               
-                                                                        
+                                                                                                                 
 % initial conditions                                                    
 x0 = 1;                                                             
 
@@ -30,4 +22,4 @@ rule = 2;
                                                                         
 %solver tolerances
 RelTol = 1e-8;
-MaxStep = .001;
+MaxStep = 0.001;

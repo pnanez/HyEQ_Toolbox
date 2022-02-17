@@ -18,7 +18,8 @@ fprintf(fid, '%s\r\n', script);
 fclose(fid);
 close_system(simsys);
 
-fprintf('Extracted %s from %s.\n', mfilename, simsys)
+fprintf(['Extracted %s \n' ...
+         '     from %s.\n'], mfilename, simsys)
 % m2tex(mfilename,'num')
 % delete(mfilename)
 end

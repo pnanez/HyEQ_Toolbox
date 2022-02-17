@@ -1,13 +1,11 @@
 % Script to rebuild tex files from source files
-
-disp('===== Generating .m and .tex files from source files =====')
+disp('===== Generating .m files from source files =====')
 
 %% Split the main simulator script in functions
 
 % Open the simulator source file
-
-Str   = fileread('../../matlab/HyEQsolver.m');
-CStr  = regexp(Str, '\n', 'split'); 
+Str  = fileread('../../matlab/HyEQsolver.m');
+CStr = regexp(Str, '\n', 'split'); 
 
 %% Search functions
 Index = [find(strncmp(CStr, 'function', 8)), length(CStr) + 1];
@@ -24,217 +22,115 @@ for iP = 1:length(filenames)
     fclose(FID);
 end
 
-%%
-% Folder Matlab2tex
-% The following code appears to use the MATLAB add-on "m-code to LaTeX converter" 
-% (https://www.mathworks.com/matlabcentral/fileexchange/24515-m-code-to-latex-converter),
-% but the output is not correctly formatted by htlatex, so it may be that either
-% an older version or a different add-on is necessary.
-for name_prefix = ["config", "HyEQsolver", "initialization", "initializationBB", ...
-                    "jump", "postprocesing", "postprocesingBB", "zeroevents", "fun_wrap"]
-    %m2tex(sprintf('Matlab2tex/%s_inst.m', name_prefix),'num')
-end
+%% Folder Matlab2tex_1_2
+example_dir_1_2 = hybrid.getFolderLocation('Examples', 'Example_1.2-Bouncing_Ball');
+out_dir_1_2 = hybrid.getFolderLocation('doc', 'src', 'Matlab2tex_1_2');
+copyfile(fullfile(example_dir_1_2, 'C_ex1_2.m'), out_dir_1_2, 'f')
+copyfile(fullfile(example_dir_1_2, 'D_ex1_2.m'), out_dir_1_2, 'f')
+copyfile(fullfile(example_dir_1_2, 'f_ex1_2.m'), out_dir_1_2, 'f')
+copyfile(fullfile(example_dir_1_2, 'g_ex1_2.m'), out_dir_1_2, 'f')
 
+%% Folder Matlab2tex_1_3
+example_dir_1_3 = hybrid.getFolderLocation('Examples', 'Example_1.3-Bouncing_Ball_with_Input');
+example_1_3_slx_file = fullfile(example_dir_1_3, 'Example1_3');
+out_dir_1_3 = hybrid.getFolderLocation('doc', 'src', 'Matlab2tex_1_3');
+SimFnc2tex(example_1_3_slx_file, 'Example1_3/HS/flow set C', fullfile(out_dir_1_3, 'C.m'))
+SimFnc2tex(example_1_3_slx_file, 'Example1_3/HS/jump set D', fullfile(out_dir_1_3, 'D.m'))
+SimFnc2tex(example_1_3_slx_file, 'Example1_3/HS/flow map f', fullfile(out_dir_1_3, 'f.m'))
+SimFnc2tex(example_1_3_slx_file, 'Example1_3/HS/jump map g', fullfile(out_dir_1_3, 'g.m'))
 
-%%
-% Folder Matlab2tex_1_2
-example_dir = hybrid.getFolderLocation('Examples', 'Example_1.2-Bouncing_Ball');
-out_dir = hybrid.getFolderLocation('doc', 'src', 'Matlab2tex_1_2');
-copyfile(fullfile(example_dir, 'C_ex1_2.m'), out_dir, 'f')
-copyfile(fullfile(example_dir, 'D_ex1_2.m'), out_dir, 'f')
-copyfile(fullfile(example_dir, 'f_ex1_2.m'), out_dir, 'f')
-copyfile(fullfile(example_dir, 'g_ex1_2.m'), out_dir, 'f')
-copyfile(fullfile(example_dir, 'run_ex1_2.m'), out_dir, 'f')
+%% Folder Matlab2tex_1_5
+example_dir_1_5 = hybrid.getFolderLocation('Examples', 'Example_1.5-Vehicle_on_Path_with_Boundaries');
+example_1_5_slx_file = fullfile(example_dir_1_5, 'Example1_5');
+out_dir_1_5 = hybrid.getFolderLocation('doc', 'src', 'Matlab2tex_1_5');
+SimFnc2tex(example_1_5_slx_file, 'Example1_5/HS/flow set C', fullfile(out_dir_1_5, 'C.m'))
+SimFnc2tex(example_1_5_slx_file, 'Example1_5/HS/jump set D', fullfile(out_dir_1_5, 'D.m'))
+SimFnc2tex(example_1_5_slx_file, 'Example1_5/HS/flow map f', fullfile(out_dir_1_5, 'f.m'))
+SimFnc2tex(example_1_5_slx_file, 'Example1_5/HS/jump map g', fullfile(out_dir_1_5, 'g.m'))
 
+%% Folder Matlab2tex_1_6
+example_dir_1_6 = hybrid.getFolderLocation('Examples', 'Example_1.6-Interconnection_of_Bouncing_Ball_and_Moving_Platform');
+example_1_6_slx_file = fullfile(example_dir_1_6, 'Example1_6');
+out_dir_1_6 = hybrid.getFolderLocation('doc', 'src', 'Matlab2tex_1_6');
 
-%%
-% Folder Matlab2tex_1_3
+% Subsystem 1
+SimFnc2tex(example_1_6_slx_file, 'Example1_6/HS_1/flow map f', fullfile(out_dir_1_6, 'f1.m'))
+SimFnc2tex(example_1_6_slx_file, 'Example1_6/HS_1/flow set C', fullfile(out_dir_1_6, 'C1.m'))
+SimFnc2tex(example_1_6_slx_file, 'Example1_6/HS_1/jump set D', fullfile(out_dir_1_6, 'D1.m'))
+SimFnc2tex(example_1_6_slx_file, 'Example1_6/HS_1/jump map g', fullfile(out_dir_1_6, 'g1.m'))
 
-% flow set
-SimFnc2tex('../../Examples/Example_1.3-Bouncing_Ball_with_Input/Example1_3',...
-    'Example1_3/HS/flow set C','./Matlab2tex_1_3/C.m')
-% jump set
-SimFnc2tex('../../Examples/Example_1.3-Bouncing_Ball_with_Input/Example1_3',...
-    'Example1_3/HS/jump set D','./Matlab2tex_1_3/D.m')
-% flow map
-SimFnc2tex('../../Examples/Example_1.3-Bouncing_Ball_with_Input/Example1_3',...
-    'Example1_3/HS/flow map f','./Matlab2tex_1_3/f.m')
-% jump map
-SimFnc2tex('../../Examples/Example_1.3-Bouncing_Ball_with_Input/Example1_3',...
-    'Example1_3/HS/jump map g','./Matlab2tex_1_3/g.m')
+% Subsystem 2
+SimFnc2tex(example_1_6_slx_file, 'Example1_6/HS_2/flow map f', fullfile(out_dir_1_6, 'f2.m'))
+SimFnc2tex(example_1_6_slx_file, 'Example1_6/HS_2/flow set C', fullfile(out_dir_1_6, 'C2.m'))
+SimFnc2tex(example_1_6_slx_file, 'Example1_6/HS_2/jump map g', fullfile(out_dir_1_6, 'g2.m'))
+SimFnc2tex(example_1_6_slx_file, 'Example1_6/HS_2/jump set D', fullfile(out_dir_1_6, 'D2.m'))
 
+%% Folder Matlab2tex_1_7
+example_dir_1_7 = hybrid.getFolderLocation('Examples', 'Example_1.7-Synchronization_of_Fireflies');
+example_1_7_slx_file = fullfile(example_dir_1_7, 'Example1_7');
+out_dir_1_7 = hybrid.getFolderLocation('doc', 'src', 'Matlab2tex_1_7');
 
-%%
-% Folder Matlab2tex_1_5
+% Firefly 1 and 2 have the same data
+SimFnc2tex(example_1_7_slx_file, 'Example1_7/Firefly 1/flow set C', fullfile(out_dir_1_7, 'C.m'))
+SimFnc2tex(example_1_7_slx_file, 'Example1_7/Firefly 1/jump set D', fullfile(out_dir_1_7, 'D.m'))
+SimFnc2tex(example_1_7_slx_file, 'Example1_7/Firefly 1/flow map f', fullfile(out_dir_1_7, 'f.m'))
+SimFnc2tex(example_1_7_slx_file, 'Example1_7/Firefly 1/jump map g', fullfile(out_dir_1_7, 'g.m'))
 
-% flow set
-SimFnc2tex('../../Examples/Example_1.5-Vehicle_on_Path_with_Boundaries/Example1_5',...
-    'Example1_5/HS/flow set C','./Matlab2tex_1_5/C.m')
-% jump set
-SimFnc2tex('../../Examples/Example_1.5-Vehicle_on_Path_with_Boundaries/Example1_5',...
-    'Example1_5/HS/jump set D','./Matlab2tex_1_5/D.m')
-% flow map
-SimFnc2tex('../../Examples/Example_1.5-Vehicle_on_Path_with_Boundaries/Example1_5',...
-    'Example1_5/HS/flow map f','./Matlab2tex_1_5/f.m')
-% jump map
-SimFnc2tex('../../Examples/Example_1.5-Vehicle_on_Path_with_Boundaries/Example1_5',...
-    'Example1_5/HS/jump map g','./Matlab2tex_1_5/g.m')
-
-
-%%
-% Folder Matlab2tex_1_6
-
-% flow set
-SimFnc2tex('../../Examples/Example_1.6-Interconnection_of_Bouncing_Ball_and_Moving_Platform/Example1_6',...
-    'Example1_6/HS_1/flow set C','./Matlab2tex_1_6/C.m')
-SimFnc2tex('../../Examples/Example_1.6-Interconnection_of_Bouncing_Ball_and_Moving_Platform/Example1_6',...
-    'Example1_6/HS_2/flow set C','./Matlab2tex_1_6/C2.m')
-% jump set
-SimFnc2tex('../../Examples/Example_1.6-Interconnection_of_Bouncing_Ball_and_Moving_Platform/Example1_6',...
-    'Example1_6/HS_1/jump set D','./Matlab2tex_1_6/D.m')
-SimFnc2tex('../../Examples/Example_1.6-Interconnection_of_Bouncing_Ball_and_Moving_Platform/Example1_6',...
-    'Example1_6/HS_2/jump set D','./Matlab2tex_1_6/D2.m')
-% flow map
-SimFnc2tex('../../Examples/Example_1.6-Interconnection_of_Bouncing_Ball_and_Moving_Platform/Example1_6',...
-    'Example1_6/HS_1/flow map f','./Matlab2tex_1_6/f.m')
-SimFnc2tex('../../Examples/Example_1.6-Interconnection_of_Bouncing_Ball_and_Moving_Platform/Example1_6',...
-    'Example1_6/HS_2/flow map f','./Matlab2tex_1_6/f2.m')
-% jump map
-SimFnc2tex('../../Examples/Example_1.6-Interconnection_of_Bouncing_Ball_and_Moving_Platform/Example1_6',...
-    'Example1_6/HS_1/jump map g','./Matlab2tex_1_6/g.m')
-SimFnc2tex('../../Examples/Example_1.6-Interconnection_of_Bouncing_Ball_and_Moving_Platform/Example1_6',...
-    'Example1_6/HS_2/jump map g','./Matlab2tex_1_6/g2.m')
-
-%%
-% Folder Matlab2tex_1_7
-
-% flow set
-SimFnc2tex('../../Examples/Example_1.7-Synchronization_of_Fireflies/Example1_7',...
-    'Example1_7/Firefly 1/flow set C','./Matlab2tex_1_7/C.m')
-% jump set
-SimFnc2tex('../../Examples/Example_1.7-Synchronization_of_Fireflies/Example1_7',...
-    'Example1_7/Firefly 1/jump set D','./Matlab2tex_1_7/D.m')
-% flow map
-SimFnc2tex('../../Examples/Example_1.7-Synchronization_of_Fireflies/Example1_7',...
-    'Example1_7/Firefly 1/flow map f','./Matlab2tex_1_7/f.m')
-% jump map
-SimFnc2tex('../../Examples/Example_1.7-Synchronization_of_Fireflies/Example1_7',...
-    'Example1_7/Firefly 1/jump map g','./Matlab2tex_1_7/g.m')
-
-
-%%
-% Folder Matlab2tex_CPS_ContinuousPlant
+%% Folder Matlab2tex_CPS_ContinuousPlant
+example_CP_dir = hybrid.getFolderLocation('Examples', 'CPS_examples', 'ContinuousPlant');
+example_CP_slx_file = fullfile(example_CP_dir, 'ContinuousPlant_example');
+out_dir_CP = hybrid.getFolderLocation('doc', 'src', 'Matlab2tex_CPS_ContinuousPlant');
 
 % Plant
-% flow set
-SimFnc2tex('../../Examples/CPS_examples/ContinuousPlant/ContinuousPlant_example',...
-    'ContinuousPlant_example/HSu/flow set C','./Matlab2tex_CPS_ContinuousPlant/C.m')
-% jump set
-SimFnc2tex('../../Examples/CPS_examples/ContinuousPlant/ContinuousPlant_example',...
-    'ContinuousPlant_example/HSu/jump set D','./Matlab2tex_CPS_ContinuousPlant/D.m')
-% flow map
-SimFnc2tex('../../Examples/CPS_examples/ContinuousPlant/ContinuousPlant_example',...
-    'ContinuousPlant_example/HSu/flow map f','./Matlab2tex_CPS_ContinuousPlant/f.m')
-% jump map
-SimFnc2tex('../../Examples/CPS_examples/ContinuousPlant/ContinuousPlant_example',...
-    'ContinuousPlant_example/HSu/jump map g','./Matlab2tex_CPS_ContinuousPlant/g.m')
+SimFnc2tex(example_CP_slx_file, 'ContinuousPlant_example/HSu/flow set C', fullfile(out_dir_CP, 'C.m'))
+SimFnc2tex(example_CP_slx_file, 'ContinuousPlant_example/HSu/jump set D', fullfile(out_dir_CP, 'D.m'))
+SimFnc2tex(example_CP_slx_file, 'ContinuousPlant_example/HSu/flow map f', fullfile(out_dir_CP, 'f.m'))
+SimFnc2tex(example_CP_slx_file, 'ContinuousPlant_example/HSu/jump map g', fullfile(out_dir_CP, 'g.m'))
 
 % ADC
-% flow set
-SimFnc2tex('../../Examples/CPS_examples/ContinuousPlant/ContinuousPlant_example',...
-    'ContinuousPlant_example/ADC/flow set C','./Matlab2tex_CPS_ContinuousPlant/C_ADC.m')
-% jump set
-SimFnc2tex('../../Examples/CPS_examples/ContinuousPlant/ContinuousPlant_example',...
-    'ContinuousPlant_example/ADC/jump set D','./Matlab2tex_CPS_ContinuousPlant/D_ADC.m')
-% flow map
-SimFnc2tex('../../Examples/CPS_examples/ContinuousPlant/ContinuousPlant_example',...
-    'ContinuousPlant_example/ADC/flow map f','./Matlab2tex_CPS_ContinuousPlant/f_ADC.m')
-% jump map
-SimFnc2tex('../../Examples/CPS_examples/ContinuousPlant/ContinuousPlant_example',...
-    'ContinuousPlant_example/ADC/jump map g','./Matlab2tex_CPS_ContinuousPlant/g_ADC.m')
+SimFnc2tex(example_CP_slx_file, 'ContinuousPlant_example/ADC/flow set C', fullfile(out_dir_CP, 'C_ADC.m'))
+SimFnc2tex(example_CP_slx_file, 'ContinuousPlant_example/ADC/jump set D', fullfile(out_dir_CP, 'D_ADC.m'))
+SimFnc2tex(example_CP_slx_file, 'ContinuousPlant_example/ADC/flow map f', fullfile(out_dir_CP, 'f_ADC.m'))
+SimFnc2tex(example_CP_slx_file, 'ContinuousPlant_example/ADC/jump map g', fullfile(out_dir_CP, 'g_ADC.m'))
 
 % ZOH
-% flow set
-SimFnc2tex('../../Examples/CPS_examples/ContinuousPlant/ContinuousPlant_example',...
-    'ContinuousPlant_example/ZOH/flow set C','./Matlab2tex_CPS_ContinuousPlant/C_ZOH.m')
-% jump set
-SimFnc2tex('../../Examples/CPS_examples/ContinuousPlant/ContinuousPlant_example',...
-    'ContinuousPlant_example/ZOH/jump set D','./Matlab2tex_CPS_ContinuousPlant/D_ZOH.m')
-% flow map
-SimFnc2tex('../../Examples/CPS_examples/ContinuousPlant/ContinuousPlant_example',...
-    'ContinuousPlant_example/ZOH/flow map f','./Matlab2tex_CPS_ContinuousPlant/f_ZOH.m')
-% jump map
-SimFnc2tex('../../Examples/CPS_examples/ContinuousPlant/ContinuousPlant_example',...
-    'ContinuousPlant_example/ZOH/jump map g','./Matlab2tex_CPS_ContinuousPlant/g_ZOH.m')
+SimFnc2tex(example_CP_slx_file, 'ContinuousPlant_example/ZOH/flow set C', fullfile(out_dir_CP, 'C_ZOH.m'))
+SimFnc2tex(example_CP_slx_file, 'ContinuousPlant_example/ZOH/jump set D', fullfile(out_dir_CP, 'D_ZOH.m'))
+SimFnc2tex(example_CP_slx_file, 'ContinuousPlant_example/ZOH/flow map f', fullfile(out_dir_CP, 'f_ZOH.m'))
+SimFnc2tex(example_CP_slx_file, 'ContinuousPlant_example/ZOH/jump map g', fullfile(out_dir_CP, 'g_ZOH.m'))
 
-%%
-% Folder Matlab2tex_CPS_Network_1
+%% Folder Matlab2tex_CPS_Network_1
+example_network1_dir = hybrid.getFolderLocation('Examples', 'CPS_examples', 'Network_1');
+example_network1_slx_file = fullfile(example_network1_dir, 'Network_example');
+out_dir_network1 = hybrid.getFolderLocation('doc', 'src', 'Matlab2tex_CPS_Network_1');
 
 % Plant
-% flow set
-SimFnc2tex('../../Examples/CPS_examples/Network_1/Network_example',...
-    'Network_example/HSu/flow set C','./Matlab2tex_CPS_Network_1/C.m')
-% jump set
-SimFnc2tex('../../Examples/CPS_examples/Network_1/Network_example',...
-    'Network_example/HSu/jump set D','./Matlab2tex_CPS_Network_1/D.m')
-% flow map
-SimFnc2tex('../../Examples/CPS_examples/Network_1/Network_example',...
-    'Network_example/HSu/flow map f','./Matlab2tex_CPS_Network_1/f.m')
-% jump map
-SimFnc2tex('../../Examples/CPS_examples/Network_1/Network_example',...
-    'Network_example/HSu/jump map g','./Matlab2tex_CPS_Network_1/g.m')
+SimFnc2tex(example_network1_slx_file, 'Network_example/HSu/flow set C', fullfile(out_dir_network1, 'C.m'))
+SimFnc2tex(example_network1_slx_file, 'Network_example/HSu/jump set D', fullfile(out_dir_network1, 'D.m'))
+SimFnc2tex(example_network1_slx_file, 'Network_example/HSu/flow map f', fullfile(out_dir_network1, 'f.m'))
+SimFnc2tex(example_network1_slx_file, 'Network_example/HSu/jump map g', fullfile(out_dir_network1, 'g.m'))
 
-% network
-% flow set
-SimFnc2tex('../../Examples/CPS_examples/Network_1/Network_example',...
-    'Network_example/network/flow set C','./Matlab2tex_CPS_Network_1/C_network.m')
-% jump set
-SimFnc2tex('../../Examples/CPS_examples/Network_1/Network_example',...
-    'Network_example/network/jump set D','./Matlab2tex_CPS_Network_1/D_network.m')
-% flow map
-SimFnc2tex('../../Examples/CPS_examples/Network_1/Network_example',...
-    'Network_example/network/flow map f','./Matlab2tex_CPS_Network_1/f_network.m')
-% jump map
-SimFnc2tex('../../Examples/CPS_examples/Network_1/Network_example',...
-    'Network_example/network/jump map g','./Matlab2tex_CPS_Network_1/g_network.m')
+% Network
+SimFnc2tex(example_network1_slx_file, 'Network_example/network/flow set C', fullfile(out_dir_network1, 'C_network.m'))
+SimFnc2tex(example_network1_slx_file, 'Network_example/network/jump set D', fullfile(out_dir_network1, 'D_network.m'))
+SimFnc2tex(example_network1_slx_file, 'Network_example/network/flow map f', fullfile(out_dir_network1, 'f_network.m'))
+SimFnc2tex(example_network1_slx_file, 'Network_example/network/jump map g', fullfile(out_dir_network1, 'g_network.m'))
 
-% Estimator
-% flow set
-SimFnc2tex('../../Examples/CPS_examples/Network_1/Network_example',...
-    'Network_example/Estimator/flow set C','./Matlab2tex_CPS_Network_1/C_Estimator.m')
-% jump set
-SimFnc2tex('../../Examples/CPS_examples/Network_1/Network_example',...
-    'Network_example/Estimator/jump set D','./Matlab2tex_CPS_Network_1/D_Estimator.m')
-% flow map
-SimFnc2tex('../../Examples/CPS_examples/Network_1/Network_example',...
-    'Network_example/Estimator/flow map f','./Matlab2tex_CPS_Network_1/f_Estimator.m')
-% jump map
-SimFnc2tex('../../Examples/CPS_examples/Network_1/Network_example',...
-    'Network_example/Estimator/jump map g','./Matlab2tex_CPS_Network_1/g_Estimator.m')
+% Network
+SimFnc2tex(example_network1_slx_file, 'Network_example/Estimator/flow set C', fullfile(out_dir_network1, 'C_Estimator.m'))
+SimFnc2tex(example_network1_slx_file, 'Network_example/Estimator/jump set D', fullfile(out_dir_network1, 'D_Estimator.m'))
+SimFnc2tex(example_network1_slx_file, 'Network_example/Estimator/flow map f', fullfile(out_dir_network1, 'f_Estimator.m'))
+SimFnc2tex(example_network1_slx_file, 'Network_example/Estimator/jump map g', fullfile(out_dir_network1, 'g_Estimator.m'))
 
-%%
-% Folder Matlab2tex_FSM
+%% Folder Matlab2tex_FSM
+example_FSM_dir = hybrid.getFolderLocation('Examples', 'CPS_examples', 'FSM');
+example_FSM_slx_file = fullfile(example_FSM_dir, 'FSM_example');
+out_dir_FSM = hybrid.getFolderLocation('doc', 'src', 'Matlab2tex_FSM');
 
 % Plant
-% flow set
-SimFnc2tex('../../Examples/CPS_examples/FSM/FSM_example',...
-    'FSM_example/FSM/flow set C','./Matlab2tex_FSM/C.m')
-% jump set
-SimFnc2tex('../../Examples/CPS_examples/FSM/FSM_example',...
-    'FSM_example/FSM/jump set D','./Matlab2tex_FSM/D.m')
-% flow map
-SimFnc2tex('../../Examples/CPS_examples/FSM/FSM_example',...
-    'FSM_example/FSM/flow map f','./Matlab2tex_FSM/f.m')
-% jump map
-SimFnc2tex('../../Examples/CPS_examples/FSM/FSM_example',...
-    'FSM_example/FSM/jump map g','./Matlab2tex_FSM/g.m')
+SimFnc2tex(example_FSM_slx_file, 'FSM_example/FSM/flow set C', fullfile(out_dir_FSM, 'C.m'))
+SimFnc2tex(example_FSM_slx_file, 'FSM_example/FSM/jump set D', fullfile(out_dir_FSM, 'D.m'))
+SimFnc2tex(example_FSM_slx_file, 'FSM_example/FSM/flow map f', fullfile(out_dir_FSM, 'f.m'))
+SimFnc2tex(example_FSM_slx_file, 'FSM_example/FSM/jump map g', fullfile(out_dir_FSM, 'g.m'))
 
-
-
-
-
-
-
-
-
-
+disp('Finished.')
