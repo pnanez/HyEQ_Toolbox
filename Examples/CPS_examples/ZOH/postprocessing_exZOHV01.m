@@ -1,28 +1,17 @@
-%--------------------------------------------------------------------------
-% Matlab M-file Project: HyEQ Toolbox @  Hybrid Systems Laboratory (HSL), 
-% https://hybrid.soe.ucsc.edu/software
-% http://hybridsimulator.wordpress.com/
-% Filename: postprocessing_exADC.m
-%--------------------------------------------------------------------------
-% Project: Simulation of a hybrid system (Analog-to-digital converter)
-% Description: postprocessing ADC
-%--------------------------------------------------------------------------
-%--------------------------------------------------------------------------
-%   See also plotflows, plotHarc, plotHarcColor, plotHarcColor3D,
-%   plotHybridArc, plotjumps.
-%   Copyright @ Hybrid Systems Laboratory (HSL),
-%   Revision: 0.0.0.3 Date: 05/20/2015 3:42:00
+% Postprocessing script for Example 4.3: Analog-to-digital converter (ADC)
 
+sol_zoh = HybridArc(t, j, x);
+sol_input = HybridArc(t1, j1, x1);
 
-% plot solution
-figure(1) 
+figure(1)
 clf
-subplot(2,1,1),plotHarc(t1,j1,x1);
-legend('x_1 position (input)','x_2 velocity (input)')
-grid on
-ylabel('input Vs. output')
-subplot(2,1,2),plotHarc(t,j,x(:,1:end-1));
-legend('x_1 position (output)','x_2 velocity (output)')
-grid on
-ylabel('input Vs. output')
- 
+hb = HybridPlotBuilder();
+hb.subplots('on');
+hold on
+hb.legend('ZOH input', 'ZOH input')...
+    .color('green')...
+    .plotFlows(sol_input);
+hb.legend('ZOH output', 'ZOH output')...
+    .flowColor('blue')...
+    .jumpColor('red')...
+    .plotFlows(sol_zoh.slice(1:2));

@@ -183,4 +183,15 @@ SimFnc2tex(example_ADC_2_slx_file, 'ADC_example2/ADC/jump set D', fullfile(out_d
 SimFnc2tex(example_ADC_2_slx_file, 'ADC_example2/ADC/flow map f', fullfile(out_dir_ADC_2, 'f_ADC.m'))
 SimFnc2tex(example_ADC_2_slx_file, 'ADC_example2/ADC/jump map g', fullfile(out_dir_ADC_2, 'g_ADC.m'))
 
+%% Folder Matlab2tex_ZOH
+example_ZOH_dir = hybrid.getFolderLocation('Examples', 'CPS_examples', 'ZOH');
+example_ZOH_slx_file = fullfile(example_ZOH_dir, 'ZOH_example');
+out_dir_ZOH = hybrid.getFolderLocation('doc', 'src', 'Matlab2tex_ZOH');
+
+% Plant
+SimFnc2tex(example_ZOH_slx_file, 'ZOH_example/ZOH/flow set C', fullfile(out_dir_ZOH, 'C.m'))
+SimFnc2tex(example_ZOH_slx_file, 'ZOH_example/ZOH/jump set D', fullfile(out_dir_ZOH, 'D.m'))
+SimFnc2tex(example_ZOH_slx_file, 'ZOH_example/ZOH/flow map f', fullfile(out_dir_ZOH, 'f.m'))
+SimFnc2tex(example_ZOH_slx_file, 'ZOH_example/ZOH/jump map g', fullfile(out_dir_ZOH, 'g.m'))
+
 disp('Finished.')
