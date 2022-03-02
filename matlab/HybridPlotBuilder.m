@@ -1,7 +1,7 @@
 classdef HybridPlotBuilder < handle
-% Class for creating plots of hybrid solutions
+% Class for plotting hybrid arcs with many configuration options.
 %
-% See also: <a href="matlab: showdemo HybridPlotBuilder_demo">Demo: Creating plots with HybridPlotBuilder</a>.
+% See also: <a href="matlab: showdemo HybridPlotBuilder_demo">Demo: Creating plots with HybridPlotBuilder</a>, and HybridArc/plotFlows, HybridArc/plotJumps, etc.
 
 % Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
 % © 2021. 
@@ -136,7 +136,8 @@ classdef HybridPlotBuilder < handle
             % component for the subplot where the label is placed. That is,
             % label_format is a string that contains a single occurance of '%d',
             % which is replaced in each label by the corresponding component
-            % index.
+            % index. Backslashes must be escaped, so '\alpha' should be written
+            % '\\alpha'.
             % 
             % The default value depends on the label interpreter:
             %  'none': 'x(%d)'

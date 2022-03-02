@@ -3,7 +3,7 @@
 % Construct a HybridArc object from (t, j, x) computed by Simulink so that we
 % can use the plotting tools associated with HybridArcs, namely
 % HybridPlotBuilder.
-sol = HybridArc(t, j, x);
+sol = HybridArc(t, j, x); %#ok<IJCL> <- disable warning regarding using the variable name 'j'.
 
 % Plot the solution vs. t.
 figure(1)

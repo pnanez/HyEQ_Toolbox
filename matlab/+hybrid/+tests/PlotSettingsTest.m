@@ -174,7 +174,22 @@ classdef PlotSettingsTest < matlab.unittest.TestCase
         function testRotatingFlowColors_inColumnCellArray(testCase)
             import hybrid.*
             ps = PlotSettings();
-            ps.flow_color = {[0 0 0]; [0.5 0.5 0.5]; [1 1 1]};
+            ps.flow_color = {'#FF0000'; '#0000FF'};
+            function checkNext(color_expected)
+                flow_args = ps.flowArguments();
+                color_ndx = find(strcmp(flow_args, 'Color'), 1) + 1;
+                color_actual = flow_args{color_ndx};
+                testCase.assertEqual(color_actual, color_expected);
+            end
+            checkNext('#FF0000')
+            checkNext('#0000FF')
+            checkNext('#FF0000') % Loops back to first entry.
+        end
+
+        function testRotatingFlowColors_inRowCellArray(testCase)
+            import hybrid.*
+            ps = PlotSettings();
+            ps.flow_color = {[0 0 0], [0.5 0.5 0.5], [1 1 1]};
             function checkNext(color_expected)
                 flow_args = ps.flowArguments();
                 color_ndx = find(strcmp(flow_args, 'Color'), 1) + 1;
