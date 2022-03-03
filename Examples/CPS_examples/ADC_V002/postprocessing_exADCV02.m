@@ -13,16 +13,20 @@
 %   Copyright @ Hybrid Systems Laboratory (HSL),
 %   Revision: 0.0.0.3 Date: 05/20/2015 3:42:00
 
-
 % plot solution
-figure(1) 
+sol = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j)
+sol1 = HybridArc(t1, j1, x1); %#ok<IJCL> (suppress a warning about 'j1')
+
 clf
-subplot(2,1,1),plotHarc(t1,j1,x1);
-legend('x_1 position (input)','x_2 velocity (input)')
-grid on
-ylabel('input Vs. output')
-subplot(2,1,2),plotHarc(t,j,x(:,1:end-1));
-legend('x_1 position (output)','x_2 velocity (output)')
-grid on
-ylabel('input Vs. output')
+pb = HybridPlotBuilder()...
+.subplots('on')...
+.legend('Ball position', 'Ball velocity')...
+.slice([1 2])...
+.flowColor('green')...
+.plotFlows(sol1);
+hold on
+pb.legend('ADC output', 'ADC output')...
+.slice([1 2])...
+.flowColor('blue')...
+.plotFlows(sol);
  

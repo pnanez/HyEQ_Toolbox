@@ -15,18 +15,29 @@
 
 
 % plot solution
-figure(1) 
+sol_u = HybridArc(t, 0*t, vs);
+sol = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j')
+
 clf
-subplot(2,1,1),plot(t,vs,'r');
-hold on;
-subplot(2,1,1),plotHarc(t,j,x(:,end-1));
-legend('input','output')
-grid on
-ylabel('input Vs. output')
-subplot(2,1,2),plotHarc(t,j,x(:,end));
-grid on
-ylabel('timer')
-xlabel('time')
+subplot(2,1,1)
+pb = HybridPlotBuilder();
+hold on
+pb.legend('ADC input')...
+.slice(1)...
+.flowColor('green')...
+.jumpColor('none')...
+.plotFlows(sol_u);
+pb.legend('ADC output')...
+.slice(1)...
+.flowColor('blue')...
+.jumpColor('red')...
+.plotFlows(sol);
+
+subplot(2,1,2)
+HybridPlotBuilder()...
+.legend('','ADC timer')...
+.slice(2)...
+.plotFlows(sol);
 
 
  

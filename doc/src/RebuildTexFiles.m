@@ -133,4 +133,30 @@ SimFnc2tex(example_FSM_slx_file, 'FSM_example/FSM/jump set D', fullfile(out_dir_
 SimFnc2tex(example_FSM_slx_file, 'FSM_example/FSM/flow map f', fullfile(out_dir_FSM, 'f.m'))
 SimFnc2tex(example_FSM_slx_file, 'FSM_example/FSM/jump map g', fullfile(out_dir_FSM, 'g.m'))
 
+%% Folder ADC_1
+example_dir_ADC_1 = hybrid.getFolderLocation('Examples', 'CPS_examples', 'ADC_V001');
+example_ADC_1_slx_file = fullfile(example_dir_ADC_1, 'ADC_example1');
+out_dir_ADC_1 = hybrid.getFolderLocation('doc', 'src', 'Matlab2tex_CPS_ADC_1');
+SimFnc2tex(example_ADC_1_slx_file, 'ADC_example1/ADC/flow set C', fullfile(out_dir_ADC_1, 'C.m'))
+SimFnc2tex(example_ADC_1_slx_file, 'ADC_example1/ADC/jump set D', fullfile(out_dir_ADC_1, 'D.m'))
+SimFnc2tex(example_ADC_1_slx_file, 'ADC_example1/ADC/flow map f', fullfile(out_dir_ADC_1, 'f.m'))
+SimFnc2tex(example_ADC_1_slx_file, 'ADC_example1/ADC/jump map g', fullfile(out_dir_ADC_1, 'g.m'))
+
+%% Folder ADC_2
+example_dir_ADC_2 = hybrid.getFolderLocation('Examples', 'CPS_examples', 'ADC_V002');
+example_ADC_2_slx_file = fullfile(example_dir_ADC_2, 'ADC_example2');
+out_dir_ADC_2 = hybrid.getFolderLocation('doc', 'src', 'Matlab2tex_CPS_ADC_2');
+
+% Plant
+SimFnc2tex(example_ADC_2_slx_file, 'ADC_example2/HSu/flow set C', fullfile(out_dir_ADC_2, 'C.m'))
+SimFnc2tex(example_ADC_2_slx_file, 'ADC_example2/HSu/jump set D', fullfile(out_dir_ADC_2, 'D.m'))
+SimFnc2tex(example_ADC_2_slx_file, 'ADC_example2/HSu/flow map f', fullfile(out_dir_ADC_2, 'f.m'))
+SimFnc2tex(example_ADC_2_slx_file, 'ADC_example2/HSu/jump map g', fullfile(out_dir_ADC_2, 'g.m'))
+
+% ADC
+SimFnc2tex(example_ADC_2_slx_file, 'ADC_example2/ADC/flow set C', fullfile(out_dir_ADC_2, 'C_ADC.m'))
+SimFnc2tex(example_ADC_2_slx_file, 'ADC_example2/ADC/jump set D', fullfile(out_dir_ADC_2, 'D_ADC.m'))
+SimFnc2tex(example_ADC_2_slx_file, 'ADC_example2/ADC/flow map f', fullfile(out_dir_ADC_2, 'f_ADC.m'))
+SimFnc2tex(example_ADC_2_slx_file, 'ADC_example2/ADC/jump map g', fullfile(out_dir_ADC_2, 'g_ADC.m'))
+
 disp('Finished.')
