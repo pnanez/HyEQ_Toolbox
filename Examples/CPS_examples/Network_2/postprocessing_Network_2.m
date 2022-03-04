@@ -1,44 +1,27 @@
-%--------------------------------------------------------------------------
-% Matlab M-file Project: HyEQ Toolbox @  Hybrid Systems Laboratory (HSL), 
-% https://hybrid.soe.ucsc.edu/software
-% http://hybridsimulator.wordpress.com/
-% Filename: postprocessing_exADC.m
-%--------------------------------------------------------------------------
-% Project: Simulation of a hybrid system (Analog-to-digital converter)
-% Description: postprocessing ADC
-%--------------------------------------------------------------------------
-%--------------------------------------------------------------------------
-%   See also plotflows, plotHarc, plotHarcColor, plotHarcColor3D,
-%   plotHybridArc, plotjumps.
-%   Copyright @ Hybrid Systems Laboratory (HSL),
-%   Revision: 0.0.0.3 Date: 05/20/2015 3:42:00
+% Postprocessing script for the estimation over network 2 example
 
+solz = HybridArc(tz, jz, z); %#ok<IJCL> (suppress a warning about 'jz')
+solhatz = HybridArc(thatz, jhatz, hatz); %#ok<IJCL> (suppress a warning about 'jhatz')
 
-x = [z,hatz];
-t = [tz,thatz];
-j = [jz,jhatz];
 
 % plot solution
 figure(1) 
 clf
-subplot(4,1,1),plotarc([tz,thatz],[jz,jhatz],[z(:,1),hatz(:,1)]);
-legend('System state z1','Estimation hatz1')
+hpb = HybridPlotBuilder().subplots('on').color('matlab');
+hpb.legend('System state $x_1$','System state $x_2$',...
+    'System state $x_3$','System state $x_4$')...
+    .plotFlows(solz) 
+hold on
+hpb.legend('Estimation $\hat{x}_1$',...
+    'Estimation $\hat{x}_2$','Estimation $\hat{x}_3$',...
+    'Estimation $\hat{x}_4$').plotFlows(solhatz.slice(1:4)) 
+ 
+%The following plot depicts the hybrid arc for the first state of the estimator in hybrid time. 
+figure(2)
+clf
+hpb = HybridPlotBuilder();
+hpb.label('$\hat{x}_1$').plotHybrid(solhatz.slice(1))  
 grid on
-ylabel('z1 vs hatz1')
-xlabel('time')
-subplot(4,1,2),plotarc([tz,thatz],[jz,jhatz],[z(:,2),hatz(:,2)]);
-legend('System state z2','Estimation hatz2')
-grid on
-ylabel('z2 vs hatz2')
-xlabel('time')
-subplot(4,1,3),plotarc([tz,thatz],[jz,jhatz],[z(:,3),hatz(:,3)]);
-legend('System state z1','Estimation hatz1')
-grid on
-ylabel('z3 vs hatz3')
-xlabel('time')
-subplot(4,1,4),plotarc([tz,thatz],[jz,jhatz],[z(:,4),hatz(:,4)]);
-legend('System state z1','Estimation hatz1')
-grid on
-ylabel('z1 vs hatz1')
-xlabel('time')
+view(37.5, 30)
+
  

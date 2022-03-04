@@ -105,10 +105,10 @@ example_network1_slx_file = fullfile(example_network1_dir, 'Network_example');
 out_dir_network1 = hybrid.getFolderLocation('doc', 'src', 'Matlab2tex_CPS_Network_1');
 
 % Plant
-SimFnc2tex(example_network1_slx_file, 'Network_example/HSu/flow set C', fullfile(out_dir_network1, 'C.m'))
-SimFnc2tex(example_network1_slx_file, 'Network_example/HSu/jump set D', fullfile(out_dir_network1, 'D.m'))
-SimFnc2tex(example_network1_slx_file, 'Network_example/HSu/flow map f', fullfile(out_dir_network1, 'f.m'))
-SimFnc2tex(example_network1_slx_file, 'Network_example/HSu/jump map g', fullfile(out_dir_network1, 'g.m'))
+SimFnc2tex(example_network1_slx_file, 'Network_example/Continuous Process/flow set C', fullfile(out_dir_network1, 'C.m'))
+SimFnc2tex(example_network1_slx_file, 'Network_example/Continuous Process/jump set D', fullfile(out_dir_network1, 'D.m'))
+SimFnc2tex(example_network1_slx_file, 'Network_example/Continuous Process/flow map f', fullfile(out_dir_network1, 'f.m'))
+SimFnc2tex(example_network1_slx_file, 'Network_example/Continuous Process/jump map g', fullfile(out_dir_network1, 'g.m'))
 
 % Network
 SimFnc2tex(example_network1_slx_file, 'Network_example/network/flow set C', fullfile(out_dir_network1, 'C_network.m'))
@@ -116,11 +116,35 @@ SimFnc2tex(example_network1_slx_file, 'Network_example/network/jump set D', full
 SimFnc2tex(example_network1_slx_file, 'Network_example/network/flow map f', fullfile(out_dir_network1, 'f_network.m'))
 SimFnc2tex(example_network1_slx_file, 'Network_example/network/jump map g', fullfile(out_dir_network1, 'g_network.m'))
 
-% Network
+% Estimator
 SimFnc2tex(example_network1_slx_file, 'Network_example/Estimator/flow set C', fullfile(out_dir_network1, 'C_Estimator.m'))
 SimFnc2tex(example_network1_slx_file, 'Network_example/Estimator/jump set D', fullfile(out_dir_network1, 'D_Estimator.m'))
 SimFnc2tex(example_network1_slx_file, 'Network_example/Estimator/flow map f', fullfile(out_dir_network1, 'f_Estimator.m'))
 SimFnc2tex(example_network1_slx_file, 'Network_example/Estimator/jump map g', fullfile(out_dir_network1, 'g_Estimator.m'))
+
+
+%% Folder Matlab2tex_CPS_Network_2
+example_network2_dir = hybrid.getFolderLocation('Examples', 'CPS_examples', 'Network_2');
+example_network2_slx_file = fullfile(example_network2_dir, 'Network_2_example');
+out_dir_network2 = hybrid.getFolderLocation('doc', 'src', 'Matlab2tex_CPS_Network_2');
+
+% Plant
+SimFnc2tex(example_network2_slx_file, 'Network_2_example/Continuous Process/flow set C', fullfile(out_dir_network2, 'C.m'))
+SimFnc2tex(example_network2_slx_file, 'Network_2_example/Continuous Process/jump set D', fullfile(out_dir_network2, 'D.m'))
+SimFnc2tex(example_network2_slx_file, 'Network_2_example/Continuous Process/flow map f', fullfile(out_dir_network2, 'f.m'))
+SimFnc2tex(example_network2_slx_file, 'Network_2_example/Continuous Process/jump map g', fullfile(out_dir_network2, 'g.m'))
+
+% Network
+SimFnc2tex(example_network2_slx_file, 'Network_2_example/network/flow set C', fullfile(out_dir_network2, 'C_network.m'))
+SimFnc2tex(example_network2_slx_file, 'Network_2_example/network/jump set D', fullfile(out_dir_network2, 'D_network.m'))
+SimFnc2tex(example_network2_slx_file, 'Network_2_example/network/flow map f', fullfile(out_dir_network2, 'f_network.m'))
+SimFnc2tex(example_network2_slx_file, 'Network_2_example/network/jump map g', fullfile(out_dir_network2, 'g_network.m'))
+
+% Estimator
+SimFnc2tex(example_network2_slx_file, 'Network_2_example/Estimator/flow set C', fullfile(out_dir_network2, 'C_Estimator.m'))
+SimFnc2tex(example_network2_slx_file, 'Network_2_example/Estimator/jump set D', fullfile(out_dir_network2, 'D_Estimator.m'))
+SimFnc2tex(example_network2_slx_file, 'Network_2_example/Estimator/flow map f', fullfile(out_dir_network2, 'f_Estimator.m'))
+SimFnc2tex(example_network2_slx_file, 'Network_2_example/Estimator/jump map g', fullfile(out_dir_network2, 'g_Estimator.m'))
 
 %% Folder Matlab2tex_FSM
 example_FSM_dir = hybrid.getFolderLocation('Examples', 'CPS_examples', 'FSM');

@@ -1,20 +1,4 @@
-%--------------------------------------------------------------------------
-% Matlab M-file Project: HyEQ Toolbox @  Hybrid Systems Laboratory (HSL), 
-% https://hybrid.soe.ucsc.edu/software
-% http://hybridsimulator.wordpress.com/
-% Filename: initialization_exADC.m
-%--------------------------------------------------------------------------
-% Project: Simulation of a hybrid system (Digital Network)
-% Description: initialization ADC
-%--------------------------------------------------------------------------
-%--------------------------------------------------------------------------
-%   See also plotflows, plotHarc, plotHarcColor, plotHarcColor3D,
-%   plotHybridArc, plotjumps.
-%   Copyright @ Hybrid Systems Laboratory (HSL),
-%   Revision: 0.0.0.3 Date: 05/20/2015 3:42:00
-
-clear all                                                               
-clc  
+% Initialization script for the estimation over network example
 
 % simulation horizon                                                    
 T = 50;                                                                 
@@ -44,7 +28,7 @@ A = [0  1  0  0;
     -1  0  0  0;
     -2  1 -1  0;
      2 -2  0 -2];
-B = [0 0 0 0]';
+B = [0 0 1 0]';
 M = [1 0 0 0];
 % Estimator
 L = [1; -0.9433; -0.6773;1.6274];
