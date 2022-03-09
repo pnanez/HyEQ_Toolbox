@@ -1,227 +1,211 @@
-%% Example 1.8: Choosing Behavior in $C \cap D$
-% A simple mathematical example to show different type of simulation results.
-% 
-% Click
-% <matlab:hybrid.open('Example_1.8-A_Simple_Example','Example1_8.slx') here> 
-% to change your working directory to the Example 1.8 folder and open the
-% Simulink model. 
+%% Example 1.8: Choosing Behavior in the Intersection of C and D
+% This example demonstrates how to define the behavior of simulations in the
+% intersection of the flow and jump sets.
+
 %% Mathematical Model
-% 
 % Consider the hybrid system with data
 % 
 % $$\begin{array}{ll}
-% f(x) := -x & C:= [0,1] \\ \\
-% g(x) := 1+\textrm{mod}(x,2) & D:=  \{1\}\cup\{2\}.
+% f(x) := x & C:= [1, 3] \cup [5, 9] \\ \\
+% g(x) := \left\{\begin{array}{ll} 
+%                       \mathrm{round}(x+1) & \textrm{if } x \leq 6 \\ 
+%                       0 & \textrm{if } x = 7
+% \end{array}\right. & D:= \{0\}\cup [2, 6] \cup \{7\}.
 % \end{array}$$
 % 
-
-%% Simulink Model
-% The following diagram shows the Simulink model of the bouncing ball. The
-% contents of the blocks *flow map* |f|, *flow set* |C|, etc., are shown below. 
-% When the Simulink model is open, the blocks can be viewed and modified by
-% double clicking on them.
-
-
-%% Examples for Different Priority Rules
+% The sets $C$ and $D$ are visualized here:
 %
-% Note that solutions from $x_0 = 1$ and $x_0 = 2$ are
-% nonunique. The following simulations show the use of the variable
-% $rule$ in the _Jump Logic block_.
+% $$\begin{array}{cccccccccccc}
+% C: &   & [ &   & ] &   & [ &   &   &   & ] \\
+% D: & * &   & [ &   &   &   & ] & * &   & \\
+% \hline
+% x: &     0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9
+% \end{array}$$
 % 
-%% Jumps enforced:
-% A solution from $x0=1$ with $T=10,J=20$, $rule = 1$ is depicted in
-% Figure~\ref{fig:overlap1-1}. The solution jumps from $1$ to
-% $2$, and from $2$ to $1$ repetitively.
+% Solutions to this model are not unique because solutions are allowed to
+% both flow or jump everywhere in $[2, 3) \cup [5, 6] \cup \{7\}.$ (Note that
+% despite $3$ being in $C\cap D$, it is not possible to flow because the
+% trajectory would immediately leave $C$.) 
+
+%% Priority Rules for Intersection of C and D
+% When solving hybrid systems, the HyEQ Toolbox only computes a single solution,
+% so we must specify which of the various possible solutions are computed. 
+% This is done is by defining a variable |rule| in the MATLAB workspace. The
+% value of |rule| specifies whether flows or jumps have priority in $C \cap D$. 
 % 
+% * If |rule = 1|, jumps have priority.
+% * If |rule = 2|, flows have priority.
+% * If |rule = 3|, then flowing and jumping is randomly selected at each time step.
+% 
+% The following simulations show the use of the variable |rule| priority of
+% flowing vs jumping when computing solutions inside $C\cap D$. 
+
+%% Jump Priority (|rule = 1|) 
+% When |rule=1|, jumps have priorty, so anytime a (numerical) solution $x$ is in $C\cap D$,
+% then $x$ will jump. For the model presented above, this effectively restricts
+% $C$ as shown here:
+% 
+% $$\begin{array}{rccccccccccc}
+% C \textrm{ (effective)}: &   & [ & ) &   &   &   & ( &\circ&   & ] \\
+% D:                       & * &   & [ &   &   &   & ] &  *  &   &   \\
+% \hline
+% x:                       & 0 & 1 & 2 & 3 & 4 & 5 & 6 &  7  & 8 & 9
+% \end{array}$$
+%  
+% The following plot shows a solution from $x0=0$ with jump priority (|rule=1|).
+% The solution always jumps except when 
+% $x$ is in $[1, 2) \subset C \setminus D$.
 
 % Change working directory to the example folder.
-wd_before = hybrid.open(fullfile('Example_1.8-A_Simple_Example', 'Ex1_8a_Jumps_Enforced'));
+wd_before = hybrid.open(fullfile('Example_1.8-A_Simple_Example'));
 
 % Run the initialization script.
 initialization_ex1_8a
+x0 = 0; %#ok<NASGU> Variable is used within the Simulink model.
 
 % Run the Simulink model.
-sim('Example1_8a')
+sim('Example1_8')
 
 % Convert the values t, j, and x output by the simulation into a HybridArc object.
 sol_a = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j')
 
 postprocessing_ex1_8a
-%% Flows enforced:
-% A solution from $x0=1$ with $T=10,J=20$, $rule = 2$ is depicted in
-% Figure~\ref{fig:overlap1-2}. The solution flows for all time
-% and converges exponentially to zero.
 
-% Change working directory to the example folder.
-hybrid.open(fullfile('Example_1.8-A_Simple_Example', 'Ex1_8b_Flows_Enforced'));
+%% Flow Priority (|rule = 2|) 
+% When |rule=2|, flows have priorty, so anytime a solution $x$ is in $C\cap D$,
+% then $x$ will flow unless $x$ is on the boundary of $C$ and $f(x)$ points out
+% of $C$. For the model presented above, this effectively restricts
+% $C$ as shown here:
+% 
+% $$\begin{array}{rccccccccccc}
+% C:                       &   & [ &   & ] &   & [ &   &   &   & ] \\
+% D \textrm{ (effective)}: & * &   &   & ( &   & ) &   &   &   &   \\
+% \hline
+% x:                       & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9
+% \end{array}$$
+%  
+% The following plot shows a solution from $x0=0$ with flow priority (|rule=2|).
+% The solution only jumps when $x$ is in $\{0\} \cup (3, 4) = D \setminus C$.
+% At the end of the solution, $x$ leaves $C \cup D$ and terminates. 
 
 % Run the initialization script.
 initialization_ex1_8b
-
+x0 = 0; %#ok<NASGU> Variable is used within the Simulink model.
 % Run the Simulink model.
-sim('Example1_8b')
+sim('Example1_8')
 
 % Convert the values t, j, and x output by the simulation into a HybridArc object.
 sol_b = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j')
 
-postprocessing_ex1_8b
+postprocessing_ex1_8a
 
+%%
+% Note that the stopping logic is implemented such that when the
+% state of the hybrid system is not in $(C \cup D)$, then the
+% simulation is stopped. In particular, if this condition becomes true
+% while flowing, then the last value of the computed solution will not
+% belong to $C$.
 
-% \begin{figure}[ht]
-% \begin{center}
-% \subfigure[Forced jumps logic. \label{fig:overlap1-1}]
-% {
-% \includegraphics[width=.45\textwidth]{figures/Examples/Overlap1JumpPriority}
-% {
-%   \psfrag{flows [t]}[c]{flows [$t$]}
-%   \psfrag{jumps [j]}[c]{jumps [$j$]}
-%   \psfrag{x}[c]{$x$}
-% }
-% }
-% \hfill
-% \subfigure[Forced flows logic. \label{fig:overlap1-2}]
-% {
-%     \includegraphics[width=.45\textwidth]{figures/Examples/Overlap1FlowPriority}
-% {
-%   \psfrag{flows [t]}[c]{flows [$t$]}
-%   \psfrag{jumps [j]}[c]{jumps [$j$]}
-%   \psfrag{x}[c]{$x$}
-% }
-% }
-% \end{center}
-% \caption{Solution of Example~\ref{ex:overlap1}}
-% \end{figure}
+%% Random Priority (|rule = 3|)
+% When |rule=3|, then at each time step that a solution $x$ is in $C \cap D,$
+% there is 50% chance of jumping and 50% chance of flowing.
 % 
-% \begin{figure}[ht]
-%   \psfrag{flows [t]}[c]{flows [$t$]}
-%   \psfrag{jumps [j]}[c]{jumps [$j$]}
-%   \psfrag{x}[c]{$x$}
-%   \centering
-% \subfigure[Random logic for flowing/jumping.]{
-%     \includegraphics[width=.45\textwidth]{figures/Examples/Overlap1RandomPriority.eps}
-% \label{fig:overlap1-3}}
-% \subfigure[Random logic for flowing/jumping.]{
-%     \includegraphics[width=.45\textwidth]{figures/Examples/Overlap1TRandomPriority.eps}
-% \label{fig:overlap1T-1}}
-% \qquad
-% \subfigure[Random logic for flowing/jumping. Zoomed version.]{
-%     \includegraphics[width=.45\textwidth]{figures/Examples/Overlap1TRandomPriorityZoom.eps}
-% \label{fig:overlap1T-2}}
-% \caption{Solution of Example~\ref{ex:overlap1}}
-% \end{figure}
+% For the model presented above, the intersection of $C$ and $D$ is illustrated
+% here. Within the intersection, either flowing or jumping can occur in
+% numerical solutions.
+% 
+% $$\begin{array}{cccccccccccc}
+% C \cap D: &   &   & [ & ] &   & [ & ] & * &   & \\
+% \hline
+% x:        & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9
+% \end{array}$$
+% 
+% A solution computed with |rule=3| is shown below. The first
+% interval of flow ends around $t=0.7$, shortly after the solution enters
+% $[2,3]$. Because there is a 50-50 chance of jumping at each time step, jumps
+% tend to happen very quickly when a solution enters an interval in $C \cap D$.
+% The solution then jumps several times in $D \setminus C$ until 
+% $x = 7 \in C\cap D$. The first time this happens, the solution happens to
+% jump, reseting $x$ to $0$, but the second time it happens to flow, causing it
+% to leave $D$ and eventually leave $C$ as well. 
 
-%% Random rule:
-% A solution from $x0=1$ with $T=10,J=20$, $rule = 3$ is depicted in
-% Figure~\ref{fig:overlap1-3}. The solution jumps to $2$, then jumps to
-% $1$ and flows for the rest of the time converging to zero
-% exponentially.
-% Enlarging $D$ to
-% $ D:= [1/50, 1]\cup\{2\} $
-% causes the overlap between $C$ and $D$ to be ``thicker''.
-% The simulation result is
-% depicted in Figure~\ref{fig:overlap1T-1}
-% with the same parameters used in the simulation in
-% Figure~\ref{fig:overlap1-3}.
-% The plot suggests that the solution jumps several times until
-% $x<1/50$ from where it flows to zero.  However,
-% Figure~\ref{fig:overlap1T-2},
-% a zoomed version of Figure~\ref{fig:overlap1T-1},
-% shows that initially the
-% solution flows and that at $(t,j)=(0.2 e-3,0)$ it jumps. After the jump,
-% it continues flowing, then it jumps a few times, then it flows, etc.
-% The combination of flowing and jumping occurs while the solution
-% is in the intersection of $C$ and $D$, where the selection
-% of whether flowing or jumping is done randomly due to using $rule=3$.
 % 
 % This simulation also reveals that this implementation does not
-% precisely generate hybrid arcs. The maximum step size was set to $0.1
-% e-3$. The solution flows during the first two steps of the integration
-% of the flows with maximum step size. The value at $t=0.1e-3$ is very
-% close to $1$. At $t=0.2e-3$, instead of assuming a value given by the
-% flow map, the value of the solution is about $0.5$, which is the
-% result of the jump occurring at $(0.2e-3,0)$. This is the value stored
-% in $x$ at such time by the integrator. Note that the value of $x'$ at
-% $(0.2e-3,0)$ is the one given by the flow map that triggers the jump,
-% and if available for recording, it should be stored in $(0.2e-3,0)$.
+% precisely generate hybrid arcs. The maximum step size was set to |0.1
+% e-3|. The solution flows during the first two steps of the integration
+% of the flows with maximum step size. The value at |t=0.1e-3| is very
+% close to |1|. At |t=0.2e-3|, instead of assuming a value given by the
+% flow map, the value of the solution is about |0.5|, which is the
+% result of the jump occurring at |(0.2e-3,0)|. This is the value stored
+% in $x$ at such time by the integrator. Note that the value of |x| at
+% |(0.2e-3,0)| is the one given by the flow map that triggers the jump,
+% and if available for recording, it should be stored in |(0.2e-3,0)|.
 % This is a limitation of the current implementation.
-% 
-% The following simulations show the {\em Stop Logic block} stopping
-% the simulation at different events.
-% \begin{figure}[ht]
-% \subfigure[Forced jump logic and different $D$.]{
-%     \includegraphics[width=.45\textwidth]{figures/Examples/Overlap2JumpPriority.eps}
-% \label{fig:overlap2-1}}
-% \qquad
-% \subfigure[Forced flow logic.]{
-%     \includegraphics[width=.45\textwidth]{figures/Examples/Overlap4FlowPriority.eps}
-% \label{fig:overlap4-1}}
-% \caption{Solution of Example~\ref{ex:overlap1} with premature stopping.}
-% \end{figure}
-% 
+ 
 
 % Change working directory to the example folder.
-hybrid.open(fullfile('Example_1.8-A_Simple_Example', 'Ex1_8c_Random_Rule'));
+hybrid.open(fullfile('Example_1.8-A_Simple_Example'));
 
 % Run the initialization script.
 initialization_ex1_8c
+x0 = 0; %#ok<NASGU> Variable is used within the Simulink model.
+
+ % Set the seed for the random number generator so that we consistently 
+ % generate an interesting plot.
+rng(7)
 
 % Run the Simulink model.
-sim('Example1_8c')
+sim('Example1_8')
 
 % Convert the values t, j, and x output by the simulation into a HybridArc object.
 sol_c = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j')
 
-postprocessing_ex1_8c
+postprocessing_ex1_8a
 
-%% Solution outside $C\cup D$:
-% Taking $D = \{1\}$, a simulation starting from $x0=1$ with |T=10, J=20, rule
-% = 1| stops since the solution leaves $C\cup D$. Figure~\ref{fig:overlap2-1}
-% shows this.
-% 
-
-% Change working directory to the example folder.
-hybrid.open(fullfile('Example_1.8-A_Simple_Example', 'Ex1_8d_Solution_Outside_C_D'));
-
-% Run the initialization script.
-initialization_ex1_8d
-
-% Run the Simulink model.
-sim('Example1_8d')
-
-% Convert the values t, j, and x output by the simulation into a HybridArc object.
-sol_d = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j')
-
-postprocessing_ex1_8d
-
-%% Solution reaches the boundary of $C$ from where jumps are not possible:
-% Replacing the flow set by  $[1/2,1]$
-% a solution starting from $x0=1$ with $T=10,J=20$ and $rule = 2$
-% flows for all time until it reaches the boundary of
-% $C$ where jumps are not possible. Figure~\ref{fig:overlap4-1}
-% shows this.
-% 
-% Note that in this implementation, the Stop Logic is such that when the
-% state of the hybrid system is not in $(C \cup D)$, then the
-% simulation is stopped. In particular, if this condition becomes true
-% while flowing, then the last value of the computed solution will not
-% belong to $C$. It
-% could be desired to be able to recompute the solution so that its last
-% point belongs to the corresponding set. From that point, it should be
-% the case that solutions cannot be continued.
+%% Numerical Limitations
+% Isolated points in $D$ that are in the interior of $C$, such as $x=7$, require
+% extra care. If a solution starts at |x0=6.1|, then it will almost
+% certainly flow pass $7 \in D$ without jumping (even if |rule=1|)
+% because the odds of the numerical value of |x| ever being exactly $7$ is
+% minuscule. Thus, from a numerical standpoint, |x| never enters $D$. 
 
 % Change working directory to the example folder.
-hybrid.open(fullfile('Example_1.8-A_Simple_Example', 'Ex1_8e_Solution_Reaches_Boundary_of_C'));
+hybrid.open(fullfile('Example_1.8-A_Simple_Example'));
 
 % Run the initialization script.
-initialization_ex1_8e
+initialization_ex1_8a
+x0 = 6.2; % Must be strictly between 6 and 7.
+
+ % Set the seed for the random number generator so that we consistently 
+ % generate an interesting plot.
+rng(7)
 
 % Run the Simulink model.
-sim('Example1_8e')
+sim('Example1_8')
 
 % Convert the values t, j, and x output by the simulation into a HybridArc object.
-sol_e = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j')
+sol_c = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j')
 
-postprocessing_ex1_8e
+postprocessing_ex1_8a
+
+%%
+% Furthermore, suppose the jump map given above is modified by removing the
+% $\mathrm{round}$ function, as shown here
+% 
+% $$
+% g(x) := \left\{\begin{array}{ll} 
+%                       x+1 & \textrm{if } x \leq 6 \\ 
+%                       0 & \textrm{if } x = 7.
+% \end{array}\right. $$
+% 
+% For a solution from |x0=1| with jump priority |rule=1|, one might expect that
+% a solution will flow until $x = 2\in D,$ jump several times until $x=7\in D$
+% and reset to $x=0$. This will not happen, however, because the numerical
+% solver cannot determine the exact position of $x$ when it enters $D$ at $x=2$,
+% so the solution flows slightly past $2$, say, to $2.0001$. Then, after several
+% jumps, $x$ is at $7.0001 \not\in D$, at which point it flows until it leaves
+% $C.$ Therefore, one must be careful in the design of $C$ and $D$ to ensure
+% that numerical calculations do not create undesired behavior.
 
 %% 
 

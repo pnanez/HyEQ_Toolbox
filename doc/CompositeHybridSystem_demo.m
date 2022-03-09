@@ -94,7 +94,7 @@
 % arrowhead indicates a subclass/superclass relationship. (Note that
 % |HybridSubsystem| is not a subclass of |HybridSystem|.)
 % 
-% <<system_hierarchy.svg>>
+% <<images/system_hierarchy.svg>>
 % 
 % Implementing a composite system consists of three steps:
 %
@@ -377,7 +377,7 @@ sol_bb('Ball');
 
 %%
 % 
-% <<solution_hierarchy.svg>>
+% <<images/solution_hierarchy.svg>>
 % 
 
 %% 

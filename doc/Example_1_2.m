@@ -34,13 +34,22 @@
 % # Open <matlab:hybrid.open('Example_1.2-Bouncing_Ball','Example1_2.slx')
 % Example1_2.slx>. It may take a few seconds for Simulink to open.
 % # In Simulink, double click the block "Double Click to Initialize" to run
-% <matlab:open('initialization_ex1_2') initialization_ex1_2>.
+% <matlab:hybrid.open('Example_1.2-Bouncing_Ball','initialization_ex1_2') initialization_ex1_2>.
 % # Start the simulation by clicking the "Run" button. Let the simulation
 % finish.
 % # Double click the block "Double Click to Plot Solutions" to run
-% <matlab:open('postprocessing_ex1_2') postprocessing_ex1_2>.
+% <matlab:hybrid.open('Example_1.2-Bouncing_Ball','postprocessing_ex1_2') postprocessing_ex1_2>.
 
 wd_before = hybrid.open('Example_1.2-Bouncing_Ball'); 
+
+% Run the initialization script.
+initialization_ex1_2
+
+% Run the Simulink model.
+sim('Example_1_2.slx')
+
+% Convert the values t, j, and x output by the simulation into a HybridArc object.
+sol = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j')
 
 %% Solution
 % A solution to the bouncing ball system from 

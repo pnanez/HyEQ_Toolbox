@@ -4,8 +4,8 @@
 x0 = [1; 0];                                                                                                                
           
 % Physical variables
-gamma = -9.81;  % gravity constant
-lambda = 0.8;   % restitution coefficent
+gamma = -9.81; % gravity constant
+lambda = 0.8;  % restitution coefficent
 
 % Simulation horizon                                                    
 T = 10;                                                                 

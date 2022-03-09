@@ -73,11 +73,11 @@ open_system('Example1_3/HS')
 %
 % *flow set* |C| *block*
 % 
-% <include>src/Matlab2tex_1_3/g.m</include>
+% <include>src/Matlab2tex_1_3/C.m</include>
 %
 % *jump map* |g| *block*
 % 
-% <include>src/Matlab2tex_1_3/C.m</include>
+% <include>src/Matlab2tex_1_3/g.m</include>
 %
 % *jump set* |D| *block*
 % 

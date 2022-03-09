@@ -43,6 +43,11 @@ classdef HybridPlotBuilder < handle
             end
             this.titles(title);
             this.last_function_call = 'title';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
+            end
         end
         
         function this = titles(this, varargin)
@@ -52,6 +57,11 @@ classdef HybridPlotBuilder < handle
             titles = hybrid.internal.parseStringVararginWithOptionalOptions(varargin{:});
             this.settings.component_titles = titles;
             this.last_function_call = 'titles';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
+            end
         end
 
         function this = label(this, label)
@@ -65,6 +75,11 @@ classdef HybridPlotBuilder < handle
             end
             this.labels(label);
             this.last_function_call = 'label';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
+            end
         end
 
         function this = labels(this, varargin)
@@ -74,6 +89,11 @@ classdef HybridPlotBuilder < handle
             labels = hybrid.internal.parseStringVararginWithOptionalOptions(varargin{:});
             this.settings.component_labels = labels;
             this.last_function_call = 'labels';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
+            end
         end
 
         function this = labelSize(this, size)
@@ -83,6 +103,11 @@ classdef HybridPlotBuilder < handle
             % titleSize, tickLabelSize.
             this.settings.label_size = size;
             this.last_function_call = 'labelSize';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
+            end
         end
 
         function this = titleSize(this, size)
@@ -91,6 +116,11 @@ classdef HybridPlotBuilder < handle
             % See also: title, titles, titleInterpreter, labelSize, tickLabelSize.
             this.settings.title_size = size;
             this.last_function_call = 'titleSize';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
+            end
         end
 
         function this = tickLabelSize(this, size)
@@ -99,6 +129,11 @@ classdef HybridPlotBuilder < handle
             % See also: labelInterpreter, labelSize, titleSize.
             this.settings.tick_label_size = size;
             this.last_function_call = 'tickLabelSize';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
+            end
         end
 
         function this = tLabel(this, t_label)
@@ -112,6 +147,11 @@ classdef HybridPlotBuilder < handle
             % See also: jLabel, label, labels, labelInterpreter.
             this.settings.t_label = t_label;
             this.last_function_call = 'tLabel';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
+            end
         end
 
         function this = jLabel(this, j_label)
@@ -124,6 +164,11 @@ classdef HybridPlotBuilder < handle
             % See also: tLabel, label, labels, labelInterpreter.
             this.settings.j_label = j_label;
             this.last_function_call = 'jLabel';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
+            end
         end
 
         function this = xLabelFormat(this, label_format)
@@ -147,6 +192,11 @@ classdef HybridPlotBuilder < handle
             % See also: subplots, label, labels, labelInterpreter.
             this.settings.x_label_format = label_format;
             this.last_function_call = 'xLabelFormat';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
+            end
         end
         
         function this = labelInterpreter(this, interpreter)
@@ -156,6 +206,11 @@ classdef HybridPlotBuilder < handle
             % See also: label, labels, labelSize, textInterpreter.
             this.settings.label_interpreter = interpreter;
             this.last_function_call = 'labelInterpreter';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
+            end
         end
         
         function this = tickLabelInterpreter(this, interpreter)
@@ -164,6 +219,11 @@ classdef HybridPlotBuilder < handle
             % See also: textInterpreter.
             this.settings.tick_label_interpreter = interpreter;
             this.last_function_call = 'tickLabelInterpreter';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
+            end
         end
         
         function this = titleInterpreter(this, interpreter)
@@ -173,6 +233,11 @@ classdef HybridPlotBuilder < handle
             % See also: title, titles, titleSize, textInterpreter.
             this.settings.title_interpreter = interpreter;
             this.last_function_call = 'titleInterpreter';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
+            end
         end
 
         function this = textInterpreter(this, interpreter)
@@ -185,6 +250,11 @@ classdef HybridPlotBuilder < handle
             this.labelInterpreter(interpreter);
             this.tickLabelInterpreter(interpreter);
             this.last_function_call = 'textInterpreter';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
+            end
         end
 
         function this = legend(this, varargin)
@@ -196,6 +266,11 @@ classdef HybridPlotBuilder < handle
             this.settings.component_legend_labels = labels;
             this.settings.legend_options = options;
             this.last_function_call = 'legend';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
+            end
         end
                 
         function this = flowColor(this, color)
@@ -221,6 +296,11 @@ classdef HybridPlotBuilder < handle
             % See also: plot, jumpColor, color.
             this.settings.flow_color = color;
             this.last_function_call = 'flowColor';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
+            end
         end
 
         function this = flowLineStyle(this, style)
@@ -231,6 +311,11 @@ classdef HybridPlotBuilder < handle
             % See also: flowColor, flowLineWidth.
             this.settings.flow_line_style = style;
             this.last_function_call = 'flowLineStyle';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
+            end
         end
 
         function this = flowLineWidth(this, width)
@@ -238,6 +323,11 @@ classdef HybridPlotBuilder < handle
             % See also: flowColor, flowLineStyle.
             this.settings.flow_line_width = width;
             this.last_function_call = 'flowLineWidth';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
+            end
         end
 
         function this = jumpColor(this, color)
@@ -267,6 +357,11 @@ classdef HybridPlotBuilder < handle
             % jumpMarker, flowColor, color. 
             this.settings.jump_color = color;
             this.last_function_call = 'jumpColor';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
+            end
         end
 
         function this = color(this, color)
@@ -276,6 +371,11 @@ classdef HybridPlotBuilder < handle
             this.settings.jump_color = color;
             this.settings.flow_color = color;
             this.last_function_call = 'color';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
+            end
         end
 
         function this = jumpLineStyle(this, style)
@@ -286,6 +386,11 @@ classdef HybridPlotBuilder < handle
             % See also: jumpColor, jumpLineWidth.
             this.settings.jump_line_style = style;
             this.last_function_call = 'jumpLineStyle';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
+            end
         end
 
         function this = jumpLineWidth(this, width)
@@ -294,6 +399,11 @@ classdef HybridPlotBuilder < handle
             % See also: jumpColor, jumpLineStyle.
             this.settings.jump_line_width = width;
             this.last_function_call = 'jumpLineWidth';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
+            end
         end
 
         function this = jumpMarker(this, marker)
@@ -321,6 +431,11 @@ classdef HybridPlotBuilder < handle
             this.jumpStartMarker(marker);
             this.jumpEndMarker(marker);
             this.last_function_call = 'jumpMarker';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
+            end
         end
 
         function this = jumpMarkerSize(this, size)
@@ -330,6 +445,11 @@ classdef HybridPlotBuilder < handle
             this.jumpStartMarkerSize(size);
             this.jumpEndMarkerSize(size);
             this.last_function_call = 'jumpMarkerSize';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
+            end
         end
 
         function this = jumpStartMarker(this, marker)
@@ -356,6 +476,11 @@ classdef HybridPlotBuilder < handle
             % See also: jumpStartMarkerSize, jumpEndMarker, jumpMarker
             this.settings.jump_start_marker = marker;
             this.last_function_call = 'jumpStartMarker';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
+            end
         end
 
         function this = jumpStartMarkerSize(this, size)
@@ -364,6 +489,11 @@ classdef HybridPlotBuilder < handle
             % See also: jumpMarkerSize, jumpEndMarkerSize, jumpStartMarker.
             this.settings.jump_start_marker_size = size;
             this.last_function_call = 'jumpStartMarkerSize';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
+            end
         end
 
         function this = jumpEndMarker(this, marker)
@@ -390,6 +520,11 @@ classdef HybridPlotBuilder < handle
             % See also: jumpEndMarkerSize, jumpStartMarker, jumpMarker
             this.settings.jump_end_marker = marker;
             this.last_function_call = 'jumpEndMarker';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
+            end
         end
 
         function this = jumpEndMarkerSize(this, size)
@@ -398,6 +533,11 @@ classdef HybridPlotBuilder < handle
             % See also: jumpMarkerSize, jumpStartMarkerSize, jumpEndMarker.
             this.settings.jump_end_marker_size = size;
             this.last_function_call = 'jumpEndMarkerSize';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
+            end
         end
         
         function this = subplots(this, auto_subplots)
@@ -427,13 +567,11 @@ classdef HybridPlotBuilder < handle
             % See also: slice, configurePlots, titles, labels.
             this.settings.auto_subplots = auto_subplots;
             this.last_function_call = 'subplots';
-        end
 
-        function this = autoSubplots(this, auto_subplots)
-            % Deprecated: use 'subplots()' instead.
-            warning('Use HybridPlotBuilder.subplots() instead of autoSubplots()')
-            this.subplots(auto_subplots);
-            this.last_function_call = 'autoSubplots';
+            if nargout == 0
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
+            end
         end
 
         function this = slice(this, component_indices)
@@ -449,6 +587,11 @@ classdef HybridPlotBuilder < handle
             % See also: filter.
             this.settings.component_indices = component_indices;
             this.last_function_call = 'slice';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
+            end
         end
 
         function this = filter(this, timesteps_filter)
@@ -463,6 +606,12 @@ classdef HybridPlotBuilder < handle
             % See also: slice.
             this.settings.timesteps_filter = timesteps_filter;
             this.last_function_call = 'filter';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a
+                % semicolon.
+                clearvars this
+            end
         end
         
         function this = configurePlots(this, plots_callback)
@@ -473,8 +622,14 @@ classdef HybridPlotBuilder < handle
             % component indices of state that were plotted in the 'ax'.
             %
             % See also: subplots.
-           this.settings.plots_callback = plots_callback;
+            this.settings.plots_callback = plots_callback;
             this.last_function_call = 'configurePlots';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a
+                % semicolon.
+                clearvars this
+            end
         end
 
         function this = plot2Function(this, plot_function_2D)
@@ -495,6 +650,12 @@ classdef HybridPlotBuilder < handle
             % See also: plot3Function.
             this.settings.plot_function_2D = plot_function_2D;
             this.last_function_call = 'plot2Function';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a
+                % semicolon.
+                clearvars this
+            end
         end
 
         function this = plot3Function(this, plot_function_3D)
@@ -516,6 +677,12 @@ classdef HybridPlotBuilder < handle
             % See also: plot2Function.
             this.settings.plot_function_3D = plot_function_3D;
             this.last_function_call = 'plot3Function';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a
+                % semicolon.
+                clearvars this
+            end
         end
     end
     
@@ -697,7 +864,8 @@ classdef HybridPlotBuilder < handle
             this.axes_for_legend = [this.axes_for_legend, graphic_obj_handle.Parent];
             this.display_legend();
             if nargout == 0
-                clear this
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
             end
         end
     end
@@ -720,6 +888,15 @@ classdef HybridPlotBuilder < handle
             warning('Please use the plotHybrid function instead of plotHybridArc.')
             this.plotHybrid(varargin{:});
         end 
+    end
+
+    methods(Hidden) % More deprecated functions.
+        function this = autoSubplots(this, auto_subplots)
+            % Deprecated: use 'subplots()' instead.
+            warning('Use HybridPlotBuilder.subplots() instead of autoSubplots()')
+            this.subplots(auto_subplots);
+            this.last_function_call = 'autoSubplots';
+        end
     end
     
     methods(Access = private)

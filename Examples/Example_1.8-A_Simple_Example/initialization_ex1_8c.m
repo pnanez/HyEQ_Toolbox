@@ -1,19 +1,18 @@
-% Project: Simple Example
-% Description: initialization for Simple Example                                                         
+% Initialization for Example 1.8 (Random rule)                                            
                                                                         
-% initial conditions                                                    
+% Initial conditions                                                    
 x0 = 1;                                                                                                                     
                                                                         
-% simulation horizon                                                    
+% Simulation horizon                                                    
 T = 10;                                                                 
 J = 20;                                                                 
                                                                         
-% rule for jumps                                                        
+% Rule for intersection of jump and flow sets.                                                       
 % rule = 1 -> priority for jumps                                        
 % rule = 2 -> priority for flows                                        
 % rule = 3 -> no priority, random selection when simultaneous conditions
-rule = 1;                                                               
-                                                                        
-%solver tolerances
+rule = 3;                                                              
+
+% Solver tolerances
 RelTol = 1e-8;
-MaxStep = .001;
+MaxStep = 1e-3;

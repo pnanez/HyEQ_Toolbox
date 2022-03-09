@@ -4,11 +4,11 @@
                                                          
 % Initial conditions                                                    
 x1_0 = [1; 0];                                                          
-x2_0 = [0.5; 0];                                                                                                           
+x2_0 = [0; 0];                                                                                                           
                                                                         
 % Simulation horizon                                                    
-T = 18;                                                                 
-J = 20;                                                                 
+T = 25;                                                                 
+J = 40;                                                                 
 
 % Set the behavior of the simulation in the intersection of C and D.                                                      
 % rule = 1 -> priority for jumps                                        
@@ -16,6 +16,6 @@ J = 20;
 % rule = 3 -> no priority, random selection when simultaneous conditions
 rule = 1;                     
     
-%solver tolerances
+% Solver tolerances
 RelTol = 1e-8;
 MaxStep = 0.01;                                                  

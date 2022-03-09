@@ -1,12 +1,19 @@
+function package_toolbox()
 % Create a MATLAB Toolbox package from the Hybrid Equations Toolbox source code.
-% Before running this script, the following steps should be performed:
-%
-% 1. Within the <toolbox root>/doc/src directory, run "source ./build_html.sh"
-% 2. Open doc/GettingStarted.mlx. Run once to generate plots, then clear the output
+% 
+% Before running this script to generate a released toolbox package, perform the
+% following steps: 
+% 1. Open doc/GettingStarted.mlx. Run once to generate plots, then clear the output
 %    of "configure_toolbox" in the first cell.
-% 3. Update the build number in HybridEquationsToolbox.prj.
+% 2. Update the build number in HybridEquationsToolbox.prj.
 %
-% By Paul Wintz.
+% By Paul Wintz, 2021-2022.
+
+% 'package_toolbox' is a function instead of script because functions don't
+% use the base workspace, they have their own workspace. This ensures that when
+% package_toolbox() is called, nothing will be messed up by existing variables
+% in the workspace (e.g., a variable named 'plot' that hides the built-in 'plot'
+% function).
 
 close all
 
@@ -22,11 +29,9 @@ toolbox_dirs = {'matlab', ...
                 'simulink/Library2014b', ...
                 'doc'};
 
-% Check that the working dirctory is the root of the HyEQ toolbox by checking
-% that it contains the project file "HybridEquationsToolbox.prj".
-proj_root = pwd();
-assert(isfile(fullfile(proj_root, projectFile)), ...
-        'The working directory is not the root of the HyEQ toolbox.')
+wd_before_package_toolbox = pwd();
+proj_root = hybrid.getFolderLocation('');
+cd(proj_root)
 
 % Setup path.
 for directory = toolbox_dirs
@@ -46,11 +51,15 @@ end
 if do_publish
     % Publish help files
 
+    cd('doc/src')
+    RebuildTexFiles;
+    cd(proj_root)
+
     % Export GettingStarted.mlx. We can't use 'publish' on GettingStarted
     % because it is a live script.
     mlxloc = fullfile(pwd(),'doc','GettingStarted.mlx');
     fileout = fullfile(pwd(),'doc','html','GettingStarted.html');
-    matlab.internal.liveeditor.openAndConvert(mlxloc,fileout)
+    matlab.internal.liveeditor.openAndConvert(mlxloc,fileout) % This is 'fragile' and might break on future versions of MATLAB.
     fprintf(['Published %s\n' ...
              '       to %s\n'], mlxloc, fileout)
 
@@ -60,13 +69,17 @@ if do_publish
     m_demo_paths = dir(fullfile('*.m'));
     for i = 1:numel(m_demo_paths)
         file = fullfile(m_demo_paths(i).folder, m_demo_paths(i).name);
-        outdir = fullfile(m_demo_paths(i).folder, 'html');
         assert(isfile(file));
         
-        if startsWith(m_demo_paths(i).name, 'Example')
-            html_file = publish(file, 'showCode', false);
+        % Close any simulink systems that happen to have the same name as the
+        % example.
+        DISABLE_WARNING = 0;
+        close_system(m_demo_paths(i).name(1:end-2), DISABLE_WARNING)
+
+        if endsWith(m_demo_paths(i).name, 'demo.m')
+            html_file = publish(file, 'showCode', true);
         else
-            html_file = publish(file);
+            html_file = publish(file, 'showCode', false);
         end
         fprintf(['Published %s \n' ...
             '       to %s.\n'], file, html_file)
@@ -102,4 +115,8 @@ if nTestsFailed >= 0
     fprintf('%d tests failed.\n', nTestsFailed)
 else
     fprintf('Tests were skipped.\n')
+end
+
+cd(wd_before_package_toolbox)
+
 end

@@ -54,16 +54,16 @@ example_1_6_slx_file = fullfile(example_dir_1_6, 'Example1_6');
 out_dir_1_6 = hybrid.getFolderLocation('doc', 'src', 'Matlab2tex_1_6');
 
 % Subsystem 1
-SimFnc2tex(example_1_6_slx_file, 'Example1_6/HS_1/flow map f', fullfile(out_dir_1_6, 'f1.m'))
-SimFnc2tex(example_1_6_slx_file, 'Example1_6/HS_1/flow set C', fullfile(out_dir_1_6, 'C1.m'))
-SimFnc2tex(example_1_6_slx_file, 'Example1_6/HS_1/jump set D', fullfile(out_dir_1_6, 'D1.m'))
-SimFnc2tex(example_1_6_slx_file, 'Example1_6/HS_1/jump map g', fullfile(out_dir_1_6, 'g1.m'))
+SimFnc2tex(example_1_6_slx_file, 'Example1_6/Ball/flow map f', fullfile(out_dir_1_6, 'f1.m'))
+SimFnc2tex(example_1_6_slx_file, 'Example1_6/Ball/flow set C', fullfile(out_dir_1_6, 'C1.m'))
+SimFnc2tex(example_1_6_slx_file, 'Example1_6/Ball/jump set D', fullfile(out_dir_1_6, 'D1.m'))
+SimFnc2tex(example_1_6_slx_file, 'Example1_6/Ball/jump map g', fullfile(out_dir_1_6, 'g1.m'))
 
 % Subsystem 2
-SimFnc2tex(example_1_6_slx_file, 'Example1_6/HS_2/flow map f', fullfile(out_dir_1_6, 'f2.m'))
-SimFnc2tex(example_1_6_slx_file, 'Example1_6/HS_2/flow set C', fullfile(out_dir_1_6, 'C2.m'))
-SimFnc2tex(example_1_6_slx_file, 'Example1_6/HS_2/jump map g', fullfile(out_dir_1_6, 'g2.m'))
-SimFnc2tex(example_1_6_slx_file, 'Example1_6/HS_2/jump set D', fullfile(out_dir_1_6, 'D2.m'))
+SimFnc2tex(example_1_6_slx_file, 'Example1_6/Platform/flow map f', fullfile(out_dir_1_6, 'f2.m'))
+SimFnc2tex(example_1_6_slx_file, 'Example1_6/Platform/flow set C', fullfile(out_dir_1_6, 'C2.m'))
+SimFnc2tex(example_1_6_slx_file, 'Example1_6/Platform/jump map g', fullfile(out_dir_1_6, 'g2.m'))
+SimFnc2tex(example_1_6_slx_file, 'Example1_6/Platform/jump set D', fullfile(out_dir_1_6, 'D2.m'))
 
 %% Folder Matlab2tex_1_7
 example_dir_1_7 = hybrid.getFolderLocation('Examples', 'Example_1.7-Synchronization_of_Fireflies');

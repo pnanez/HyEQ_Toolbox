@@ -5,7 +5,7 @@ sys.setInput(1, @(x1, x2) x2);
 sys.setInput(2, @(x1, x2) x1);
 
 % Solve 
-tspan = [0, 6];
+tspan = [0, 7];
 jspan = [0, 40];
 x0 = {0.5, 0};
 sol = sys.solve(x0, tspan, jspan);
@@ -18,4 +18,5 @@ pb = HybridPlotBuilder();
 pb.flowColor('b').jumpColor('b').plotFlows(ff1_sol)
 hold on
 pb.flowColor('k').jumpColor('k').plotFlows(ff2_sol)
-pb.legend("Firefly 1", "Firefly2")
+pb.legend('Firefly 1', 'Firefly2')
+ylim([0, 1])
