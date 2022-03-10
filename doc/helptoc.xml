@@ -3,9 +3,9 @@
 
     <tocitem target="html/HelpRoot.html">Hybrid Equation Toolbox
         <tocitem target="html/demos_TOC.html">Tutorials
-            <tocitem target="html/HybridSystem_demo.html">Solve Hybrid Systems (MATLAB)</tocitem>
-            <tocitem target="html/HybridPlotBuilder_demo.html">Plot Solutions (MATLAB)</tocitem>
-            <tocitem target="html/CompositeHybridSystem_demo.html">Composition of Systems (MATLAB)</tocitem>
+            <tocitem target="html/HybridSystem_demo.html">Solve Hybrid Systems in MATLAB</tocitem>
+            <tocitem target="html/HybridPlotBuilder_demo.html">Plot Solutions in MATLAB</tocitem>
+            <tocitem target="html/CompositeHybridSystem_demo.html">Composition of Systems in MATLAB</tocitem>
             <tocitem target="html/SimulinkLibrary_doc.html">Introduction to Simulink-based Solver</tocitem>
             <tocitem target="html/CPS_Components_doc.html">Cyber-physical Simulink blocks</tocitem>
         </tocitem>
@@ -23,6 +23,8 @@
             <tocitem target="html/Example_4_3.html">Example 4.3: Sample-and-hold Feedback Control</tocitem>
             <tocitem target="html/ADC_1.html">ADC Example 1: Analog to Digital Converter</tocitem>
             <tocitem target="html/ADC_2.html">ADC Example 2: Interconnection of a Bouncing Ball and an Analog to Digital Converter</tocitem>
+            <tocitem target="html/Example_ContinuousPlant.html">Continuous Plant Example 1: Sample-and-hold Feedback Control</tocitem>
+            <tocitem target="html/Example_ContinuousPlant2.html">Continuous Plant Example 2: Simulation of a Mobile Robot</tocitem>
         </tocitem>
     </tocitem>
 </toc>

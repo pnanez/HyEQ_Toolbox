@@ -48,6 +48,16 @@ SimFnc2tex(example_1_5_slx_file, 'Example1_5/HS/jump set D', fullfile(out_dir_1_
 SimFnc2tex(example_1_5_slx_file, 'Example1_5/HS/flow map f', fullfile(out_dir_1_5, 'f.m'))
 SimFnc2tex(example_1_5_slx_file, 'Example1_5/HS/jump map g', fullfile(out_dir_1_5, 'g.m'))
 
+
+%% Folder Matlab2tex_CPS_ContinuousPlant2
+example_dir_ContinuousPlant_2 = hybrid.getFolderLocation('Examples', 'CPS_examples', 'ContinuousPlant_2');
+example_ContinuousPlant_2_slx_file = fullfile(example_dir_ContinuousPlant_2, 'ContinuousPlant2_example');
+out_dir_ContinuousPlant_2 = hybrid.getFolderLocation('doc', 'src', 'Matlab2tex_CPS_ContinuousPlant_2');
+SimFnc2tex(example_ContinuousPlant_2_slx_file, 'ContinuousPlant2_example/HSu/flow set C', fullfile(out_dir_ContinuousPlant_2, 'C.m'))
+SimFnc2tex(example_ContinuousPlant_2_slx_file, 'ContinuousPlant2_example/HSu/jump set D', fullfile(out_dir_ContinuousPlant_2, 'D.m'))
+SimFnc2tex(example_ContinuousPlant_2_slx_file, 'ContinuousPlant2_example/HSu/flow map f', fullfile(out_dir_ContinuousPlant_2, 'f.m'))
+SimFnc2tex(example_ContinuousPlant_2_slx_file, 'ContinuousPlant2_example/HSu/jump map g', fullfile(out_dir_ContinuousPlant_2, 'g.m'))
+
 %% Folder Matlab2tex_1_6
 example_dir_1_6 = hybrid.getFolderLocation('Examples', 'Example_1.6-Interconnection_of_Bouncing_Ball_and_Moving_Platform');
 example_1_6_slx_file = fullfile(example_dir_1_6, 'Example1_6');

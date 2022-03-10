@@ -13,3 +13,5 @@
 % * <matlab:hybrid.internal.openHelp('Example_4_3') Example 4.3: Sample-and-hold Feedback Control>
 % * <matlab:hybrid.internal.openHelp('ADC_1') ADC Example 1: Analog to Digital Converter in Simulink>
 % * <matlab:hybrid.internal.openHelp('ADC_2') ADC Example 2: Interconnection of a Bouncing Ball and an Analog to Digital Converter in Simulink>
+% * <matlab:hybrid.internal.openHelp('Example_ContinuousPlant.html') Continuous Plant Example 1: Sample-and-hold Feedback Control>
+% * <matlab:hybrid.internal.openHelp('Example_ContinuousPlant2.html') Continuous Plant Example 2: Simulation of a Mobile Robot>

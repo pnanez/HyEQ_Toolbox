@@ -1,24 +1,9 @@
-%--------------------------------------------------------------------------
-% Matlab M-file Project: HyEQ Toolbox @  Hybrid Systems Laboratory (HSL), 
-% https://hybrid.soe.ucsc.edu/software
-% http://hybridsimulator.wordpress.com/
-% Filename: initialization_exContinuousPlant.m
-%--------------------------------------------------------------------------
-% Project: Simulation of a hybrid system (Continuous plant)
-%--------------------------------------------------------------------------
-%--------------------------------------------------------------------------
-%   See also PLOTARC, PLOTARC3, PLOTFLOWS, PLOTHARC, PLOTHARCCOLOR,
-%   PLOTHARCCOLOR3D, PLOTHYBRIDARC, PLOTJUMPS.
-%   Copyright @ Hybrid Systems Laboratory (HSL),
-%   Revision: 0.0.0.3 Date: 05/20/2015 3:42:00
-
-clear all                                                               
-clc                                                                       
-% parameters
+% Initialization script for Continuous plant example.
+                                                                 
+% Parameters
 b = 2;
 m = 4;
-Ts = 1/10;
-Th = 1/10;
+Ts = 0.3;
 k1 = -10;
 k2 = -10;
 
@@ -29,26 +14,25 @@ B = [0;
 C = [1 0;
      0 1];
 K = [k1 k2];
-
 parameters = [A,B,C,K'];
 
-% initial conditions                                                    
-x0  = [1;1];
-zs0 = [C*x0;0];
-u0 = 0;
-zh0 = [u0;0];
-ZHO = 1; % use the ZOH? 1 = yes, -1 = no;
+% Initial conditions                                                    
+x0  = [1; 1];
+zs0 = [C*x0; 0];
+u0  = 0;
+zh0 = [u0; 0];
+useZHO = 1; % Enable the ZOH? 1 = yes, -1 = no;
 
-% simulation horizon                                                    
+% Simulation horizon                                                    
 T = 10;                                                                 
-J = 200;                                                                 
-                                                                        
-% rule for jumps                                                        
+J = 200;    
+
+% Set the behavior of the simulation in the intersection of C and D.                                                   
 % rule = 1 -> priority for jumps                                        
 % rule = 2 -> priority for flows                                        
-% rule = 3 -> no priority, random selection when simultaneous conditions
+% rule = 3 -> no priority, random selection when in C \cap D.
 rule = 1;                                                               
                                                                         
-%solver tolerances
+% Solver tolerances
 RelTol = 1e-6;
 MaxStep = 1e-3;
