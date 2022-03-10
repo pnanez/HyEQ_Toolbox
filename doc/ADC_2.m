@@ -1,9 +1,8 @@
 %% Example: Interconnection of a Bouncing Ball and an Analog to Digital Converter in Simulink
 % In this example, the interconnection of a bouncing ball system and an
 % analog to digital converter (ADC) is modeled in Simulink as a hybrid system.
-% 
 % Click
-% <matlab:hybrid.open('ADC_V002','ADC_example2.slx') here> 
+% <matlab:hybrid.open({'CPS_examples','ADC_V002'},'ADC_example2.slx') here> 
 % to change your working directory to the ADC_V002 folder and open the
 % Simulink model. 
 %% Mathematical Model
@@ -52,10 +51,10 @@
 % 
 % The following procedure is used to simulate this example using the model in the file |ADC_example2.slx|:
 % 
-% * Navigate to the directory <matlab:hybrid.open('ADC_example2') Examples/CPS_examples/ADC_V002>
+% * Navigate to the directory <matlab:hybrid.open({'CPS_examples','ADC_V002'}) Examples/CPS_examples/ADC_V002>
 % (clicking this link changes your working directory).
 % * Open
-% <matlab:hybrid.open('CPS_examples/ADC_V002','ADC_example2.slx') |ADC_example2.slx|> 
+% <matlab:hybrid.open({'CPS_examples','ADC_V002'},'ADC_example2.slx') |ADC_example2.slx|> 
 % in Simulink (clicking this link changes your working directory and opens the model).   
 % * Double-click the block labeled _Double Click to Initialize_.
 % * To start the simulation, click the _run_ button or select |Simulation>Run|.
@@ -64,7 +63,7 @@
 % 
 
 % Change working directory to the example folder.
-wd_before = hybrid.open(fullfile('CPS_examples','ADC_V002'));
+wd_before = hybrid.open({'CPS_examples','ADC_V002'});
 
 % Run the initialization script.
 initialization_exADCV02
@@ -74,7 +73,7 @@ sim('ADC_example2')
 
 % Convert the values t, j, x, and t1, j1, x1 output by the simulation into a HybridArc objects.
 sol = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j)
-sol1 = HybridArc(t1, j1, x1); %#ok<IJCL> (suppress a warning about 'j1')
+sol1 = HybridArc(t1, j1, x1);
 
 %% Simulink Model
 % The following diagram shows the Simulink model of the bouncing ball. The
@@ -138,25 +137,18 @@ open_system('ADC_example2')
 
 clf
 pb = HybridPlotBuilder()...
-.subplots('on')...
-.legend('Ball position', 'Ball velocity')...
-.slice([1 2])...
-.flowColor('black')...
-.jumpColor('green')...
-.plotFlows(sol1);
+    .subplots('on')...
+    .legend('Ball position', 'Ball velocity')...
+    .slice([1 2])...
+    .flowColor('black')...
+    .jumpColor('green')...
+    .plotFlows(sol1);
 hold on
 pb.legend('ADC output', 'ADC output')...
-.slice([1 2])...
-.flowColor('blue')...
-.jumpColor('red')...
-.plotFlows(sol);
-
-%%
-% The following plot depicts the hybrid arc for the ADC output in hybrid time. 
-clf
-plotHybrid(sol.slice(1))      
-grid on
-view(37.5, 30) 
+    .slice([1 2])...
+    .flowColor('blue')...
+    .jumpColor('red')...
+    .plotFlows(sol);
 
 %% Modifying the Model
 % * The _Embedded MATLAB function blocks_ |f, C, g, D| are edited by
@@ -176,8 +168,6 @@ view(37.5, 30)
 % * The simulation stop time and other simulation parameters are set to the
 %   values defined in |initialization_exADCV02.m| by selecting |Simulation>Configuration
 %   Parameters>Solver| and inputting |T|, |RelTol|, |MaxStep|, etc..  
-% * The masked integrator system is double-clicked and the simulation horizons
-%   and initial conditions are set as desired. 
 
 %% 
 

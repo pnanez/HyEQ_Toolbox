@@ -111,10 +111,10 @@ SimFnc2tex(example_network1_slx_file, 'Network_example/Continuous Process/flow m
 SimFnc2tex(example_network1_slx_file, 'Network_example/Continuous Process/jump map g', fullfile(out_dir_network1, 'g.m'))
 
 % Network
-SimFnc2tex(example_network1_slx_file, 'Network_example/network/flow set C', fullfile(out_dir_network1, 'C_network.m'))
-SimFnc2tex(example_network1_slx_file, 'Network_example/network/jump set D', fullfile(out_dir_network1, 'D_network.m'))
-SimFnc2tex(example_network1_slx_file, 'Network_example/network/flow map f', fullfile(out_dir_network1, 'f_network.m'))
-SimFnc2tex(example_network1_slx_file, 'Network_example/network/jump map g', fullfile(out_dir_network1, 'g_network.m'))
+SimFnc2tex(example_network1_slx_file, 'Network_example/Network/flow set C', fullfile(out_dir_network1, 'C_network.m'))
+SimFnc2tex(example_network1_slx_file, 'Network_example/Network/jump set D', fullfile(out_dir_network1, 'D_network.m'))
+SimFnc2tex(example_network1_slx_file, 'Network_example/Network/flow map f', fullfile(out_dir_network1, 'f_network.m'))
+SimFnc2tex(example_network1_slx_file, 'Network_example/Network/jump map g', fullfile(out_dir_network1, 'g_network.m'))
 
 % Estimator
 SimFnc2tex(example_network1_slx_file, 'Network_example/Estimator/flow set C', fullfile(out_dir_network1, 'C_Estimator.m'))
@@ -135,10 +135,10 @@ SimFnc2tex(example_network2_slx_file, 'Network_2_example/Continuous Process/flow
 SimFnc2tex(example_network2_slx_file, 'Network_2_example/Continuous Process/jump map g', fullfile(out_dir_network2, 'g.m'))
 
 % Network
-SimFnc2tex(example_network2_slx_file, 'Network_2_example/network/flow set C', fullfile(out_dir_network2, 'C_network.m'))
-SimFnc2tex(example_network2_slx_file, 'Network_2_example/network/jump set D', fullfile(out_dir_network2, 'D_network.m'))
-SimFnc2tex(example_network2_slx_file, 'Network_2_example/network/flow map f', fullfile(out_dir_network2, 'f_network.m'))
-SimFnc2tex(example_network2_slx_file, 'Network_2_example/network/jump map g', fullfile(out_dir_network2, 'g_network.m'))
+SimFnc2tex(example_network2_slx_file, 'Network_2_example/Network/flow set C', fullfile(out_dir_network2, 'C_network.m'))
+SimFnc2tex(example_network2_slx_file, 'Network_2_example/Network/jump set D', fullfile(out_dir_network2, 'D_network.m'))
+SimFnc2tex(example_network2_slx_file, 'Network_2_example/Network/flow map f', fullfile(out_dir_network2, 'f_network.m'))
+SimFnc2tex(example_network2_slx_file, 'Network_2_example/Network/jump map g', fullfile(out_dir_network2, 'g_network.m'))
 
 % Estimator
 SimFnc2tex(example_network2_slx_file, 'Network_2_example/Estimator/flow set C', fullfile(out_dir_network2, 'C_Estimator.m'))

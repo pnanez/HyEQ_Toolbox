@@ -15,13 +15,3 @@ hold on
 hpb.legend('Estimation $\hat{x}_1$',...
     'Estimation $\hat{x}_2$','Estimation $\hat{x}_3$',...
     'Estimation $\hat{x}_4$').plotFlows(solhatz.slice(1:4)) 
- 
-%The following plot depicts the hybrid arc for the first state of the estimator in hybrid time. 
-figure(2)
-clf
-hpb = HybridPlotBuilder();
-hpb.label('$\hat{x}_1$').plotHybrid(solhatz.slice(1))  
-grid on
-view(37.5, 30)
-
- 

@@ -21,6 +21,8 @@
             <tocitem target="html/Example_4_1.html">Example 4.1: Implementation of a Finite State Machine (FSM)</tocitem>
             <tocitem target="html/Example_4_2.html">Example 4.2: Estimation over a network</tocitem>
             <tocitem target="html/Example_4_3.html">Example 4.3: Sample-and-hold Feedback Control</tocitem>
+            <tocitem target="html/ADC_1.html">ADC Example 1: Analog to Digital Converter</tocitem>
+            <tocitem target="html/ADC_2.html">ADC Example 2: Interconnection of a Bouncing Ball and an Analog to Digital Converter</tocitem>
         </tocitem>
     </tocitem>
 </toc>

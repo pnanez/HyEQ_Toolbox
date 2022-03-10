@@ -1,17 +1,21 @@
-function wd_before = open(example_name, main_file_name)
+function wd_before = open(example_path, file_name)
     % Change the current working directory to the example of the given name.
     % This function returns the path of the working directory prior to changing
     % directories to facilitate returning to that directory. If main_file_name
     % is given, then that file is opened, within the example directory (if it
     % exists).
 
-    wd_before = pwd(); % Save current working directory.
-    path = hybrid.getFolderLocation('Examples', example_name);
+    if iscell(example_path)
+        example_path = fullfile(example_path{:});
+    end
+
+    wd_before = pwd(); % Get current working directory.
+    path = hybrid.getFolderLocation('Examples', example_path);
 
     cd(path);
     
-    if exist('main_file_name', 'var')
-        open(fullfile(path, main_file_name))
+    if exist('file_name', 'var')
+        open(fullfile(path, file_name))
     end
 
     if nargout == 0
