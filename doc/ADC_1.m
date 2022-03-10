@@ -3,7 +3,7 @@
 % modeled in Simulink as a hybrid system with an input, where the input
 % is sampled periodically by the ADC.
 % Click
-% <matlab:hybrid.open({'CPS_examples','ADC_V001'},'ADC_example1.slx') here> 
+% <matlab:hybrid.internal.openExampleFile({'CPS_examples','ADC_V001'},'ADC_example1.slx') here> 
 % to change your working directory to the ADC_V001 folder and open the
 % Simulink model. 
 %% Mathematical Model
@@ -21,7 +21,7 @@
 % g(x,u):=\left[ \begin{array}{c} 
 %                    u \\ 0
 %                \end{array}\right],
-%    & D: = \{ (x,u) \in \mathbf{R}^2 \times \mathbf{R} \mid x_2 > T_s \}
+%    & D: = \{(x,u) \in \mathbf{R}^2 \times \mathbf{R} \mid x_2 > T_s \}
 % \end{array}$$
 % 
 % where $u$ is the input to the ADC, $x_1$ is a memory state used to store
@@ -31,10 +31,10 @@
 % 
 % The following procedure is used to simulate this example using the model in the file |ADC_example1.slx|:
 % 
-% * Navigate to the directory <matlab:hybrid.open({'CPS_examples','ADC_V001'}) Examples/CPS_examples/ADC_V001>
+% * Navigate to the directory <matlab:hybrid.internal.openExampleFile({'CPS_examples','ADC_V001'}) Examples/CPS_examples/ADC_V001>
 % (clicking this link changes your working directory).
 % * Open
-% <matlab:hybrid.open({'CPS_examples','ADC_V001'},'ADC_example1.slx') |ADC_example1.slx|> 
+% <matlab:hybrid.internal.openExampleFile({'CPS_examples','ADC_V001'},'ADC_example1.slx') |ADC_example1.slx|> 
 % in Simulink (clicking this link changes your working directory and opens the model).   
 % * Double-click the block labeled _Double Click to Initialize_.
 % * To start the simulation, click the _run_ button or select |Simulation>Run|.
@@ -43,7 +43,7 @@
 % 
 
 % Change working directory to the example folder.
-wd_before = hybrid.open({'CPS_examples','ADC_V001'});
+wd_before = hybrid.internal.openExampleFile({'CPS_examples','ADC_V001'});
 
 % Run the initialization script.
 initialization_exADC
@@ -117,15 +117,10 @@ HybridPlotBuilder()...
 %   block, parameters must be added as inputs and defined as parameters by
 %   selecting |Tools>Edit Data/Ports|, and setting the scope to |Parameter|. For
 %   this example, |Ts| is defined in this way.    
-% * The initialization script |initialization_exADC.m| is edited by opening the file
-%   and editing the script.  
-%   The flow time and jump horizons, |T| and |J| are defined as well as the
+% * In the initialization script |initialization_exADC.m|,
+%   the flow time and jump horizons, |T| and |J| are defined as well as the
 %   initial conditions for the state vector, $x0ADC$, and
 %   a rule for jumps, |rule|.
-% * The postprocessing script |postprocessing_exADC.m| is edited by opening the file
-%   and editing the script. Flows and jumps may be plotted by calling the
-%   functions |plotflows| and |plotjumps|, respectively. The hybrid arc
-%   may be plotted by calling the function |plotHybridArc|.   
 % * The simulation stop time and other simulation parameters are set to the
 %   values defined in |initialization_exADC.m| by selecting |Simulation>Configuration
 %   Parameters>Solver| and inputting |T|, |RelTol|, |MaxStep|, etc..  
@@ -135,5 +130,6 @@ HybridPlotBuilder()...
 % Close the Simulink file.
 close_system 
 
-% Restore previous working directory.
-cd(wd_before) 
+% Navigate to the doc/ directory so that code is correctly included with
+% "<include>src/...</include>" commands.
+cd(hybrid.getFolderLocation('doc')) 

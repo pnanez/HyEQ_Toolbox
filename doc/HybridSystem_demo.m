@@ -113,7 +113,7 @@ sol = bb_system.solve(x0, tspan, jspan, config);
 plotFlows(sol);
 
 %% 
-% See <matlab:showdemo('HybridPlotBuilder_demo') here> for more details about plotting
+% See <matlab:hybrid.internal.openHelp('HybridPlotBuilder_demo') here> for more details about plotting
 % hybrid arcs.
 
 %% Information About Solutions

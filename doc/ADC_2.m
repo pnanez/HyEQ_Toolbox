@@ -2,7 +2,7 @@
 % In this example, the interconnection of a bouncing ball system and an
 % analog to digital converter (ADC) is modeled in Simulink as a hybrid system.
 % Click
-% <matlab:hybrid.open({'CPS_examples','ADC_V002'},'ADC_example2.slx') here> 
+% <matlab:hybrid.internal.openExampleFile({'CPS_examples','ADC_V002'},'ADC_example2.slx') here> 
 % to change your working directory to the ADC_V002 folder and open the
 % Simulink model. 
 %% Mathematical Model
@@ -51,10 +51,10 @@
 % 
 % The following procedure is used to simulate this example using the model in the file |ADC_example2.slx|:
 % 
-% * Navigate to the directory <matlab:hybrid.open({'CPS_examples','ADC_V002'}) Examples/CPS_examples/ADC_V002>
+% * Navigate to the directory <matlab:hybrid.internal.openExampleFile({'CPS_examples','ADC_V002'}) Examples/CPS_examples/ADC_V002>
 % (clicking this link changes your working directory).
 % * Open
-% <matlab:hybrid.open({'CPS_examples','ADC_V002'},'ADC_example2.slx') |ADC_example2.slx|> 
+% <matlab:hybrid.internal.openExampleFile({'CPS_examples','ADC_V002'},'ADC_example2.slx') |ADC_example2.slx|> 
 % in Simulink (clicking this link changes your working directory and opens the model).   
 % * Double-click the block labeled _Double Click to Initialize_.
 % * To start the simulation, click the _run_ button or select |Simulation>Run|.
@@ -63,7 +63,7 @@
 % 
 
 % Change working directory to the example folder.
-wd_before = hybrid.open({'CPS_examples','ADC_V002'});
+wd_before = hybrid.internal.openExampleFile({'CPS_examples','ADC_V002'});
 
 % Run the initialization script.
 initialization_exADCV02
@@ -174,5 +174,6 @@ pb.legend('ADC output', 'ADC output')...
 % Close the Simulink file.
 close_system 
 
-% Restore previous working directory.
-cd(wd_before) 
+% Navigate to the doc/ directory so that code is correctly included with
+% "<include>src/...</include>" commands.
+cd(hybrid.getFolderLocation('doc')) 

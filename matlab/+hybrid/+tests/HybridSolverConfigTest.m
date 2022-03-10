@@ -1,7 +1,6 @@
 classdef HybridSolverConfigTest < matlab.unittest.TestCase
     
-    % Test Method Block
-    methods (Test)
+    methods (Test) % Test Method Block
         
         function testUseDefaultsWhenNoConstructorArgsIn(testCase)
            options = HybridSolverConfig().ode_options;

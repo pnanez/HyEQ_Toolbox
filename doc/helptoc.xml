@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding="utf-8"?>
 <toc version="2.0">
 
-    <tocitem target="html/GettingStarted.html">Hybrid Equation Toolbox
+    <tocitem target="html/HelpRoot.html">Hybrid Equation Toolbox
         <tocitem target="html/demos_TOC.html">Tutorials
             <tocitem target="html/HybridSystem_demo.html">Solve Hybrid Systems (MATLAB)</tocitem>
             <tocitem target="html/HybridPlotBuilder_demo.html">Plot Solutions (MATLAB)</tocitem>

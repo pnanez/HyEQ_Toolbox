@@ -3,7 +3,7 @@
 % through a network, and a state estimator are 
 % modeled in Simulink as a hybrid system.
 % Click
-% <matlab:hybrid.open({'CPS_examples','Network_1'},'Network_example.slx') here> 
+% <matlab:hybrid.internal.openExampleFile({'CPS_examples','Network_1'},'Network_example.slx') here> 
 % to change your working directory to the Example 4.2 folder and open the
 % Simulink model.
 
@@ -157,10 +157,10 @@
 % 
 % The following procedure is used to simulate the zero-input example using the model in the file |Network_example.slx|:
 % 
-% * Navigate to the directory <matlab:hybrid.open({'CPS_examples','Network_1'}) Examples/CPS_examples/Network_1>
+% * Navigate to the directory <matlab:hybrid.internal.openExampleFile({'CPS_examples','Network_1'}) Examples/CPS_examples/Network_1>
 % (clicking this link changes your working directory).
 % * Open
-% <matlab:hybrid.open({'CPS_examples','Network_1'},'Network_example.slx') |Network_example.slx|> 
+% <matlab:hybrid.internal.openExampleFile({'CPS_examples','Network_1'},'Network_example.slx') |Network_example.slx|> 
 % in Simulink (clicking this link changes your working directory and opens the model).   
 % * Double-click the block labeled _Double Click to Initialize_.
 % * To start the simulation, click the _run_ button or select |Simulation>Run|.
@@ -168,7 +168,7 @@
 % Solutions_. Several plots of the computed solution will open.
 
 % Change working directory to the example folder.
-wd_before = hybrid.open({'CPS_examples', 'Network_1'});
+wd_before = hybrid.internal.openExampleFile({'CPS_examples', 'Network_1'});
 
 % Set seed for random number generator so we have reproducable outputs.
 rng(2)
@@ -275,10 +275,10 @@ cd(wd_before)
 %% Steps to Run Sinusoidal-input Model
 % The following procedure is used to simulate this example using the model in the file |Network_2_example.slx|:
 % 
-% * Navigate to the directory <matlab:hybrid.open({'CPS_examples','Network_2'}) Examples/CPS_examples/Network_2>
+% * Navigate to the directory <matlab:hybrid.internal.openExampleFile({'CPS_examples','Network_2'}) Examples/CPS_examples/Network_2>
 % (clicking this link changes your working directory).
 % * Open
-% <matlab:hybrid.open({'CPS_examples','Network_2'},'Network_2_example.slx') |Network_2_example.slx|> 
+% <matlab:hybrid.internal.openExampleFile({'CPS_examples','Network_2'},'Network_2_example.slx') |Network_2_example.slx|> 
 % in Simulink (clicking this link changes your working directory and opens the model).   
 % * Double-click the block labeled _Double Click to Initialize_.
 % * To start the simulation, click the _run_ button or select |Simulation>Run|.
@@ -287,7 +287,7 @@ cd(wd_before)
 % 
 
 % Change working directory to the example folder.
-hybrid.open({'CPS_examples','Network_2'});
+hybrid.internal.openExampleFile({'CPS_examples','Network_2'});
 
 % Run the initialization script.
 initialization_exNetwork_2
@@ -346,8 +346,9 @@ hpb.legend({'Estimation $\hat{x}_1$',...
 % Close the Simulink file.
 close_system 
 
-% Restore previous working directory.
-cd(wd_before) 
+% Navigate to the doc/ directory so that code is correctly included with
+% "<include>src/...</include>" commands.
+cd(hybrid.getFolderLocation('doc')) 
 
 %% References
 % [1] F. Ferrante, F. Gouaisbaut, R. G. Sanfelice, and S. Tarbouriech. State estimation of linear systems in

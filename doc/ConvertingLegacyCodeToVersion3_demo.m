@@ -25,7 +25,7 @@
 % |gamma| and |lambda|, below).
 % 
 % For a detailed description of how to write |HybridSystem| classes, see 
-% <matlab:showdemo('HybridSystem_demo') How to Implement and Solve a Hybrid
+% <matlab:hybrid.internal.openHelp('HybridSystem_demo') How to Implement and Solve a Hybrid
 % System>. Now, you might not be interested in rewriting existing code
 % but still want to take advantage of new features. As a half-way step, we have
 % provided a method for creating a |HybridSystem| object from existing |C.m|,
@@ -122,6 +122,5 @@
 %   sol = HybridArc(t, j, x);
 % 
 % Then, the hybrid arc can be plotted using all of the tools described in 
-% <matlab:showdemo('HybridPlotBuilder_demo') Creating plots with
+% <matlab:hybrid.internal.openHelp('HybridPlotBuilder_demo') Creating plots with
 % HybridPlotBuilder>.
-

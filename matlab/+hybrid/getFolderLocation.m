@@ -9,7 +9,10 @@ function f = getFolderLocation(name, varargin)
 % * 'simulink': The directory containing the SIMULINK source code.
 %
 % Subdirectories can be accessed by including additional input arguments.
+% 
+% Added in HyEQ Toolbox version 3.0.
 
+% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz (©2022).
     matlab_src_dir = fileparts(which('HyEQsolver'));
     toolbox_root_dir = fileparts(matlab_src_dir);
     

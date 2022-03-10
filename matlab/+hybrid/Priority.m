@@ -3,9 +3,9 @@ classdef Priority < int32
 %
 % See also: HyEQsolver, HybridSystem.
 %
-% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
-% © 2021. 
+% Added in HyEQ Toolbox version 3.0.
 
+% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz (©2022). 
    enumeration
       JUMP(1) % Default
       FLOW(2)

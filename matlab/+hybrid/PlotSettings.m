@@ -1,6 +1,9 @@
 classdef PlotSettings < matlab.mixin.Copyable
 % Data object class containing settings used by HybridPlotBuilder.
-    
+% 
+% Added in HyEQ Toolbox version 3.0.
+
+% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz (©2022). 
     properties
         % Text
         label_size

@@ -3,8 +3,8 @@
 % equation simulator from the Hybrid Equations Toolbox, including an introduction
 % to the primary components and a description of their internal workings. 
 % For documentation regarding cyber-physical components, see 
-% <matlab:showdemo('CPS_Components_doc.m') here>. A list of examples are
-% available <matlab:showdemo('examples_TOC.m') here>.
+% <matlab:hybrid.internal.openHelp('CPS_Components_doc.m') here>. A list of examples are
+% available <matlab:hybrid.internal.openHelp('examples_TOC.m') here>.
 
 %% Primary Components
 % The HyEQ Toolbox includes three main Simulink library blocks that allow for simulation of 
@@ -88,7 +88,7 @@
 % and tolerances used when simulating. 
 % These can be changed by editing the script file |initialization.m|. 
 % The following sample code is used to initialize the bouncing ball example, 
-% <matlab:showdemo('Example_1_2') Example 1.2>.
+% <matlab:hybrid.internal.openHelp('Example_1_2') Example 1.2>.
 % 
 % <include>src/Matlab2tex/initializationBB_inst.m</include>
 
@@ -110,7 +110,7 @@
 % The script |postprocessing.m| may be edited to include the desired postprocessing and solution plots. 
 % See below for sample code to plot solutions to the bouncing ball example, Example 1.2. 
 % The functions used to generate the plots are described in
-% <matlab:showdemo('HybridPlotBuilder_demo') Creating plots with HybridPlotBuilder>.
+% <matlab:hybrid.internal.openHelp('HybridPlotBuilder_demo') Creating plots with HybridPlotBuilder>.
 % 
 % <include>src/Matlab2tex/postprocesingBB_inst.m</include>
 

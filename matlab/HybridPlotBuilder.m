@@ -1,11 +1,11 @@
 classdef HybridPlotBuilder < handle
 % Class for plotting hybrid arcs with many configuration options.
 %
-% See also: <a href="matlab: showdemo HybridPlotBuilder_demo">Demo: Creating plots with HybridPlotBuilder</a>, and HybridArc/plotFlows, HybridArc/plotJumps, etc.
+% See also: <a href="matlab: hybrid.internal.openHelp('HybridPlotBuilder_demo')">Demo: Creating plots with HybridPlotBuilder</a>, and HybridArc/plotFlows, HybridArc/plotJumps, etc.
+% 
+% Added in HyEQ Toolbox version 3.0.
 
-% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
-% © 2021. 
-
+% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz (©2022). 
     properties(Constant)
         defaults = hybrid.PlotSettings() % default plot settings
     end

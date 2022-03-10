@@ -1,29 +1,12 @@
-%--------------------------------------------------------------------------
-% Matlab M-file Project: HyEQ Toolbox @  Hybrid Systems Laboratory (HSL), 
-% https://hybrid.soe.ucsc.edu/software
-% http://hybridsimulator.wordpress.com/
-% Filename: initialization_exADC.m
-%--------------------------------------------------------------------------
-% Project: Simulation of a hybrid system (Analog-to-digital converter)
-% Description: initialization ADC
-%--------------------------------------------------------------------------
-%--------------------------------------------------------------------------
-%   See also PLOTARC, PLOTARC3, PLOTFLOWS, PLOTHARC, PLOTHARCCOLOR,
-%   PLOTHARCCOLOR3D, PLOTHYBRIDARC, PLOTJUMPS.
-%   Copyright @ Hybrid Systems Laboratory (HSL),
-%   Revision: 0.0.0.3 Date: 05/20/2015 3:42:00
-
-
-% clear all                                                               
-clc                                                                       
-% initial conditions (bouncing ball)
+% Initialization script for analog-to-digital converter example 2.)
+                                                                  
+% Initial conditions (bouncing ball)
 x0bb = [1;0];   
-% initial conditions (ACD)
+% Initial conditions (ACD)
 tau0 = 0;
 x0ADC = [x0bb;tau0];             
 
 % Constants (ACD)
-
 Ts = 0.1;
 
 % physical variables (bouncing ball)

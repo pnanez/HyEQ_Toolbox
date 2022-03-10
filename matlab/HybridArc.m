@@ -1,11 +1,11 @@
 classdef HybridArc
 % A numerical representation of a hybrid arc. 
 %
-% See also: HybridSolution, <a href="matlab: showdemo HybridSystem_demo">Demo: How to Implement and Solve a Hybrid System</a>.
+% See also: HybridSolution, <a href="matlab:hybrid.internal.openHelp('HybridSystem_demo')">Demo: How to Implement and Solve a Hybrid System</a>.
+% 
+% Added in HyEQ Toolbox version 3.0.
 
-% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
-% © 2021. 
-    
+% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz (©2022). 
     properties(SetAccess = immutable)
         % A column vector containing the continuous time value for each entry in the solution.
         t % double (:, 1) 

@@ -1,11 +1,11 @@
 classdef PopupProgressUpdater < hybrid.ProgressUpdater
 % A progress updater for the hybrid equation solver that shows a progress bar in a popup window.
-%
+% 
 % See also: HybridSolverConfig, hybrid.ProgressUpdater, hybrid.SilentProgressUpdater.
+%
+% Added in HyEQ Toolbox version 3.0.
 
-% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
-% © 2021. 
-    
+% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz (©2022). 
     properties
         % The t_decimal_places property deterimines the number of decimal points to
         % display for t in the progress bar. The progress bar updates when

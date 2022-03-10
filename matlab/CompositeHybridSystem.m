@@ -15,11 +15,11 @@ classdef CompositeHybridSystem < HybridSystem
 % its own discrete time).
 % 
 % See also: HybridSystem, HybridSubsystem, CompositeHybridSolution, 
-% <a href="matlab:showdemo('CompositeHybridSystem_demo')">Demo: Create and Simulate Multiple Interlinked Hybrid Systems</a>.
+% <a href="matlab:hybrid.internal.openHelp('CompositeHybridSystem_demo')">Demo: Create and Simulate Multiple Interlinked Hybrid Systems</a>.
+% 
+% Added in HyEQ Toolbox version 3.0.
 
-% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
-% © 2021. 
-
+% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz (©2022). 
     properties(SetAccess = immutable)
         subsystems % hybrid.internal.SubsystemList; 
 

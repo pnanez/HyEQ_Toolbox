@@ -2,9 +2,11 @@ classdef TerminationCause
 % Enumeration class of possible causes for why a hybrid solution terminiated.
 %
 % See also: HybridSolution, HybridSystem.
-%
+% 
+% Added in HyEQ Toolbox version 3.0 (©2022).
+
 % Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
-% © 2021. 
+
    enumeration
       % At least one state vector component is infinite.
       STATE_IS_INFINITE

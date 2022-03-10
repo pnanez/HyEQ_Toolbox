@@ -46,7 +46,7 @@
 % $$
 % 
 % This model can be implemented with the |HSu| simulink block found
-% <matlab:showdemo('SimulinkLibrary_doc.m') at this link> 
+% <matlab:hybrid.internal.openHelp('SimulinkLibrary_doc.m') at this link> 
 % and above.
 % 
 %% Models of cyber components
@@ -106,7 +106,7 @@
 % $$
 % 
 % Note that there is no notion of ordinary time $t$ associated with the FSM model above. 
-% An example of this model is presented in <matlab:showdemo('Example???.m') Example ???>.
+% An example of this model is presented in <matlab:hybrid.internal.openHelp('Example_4_1') Example 1.4>.
 % In addition, the |FSM| block shown at the top of this pave can be used to model
 % these type of systems. 
 % 

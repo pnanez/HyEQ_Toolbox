@@ -2,43 +2,52 @@
 % In this example, a finite state machine (FSM) is 
 % modeled in Simulink as a hybrid system with an input, where the input
 % triggers the discrete transitions (or jumps).
-% 
 % Click
-% <matlab:hybrid.open('../Examples/CPS_examples/FSM','FSM_example.slx') here> 
+% <matlab:hybrid.internal.openExampleFile({'CPS_examples','FSM'},'FSM_example.slx') here> 
 % to change your working directory to the FSM folder and open the
 % Simulink model. 
 %% Mathematical Model
+% A _finite state machine_ (FSM), also called a _deterministic finite automaton_ (DFA) is a system with
+% inputs, states, and outputs taking values from finite sets that are updated at discrete transitions (or jumps)
+% triggered by its inputs. 
+% For a FSM with state $q \in Q$ and input $u \in \Sigma,$ the update mechanism
+% at jumps is determined by the difference equation 
 % 
-% The FSM system is modeled as a hybrid system
-% with the following data: 
+% $$
+% q^+ = \delta(q,u) \qquad (q,u) \in Q \times \Sigma
+% $$
+% 
+% and the output of the system is 
+% 
+% $$y = h(q) \qquad q \in Q.$$
+% 
+% The FSM system is modeled as a hybrid system with the following data: 
 % 
 % $$\begin{array}{ll}
 % f(q,u):=\left[\begin{array}{c}
 %    0 \\
-%  0
+%    0
 %  \end{array}\right],
-%    & C := \{ (q,u) \in \{1, 2\} \times \{1, 2\} \times \{1, 2\} \times \{1, 2\} \mid \delta(q, u) = q \} 
-% \\ \\ 
-% g(x,u):= \delta(q, u) = \left[ \begin{array}{c} 
+%    & C := \{ (q,u) \in Q \times \Sigma \mid \delta(q, u) = q \} 
+% \\ 
+% g(q,u):= \delta(q, u) = \left[ \begin{array}{c} 
 %                    3 - u_{1} \\ 3 - u_{2}
 %                \end{array}\right],
-%    & D: = \{ (q,u) \in \{1, 2\} \times \{1, 2\} \times \{1, 2\} \times \{1, 2\} \mid \delta(q, u) \in \{1, 2\}\times \{1, 2\}\backslash q\}
+%    & D: = \{ (q,u) \in Q \times \Sigma \mid \delta(q, u) \neq q\} 
+% \\ 
+%   y:= h(q) = q
 % \end{array}$$
 %
-% $$
-%   y:= h(q) = q
-% $$
-%
-% 
-% where the input and the state are given by $u = (u_{1}, u_{2})\in \{1, 2\}\times \{1, 2\}$, and $q = (q_{1}, q_{2})\in \{1, 2\}\times \{1, 2\}$, respectively.
+% where the state is given by $q = (q_{1}, q_{2})\in Q := \{1, 2\}\times \{1, 2\}$ 
+% and the input is given by $u = (u_{1}, u_{2})\in \Sigma := \{1, 2\}\times \{1, 2\}$.
 %% Steps to Run Model
 % 
 % The following procedure is used to simulate this example using the model in the file |FSM_example.slx|:
 % 
-% * Navigate to the directory <matlab:hybrid.open('../Examples/CPS_examples/FSM') Examples/CPS_examples/FSM>
+% * Navigate to the directory <matlab:hybrid.internal.openExampleFile({'CPS_examples','FSM'}) Examples/CPS_examples/FSM>
 % (clicking this link changes your working directory).
 % * Open
-% <matlab:hybrid.open('../Examples/CPS_examples/FSM','FSM_example.slx') |FSM_example.slx|> 
+% <matlab:hybrid.internal.openExampleFile({'CPS_examples','FSM'},'FSM_example.slx') |FSM_example.slx|> 
 % in Simulink (clicking this link changes your working directory and opens the model).   
 % * Double-click the block labeled _Double Click to Initialize_.
 % * To start the simulation, click the _run_ button or select |Simulation>Run|.
@@ -47,7 +56,7 @@
 % 
 
 % Change working directory to the example folder.
-wd_before = hybrid.open('../Examples/CPS_examples/FSM');
+wd_before = hybrid.internal.openExampleFile({'CPS_examples','FSM'});
 
 % Run the initialization script.
 initialization_exFSM
@@ -92,19 +101,19 @@ open_system('FSM_example')
 % 
 % $$\begin{array}{ll}
 % u_{1}(t,u):=\left\{\begin{array}{ll}
-%    2 \quad t\in[2k, 2k + 0.4)\\
-%  1 \quad t\notin [2k, 2k + 0.4)\\
+%    2 & \textrm{if } t\in[2k,\ 2k + 0.4)\\
+%    1 & \textrm{if } t\notin [2k,\ 2k + 0.4)\\
 %  \end{array}\right., \\ \\
 % u_{2}(t,u):=\left\{\begin{array}{ll}
-%    2 \quad t\in[3k + 1, 3k + 1.6)\\
-%  1 \quad t\notin [3k + 1, 3k + 1.6)\\
+%    2 & \textrm{if } t\in[3k + 1,\ 3k + 1.6)\\
+%    1 & \textrm{if } t\notin [3k + 1,\ 3k + 1.6)\\
 %  \end{array}\right.
 % \end{array}
 % $$
 % 
 % for all $k\in \mathbf{N}$
 % The solution to the FSM system from $x(0,0)=[1,2]^\top$ and with
-% |T=10, J=20, rule=1| shows the mode transition of the FSM system.
+% |T=10|, |J=20, |rule=1| shows the mode transition of the FSM system.
 
 clf
 HybridPlotBuilder().subplots('on')...
@@ -133,5 +142,6 @@ HybridPlotBuilder().subplots('on')...
 % Close the Simulink file.
 close_system 
 
-% Restore previous working directory.
-cd(wd_before) 
+% Navigate to the doc/ directory so that code is correctly included with
+% "<include>src/...</include>" commands.
+cd(hybrid.getFolderLocation('doc')) 

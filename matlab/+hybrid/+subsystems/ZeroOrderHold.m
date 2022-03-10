@@ -2,8 +2,10 @@ classdef ZeroOrderHold < HybridSubsystem
 % Hybrid subsystems that periodically sample the input to generate a piecewise continuous output.
 % 
 % Constant interpolation is used between sample times. 
+% 
+% Added in HyEQ Toolbox version 3.0.
 
-
+% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz (©2022). 
     properties
         sample_time;
     end

@@ -1,10 +1,10 @@
 %% Example 1.2: Bouncing ball
 % In this example, a bouncing ball is modeled in Simulink as a hybrid system.
 % 
-% Click <matlab:hybrid.open('Example_1.2-Bouncing_Ball','Example1_2.slx') here> 
+% Click <matlab:hybrid.internal.openExampleFile('Example_1.2-Bouncing_Ball','Example1_2.slx') here> 
 % to change your working directory to the Example 1.2 folder and open the
 % Simulink model. For the same system modeled using the MATLAB-based HyEQ
-% solver, see <matlab:showdemo('HybridSystem_demo') here>.
+% solver, see <matlab:hybrid.internal.openHelp('HybridSystem_demo') here>.
 %% Mathematical Model
 % 
 % The bouncing ball is modeled as a hybrid system with the following data: 
@@ -30,17 +30,17 @@
 %% How to Run
 % The following procedure is used to simulate this example:
 % 
-% # Change your working directory to <matlab:hybrid.open('Example_1.2-Bouncing_Ball') Examples/Example_1.2-Bouncing_Ball/>.
-% # Open <matlab:hybrid.open('Example_1.2-Bouncing_Ball','Example1_2.slx')
+% # Change your working directory to <matlab:hybrid.internal.openExampleFile('Example_1.2-Bouncing_Ball') Examples/Example_1.2-Bouncing_Ball/>.
+% # Open <matlab:hybrid.internal.openExampleFile('Example_1.2-Bouncing_Ball','Example1_2.slx')
 % Example1_2.slx>. It may take a few seconds for Simulink to open.
 % # In Simulink, double click the block "Double Click to Initialize" to run
-% <matlab:hybrid.open('Example_1.2-Bouncing_Ball','initialization_ex1_2') initialization_ex1_2>.
+% <matlab:hybrid.internal.openExampleFile('Example_1.2-Bouncing_Ball','initialization_ex1_2') initialization_ex1_2>.
 % # Start the simulation by clicking the "Run" button. Let the simulation
 % finish.
 % # Double click the block "Double Click to Plot Solutions" to run
-% <matlab:hybrid.open('Example_1.2-Bouncing_Ball','postprocessing_ex1_2') postprocessing_ex1_2>.
+% <matlab:hybrid.internal.openExampleFile('Example_1.2-Bouncing_Ball','postprocessing_ex1_2') postprocessing_ex1_2>.
 
-wd_before = hybrid.open('Example_1.2-Bouncing_Ball'); 
+hybrid.internal.openExampleFile('Example_1.2-Bouncing_Ball'); 
 
 % Run the initialization script.
 initialization_ex1_2
@@ -92,4 +92,6 @@ view(37.5,30)
 % 
 % <include>../Examples/Example_1.2-Bouncing_Ball/D_ex1_2.m</include>
 
-cd(wd_before)
+% Navigate to the doc/ directory so that code is correctly included with
+% "<include>src/...</include>" commands.
+cd(hybrid.getFolderLocation('doc')) 

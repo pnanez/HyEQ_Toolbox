@@ -4,7 +4,7 @@
 % determines the height of the platform.
 % 
 % Click
-% <matlab:hybrid.open('Example_1.3-Bouncing_Ball_with_Input','Example1_3.slx') here> 
+% <matlab:hybrid.internal.openExampleFile('Example_1.3-Bouncing_Ball_with_Input','Example1_3.slx') here> 
 % to change your working directory to the Example 1.3 folder and open the
 % Simulink model. 
 %% Mathematical Model
@@ -31,10 +31,10 @@
 % 
 % The following procedure is used to simulate this example using the model in the file |Example_1_3.slx|:
 % 
-% * Navigate to the directory <matlab:hybrid.open('Example_1.3-Bouncing_Ball_with_Input') Examples/Example_1.3-Bouncing_Ball_with_Input>
+% * Navigate to the directory <matlab:hybrid.internal.openExampleFile('Example_1.3-Bouncing_Ball_with_Input') Examples/Example_1.3-Bouncing_Ball_with_Input>
 % (clicking this link changes your working directory).
 % * Open
-% <matlab:hybrid.open('Example_1.3-Bouncing_Ball_with_Input','Example1_3.slx') |Example_1_3.slx|> 
+% <matlab:hybrid.internal.openExampleFile('Example_1.3-Bouncing_Ball_with_Input','Example1_3.slx') |Example_1_3.slx|> 
 % in Simulink (clicking this link changes your working directory and opens the model).   
 % * Double-click the block labeled _Double Click to Initialize_.
 % * To start the simulation, click the _run_ button or select |Simulation>Run|.
@@ -43,7 +43,7 @@
 % 
 
 % Change working directory to the example folder.
-wd_before = hybrid.open('Example_1.3-Bouncing_Ball_with_Input');
+wd_before = hybrid.internal.openExampleFile('Example_1.3-Bouncing_Ball_with_Input');
 
 % Run the initialization script.
 initialization_ex1_3
@@ -106,15 +106,10 @@ view(37.5, 30)
 %   block, parameters must be added as inputs and defined as parameters by
 %   selecting |Tools>Edit Data/Ports|, and setting the scope to |Parameter|. For
 %   this example, |gamma| and |lambda| are defined in this way.    
-% * The initialization script |initialization.m| is edited by opening the file
-%   and editing the script.  
-%   The flow time and jump horizons, |T| and |J| are defined as well as the
+% * In the initialization script |initialization.m|, 
+%   the flow time and jump horizons, |T| and |J| are defined as well as the
 %   initial conditions for the state vector, $x_0$, and input vector, $u_0$, and
 %   a rule for jumps, |rule|.
-% * The postprocessing script |postprocessing.m| is edited by opening the file
-%   and editing the script. Flows and jumps may be plotted by calling the
-%   functions |plotflows| and |plotjumps|, respectively. The hybrid arc
-%   may be plotted by calling the function |plotHybridArc|.   
 % * The simulation stop time and other simulation parameters are set to the
 %   values defined in |initialization.m| by selecting |Simulation>Configuration
 %   Parameters>Solver| and inputting |T|, |RelTol|, |MaxStep|, etc..  
@@ -129,5 +124,6 @@ view(37.5, 30)
 % Close the Simulink file.
 close_system 
 
-% Restore previous working directory.
-cd(wd_before) 
+% Navigate to the doc/ directory so that code is correctly included with
+% "<include>src/...</include>" commands.
+cd(hybrid.getFolderLocation('doc')) 

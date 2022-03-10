@@ -1,8 +1,13 @@
 function plotFlowLengths(sol)
-% Plot the length for each interval of flow for a given HybridSolution object. 
+% Plot the length for each interval of flow for a given HybridArc object. 
 %
-% Argument: sol - A HybridSolution object.
+% Argument: sol - A HybridArc object.
+% 
+% See also: HybridArc.
+% 
+% Added in HyEQ Toolbox version 3.0.
 
+% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz (©2022). 
 values = sol.flow_lengths;
 indices = 1:length(values);
 semilogy(indices, values, "b*");

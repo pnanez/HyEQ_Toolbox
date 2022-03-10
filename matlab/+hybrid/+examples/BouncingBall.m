@@ -1,5 +1,9 @@
 classdef BouncingBall < HybridSystem
+% A bouncing ball modeled as a HybridSystem subclass.
+% 
+% Added in HyEQ Toolbox version 3.0 
 
+% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz (©2022). 
     properties
         gravity = 9.8;
         bounce_coeff = 0.9;

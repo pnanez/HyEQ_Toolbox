@@ -45,9 +45,11 @@ classdef HybridSubsystemBuilder < handle
 % for the 'output' function are preserved. 
 %
 % See also: HybridSubsystem, CompositeHybridSystem, HybridSystemBuilder.
-%
-% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
-% © 2021. 
+% 
+% Added in HyEQ Toolbox version 3.0.
+
+% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz (©2022).
+
 
 properties(SetAccess = private)
     flowMap_handle = @(x, u, t, j) 0;

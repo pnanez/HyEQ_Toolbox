@@ -1,5 +1,9 @@
 function subsys = convertToSubsystem(hybrid_system)
 % Convert a HybridSystem object into a HybridSubsystem object with no inputs (EXPERIMENTAL).
+% 
+% Added in HyEQ Toolbox version 3.0 
+
+% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz (©2022). 
     assert(isa(hybrid_system, 'HybridSystem'), 'Input was not a HybridSystem.')
     assert(~isempty(hybrid_system.state_dimension), 'State dimension not set.')
     subsys = HybridSubsystemBuilder()...

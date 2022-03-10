@@ -1,6 +1,10 @@
 %% Example 1.8: Choosing Behavior in the Intersection of C and D
 % This example demonstrates how to define the behavior of simulations in the
 % intersection of the flow and jump sets.
+% Click
+% <matlab:hybrid.internal.openExampleFile('Example_1.8-A_Simple_Example','Example1_8.slx') here> 
+% to change your working directory to the Example 1.8 folder and open the
+% Simulink model. 
 
 %% Mathematical Model
 % Consider the hybrid system with data
@@ -57,7 +61,7 @@
 % $x$ is in $[1, 2) \subset C \setminus D$.
 
 % Change working directory to the example folder.
-wd_before = hybrid.open(fullfile('Example_1.8-A_Simple_Example'));
+wd_before = hybrid.internal.openExampleFile('Example_1.8-A_Simple_Example');
 
 % Run the initialization script.
 initialization_ex1_8a
@@ -69,7 +73,7 @@ sim('Example1_8')
 % Convert the values t, j, and x output by the simulation into a HybridArc object.
 sol_a = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j')
 
-postprocessing_ex1_8a
+postprocessing_ex1_8
 
 %% Flow Priority (|rule = 2|) 
 % When |rule=2|, flows have priorty, so anytime a solution $x$ is in $C\cap D$,
@@ -97,7 +101,7 @@ sim('Example1_8')
 % Convert the values t, j, and x output by the simulation into a HybridArc object.
 sol_b = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j')
 
-postprocessing_ex1_8a
+postprocessing_ex1_8
 
 %%
 % Note that the stopping logic is implemented such that when the
@@ -144,7 +148,7 @@ postprocessing_ex1_8a
  
 
 % Change working directory to the example folder.
-hybrid.open(fullfile('Example_1.8-A_Simple_Example'));
+hybrid.internal.openExampleFile('Example_1.8-A_Simple_Example');
 
 % Run the initialization script.
 initialization_ex1_8c
@@ -160,7 +164,7 @@ sim('Example1_8')
 % Convert the values t, j, and x output by the simulation into a HybridArc object.
 sol_c = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j')
 
-postprocessing_ex1_8a
+postprocessing_ex1_8
 
 %% Numerical Limitations
 % Isolated points in $D$ that are in the interior of $C$, such as $x=7$, require
@@ -170,7 +174,7 @@ postprocessing_ex1_8a
 % minuscule. Thus, from a numerical standpoint, |x| never enters $D$. 
 
 % Change working directory to the example folder.
-hybrid.open(fullfile('Example_1.8-A_Simple_Example'));
+hybrid.internal.openExampleFile('Example_1.8-A_Simple_Example');
 
 % Run the initialization script.
 initialization_ex1_8a
@@ -186,7 +190,7 @@ sim('Example1_8')
 % Convert the values t, j, and x output by the simulation into a HybridArc object.
 sol_c = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j')
 
-postprocessing_ex1_8a
+postprocessing_ex1_8
 
 %%
 % Furthermore, suppose the jump map given above is modified by removing the
@@ -215,7 +219,6 @@ postprocessing_ex1_8a
 % Close the Simulink file.
 close_system 
 
-% Restore previous working directory.
-cd(wd_before) 
-
-
+% Navigate to the doc/ directory so that code is correctly included with
+% "<include>src/...</include>" commands.
+cd(hybrid.getFolderLocation('doc')) 

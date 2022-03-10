@@ -59,7 +59,10 @@ if do_publish
     % because it is a live script.
     mlxloc = fullfile(pwd(),'doc','GettingStarted.mlx');
     fileout = fullfile(pwd(),'doc','html','GettingStarted.html');
-    matlab.internal.liveeditor.openAndConvert(mlxloc,fileout) % This is 'fragile' and might break on future versions of MATLAB.
+    % The following call to 'matlab.internal.liveeditor.openAndConvert' is
+    % 'fragile' and might break on future versions of MATLAB. On MATLAB 2022a
+    % and later, we can use the 'export' function.  
+    matlab.internal.liveeditor.openAndConvert(mlxloc,fileout) 
     fprintf(['Published %s\n' ...
              '       to %s\n'], mlxloc, fileout)
 

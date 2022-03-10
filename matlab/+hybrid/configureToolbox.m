@@ -1,4 +1,15 @@
+function configureToolbox()
 % Script for finishing the installation of the Hybrid Equations Toolbox.
+% In particular, this script:
+% 1. Checks that only one version of the toolbox is installed.
+% 2. Prompts the user to run automated tests.
+% 3. Enables autocomplete data for the MATLAB editor in supported versions of
+%    MATLAB. 
+% 
+% Added in HyEQ Toolbox version 3.0 
+
+% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz (©2022). 
+
 hyeqsolver_paths = which('HyEQsolver', '-all');
 if length(hyeqsolver_paths) > 1
 
@@ -13,7 +24,7 @@ if length(hyeqsolver_paths) > 1
                 uninstall_script_path = uninstall_script_candidate_path;
                 disp(['A previous version of the Hybrid Equations Toolbox was found at "', toolbox_root_path_candidate, '".'])
                 disp(['Click <a href="matlab:run(''', uninstall_script_path,''')">here</a> to start the unstallation. ', ...
-                    'Afterwards, please run <a href="matlab:run(''configure_toolbox'')">configure_toolbox.m</a> again.'])
+                    'Afterwards, please run <a href="matlab:run(''hybrid.configureToolbox'')">configure_toolbox.m</a> again.'])
                 return
             end
         end
@@ -22,7 +33,7 @@ if length(hyeqsolver_paths) > 1
             ['The following error occured when to start the automatic removal of ' ...
             'old toolbox versions: %s. Please uninstall old versions manually.'], e.message)
         disp('Multiple versions of the HyEQsolver function were found on the MATLAB path at the following locations:')
-        hyeqsolver_paths %#ok<NOPTS> 
+        hyeqsolver_paths  %#ok<NOPRT> 
 
         error(['Previously installed versions of the Hybrid Equations Toolbox ' ...
             'must be removed before the newest version can be used.'])
@@ -52,6 +63,7 @@ else
 end
 
 fprintf('\nThe Hybrid Equations Toolbox is ready to use.\n')
+end
 
 % ========= Local Functions ========= %
 

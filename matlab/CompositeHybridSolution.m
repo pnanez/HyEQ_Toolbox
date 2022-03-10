@@ -2,10 +2,10 @@ classdef CompositeHybridSolution < HybridSolution
 % A solution to a composite hybrid system.
 %
 % See also: HybridSolution, CompositeHybridSystem, HybridSubsystemSolution.
+% 
+% Added in HyEQ Toolbox version 3.0.
 
-% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
-% © 2021. 
-
+% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz (©2022). 
     properties(SetAccess = immutable)
         % Number of subsystem solutions.
         subsys_count 

@@ -2,7 +2,7 @@
 % In this example, a ball bouncing on a moving platform is modeled in Simulink
 % as a pair of interconnected hybrid systems with inputs.  
 % Click
-% <matlab:hybrid.open('Example_1.6-Interconnection_of_Bouncing_Ball_and_Moving_Platform','Example1_6.slx') here> 
+% <matlab:hybrid.internal.openExampleFile('Example_1.6-Interconnection_of_Bouncing_Ball_and_Moving_Platform','Example1_6.slx') here> 
 % to change your working directory to the Example 1.6 folder and open the
 % Simulink model. 
 %% Mathematical Model
@@ -88,7 +88,7 @@
 % gust, on the system.
 
 % Change working directory to the example folder.
-wd_before = hybrid.open('Example_1.6-Interconnection_of_Bouncing_Ball_and_Moving_Platform');
+wd_before = hybrid.internal.openExampleFile('Example_1.6-Interconnection_of_Bouncing_Ball_and_Moving_Platform');
 
 % Run the initialization script.
 initialization_ex1_6
@@ -192,7 +192,8 @@ ylim('padded')
 % Close the Simulink file.
 close_system 
 
-% Restore previous working directory.
-cd(wd_before) 
+% Navigate to the doc/ directory so that code is correctly included with
+% "<include>src/...</include>" commands.
+cd(hybrid.getFolderLocation('doc')) 
 
 % This example was writen by Ricardo Sanfelice and revised by Paul Wintz.

@@ -2,9 +2,10 @@ classdef HybridSubsystemSolution < HybridSolution
 % Class of hybrid solutions that include input and output signals.
 %
 % See also: HybridSolution, HybridSubsystem, hybrid.CompositeHybridSolution.
-%
-% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
-% © 2021. 
+% 
+% Added in HyEQ Toolbox version 3.0.
+
+% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz (©2022).
 
     properties(SetAccess = immutable)
         u % Input values (double array)

@@ -1,6 +1,9 @@
 classdef MemorylessSubsystem < HybridSubsystem
 % Hybrid subsystems with output that is generated solely from the input (no state values).
-       
+% 
+% Added in HyEQ Toolbox version 3.0.
+
+% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz (©2022).    
     methods
         function obj = MemorylessSubsystem(input_dimension, output_dimension, output)
             obj = obj@HybridSubsystem(0, input_dimension, output_dimension, output);

@@ -1,5 +1,8 @@
 classdef BouncingBallSubsystem < HybridSubsystem
-        
+% 
+% Added in HyEQ Toolbox version 3.0.
+
+% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz (©2022).   
     properties
         bounce_coef = 0.9; 
         gravity = -9.8;

@@ -23,9 +23,10 @@ classdef HybridSystemBuilder < handle
 %             .build();
 %
 % See also: HybridSystem, HybridSubsystemBuilder.
-%
-% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
-% © 2021. 
+% 
+% Added in HyEQ Toolbox version 3.0.
+
+% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz (©2022).
 
     properties(Access = private)
         flowMap_handle = @(x) 0;

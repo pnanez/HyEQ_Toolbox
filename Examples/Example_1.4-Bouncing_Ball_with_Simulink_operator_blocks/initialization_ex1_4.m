@@ -18,6 +18,6 @@ J = 20;
 % rule = 3 -> no priority, random selection when simultaneous conditions
 rule = 1;                                                               
                                                                         
-%solver tolerances
+% Solver tolerances
 RelTol = 1e-8;
 MaxStep = 0.01;

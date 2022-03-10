@@ -1,8 +1,11 @@
 classdef Example3DHybridSystem < HybridSystem
- % Based on Example 6.20 from Hybrid Dynamical Systems textbook by Goebel, 
- % Sanfelice, and Teel. Modified by adding a third state component that is
- % equal to time.
+% Based on Example 6.20 from Hybrid Dynamical Systems textbook by Goebel, 
+% Sanfelice, and Teel. Modified by adding a third state component that is
+% equal to time.
+%  
+% Added in HyEQ Toolbox version 3.0.
 
+% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz (©2022). 
     methods
         function xdot = flowMap(this, x) %#ok<INUSL>
             xdot = [x(2); -x(1); 1];

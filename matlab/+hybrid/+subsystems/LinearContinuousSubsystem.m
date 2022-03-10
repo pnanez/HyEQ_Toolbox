@@ -1,6 +1,9 @@
 classdef LinearContinuousSubsystem < HybridSubsystem
 % Hybrid subsystems that have linear continuous dynamics and no discrete dynamics.
-    
+% 
+% Added in HyEQ Toolbox version 3.0.
+
+% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz (©2022).  
     properties(SetAccess = immutable)
         A % State matrix.
         B % Input matrix.

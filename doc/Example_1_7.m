@@ -1,6 +1,12 @@
 %% Example 1.7: Synchronization of Two Fireflies
-% In this example, <>
-% 
+% In this example, two hybrid subsystems in Simulink are used to model a pair of fireflies
+% that exhibit synchronization of their flashes.
+% Click
+% <matlab:hybrid.internal.openExampleFile('Example_1.7-Synchronization_of_Fireflies','Example1_7.slx') here> 
+% to change your working directory to the Example 1.7 folder and open the
+% Simulink model. 
+
+%% 
 % Consider a biological example of the synchronization of two fireflies
 % flashing. The fireflies can be modeled mathematically as periodic oscillators
 % which tend to synchronize their flashing until they are flashing in phase with
@@ -12,11 +18,6 @@
 % $(1+\varepsilon)\tau$, where $\varepsilon$ is a biologically determined
 % coefficient. This happens until eventually both fireflies synchronize their
 % internal timers and are flashing simultaneously.
-%  
-% Click
-% <matlab:hybrid.open('Example_1.7-Synchronization_of_Fireflies','Example1_7.slx') here> 
-% to change your working directory to the Example 1.7 folder and open the
-% Simulink model. 
 %% Mathematical Model
 % Each firefly can be modeled as a hybrid system given by
 % 
@@ -38,7 +39,7 @@
 %  
 
 % Change working directory to the example folder.
-wd_before = hybrid.open('Example_1.7-Synchronization_of_Fireflies');
+wd_before = hybrid.internal.openExampleFile('Example_1.7-Synchronization_of_Fireflies');
 
 % Run the initialization script.
 initialization_ex1_7
@@ -152,10 +153,6 @@ xlim([0, 7])
 % Close the Simulink file.
 close_system 
 
-% Restore previous working directory.
-% cd(wd_before) 
-
-% Change to the doc directory so that the example code is correctly included.
-cd(hybrid.getFolderLocation('doc'))
-
-
+% Navigate to the doc/ directory so that code is correctly included with
+% "<include>src/...</include>" commands.
+cd(hybrid.getFolderLocation('doc')) 

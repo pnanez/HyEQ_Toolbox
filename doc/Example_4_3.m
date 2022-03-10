@@ -7,7 +7,7 @@
 % with an input, where the input is the signal to sample.
 % 
 % Click
-% <matlab:hybrid.open({'CPS_examples','ZOH'},'ZOH_example.slx') here> 
+% <matlab:hybrid.internal.openExampleFile({'CPS_examples','ZOH'},'ZOH_example.slx') here> 
 % to change your working directory to the ZOH folder and open the
 % Simulink model. 
 %% Mathematical Model
@@ -39,10 +39,10 @@
 % 
 % The following procedure is used to simulate this example using the model in the file |ZOH_example.slx|:
 % 
-% * Navigate to the directory <matlab:hybrid.open({'CPS_examples','ZOH'}) Examples/CPS_examples/ZOH>
+% * Navigate to the directory <matlab:hybrid.internal.openExampleFile({'CPS_examples','ZOH'}) Examples/CPS_examples/ZOH>
 % (clicking this link changes your working directory).
 % * Open
-% <matlab:hybrid.open({'CPS_examples','ZOH'},'ZOH_example.slx') |ZOH_example.slx|> 
+% <matlab:hybrid.internal.openExampleFile({'CPS_examples','ZOH'},'ZOH_example.slx') |ZOH_example.slx|> 
 % in Simulink (clicking this link changes your working directory and opens the model).   
 % * Double-click the block labeled _Double Click to Initialize_.
 % * To start the simulation, click the _run_ button or select |Simulation>Run|.
@@ -51,7 +51,7 @@
 % 
 
 % Change working directory to the example folder.
-wd_before = hybrid.open({'CPS_examples','ZOH'});
+hybrid.internal.openExampleFile({'CPS_examples','ZOH'});
 
 % Run the initialization script.
 initialization_exZOHV01
@@ -60,10 +60,10 @@ initialization_exZOHV01
 sim('ZOH_example')
 
 % Convert the values t, j, and x output by the simulation into a HybridArc object.
-sol = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j')
+sol_zoh = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j')
 
 % Convert the values t, j, and the input to ZOH x1 into a HybridArc object.
-sol_1 = HybridArc(t1, j1, x1);
+sol_input = HybridArc(t1, j1, x1);
 
 %% Simulink Model
 % The following diagram shows the Simulink model of the ZOH. The
@@ -96,7 +96,7 @@ open_system('ZOH_example')
 
 %% Example Output
 % In this example, the signal to process is the state of the bouncing ball system 
-% in <matlab:showdemo('Example_1_3') Example 1.3> with the input chosen 
+% in <matlab:hybrid.internal.openHelp('Example_1_3') Example 1.3> with the input chosen 
 % to be constant, equal to $0.2$.
 % The initial state of the bouncing ball system is $[1, 0]^\top$. The solution to
 % the ZOH system from $x(0,0)=[1, 0, 0]^\top$ and with |T=10|, |J=100|, |rule=1| shows
@@ -134,5 +134,6 @@ hb.legend('ZOH output', 'ZOH output')...
 % Close the Simulink file.
 close_system 
 
-% Restore previous working directory.
-cd(wd_before) 
+% Navigate to the doc/ directory so that code is correctly included with
+% "<include>src/...</include>" commands.
+cd(hybrid.getFolderLocation('doc')) 

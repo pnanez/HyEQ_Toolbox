@@ -4,7 +4,10 @@ classdef SwitchSubsystem < HybridSubsystem
 % Development of this class is not yet finished and its design may change
 % dramatically in future versions of the toolbox without preserving backward
 % compatibility.
-    
+% 
+% Added in HyEQ Toolbox version 3.0.
+
+% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz (©2022). 
     properties(GetAccess = private, SetAccess = immutable)
         u0_indices
         u1_indices

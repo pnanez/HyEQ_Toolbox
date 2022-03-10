@@ -2,7 +2,7 @@
 % In this example, a vehicle is controlled such that it moves along
 % a constrained path. 
 % Click
-% <matlab:hybrid.open('Example_1.5-Vehicle_on_Path_with_Boundaries','Example1_5.slx') here> 
+% <matlab:hybrid.internal.openExampleFile('Example_1.5-Vehicle_on_Path_with_Boundaries','Example1_5.slx') here> 
 % to change your working directory to the Example 1.5 folder and open the
 % Simulink model. 
 
@@ -59,7 +59,7 @@
 
 
 % Change working directory to the example folder.
-wd_before = hybrid.open('Example_1.5-Vehicle_on_Path_with_Boundaries');
+wd_before = hybrid.internal.openExampleFile('Example_1.5-Vehicle_on_Path_with_Boundaries');
 
 % Run the initialization script.
 initialization_ex1_5
@@ -129,16 +129,6 @@ ylim('tight')
 % Close the Simulink file.
 close_system 
 
-% Restore previous working directory.
-cd(wd_before) 
-
-
-
-
-
-
-
-
-
-
-
+% Navigate to the doc/ directory so that code is correctly included with
+% "<include>src/...</include>" commands.
+cd(hybrid.getFolderLocation('doc')) 
