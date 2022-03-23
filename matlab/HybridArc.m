@@ -1,11 +1,11 @@
 classdef HybridArc
 % A numerical representation of a hybrid arc. 
 %
-% See also: HybridSolution, <a href="matlab:hybrid.internal.openHelp('HybridSystem_demo')">Demo: How to Implement and Solve a Hybrid System</a>.
-% 
-% Added in HyEQ Toolbox version 3.0.
+% See also: HybridSolution, <a href="matlab: showdemo HybridSystem_demo">Demo: How to Implement and Solve a Hybrid System</a>.
 
-% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz (©2022). 
+% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
+% © 2021. 
+    
     properties(SetAccess = immutable)
         % A column vector containing the continuous time value for each entry in the solution.
         t % double (:, 1) 
@@ -254,20 +254,26 @@ end
 end
 
 function checkVectorSizes(t, j, x)
+    if size(t, 2) ~= 1
+        e = MException('HybridArc:WrongShape', ...
+            'The vector t (first argument) must be a column vector. Instead its shape was %s.', ...
+            mat2str(size(t)));
+        throwAsCaller(e);
+    end
     if size(j, 2) ~= 1
-        e = MException('HybridSolution:WrongShape', ...
-            'The vector j must be a column vector. Instead its shape was %s.', ...
+        e = MException('HybridArc:WrongShape', ...
+            'The vector j (second argument) must be a column vector. Instead its shape was %s.', ...
             mat2str(size(j)));
         throwAsCaller(e);
     end
     if size(t, 1) ~= size(j, 1)
-        e = MException('HybridSolution:WrongShape', ...
+        e = MException('HybridArc:WrongShape', ...
             'The length(t)=%d and length(j)=%d must match.', ...
             size(t, 1), size(j, 1));
         throwAsCaller(e);
     end
     if size(t, 1) ~= size(x, 1)
-        e = MException('HybridSolution:WrongShape', ...
+        e = MException('HybridArc:WrongShape', ...
             'The length(t)=%d and length(x)=%d must match.', ...
             size(t, 1), size(x, 1));
         throwAsCaller(e);
