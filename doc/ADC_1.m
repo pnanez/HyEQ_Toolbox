@@ -2,10 +2,18 @@
 % In this example, an analog to digital converter (ADC) is 
 % modeled in Simulink as a hybrid system with an input, where the input
 % is sampled periodically by the ADC.
-% Click
-% <matlab:hybrid.internal.openExampleFile({'CPS_examples','ADC_V001'},'ADC_example1.slx') here> 
-% to change your working directory to the ADC_V001 folder and open the
-% Simulink model. 
+%% 
+% The files for this example are found in the package
+% |hybrid.examples.analog_to_digital_converter|:
+% 
+% * <matlab:open('hybrid.examples.analog_to_digital_converter.initialize') initialize.m> 
+% * <matlab:hybrid.examples.analog_to_digital_converter.analog_to_digital_converter analog_to_digital_converter.slx> 
+% * <matlab:open('hybrid.examples.analog_to_digital_converter.postprocess') postprocess.m> 
+% 
+% The contents of this package are located in
+% <matlab:cd(hybrid.getFolderLocation('Examples','+hybrid','+examples','+analog_to_digital_converter')) |Examples\+hybrid\+examples\analog_to_digital_converter|>
+% (clicking this link changes your working directory).
+% 
 %% Mathematical Model
 % 
 % The analog to digital converter is modeled as a hybrid system
@@ -29,27 +37,25 @@
 % $u$ every $T_s$ seconds, and $T_s > 0$ denotes the time between samples of $u$.
 %% Steps to Run Model
 % 
-% The following procedure is used to simulate this example using the model in the file |ADC_example1.slx|:
+% The following procedure is used to simulate this example:
 % 
-% * Navigate to the directory <matlab:hybrid.internal.openExampleFile({'CPS_examples','ADC_V001'}) Examples/CPS_examples/ADC_V001>
-% (clicking this link changes your working directory).
 % * Open
-% <matlab:hybrid.internal.openExampleFile({'CPS_examples','ADC_V001'},'ADC_example1.slx') |ADC_example1.slx|> 
-% in Simulink (clicking this link changes your working directory and opens the model).   
+% <matlab:hybrid.examples.analog_to_digital_converter.analog_to_digital_converter |hybrid.examples.analog_to_digital_converter.analog_to_digital_converter.slx|>.   
 % * Double-click the block labeled _Double Click to Initialize_.
 % * To start the simulation, click the _run_ button or select |Simulation>Run|.
 % * Once the simulation finishes, click the block labeled _Double Click to Plot
 % Solutions_. Several plots of the computed solution will open.
 % 
 
-% Change working directory to the example folder.
-wd_before = hybrid.internal.openExampleFile({'CPS_examples','ADC_V001'});
-
 % Run the initialization script.
-initialization_exADC
+hybrid.examples.analog_to_digital_converter.initialize
 
 % Run the Simulink model.
-sim('ADC_example1')
+warning('off','Simulink:Commands:LoadingOlderModel')
+simulink_model_path = which('hybrid.examples.analog_to_digital_converter.analog_to_digital_converter');
+sim(simulink_model_path)
+close_system
+close all
 
 % Convert the values t, j, x, and vs output by the simulation into a HybridArc objects.
 sol_u = HybridArc(t, 0*t, vs);
@@ -61,8 +67,8 @@ sol = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j')
 % When the Simulink model is open, the blocks can be viewed and modified by
 % double clicking on them.
 
-% Open subsystem "ACD" in ADC_example1.slx.
-open_system('ADC_example1')
+% Open the simulink window to produce screenshot.
+open_system(simulink_model_path)
 
 %%
 % The following Matlab embedded functions that describe the sets $C$ and $D$
@@ -101,8 +107,7 @@ pb.legend('ADC input')...
     .plotFlows(sol_u);
 pb.legend('ADC output')...
     .slice(1)...
-    .flowColor('blue')...
-    .jumpColor('red')...
+    .color('blue')...
     .plotFlows(sol);
 
 subplot(2,1,2)
@@ -129,6 +134,7 @@ HybridPlotBuilder()...
 
 % Close the Simulink file.
 close_system 
+warning('on','Simulink:Commands:LoadingOlderModel') % Renable warning.
 
 % Navigate to the doc/ directory so that code is correctly included with
 % "<include>src/...</include>" commands.

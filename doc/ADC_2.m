@@ -1,10 +1,18 @@
 %% Example: Interconnection of a Bouncing Ball and an Analog to Digital Converter in Simulink
 % In this example, the interconnection of a bouncing ball system and an
 % analog to digital converter (ADC) is modeled in Simulink as a hybrid system.
-% Click
-% <matlab:hybrid.internal.openExampleFile({'CPS_examples','ADC_V002'},'ADC_example2.slx') here> 
-% to change your working directory to the ADC_V002 folder and open the
-% Simulink model. 
+%% 
+% The files for this example are found in the package
+% |hybrid.examples.bouncing_ball_with_adc|:
+% 
+% * <matlab:open('hybrid.examples.bouncing_ball_with_adc.initialize') initialize.m> 
+% * <matlab:hybrid.examples.bouncing_ball_with_adc.bouncing_ball_with_adc bouncing_ball_with_adc.slx> 
+% * <matlab:open('hybrid.examples.bouncing_ball_with_adc.postprocess') postprocess.m> 
+% 
+% The contents of this package are located in
+% <matlab:cd(hybrid.getFolderLocation('Examples','+hybrid','+examples','+bouncing_ball_with_adc')) |Examples\+hybrid\+examples\bouncing_ball_with_adc|>
+% (clicking this link changes your working directory).
+% 
 %% Mathematical Model
 % 
 % The bouncing ball system is modeled as a hybrid system
@@ -49,12 +57,10 @@
 % $u$ every $T_s$ seconds, and $T_s > 0$ denotes the time between samples of $u$.
 %% Steps to Run Model
 % 
-% The following procedure is used to simulate this example using the model in the file |ADC_example2.slx|:
+% The following procedure is used to simulate this example using the model in the file |hybrid.examples.bouncing_ball_with_adc.bouncing_ball_with_adc.slx|:
 % 
-% * Navigate to the directory <matlab:hybrid.internal.openExampleFile({'CPS_examples','ADC_V002'}) Examples/CPS_examples/ADC_V002>
-% (clicking this link changes your working directory).
 % * Open
-% <matlab:hybrid.internal.openExampleFile({'CPS_examples','ADC_V002'},'ADC_example2.slx') |ADC_example2.slx|> 
+% <matlab:hybrid.examples.bouncing_ball_with_adc.bouncing_ball_with_adc |hybrid.examples.bouncing_ball_with_adc.bouncing_ball_with_adc.slx|> 
 % in Simulink (clicking this link changes your working directory and opens the model).   
 % * Double-click the block labeled _Double Click to Initialize_.
 % * To start the simulation, click the _run_ button or select |Simulation>Run|.
@@ -62,14 +68,15 @@
 % Solutions_. Several plots of the computed solution will open.
 % 
 
-% Change working directory to the example folder.
-wd_before = hybrid.internal.openExampleFile({'CPS_examples','ADC_V002'});
-
 % Run the initialization script.
-initialization_exADCV02
+hybrid.examples.bouncing_ball_with_adc.initialize
 
 % Run the Simulink model.
-sim('ADC_example2')
+warning('off','Simulink:Commands:LoadingOlderModel')
+simulink_model_path = which('hybrid.examples.bouncing_ball_with_adc.bouncing_ball_with_adc');
+sim(simulink_model_path)
+close_system
+close all
 
 % Convert the values t, j, x, and t1, j1, x1 output by the simulation into a HybridArc objects.
 sol = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j)
@@ -81,15 +88,14 @@ sol1 = HybridArc(t1, j1, x1);
 % When the Simulink model is open, the blocks can be viewed and modified by
 % double clicking on them.
 
-% Open the system in ADC_example2.slx.
-open_system('ADC_example2')
-
+% Open the simulink window to produce screenshot.
+open_system(simulink_model_path)
 %%
 % For each hybrid system in the figure above (HSu and ADC), we have the
 % following Matlab embedded functions that describe the sets $C$ and $D$
 % and the functions $f$ and $g$.
 %
-% * Bouncing ball (HSu):
+% <html><h3>Bouncing ball (HSu)</h3></html>
 %
 % *flow map* |f| *block*
 % 
@@ -109,7 +115,7 @@ open_system('ADC_example2')
 
 %%
 %
-% * ADC:
+% <html><h3>ADC</h3></html>
 %
 % *flow map* |f| *block*
 % 
@@ -146,28 +152,12 @@ pb = HybridPlotBuilder()...
 hold on
 pb.legend('ADC output', 'ADC output')...
     .slice([1 2])...
-    .flowColor('blue')...
-    .jumpColor('red')...
+    .color('blue')...
     .plotFlows(sol);
 
 %% Modifying the Model
-% * The _Embedded MATLAB function blocks_ |f, C, g, D| are edited by
-%   double-clicking on the block and editing the script. In each embedded function
-%   block, parameters must be added as inputs and defined as parameters by
-%   selecting |Tools>Edit Data/Ports|, and setting the scope to |Parameter|. For
-%   this example, |gamma|, |lambda|, and |Ts| are defined in this way.    
-% * The initialization script |initialization_exADCV02.m| is edited by opening the file
-%   and editing the script.  
-%   The flow time and jump horizons, |T| and |J| are defined as well as the
-%   initial conditions for the state vectors, $x0bb$ and $x0ADC$, and
-%   a rule for jumps, |rule|.
-% * The postprocessing script |postprocessing_exADCV02.m| is edited by opening the file
-%   and editing the script. Flows and jumps may be plotted by calling the
-%   functions |plotflows| and |plotjumps|, respectively. The hybrid arc
-%   may be plotted by calling the function |plotHybridArc|.   
-% * The simulation stop time and other simulation parameters are set to the
-%   values defined in |initialization_exADCV02.m| by selecting |Simulation>Configuration
-%   Parameters>Solver| and inputting |T|, |RelTol|, |MaxStep|, etc..  
+% See [Insert example with link] for an explanation for how to modify this
+% example.
 
 %% 
 

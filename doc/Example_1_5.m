@@ -1,10 +1,9 @@
 %% Example 1.5: Vehicle on Path with Boundaries
 % In this example, a vehicle is controlled such that it moves along
-% a constrained path. 
+% a path. 
 % Click
-% <matlab:hybrid.internal.openExampleFile('Example_1.5-Vehicle_on_Path_with_Boundaries','Example1_5.slx') here> 
-% to change your working directory to the Example 1.5 folder and open the
-% Simulink model. 
+% <matlab:hybrid.examples.vehicle_on_constrained_path.vehicle_on_constrained_path here> 
+% to open the Simulink model for this example. 
 
 %%
 % Consider a vehicle modeled by a Dubins vehicle model
@@ -57,15 +56,15 @@
 %                  \mid(\xi_1 \geq 1,\  q = 2) \textrm{ or } (\xi_1 \leq -1,\  q=1)\}
 % \end{array}$$
 
-
-% Change working directory to the example folder.
-wd_before = hybrid.internal.openExampleFile('Example_1.5-Vehicle_on_Path_with_Boundaries');
-
 % Run the initialization script.
-initialization_ex1_5
+hybrid.examples.vehicle_on_constrained_path.initialize
 
 % Run the Simulink model.
-sim('Example1_5')
+warning('off','Simulink:Commands:LoadingOlderModel')
+simulink_model_path = which('hybrid.examples.vehicle_on_constrained_path.vehicle_on_constrained_path');
+sim(simulink_model_path)
+close_system
+close all
 
 % Convert the values t, j, and x output by the simulation into a HybridArc object.
 sol = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j')
@@ -128,6 +127,7 @@ ylim('tight')
 
 % Close the Simulink file.
 close_system 
+warning('on','Simulink:Commands:LoadingOlderModel') % Renable warning.
 
 % Navigate to the doc/ directory so that code is correctly included with
 % "<include>src/...</include>" commands.

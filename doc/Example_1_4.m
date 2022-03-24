@@ -3,10 +3,7 @@
 % <matlab:hybrid.internal.openHelp('Example_1_3') Example 1.3>, namely a ball bouncing on a
 % moving platform is modeled in Simulink. We show here that a MATLAB function
 % block can be replaced with operational blocks in Simulink. 
-% Click
-% <matlab:hybrid.internal.openExampleFile('Example_1.4-Bouncing_Ball_with_Simulink_operator_blocks','Example1_4.slx') here> 
-% to change your working directory to the Example 1.4 folder and open the
-% Simulink model. 
+
 
 %%
 % The Simulink model, below, shows the jump set |D| modeled in Simulink using
@@ -16,9 +13,11 @@
 
 % Open subsystem "HS" in Example1_4.slx. A screenshot of the subsystem will be
 % automatically included in the published document.
-wd_before = hybrid.internal.openExampleFile('Example_1.4-Bouncing_Ball_with_Simulink_operator_blocks');
-open_system('Example1_4') % Open the model...
-open_system('Example1_4/HS') % ...then open the subsystem "HS".
+warning('off','Simulink:Commands:LoadingOlderModel')
+model_path = 'hybrid.examples.bouncing_ball_with_input.bouncing_ball_with_input_alternative';
+block_path = 'bouncing_ball_with_input_alternative/HS';
+load_system(which(model_path))
+open_system(block_path)
 snapnow();
 
 %%
@@ -30,6 +29,7 @@ snapnow();
 
 % Close the Simulink file.
 close_system 
+warning('on','Simulink:Commands:LoadingOlderModel') % Renable warning.
 
 % Navigate to the doc/ directory so that code is correctly included with
 % "<include>src/...</include>" commands.

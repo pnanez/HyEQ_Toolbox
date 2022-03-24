@@ -3,9 +3,8 @@
 % modeled in Simulink as a hybrid system with an input, where the input
 % triggers the discrete transitions (or jumps).
 % Click
-% <matlab:hybrid.internal.openExampleFile({'CPS_examples','FSM'},'FSM_example.slx') here> 
-% to change your working directory to the FSM folder and open the
-% Simulink model. 
+% <matlab:hybrid.examples.finite_state_machine.finite_state_machine here> 
+% to open the Simulink model. 
 %% Mathematical Model
 % A _finite state machine_ (FSM), also called a _deterministic finite automaton_ (DFA) is a system with
 % inputs, states, and outputs taking values from finite sets that are updated at discrete transitions (or jumps)
@@ -44,25 +43,23 @@
 % 
 % The following procedure is used to simulate this example using the model in the file |FSM_example.slx|:
 % 
-% * Navigate to the directory <matlab:hybrid.internal.openExampleFile({'CPS_examples','FSM'}) Examples/CPS_examples/FSM>
-% (clicking this link changes your working directory).
 % * Open
-% <matlab:hybrid.internal.openExampleFile({'CPS_examples','FSM'},'FSM_example.slx') |FSM_example.slx|> 
+% <matlab:hybrid.examples.finite_state_machine |hybrid.examples.finite_state_machine.finite_state_machine|> 
 % in Simulink (clicking this link changes your working directory and opens the model).   
 % * Double-click the block labeled _Double Click to Initialize_.
 % * To start the simulation, click the _run_ button or select |Simulation>Run|.
 % * Once the simulation finishes, click the block labeled _Double Click to Plot
 % Solutions_. Several plots of the computed solution will open.
-% 
-
-% Change working directory to the example folder.
-wd_before = hybrid.internal.openExampleFile({'CPS_examples','FSM'});
 
 % Run the initialization script.
-initialization_exFSM
+hybrid.examples.finite_state_machine.initialize
 
 % Run the Simulink model.
-sim('FSM_example')
+warning('off','Simulink:Commands:LoadingOlderModel')
+simulink_model_path = which('hybrid.examples.finite_state_machine.finite_state_machine');
+sim(simulink_model_path)
+close_system
+close all
 
 % Convert the values t, j, and x output by the simulation into a HybridArc object.
 sol = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j')
@@ -73,9 +70,11 @@ sol = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j')
 % When the Simulink model is open, the blocks can be viewed and modified by
 % double clicking on them.
 
-% Open FSM_example.slx. A screenshot will be
+% Open .slx model. A screenshot of the subsystem will be
 % automatically included in the published document.
-open_system('FSM_example')
+example_name = 'finite_state_machine';
+model_path = ['hybrid.examples.', example_name ,'.', example_name];
+open_system(which(model_path))
 
 %%
 % The Simulink blocks for the hybrid system in this example are included below.
@@ -122,17 +121,8 @@ HybridPlotBuilder().subplots('on')...
     .plotFlows(sol)
 
 %% Modifying the Model
-% * The _Embedded MATLAB function blocks_ |f, C, g, D| are edited by
-%   double-clicking on the block. In each embedded function
-%   block, parameters must be added as inputs and defined as parameters by
-%   selecting |Tools>Edit Data/Ports|, and setting the scope to |Parameter|. 
-% * In the initialization script |initialization_exFSM.m|, the flow time and jump
-%   horizons, |T| and |J| are defined as well as the 
-%   initial conditions for the state vector, $x_0$, and input vector, $u_0$, and
-%   a rule for jumps, |rule|. 
-% * The simulation stop time and other simulation parameters are set to the
-%   values defined in |initialization_exFSM.m| by selecting |Simulation>Configuration
-%   Parameters>Solver| and inputting |T|, |RelTol|, |MaxStep|, etc..  
+% See [Insert example with link] for an explanation for how to modify this
+% example.
 
 %% 
 
@@ -141,6 +131,7 @@ HybridPlotBuilder().subplots('on')...
 
 % Close the Simulink file.
 close_system 
+warning('on','Simulink:Commands:LoadingOlderModel') % Renable warning.
 
 % Navigate to the doc/ directory so that code is correctly included with
 % "<include>src/...</include>" commands.

@@ -2,9 +2,8 @@
 % In this example, a ball bouncing on a moving platform is modeled in Simulink
 % as a pair of interconnected hybrid systems with inputs.  
 % Click
-% <matlab:hybrid.internal.openExampleFile('Example_1.6-Interconnection_of_Bouncing_Ball_and_Moving_Platform','Example1_6.slx') here> 
-% to change your working directory to the Example 1.6 folder and open the
-% Simulink model. 
+% <matlab:hybrid.examples.coupled_subsystems.coupled_subsystems here> 
+% to open the Simulink model for this example. 
 %% Mathematical Model
 % Consider a bouncing ball $\mathcal{H}_1$ bouncing on a moving platform
 % $\mathcal{H}_2$ that accelerates due to gravity and and has discrete changes
@@ -87,14 +86,15 @@
 % to simulate the effects of environmental perturbations, such as a wind
 % gust, on the system.
 
-% Change working directory to the example folder.
-wd_before = hybrid.internal.openExampleFile('Example_1.6-Interconnection_of_Bouncing_Ball_and_Moving_Platform');
-
 % Run the initialization script.
-initialization_ex1_6
+hybrid.examples.coupled_subsystems.initialize
 
 % Run the Simulink model.
-sim('Example1_6')
+warning('off','Simulink:Commands:LoadingOlderModel')
+simulink_model_path = which('hybrid.examples.coupled_subsystems.coupled_subsystems');
+sim(simulink_model_path)
+close_system
+close all
 
 % Convert the values t, j, and x output by the simulation into a HybridArc object.
 sol_1 = HybridArc(t1, j1, x1);
@@ -110,9 +110,11 @@ eta2_arc = sol_2.slice(2);
 % systems. The contents of the blocks *flow map* |f|, *flow set* |C|, etc., are
 % shown below.
 
-% Open Example1_6.slx. A screenshot of the subsystem will be
+% Open .slx model. A screenshot of the subsystem will be
 % automatically included in the published document.
-open_system('Example1_6')
+example_name = 'coupled_subsystems';
+model_path = ['hybrid.examples.', example_name ,'.', example_name];
+open_system(which(model_path))
 
 %% 
 % *The Simulink blocks for the bouncing ball $\mathcal{H}_{1}$:*
@@ -191,6 +193,7 @@ ylim('padded')
 
 % Close the Simulink file.
 close_system 
+warning('on','Simulink:Commands:LoadingOlderModel') % Renable warning.
 
 % Navigate to the doc/ directory so that code is correctly included with
 % "<include>src/...</include>" commands.

@@ -2,9 +2,9 @@
 % In this example, two hybrid subsystems in Simulink are used to model a pair of fireflies
 % that exhibit synchronization of their flashes.
 % Click
-% <matlab:hybrid.internal.openExampleFile('Example_1.7-Synchronization_of_Fireflies','Example1_7.slx') here> 
+% <matlab:hybrid.examples.fireflies.fireflies here> 
 % to change your working directory to the Example 1.7 folder and open the
-% Simulink model. 
+% Simulink model for this example. 
 
 %% 
 % Consider a biological example of the synchronization of two fireflies
@@ -18,6 +18,7 @@
 % $(1+\varepsilon)\tau$, where $\varepsilon$ is a biologically determined
 % coefficient. This happens until eventually both fireflies synchronize their
 % internal timers and are flashing simultaneously.
+
 %% Mathematical Model
 % Each firefly can be modeled as a hybrid system given by
 % 
@@ -38,22 +39,21 @@
 % \end{array}$$
 %  
 
-% Change working directory to the example folder.
-wd_before = hybrid.internal.openExampleFile('Example_1.7-Synchronization_of_Fireflies');
-
 % Run the initialization script.
-initialization_ex1_7
+hybrid.examples.fireflies.initialize
 
 % Run the Simulink model.
-sim('Example1_7')
-
+warning('off','Simulink:Commands:LoadingOlderModel')
+simulink_model_path = which('hybrid.examples.fireflies.fireflies');
+sim(simulink_model_path)
+close_system
+close all
 
 % Construct HybridArc objects for the trajectory of each subsystem, 
 % as computed by Simulink, so that we can use the plotting tools associated
 % with HybridArcs, namely HybridPlotBuilder.
 sol_1 = HybridArc(t1, j1, x1);
 sol_2 = HybridArc(t2, j2, x2);
-
 
 %% Simulink Model
 % The following diagram shows the Simulink model of two interconnected
@@ -64,9 +64,11 @@ sol_2 = HybridArc(t2, j2, x2);
 % that affects the flashing of a firefly is the flashing of the other firefly.
 % The interconnection diagram can be seen here:
 
-% Open Example1_7.slx. A screenshot of the subsystem will be
+% Open .slx model. A screenshot of the subsystem will be
 % automatically included in the published document.
-open_system('Example1_7')
+example_name = 'fireflies';
+model_path = ['hybrid.examples.', example_name ,'.', example_name];
+open_system(which(model_path))
 
 %%
 % The Simulink blocks for the hybrid system in this example are included below.
@@ -152,6 +154,7 @@ xlim([0, 7])
 
 % Close the Simulink file.
 close_system 
+warning('on','Simulink:Commands:LoadingOlderModel') % Renable warning.
 
 % Navigate to the doc/ directory so that code is correctly included with
 % "<include>src/...</include>" commands.

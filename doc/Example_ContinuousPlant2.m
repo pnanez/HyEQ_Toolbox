@@ -7,9 +7,8 @@
 % the origin and required to reach the boundry of a circle of radius $X_{\max}$
 %  
 % Click
-% <matlab:hybrid.open('CPS_examples/ContinuousPlant_2','ContinuousPlant2_example.slx') here> 
-% to change your working directory to the ContinuousPlant_2 folder and open the
-% Simulink model. 
+% <matlab:hybrid.examples.mobile_robot.mobile_robot here> 
+% to open the Simulink model. 
 %% Mathematical Model
 % A unicycle mobile robot is a continuous time nonlinear system. Let $x_1$ and
 % $x_2$ be the position of the unicycle on 2D plane and $x_3$ be the
@@ -43,22 +42,24 @@
 %    & D: = \emptyset
 % \end{array}$$
 
-% Change working directory to the example folder.
-wd_before = hybrid.internal.openExampleFile({'CPS_examples', 'ContinuousPlant_2'});
-
 % Run the initialization script.
-initialization_exContinuousPlant_2
+hybrid.examples.mobile_robot.initialize
 
 % Run the Simulink model.
-sim('ContinuousPlant2_example')
-
+warning('off','Simulink:Commands:LoadingOlderModel')
+simulink_model_path = which('hybrid.examples.mobile_robot.mobile_robot');
+sim(simulink_model_path)
+close_system
+close all
 
 %% Simulink Model
 % The following diagram shows the Simulink model of the continuous plant
 
-% Open ContinuousPlant2_example.slx. A screenshot of the subsystem will be
+% Open .slx model. A screenshot of the subsystem will be
 % automatically included in the published document.
-open_system('ContinuousPlant2_example')
+example_name = 'mobile_robot';
+model_path = ['hybrid.examples.', example_name ,'.', example_name];
+open_system(which(model_path))
 
 %%
 % The Simulink blocks for the hybrid system in this example are included below.
@@ -81,7 +82,7 @@ open_system('ContinuousPlant2_example')
 
 %% Example Output
 % The following plot shows a solution to the closed-loop system.
-postprocessing_exContinuousPlant_2
+hybrid.examples.mobile_robot.postprocess
 
 %% 
 
@@ -90,10 +91,7 @@ postprocessing_exContinuousPlant_2
 
 % Close the Simulink file.
 close_system 
-
-% Restore previous working directory.
-% cd(wd_before) 
+warning('on','Simulink:Commands:LoadingOlderModel') % Renable warning.
 
 % Change to the doc directory so that the example code is correctly included.
 cd(hybrid.getFolderLocation('doc'))
-

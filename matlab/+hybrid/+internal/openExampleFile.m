@@ -1,4 +1,4 @@
-function wd_before = openExampleFile(example_path, file_name)
+function openExampleFile(example_name, file_name)
     % Change the current working directory to the example of the given name.
     % This function returns the path of the working directory prior to changing
     % directories to facilitate returning to that directory. 
@@ -6,24 +6,13 @@ function wd_before = openExampleFile(example_path, file_name)
     % "<toolbox-root>/Examples/" directory, or as a cell array that specifies a
     % path containing multiple layers of directories.
     % *If file_name is given, then that file is opened, within the example directory.
-    
-    if iscell(example_path)
-        example_path = fullfile(example_path{:});
-    end
-
-    wd_before = pwd(); % Get current working directory.
-    path = hybrid.getFolderLocation('Examples', example_path);
-
-    cd(path);
-    
+        
+    package_path = ['hybrid.examples.', example_name];
     if exist('file_name', 'var')
-        open(fullfile(path, file_name))
+        package_path = [package_path, '.', file_name];
+    else
+        package_path = [package_path, '.', example_name];
     end
-
-    if nargout == 0
-        % Delete the wd_before variable if it is not being saved to a variable,
-        % so that the function doesn't print anything if it is called without a
-        % semicolon afterwards.
-        clearvars('wd_before')
-    end
+    file_path = which(package_path);
+    open(file_path)
 end

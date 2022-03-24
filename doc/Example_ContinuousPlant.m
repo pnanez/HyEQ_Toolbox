@@ -2,9 +2,8 @@
 % 
 %  
 % Click
-% <matlab:hybrid.open('CPS_examples/ContinuousPlant','ContinuousPlant_example.slx') here> 
-% to change your working directory to the ContinuousPlant folder and open the
-% Simulink model.
+% <matlab:hybrid.examples.zoh_feedback_control.zoh_feedback_control here> 
+% to open the Simulink model for this example.
 %%
 % Consider a physical process modeled as a linear system of the form 
 % $\dot x = Ax + Bu$, defined below. 
@@ -91,14 +90,15 @@
 % $u\in \mathbf{R}$.
 % 
 
-% Change working directory to the example folder.
-hybrid.internal.openExampleFile({'CPS_examples', 'ContinuousPlant'});
-
 % Run the initialization script.
-initialization_exContinuousPlant
+hybrid.examples.zoh_feedback_control.initialize
 
 % Run the Simulink model.
-sim('ContinuousPlant_example')
+warning('off','Simulink:Commands:LoadingOlderModel')
+simulink_model_path = which('hybrid.examples.zoh_feedback_control.zoh_feedback_control');
+sim(simulink_model_path)
+close_system
+close all
 
 %% Simulink Model
 % The Simulink model of the interconnection between the models of the physical
@@ -107,9 +107,11 @@ sim('ContinuousPlant_example')
 % process by a matrix gain |K|, while the input |v| of the finite state machine
 % is equal to the output |y| of the physical process at every sampling instant. 
 
-% Open ContinuousPlant_example.slx. A screenshot of the subsystem will be
+% Open .slx model. A screenshot of the subsystem will be
 % automatically included in the published document.
-open_system('ContinuousPlant_example')
+example_name = 'zoh_feedback_control';
+model_path = ['hybrid.examples.', example_name ,'.', example_name];
+open_system(which(model_path))
 
 %% Continuous Time Plant
 % The Simulink blocks for the plant subsystem in this example are included below.
@@ -170,7 +172,7 @@ open_system('ContinuousPlant_example')
 
 %% Example output
 % A solution to the system in this example is plotted below.
-postprocessing_exContinuousPlant
+hybrid.examples.zoh_feedback_control.postprocess
 
 %% 
 
@@ -179,6 +181,7 @@ postprocessing_exContinuousPlant
 
 % Close the Simulink file.
 close_system 
+warning('on','Simulink:Commands:LoadingOlderModel') % Renable warning.
 
 % Change to the doc directory so that the example code is correctly included.
 cd(hybrid.getFolderLocation('doc'))

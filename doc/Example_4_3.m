@@ -7,9 +7,8 @@
 % with an input, where the input is the signal to sample.
 % 
 % Click
-% <matlab:hybrid.internal.openExampleFile({'CPS_examples','ZOH'},'ZOH_example.slx') here> 
-% to change your working directory to the ZOH folder and open the
-% Simulink model. 
+% <matlab:hybrid.hybrid.examples.zero_order_hold.zero_order_hold here> 
+% to open the Simulink model for this example. 
 %% Mathematical Model
 % 
 % The ZOH system is modeled as a hybrid system
@@ -37,12 +36,10 @@
 % where the input and the state are given by $u \in \mathbf{R}^{2}$, and $x = (m_{s}, \tau_{s})\in \mathbf{R}\times \mathbf{R}^{2}$, respectively.
 %% Steps to Run Model
 % 
-% The following procedure is used to simulate this example using the model in the file |ZOH_example.slx|:
+% The following procedure is used to simulate this example using the model in the file |zero_order_hold.slx|:
 % 
-% * Navigate to the directory <matlab:hybrid.internal.openExampleFile({'CPS_examples','ZOH'}) Examples/CPS_examples/ZOH>
-% (clicking this link changes your working directory).
 % * Open
-% <matlab:hybrid.internal.openExampleFile({'CPS_examples','ZOH'},'ZOH_example.slx') |ZOH_example.slx|> 
+% <matlab:hybrid.hybrid.examples.zero_order_hold.zero_order_hold |zero_order_hold.slx|> 
 % in Simulink (clicking this link changes your working directory and opens the model).   
 % * Double-click the block labeled _Double Click to Initialize_.
 % * To start the simulation, click the _run_ button or select |Simulation>Run|.
@@ -50,14 +47,15 @@
 % Solutions_. Several plots of the computed solution will open.
 % 
 
-% Change working directory to the example folder.
-hybrid.internal.openExampleFile({'CPS_examples','ZOH'});
-
 % Run the initialization script.
-initialization_exZOHV01
+hybrid.examples.zero_order_hold.initialize
 
 % Run the Simulink model.
-sim('ZOH_example')
+warning('off','Simulink:Commands:LoadingOlderModel')
+simulink_model_path = which('hybrid.examples.zero_order_hold.zero_order_hold');
+sim(simulink_model_path)
+close_system
+close all
 
 % Convert the values t, j, and x output by the simulation into a HybridArc object.
 sol_zoh = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j')
@@ -71,9 +69,11 @@ sol_input = HybridArc(t1, j1, x1);
 % When the Simulink model is open, the blocks can be viewed and modified by
 % double clicking on them.
 
-% Open subsystem "ZOH" in ZOH_example.slx. A screenshot of the subsystem will be
+% Open .slx model. A screenshot of the subsystem will be
 % automatically included in the published document.
-open_system('ZOH_example')
+example_name = 'zero_order_hold';
+model_path = ['hybrid.examples.', example_name ,'.', example_name];
+open_system(which(model_path))
 
 %%
 % The Simulink blocks for the hybrid system in this example are included below.
@@ -103,28 +103,18 @@ open_system('ZOH_example')
 % the output signal after the ZOH process.
 
 clf
-hb = HybridPlotBuilder().subplots('on');
+hpb = HybridPlotBuilder().subplots('on');
 hold on
-hb.legend('ZOH input', 'ZOH input')...
-.color('green')...
-.plotFlows(sol_input);
-hb.legend('ZOH output', 'ZOH output')...
-.flowColor('blue')...
-.jumpColor('red')...
-.plotFlows(sol_zoh.slice(1:2));
+hpb.legend('ZOH input', 'ZOH input')...
+    .color('green')...
+    .plotFlows(sol_input);
+hpb.legend('ZOH output', 'ZOH output')...
+    .color('blue')...
+    .plotFlows(sol_zoh.slice(1:2));
 
 %% Modifying the Model
-% * The _Embedded MATLAB function blocks_ |f, C, g, D| are edited by
-%   double-clicking on the block and editing the script. In each embedded function
-%   block, parameters must be added as inputs and defined as parameters by
-%   selecting |Tools>Edit Data/Ports|, and setting the scope to |Parameter|. 
-% * In the initialization script |initialization_exZOHV01.m|, 
-%   the flow time and jump horizons, |T| and |J| are defined as well as the
-%   initial conditions for the state vector, $x_0$, and input vector, $u_0$, and
-%   a rule for jumps, |rule|.
-% * The simulation stop time and other simulation parameters are set to the
-%   values defined in |initialization_exZOHV01.m| by selecting |Simulation>Configuration
-%   Parameters>Solver| and inputting |T|, |RelTol|, |MaxStep|, etc..  
+% See [Insert example with link] for an explanation for how to modify this
+% example.
 
 %% 
 
@@ -133,6 +123,7 @@ hb.legend('ZOH output', 'ZOH output')...
 
 % Close the Simulink file.
 close_system 
+warning('on','Simulink:Commands:LoadingOlderModel') % Renable warning.
 
 % Navigate to the doc/ directory so that code is correctly included with
 % "<include>src/...</include>" commands.

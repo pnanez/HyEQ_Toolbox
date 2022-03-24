@@ -16,7 +16,7 @@ function f = getFolderLocation(name, varargin)
     matlab_src_dir = fileparts(which('HyEQsolver'));
     toolbox_root_dir = fileparts(matlab_src_dir);
     
-    if isempty(name) || strcmpi(name, 'root')
+    if ~exist('name', 'var') || isempty(name) || strcmpi(name, 'root')
             f = toolbox_root_dir;
     elseif strcmpi(name, 'doc')
             f = fullfile(toolbox_root_dir, 'doc');

@@ -1,10 +1,20 @@
 %% Example 1.2: Bouncing ball
 % In this example, a bouncing ball is modeled in Simulink as a hybrid system.
+%% 
+% The files for this example are found in the package
+% |hybrid.examples.bouncing_ball|:
 % 
-% Click <matlab:hybrid.internal.openExampleFile('Example_1.2-Bouncing_Ball','Example1_2.slx') here> 
-% to change your working directory to the Example 1.2 folder and open the
-% Simulink model. For the same system modeled using the MATLAB-based HyEQ
+% * <matlab:open('hybrid.examples.bouncing_ball.initialize') initialize.m> 
+% * <matlab:hybrid.examples.bouncing_ball.bouncing_ball bouncing_ball.slx> 
+% * <matlab:open('hybrid.examples.bouncing_ball.postprocess') postprocess.m> 
+% 
+% The contents of this package are located in
+% <matlab:cd(hybrid.getFolderLocation('Examples','+hybrid','+examples','+bouncing_ball')) |Examples\+hybrid\+examples\bouncing_ball|>
+% (clicking this link changes your working directory). 
+% 
+% For the same system modeled using the MATLAB-based HyEQ
 % solver, see <matlab:hybrid.internal.openHelp('HybridSystem_demo') here>.
+
 %% Mathematical Model
 % 
 % The bouncing ball is modeled as a hybrid system with the following data: 
@@ -30,23 +40,24 @@
 %% How to Run
 % The following procedure is used to simulate this example:
 % 
-% # Change your working directory to <matlab:hybrid.internal.openExampleFile('Example_1.2-Bouncing_Ball') Examples/Example_1.2-Bouncing_Ball/>.
-% # Open <matlab:hybrid.internal.openExampleFile('Example_1.2-Bouncing_Ball','Example1_2.slx')
-% Example1_2.slx>. It may take a few seconds for Simulink to open.
+% # Open <matlab:hybrid.examples.bouncing_ball.bouncing_ball
+% hybrid.examples.bouncing_ball.bouncing_ball>. It may take a few seconds for Simulink to open.
 % # In Simulink, double click the block "Double Click to Initialize" to run
-% <matlab:hybrid.internal.openExampleFile('Example_1.2-Bouncing_Ball','initialization_ex1_2') initialization_ex1_2>.
+% <matlab:open('hybrid.examples.bouncing_ball.initialize') |hybrid.examples.bouncing_ball.initialize.m|>.
 % # Start the simulation by clicking the "Run" button. Let the simulation
 % finish.
 % # Double click the block "Double Click to Plot Solutions" to run
-% <matlab:hybrid.internal.openExampleFile('Example_1.2-Bouncing_Ball','postprocessing_ex1_2') postprocessing_ex1_2>.
+% <matlab:open('hybrid.examples.bouncing_ball.postprocess') |hybrid.examples.bouncing_ball.postprocess.m|> 
+% to generate plots. 
 
-hybrid.internal.openExampleFile('Example_1.2-Bouncing_Ball'); 
-
-% Run the initialization script.
-initialization_ex1_2
+hybrid.examples.bouncing_ball.initialize
 
 % Run the Simulink model.
-sim('Example_1_2.slx')
+warning('off','Simulink:Commands:LoadingOlderModel')
+simulink_model_path = which('hybrid.examples.bouncing_ball.bouncing_ball');
+sim(simulink_model_path)
+close_system
+close all
 
 % Convert the values t, j, and x output by the simulation into a HybridArc object.
 sol = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j')
@@ -76,22 +87,24 @@ view(37.5,30)
 %% Example Code
 % The MATLAB source code for $f, C, g,$ and $D$ from this example is included below.
 %
-% *f_ex1_2.m:*
+% *f.m:*
 % 
-% <include>../Examples/Example_1.2-Bouncing_Ball/f_ex1_2.m</include>
+% <include>src/Matlab2tex_1_2/f.m</include>
 %
-% *C_ex1_2.m:*
+% *C.m:*
 % 
-% <include>../Examples/Example_1.2-Bouncing_Ball/C_ex1_2.m</include>
+% <include>src/Matlab2tex_1_2/C.m</include>
 %
-% *g_ex1_2.m:*
+% *g.m:*
 % 
-% <include>../Examples/Example_1.2-Bouncing_Ball/g_ex1_2.m</include>
+% <include>src/Matlab2tex_1_2/g.m</include>
 %
-% *D_ex1_2.m:*
+% *D.m:*
 % 
-% <include>../Examples/Example_1.2-Bouncing_Ball/D_ex1_2.m</include>
+% <include>src/Matlab2tex_1_2/D.m</include>
 
 % Navigate to the doc/ directory so that code is correctly included with
 % "<include>src/...</include>" commands.
 cd(hybrid.getFolderLocation('doc')) 
+
+warning('on','Simulink:Commands:LoadingOlderModel') % Renable warning.

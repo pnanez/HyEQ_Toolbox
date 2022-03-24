@@ -1,10 +1,10 @@
 %% Example 1.8: Choosing Behavior in the Intersection of C and D
 % This example demonstrates how to define the behavior of simulations in the
 % intersection of the flow and jump sets.
+% 
 % Click
-% <matlab:hybrid.internal.openExampleFile('Example_1.8-A_Simple_Example','Example1_8.slx') here> 
-% to change your working directory to the Example 1.8 folder and open the
-% Simulink model. 
+% <matlab:hybrid.examples.behavior_in_C_intersection_D.behavior_in_C_intersection_D here> 
+% to change open the Simulink model for this example. 
 
 %% Mathematical Model
 % Consider the hybrid system with data
@@ -60,20 +60,15 @@
 % The solution always jumps except when 
 % $x$ is in $[1, 2) \subset C \setminus D$.
 
-% Change working directory to the example folder.
-wd_before = hybrid.internal.openExampleFile('Example_1.8-A_Simple_Example');
-
 % Run the initialization script.
-initialization_ex1_8a
-x0 = 0; %#ok<NASGU> Variable is used within the Simulink model.
+hybrid.examples.behavior_in_C_intersection_D.initialize
+rule = 1; %#ok<NASGU> Used in Simulink model.
 
 % Run the Simulink model.
-sim('Example1_8')
-
-% Convert the values t, j, and x output by the simulation into a HybridArc object.
-sol_a = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j')
-
-postprocessing_ex1_8
+warning('off','Simulink:Commands:LoadingOlderModel')
+simulink_model_path = which('hybrid.examples.behavior_in_C_intersection_D.behavior_in_C_intersection_D');
+sim(simulink_model_path)
+close_system
 
 %% Flow Priority (|rule = 2|) 
 % When |rule=2|, flows have priorty, so anytime a solution $x$ is in $C\cap D$,
@@ -93,15 +88,19 @@ postprocessing_ex1_8
 % At the end of the solution, $x$ leaves $C \cup D$ and terminates. 
 
 % Run the initialization script.
-initialization_ex1_8b
+hybrid.examples.behavior_in_C_intersection_D.initialize
+
 x0 = 0; %#ok<NASGU> Variable is used within the Simulink model.
+rule = 2; %#ok<NASGU> Variable is used within the Simulink model.
+
 % Run the Simulink model.
-sim('Example1_8')
+warning('off','Simulink:Commands:LoadingOlderModel')
+simulink_model_path = which('hybrid.examples.behavior_in_C_intersection_D.behavior_in_C_intersection_D');
+sim(simulink_model_path)
+close_system
 
 % Convert the values t, j, and x output by the simulation into a HybridArc object.
 sol_b = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j')
-
-postprocessing_ex1_8
 
 %%
 % Note that the stopping logic is implemented such that when the
@@ -146,25 +145,20 @@ postprocessing_ex1_8
 % and if available for recording, it should be stored in |(0.2e-3,0)|.
 % This is a limitation of the current implementation.
  
-
-% Change working directory to the example folder.
-hybrid.internal.openExampleFile('Example_1.8-A_Simple_Example');
-
 % Run the initialization script.
-initialization_ex1_8c
+hybrid.examples.behavior_in_C_intersection_D.initialize
 x0 = 0; %#ok<NASGU> Variable is used within the Simulink model.
+rule = 3;
 
- % Set the seed for the random number generator so that we consistently 
- % generate an interesting plot.
-rng(7)
+% Set the seed for the random number generator so that we consistently 
+% generate an interesting plot.
+rng(12)
 
 % Run the Simulink model.
-sim('Example1_8')
-
-% Convert the values t, j, and x output by the simulation into a HybridArc object.
-sol_c = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j')
-
-postprocessing_ex1_8
+warning('off','Simulink:Commands:LoadingOlderModel')
+simulink_model_path = which('hybrid.examples.behavior_in_C_intersection_D.behavior_in_C_intersection_D');
+sim(simulink_model_path)
+close_system
 
 %% Numerical Limitations
 % Isolated points in $D$ that are in the interior of $C$, such as $x=7$, require
@@ -173,24 +167,19 @@ postprocessing_ex1_8
 % because the odds of the numerical value of |x| ever being exactly $7$ is
 % minuscule. Thus, from a numerical standpoint, |x| never enters $D$. 
 
-% Change working directory to the example folder.
-hybrid.internal.openExampleFile('Example_1.8-A_Simple_Example');
-
 % Run the initialization script.
-initialization_ex1_8a
+hybrid.examples.behavior_in_C_intersection_D.initialize
+
 x0 = 6.2; % Must be strictly between 6 and 7.
+
+% Run the Simulink model.
+simulink_model_path = which('hybrid.examples.behavior_in_C_intersection_D.behavior_in_C_intersection_D');
+sim(simulink_model_path)
+close_system
 
  % Set the seed for the random number generator so that we consistently 
  % generate an interesting plot.
 rng(7)
-
-% Run the Simulink model.
-sim('Example1_8')
-
-% Convert the values t, j, and x output by the simulation into a HybridArc object.
-sol_c = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j')
-
-postprocessing_ex1_8
 
 %%
 % Furthermore, suppose the jump map given above is modified by removing the
@@ -218,6 +207,7 @@ postprocessing_ex1_8
 
 % Close the Simulink file.
 close_system 
+warning('on','Simulink:Commands:LoadingOlderModel') % Renable warning.
 
 % Navigate to the doc/ directory so that code is correctly included with
 % "<include>src/...</include>" commands.

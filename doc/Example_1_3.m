@@ -2,11 +2,20 @@
 % In this example, a ball bouncing on a moving platform is 
 % modeled in Simulink as a hybrid system with an input, where the input
 % determines the height of the platform.
+
+%% 
+% The files for this example are found in the package
+% |hybrid.examples.bouncing_ball_with_input|:
 % 
-% Click
-% <matlab:hybrid.internal.openExampleFile('Example_1.3-Bouncing_Ball_with_Input','Example1_3.slx') here> 
-% to change your working directory to the Example 1.3 folder and open the
-% Simulink model. 
+% * <matlab:open('hybrid.examples.bouncing_ball_with_input.initialize') initialize.m> 
+% * <matlab:hybrid.examples.bouncing_ball_with_input.bouncing_ball_with_input bouncing_ball_with_input.slx> 
+% * <matlab:hybrid.examples.bouncing_ball_with_input.bouncing_ball_with_input bouncing_ball_with_input_alternative.slx> 
+% * <matlab:open('hybrid.examples.bouncing_ball_with_input.postprocess') postprocess.m> 
+% 
+% The contents of this package are located in
+% <matlab:cd(hybrid.getFolderLocation('Examples','+hybrid','+examples','+bouncing_ball_with_input')) |Examples\+hybrid\+examples\bouncing_ball_with_input|>
+% (clicking this link changes your working directory). 
+
 %% Mathematical Model
 % 
 % The bouncing ball system on a moving platform is modeled as a hybrid system
@@ -31,25 +40,27 @@
 % 
 % The following procedure is used to simulate this example using the model in the file |Example_1_3.slx|:
 % 
-% * Navigate to the directory <matlab:hybrid.internal.openExampleFile('Example_1.3-Bouncing_Ball_with_Input') Examples/Example_1.3-Bouncing_Ball_with_Input>
-% (clicking this link changes your working directory).
-% * Open
-% <matlab:hybrid.internal.openExampleFile('Example_1.3-Bouncing_Ball_with_Input','Example1_3.slx') |Example_1_3.slx|> 
-% in Simulink (clicking this link changes your working directory and opens the model).   
-% * Double-click the block labeled _Double Click to Initialize_.
-% * To start the simulation, click the _run_ button or select |Simulation>Run|.
-% * Once the simulation finishes, click the block labeled _Double Click to Plot
-% Solutions_. Several plots of the computed solution will open.
+% # Open
+% <matlab:hybrid.examples.bouncing_ball_with_input.bouncing_ball_with_input |hybrid.examples.bouncing_ball_with_input.bouncing_ball_with_input.slx|> 
+% in Simulink.   
+% # In Simulink, double click the block "Double Click to Initialize" to run
+% <matlab:open('hybrid.examples.bouncing_ball_with_input.initialize') |hybrid.examples.bouncing_ball_with_input.initialize.m|>.
+% # Start the simulation by clicking the "Run" button. Let the simulation
+% finish.
+% # Double click the block "Double Click to Plot Solutions" to run
+% <matlab:open('hybrid.examples.bouncing_ball_with_input.postprocess') |hybrid.examples.bouncing_ball_with_input.postprocess.m|>, 
+% which generates plots.  
 % 
 
 % Change working directory to the example folder.
-wd_before = hybrid.internal.openExampleFile('Example_1.3-Bouncing_Ball_with_Input');
-
-% Run the initialization script.
-initialization_ex1_3
+hybrid.examples.bouncing_ball_with_input.initialize
 
 % Run the Simulink model.
-sim('Example1_3')
+warning('off','Simulink:Commands:LoadingOlderModel')
+simulink_model_path = which('hybrid.examples.bouncing_ball_with_input.bouncing_ball_with_input');
+sim(simulink_model_path)
+close_system
+close all
 
 % Convert the values t, j, and x output by the simulation into a HybridArc object.
 sol = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j')
@@ -62,7 +73,11 @@ sol = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j')
 
 % Open subsystem "HS" in Example1_3.slx. A screenshot of the subsystem will be
 % automatically included in the published document.
-open_system('Example1_3/HS')
+example_name = 'bouncing_ball_with_input';
+model_path = ['hybrid.examples.', example_name ,'.', example_name];
+block_path = [example_name, '/HS'];
+load_system(which(model_path))
+open_system(block_path)
 
 %%
 % The Simulink blocks for the hybrid system in this example are included below.
@@ -123,6 +138,7 @@ view(37.5, 30)
 
 % Close the Simulink file.
 close_system 
+warning('on','Simulink:Commands:LoadingOlderModel') % Renable warning.
 
 % Navigate to the doc/ directory so that code is correctly included with
 % "<include>src/...</include>" commands.
