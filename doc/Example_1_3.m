@@ -1,4 +1,4 @@
-%% Example 1.3: Bouncing Ball with Input in Simulink
+%% Examples 1.3 and 1.4: Bouncing Ball with Input in Simulink
 % In this example, a ball bouncing on a moving platform is 
 % modeled in Simulink as a hybrid system with an input, where the input
 % determines the height of the platform.
@@ -97,6 +97,21 @@ open_system(block_path)
 % *jump set* |D| *block*
 % 
 % <include>src/Matlab2tex_1_3/D.m</include>
+
+
+%% Alternative Simulink Model
+% The Simulink model, below, shows the jump set |D| modeled in Simulink using
+% operational blocks instead of a MATLAB function block. The other functions for
+% *flow map* |f|, *flow set* |C|, and *jump map* |g| are the same as above.
+
+% Open subsystem "HS" in Example1_4.slx. A screenshot of the subsystem will be
+% automatically included in the published document.
+warning('off','Simulink:Commands:LoadingOlderModel')
+model_path = 'hybrid.examples.bouncing_ball_with_input.bouncing_ball_with_input_alternative';
+block_path = 'bouncing_ball_with_input_alternative/HS';
+load_system(which(model_path))
+open_system(block_path)
+snapnow();
 
 %% Example Output
 % Let the input function be $u(t,j) = 0.5$ for $t \in [0, 2.5)$ and $u(t, j) = 0$

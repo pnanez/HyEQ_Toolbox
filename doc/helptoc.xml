@@ -12,7 +12,6 @@
         <tocitem target="html/examples_TOC.html">Hybrid System Examples
             <tocitem target="html/Example_1_2.html">Example 1.2: Bouncing ball with MATLAB-based HyEQ Solver</tocitem>
             <tocitem target="html/Example_1_3.html">Example 1.3: Bouncing ball with input</tocitem>
-            <tocitem target="html/Example_1_4.html">Example 1.4: Alternate way to simulate the bouncing ball</tocitem>
             <tocitem target="html/Example_1_5.html">Example 1.5: Vehicle following a track with boundaries</tocitem>
             <tocitem target="html/Example_1_6.html">Example 1.6: Interconnection of hybrid systems: bouncing ball and moving platform</tocitem>
             <tocitem target="html/Example_1_7.html">Example 1.7: Biological example: synchronization of two fireflies</tocitem>

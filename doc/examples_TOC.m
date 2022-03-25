@@ -2,7 +2,6 @@
 %
 % * <matlab:hybrid.internal.openHelp('Example_1_2') Example 1.2: Bouncing ball with MATLAB-based HyEQ Solver>
 % * <matlab:hybrid.internal.openHelp('Example_1_3') Example 1.3: Bouncing ball with input>
-% * <matlab:hybrid.internal.openHelp('Example_1_4') Example 1.4: Alternate way to simulate the bouncing ball>
 % * <matlab:hybrid.internal.openHelp('Example_1_5') Example 1.5: Vehicle following a track with boundaries>
 % * <matlab:hybrid.internal.openHelp('Example_1_6') Example 1.6: Interconnection of hybrid systems: bouncing ball and moving platform>
 % * <matlab:hybrid.internal.openHelp('Example_1_7') Example 1.7: Biological example: synchronization of two fireflies>
