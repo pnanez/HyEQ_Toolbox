@@ -37,15 +37,16 @@
 
 %% Where to Find Help
 % * Documentation for the toolbox can be found in MATLAB Help (F1) at Supplemental 
-% Software > <matlab:hybrid.internal.showHelp() Hybrid Equations Toolbox>.
+% Software > Hybrid Equations Toolbox.
 % * To see documentation for a particular component of the toolbox, execute  
 % |help [name]| or |doc [name]| in the command line, where |[name]| is the name 
 % of a class, function, or package
 % (|help| prints a short description and |doc| opens the documentation page).
 % * To report a problem, request a feature, or ask for help, <https://github.com/pnanez/HyEQ_Toolbox/issues/new 
 % submit an issue> on our GitHub repository. 
-% * A webinar introducing the HyEQ Toolbox v2.04 is available <http://www.mathworks.com/videos/hyeq-a-toolbox-for-simulation-of-hybrid-dynamical-systems-81992.html 
-% here> (a free registration is required).
+% * A webinar introducing the HyEQ Toolbox v2.04 is available 
+% <http://www.mathworks.com/videos/hyeq-a-toolbox-for-simulation-of-hybrid-dynamical-systems-81992.html here> 
+% (a free registration is required).
 
 %% Troubleshooting
 % *Problem*: When I call |HybridSystem.solve()|, the following error appears: 
@@ -77,7 +78,7 @@
 % |flowMap, jumpMap, flowSetIndicator, jumpSetIndicator| functions in order to 
 % specify $f, g, C$, and $D$, respectively.
 % 
-% <include>../matlab/+hybrid/+examples/BouncingBall.m</include>
+% <include>../Examples/+hybrid/+examples/BouncingBall.m</include>
 %% 
 % We then create an instance of the bouncing ball system:
 

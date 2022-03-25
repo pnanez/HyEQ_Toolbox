@@ -101,8 +101,7 @@ open_system(block_path)
 
 %% Alternative Simulink Model
 % The Simulink model, below, shows the jump set |D| modeled in Simulink using
-% operational blocks instead of a MATLAB function block. The other functions for
-% *flow map* |f|, *flow set* |C|, and *jump map* |g| are the same as above.
+% operational blocks instead of a MATLAB function block.
 
 % Open subsystem "HS" in Example1_4.slx. A screenshot of the subsystem will be
 % automatically included in the published document.
