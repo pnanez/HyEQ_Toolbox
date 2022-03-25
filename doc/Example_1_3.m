@@ -21,21 +21,23 @@
 % The bouncing ball system on a moving platform is modeled as a hybrid system
 % with the following data: 
 % 
-% $$\begin{array}{ll}
+% $$\left\{\begin{array}{ll}
 % f(x,u):=\left[\begin{array}{c}
 %    x_{2} \\
 %  -\gamma
 %  \end{array}\right],
-%    & C := \{ (x,u) \in \mathbf{R}^{2} \times \mathbf{R} \mid x_{1} \geq u \} \\
+%    & C := \{ (x,u) \in \mathbf{R}^{2} \times \mathbf{R} \mid x_{1} \geq u \}
+%    \\ \\
 % g(x,u):=\left[ \begin{array}{c} 
 %                    u \\ -\lambda x_{2}
 %                \end{array}\right],
-%    & D: = \{ (x,u) \in \mathbf{R}^{2} \times \mathbf{R} \mid x_{1} \leq u \ , \
+%    & D: = \{ (x,u) \in \mathbf{R}^{2} \times \mathbf{R} \mid x_{1} \leq u, \
 %   x_{2} \leq 0\}
-% \end{array}$$
+% \end{array}\right.$$
 % 
 % where $\gamma >0$ is the gravity constant, $u$ is the height of the platform
 % given as an input, and $\lambda \in [0,1)$ is the restitution coefficient.
+
 %% Steps to Run Model
 % 
 % The following procedure is used to simulate this example using the model in the file |Example_1_3.slx|:
@@ -43,14 +45,13 @@
 % # Open
 % <matlab:hybrid.examples.bouncing_ball_with_input.bouncing_ball_with_input |hybrid.examples.bouncing_ball_with_input.bouncing_ball_with_input.slx|> 
 % in Simulink.   
-% # In Simulink, double click the block "Double Click to Initialize" to run
-% <matlab:open('hybrid.examples.bouncing_ball_with_input.initialize') |hybrid.examples.bouncing_ball_with_input.initialize.m|>.
+% # In Simulink, double click the block "Double Click to Initialize" to 
+% <matlab:open('hybrid.examples.bouncing_ball_with_input.initialize') |initialize variables|> 
+% (parameters, initial values, etc.). 
 % # Start the simulation by clicking the "Run" button. Let the simulation
 % finish.
-% # Double click the block "Double Click to Plot Solutions" to run
-% <matlab:open('hybrid.examples.bouncing_ball_with_input.postprocess') |hybrid.examples.bouncing_ball_with_input.postprocess.m|>, 
-% which generates plots.  
-% 
+% # Double click the block "Double Click to Plot Solutions" to
+% <matlab:open('hybrid.examples.bouncing_ball_with_input.postprocess') |generate plots|> 
 
 % Change working directory to the example folder.
 hybrid.examples.bouncing_ball_with_input.initialize
@@ -81,6 +82,8 @@ open_system(block_path)
 
 %%
 % The Simulink blocks for the hybrid system in this example are included below.
+% The _Embedded MATLAB function blocks_ |f, C, g, D| are edited by
+% double-clicking on the blocks in Simulink.
 %
 % *flow map* |f| *block*
 % 
@@ -98,7 +101,6 @@ open_system(block_path)
 % 
 % <include>src/Matlab2tex_1_3/D.m</include>
 
-
 %% Alternative Simulink Model
 % The Simulink model, below, shows the jump set |D| modeled in Simulink using
 % operational blocks instead of a MATLAB function block.
@@ -107,9 +109,8 @@ open_system(block_path)
 % automatically included in the published document.
 warning('off','Simulink:Commands:LoadingOlderModel')
 model_path = 'hybrid.examples.bouncing_ball_with_input.bouncing_ball_with_input_alternative';
-block_path = 'bouncing_ball_with_input_alternative/HS';
 load_system(which(model_path))
-open_system(block_path)
+open_system('bouncing_ball_with_input_alternative/HS')
 snapnow();
 
 %% Example Output
@@ -129,21 +130,35 @@ plotHybrid(sol.slice(1))
 grid on
 view(37.5, 30) 
 
-%% Modifying the Model
-% * The _Embedded MATLAB function blocks_ |f, C, g, D| are edited by
-%   double-clicking on the block and editing the script. In each embedded function
-%   block, parameters must be added as inputs and defined as parameters by
-%   selecting |Tools>Edit Data/Ports|, and setting the scope to |Parameter|. For
-%   this example, |gamma| and |lambda| are defined in this way.    
-% * In the initialization script |initialization.m|, 
-%   the flow time and jump horizons, |T| and |J| are defined as well as the
-%   initial conditions for the state vector, $x_0$, and input vector, $u_0$, and
-%   a rule for jumps, |rule|.
-% * The simulation stop time and other simulation parameters are set to the
-%   values defined in |initialization.m| by selecting |Simulation>Configuration
-%   Parameters>Solver| and inputting |T|, |RelTol|, |MaxStep|, etc..  
-% * The masked integrator system is double-clicked and the simulation horizons
-%   and initial conditions are set as desired. 
+%% Defining Parameters
+% To add parameters to an embedded function block, 
+% open the function, navigate to the |Function| tab,
+% select |Ports and Data Manager| in the toolbar, and click |Add>Data|. 
+% A new item will appear in the list. 
+% Set the name as desired and change the scope to |Parameter|.
+% Once a parameter is defined this way, it is passed to the function as an
+% input with the given name.
+% In this example, |gamma| and |lambda| are defined in this way and the values
+% are set within
+% <matlab:open('hybrid.examples.bouncing_ball_with_input.initialize') initialize.m>. 
+
+%% Defining the Simulation Time-Horizon and Initial Condition
+% The time flow time horizon |T|, the jump horizon |J|, the
+% initial condition |x0| are defined in
+% <matlab:open('hybrid.examples.bouncing_ball_with_input.initialize') initialize.m>.
+% The names of the variables must match the names specificied in the 
+% |Integrator System| settings, which are opened by double-clicking |HS| and
+% then on the |Integrator System|.
+% 
+% <<images/IntegratorSettings.png>>
+
+%% Solver Configuration
+% The initialization script 
+% <matlab:open('hybrid.examples.bouncing_ball_with_input.initialize') initialize.m>, 
+% also sets the values for the priority |rule| for $C \cap D$
+% and solver tolerances |RelTol| and |MaxStep|. 
+% The solver tolerances are defined in Simulink by opening 
+% |Modeling>Model Settings>Solver| and inputting |T|, |RelTol|, |MaxStep|, etc.
 
 %% 
 

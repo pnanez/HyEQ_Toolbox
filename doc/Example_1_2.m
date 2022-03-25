@@ -4,9 +4,13 @@
 % The files for this example are found in the package
 % |hybrid.examples.bouncing_ball|:
 % 
-% * <matlab:open('hybrid.examples.bouncing_ball.initialize') initialize.m> 
-% * <matlab:hybrid.examples.bouncing_ball.bouncing_ball bouncing_ball.slx> 
-% * <matlab:open('hybrid.examples.bouncing_ball.postprocess') postprocess.m> 
+% * <matlab:open('hybrid.examples.bouncing_ball.initialize') |initialize.m|> 
+% * <matlab:hybrid.examples.bouncing_ball.bouncing_ball |bouncing_ball.slx|> 
+% * <matlab:open('hybrid.examples.bouncing_ball.C') |C.m|>,  
+%   <matlab:open('hybrid.examples.bouncing_ball.f') |f.m|>, 
+%   <matlab:open('hybrid.examples.bouncing_ball.D') |D.m|>,
+%   <matlab:open('hybrid.examples.bouncing_ball.g') |g.m|> 
+% * <matlab:open('hybrid.examples.bouncing_ball.postprocess') |postprocess.m|> 
 % 
 % The contents of this package are located in
 % <matlab:cd(hybrid.getFolderLocation('Examples','+hybrid','+examples','+bouncing_ball')) |Examples\+hybrid\+examples\bouncing_ball|>
@@ -37,18 +41,72 @@
 % For this example, we consider a ball bouncing on a floor at zero height. 
 % The constants for the bouncing ball system are $g = 9.81$ and $\lambda=0.8$.
 
+%% Simulink Model
+% The following diagram shows the Simulink model of the bouncing ball. 
+% When the Simulink model is open, the blocks can be viewed and modified by
+% double clicking on them.
+
+% Open subsystem "HS" in Example1_3.slx. A screenshot of the subsystem will be
+% automatically included in the published document.
+example_name = 'bouncing_ball';
+model_path = ['hybrid.examples.', example_name ,'.', example_name];
+load_system(which(model_path))
+open_system(example_name)
+
+%%
+% Double-click |HS_ex| to see inside of the hybrid subsystem.
+% The contents of the |HS_ex| block is shown here. 
+block_path = [example_name, '/HS_ex'];
+open_system(block_path)
+
+%%
+% The *flow map* |f|, *flow set* |C|, *jump map* |g|, and 
+% *jump set* |D| are defined by interpreted MATLAB function blocks. 
+% These blocks call the MATLAB functions in 
+% <matlab:open('hybrid.examples.bouncing_ball.C') |C.m|>,  
+% <matlab:open('hybrid.examples.bouncing_ball.f') |f.m|>, 
+% <matlab:open('hybrid.examples.bouncing_ball.D') |D.m|>,
+% <matlab:open('hybrid.examples.bouncing_ball.g') |g.m|> 
+% in the 
+% <matlab:cd(hybrid.getFolderLocation('Examples','+hybrid','+examples','+bouncing_ball')) |hybrid.examples.bouncing_ball|>
+% package.
+% Defining a hybrid systems in this way makes it easier to track changes in a
+% source control management tool, such as Git, because the code is stored as
+% plain text. 
+% The downsides to this approach, however, is that it does not support systems with 
+% inputs and is slightly slower than using embedded function blocks (see
+% <matlab:hybrid.internal.openHelp('Example_1_3') Example 1.3: Bouncing ball with input>).
+
+%% 
+% The MATLAB source code for $f, C, g,$ and $D$ is included below.
+%
+% *f.m:*
+% 
+% <include>src/Matlab2tex_1_2/f.m</include>
+%
+% *C.m:*
+% 
+% <include>src/Matlab2tex_1_2/C.m</include>
+%
+% *g.m:*
+% 
+% <include>src/Matlab2tex_1_2/g.m</include>
+%
+% *D.m:*
+% 
+% <include>src/Matlab2tex_1_2/D.m</include>
+
 %% How to Run
 % The following procedure is used to simulate this example:
 % 
 % # Open <matlab:hybrid.examples.bouncing_ball.bouncing_ball
 % hybrid.examples.bouncing_ball.bouncing_ball>. It may take a few seconds for Simulink to open.
-% # In Simulink, double click the block "Double Click to Initialize" to run
-% <matlab:open('hybrid.examples.bouncing_ball.initialize') |hybrid.examples.bouncing_ball.initialize.m|>.
+% # In Simulink, double click the block "Double Click to Initialize" to
+% <matlab:open('hybrid.examples.bouncing_ball.initialize') initialize values> (initial conditions, parameters, etc.).
 % # Start the simulation by clicking the "Run" button. Let the simulation
 % finish.
-% # Double click the block "Double Click to Plot Solutions" to run
-% <matlab:open('hybrid.examples.bouncing_ball.postprocess') |hybrid.examples.bouncing_ball.postprocess.m|> 
-% to generate plots. 
+% # Double click the block "Double Click to Plot Solutions" to
+% <matlab:open('hybrid.examples.bouncing_ball.postprocess') generate plots>.
 
 hybrid.examples.bouncing_ball.initialize
 
@@ -84,24 +142,7 @@ hpb.plotHybrid(sol.slice(1))
 grid on
 view(37.5,30)
 
-%% Example Code
-% The MATLAB source code for $f, C, g,$ and $D$ from this example is included below.
-%
-% *f.m:*
-% 
-% <include>src/Matlab2tex_1_2/f.m</include>
-%
-% *C.m:*
-% 
-% <include>src/Matlab2tex_1_2/C.m</include>
-%
-% *g.m:*
-% 
-% <include>src/Matlab2tex_1_2/g.m</include>
-%
-% *D.m:*
-% 
-% <include>src/Matlab2tex_1_2/D.m</include>
+%%
 
 % Navigate to the doc/ directory so that code is correctly included with
 % "<include>src/...</include>" commands.

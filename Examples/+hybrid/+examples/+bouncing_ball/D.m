@@ -1,5 +1,5 @@
 function inside_D = D(x) 
-    % Jump set for Example 1.2: Bouncing Ball.
+    % Jump set for Bouncing Ball.
     % Return 0 if outside of D, and 1 if inside D
     if (x(1) <= 0 && x(2) <= 0)
         inside_D = 1;
