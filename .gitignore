@@ -1,6 +1,6 @@
 # Ignore generated HTML pages, but keep the image folder, which stores non-generated image files.
-html/*
-!html/images
+**/html/*
+!**/html/images
 
 # Ignore MATLAB toolbox packages
 *.mltbx
@@ -42,12 +42,6 @@ demos.xml
 *.dvi
 *.xdv
 *-converted-to.*
-# these rules might exclude image files for figures etc.
-#*.ps
-#*.eps
-#*.pdf
-*.png
-
 
 # Created by https://www.toptal.com/developers/gitignore/api/matlab,windows,macos
 # Edit at https://www.toptal.com/developers/gitignore?templates=matlab,windows,macos
