@@ -116,20 +116,6 @@ HybridPlotBuilder()...
 .slice(2)...
 .plotFlows(sol);
 
-%% Modifying the Model
-% * The _Embedded MATLAB function blocks_ |f, C, g, D| are edited by
-%   double-clicking on the block and editing the script. In each embedded function
-%   block, parameters must be added as inputs and defined as parameters by
-%   selecting |Tools>Edit Data/Ports|, and setting the scope to |Parameter|. For
-%   this example, |Ts| is defined in this way.    
-% * In the initialization script |initialization_exADC.m|,
-%   the flow time and jump horizons, |T| and |J| are defined as well as the
-%   initial conditions for the state vector, $x0ADC$, and
-%   a rule for jumps, |rule|.
-% * The simulation stop time and other simulation parameters are set to the
-%   values defined in |initialization_exADC.m| by selecting |Simulation>Configuration
-%   Parameters>Solver| and inputting |T|, |RelTol|, |MaxStep|, etc..  
-
 %% 
 
 % Close the Simulink file.

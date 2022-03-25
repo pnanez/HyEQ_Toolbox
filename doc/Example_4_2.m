@@ -2,10 +2,19 @@
 % In this example, a physical plant, its output digitally transmitted 
 % through a network, and a state estimator are 
 % modeled in Simulink as a hybrid system.
-% Click
-% <matlab:hybrid.examples.network_estimation1.network_estimation1 here> and
-% <matlab:hybrid.examples.network_estimation2.network_estimation2 here> 
-% to open the Simulink models for this example.
+
+%% 
+% The files for this example are found in the package
+% |hybrid.examples.network_estimation|:
+% 
+% * <matlab:open('hybrid.examples.network_estimation.initialize') initialize.m> 
+% * <matlab:hybrid.examples.network_estimation.network_estimation network_estimation.slx> 
+% * <matlab:hybrid.examples.network_estimation.network_estimation_with_intput network_estimation_with_intput.slx> 
+% * <matlab:open('hybrid.examples.network_estimation.postprocess') postprocess.m> 
+% 
+% The contents of this package are located in
+% <matlab:cd(hybrid.getFolderLocation('Examples','+hybrid','+examples','+network_estimation')) |Examples\+hybrid\+examples\network_estimation|>
+% (clicking this link changes your working directory). 
 
 %% Mathematical Model
 % 
@@ -155,10 +164,10 @@
 
 %% Steps to Run Zero-input Model
 % 
-% The following procedure is used to simulate the zero-input example using the model in the file |network_estimation1.slx|:
+% The following procedure is used to simulate the zero-input example using the model in the file |network_estimation.slx|:
 % 
 % * Open
-% <matlab:hybrid.examples.network_estimation1.network_estimation1 |network_example1.slx|> 
+% <matlab:hybrid.examples.network_estimation.network_estimation |network_estimation.slx|> 
 % in Simulink (clicking this link changes your working directory and opens the model).   
 % * Double-click the block labeled _Double Click to Initialize_.
 % * To start the simulation, click the _run_ button or select |Simulation>Run|.
@@ -166,14 +175,14 @@
 % Solutions_. Several plots of the computed solution will open.
 
 % Run the initialization script.
-hybrid.examples.network_estimation1.initialize
+hybrid.examples.network_estimation.initialize
 
 % Set seed for random number generator so we have reproducable outputs.
 rng(2)
 
 % Run the Simulink model.
 warning('off','Simulink:Commands:LoadingOlderModel')
-simulink_model_path = which('hybrid.examples.network_estimation1.network_estimation1');
+simulink_model_path = which('hybrid.examples.network_estimation.network_estimation');
 sim(simulink_model_path)
 close_system
 close all
@@ -190,7 +199,7 @@ solhatz = HybridArc(thatz, jhatz, hatz);
 
 % Open .slx model. A screenshot of the subsystem will be
 % automatically included in the published document.
-example_name = 'network_estimation1';
+example_name = 'network_estimation';
 model_path = ['hybrid.examples.', example_name ,'.', example_name];
 open_system(which(model_path))
  
@@ -202,55 +211,55 @@ open_system(which(model_path))
 %
 % *flow map* |f| *block*
 % 
-% <include>src/Matlab2tex_CPS_Network_1/f.m</include>
+% <include>src/Matlab2tex_CPS_Network/f.m</include>
 %
 % *flow set* |C| *block*
 % 
-% <include>src/Matlab2tex_CPS_Network_1/C.m</include>
+% <include>src/Matlab2tex_CPS_Network/C.m</include>
 %
 % *jump map* |g| *block*
 % 
-% <include>src/Matlab2tex_CPS_Network_1/g.m</include>
+% <include>src/Matlab2tex_CPS_Network/g.m</include>
 %
 % *jump set* |D| *block*
 % 
-% <include>src/Matlab2tex_CPS_Network_1/D.m</include>
+% <include>src/Matlab2tex_CPS_Network/D.m</include>
 %
 % *Network:*
 %
 % *flow map* |f_network| *block*
 % 
-% <include>src/Matlab2tex_CPS_Network_1/f_network.m</include>
+% <include>src/Matlab2tex_CPS_Network/f_network.m</include>
 %
 % *flow set* |C_network| *block*
 % 
-% <include>src/Matlab2tex_CPS_Network_1/C_network.m</include>
+% <include>src/Matlab2tex_CPS_Network/C_network.m</include>
 %
 % *jump map* |g_network| *block*
 % 
-% <include>src/Matlab2tex_CPS_Network_1/g_network.m</include>
+% <include>src/Matlab2tex_CPS_Network/g_network.m</include>
 %
 % *jump set* |D_network| *block*
 % 
-% <include>src/Matlab2tex_CPS_Network_1/D_network.m</include>
+% <include>src/Matlab2tex_CPS_Network/D_network.m</include>
 %
 % *Estimator:*
 %
 % *flow map* |f_Estimator| *block*
 % 
-% <include>src/Matlab2tex_CPS_Network_1/f_Estimator.m</include>
+% <include>src/Matlab2tex_CPS_Network/f_Estimator.m</include>
 %
 % *flow set* |C_Estimator| *block*
 % 
-% <include>src/Matlab2tex_CPS_Network_1/C_Estimator.m</include>
+% <include>src/Matlab2tex_CPS_Network/C_Estimator.m</include>
 %
 % *jump map* |g_Estimator| *block*
 % 
-% <include>src/Matlab2tex_CPS_Network_1/g_Estimator.m</include>
+% <include>src/Matlab2tex_CPS_Network/g_Estimator.m</include>
 %
 % *jump set* |D_Estimator| *block*
 % 
-% <include>src/Matlab2tex_CPS_Network_1/D_Estimator.m</include>
+% <include>src/Matlab2tex_CPS_Network/D_Estimator.m</include>
 %
 
 %% Zero-input Example Output
@@ -274,10 +283,10 @@ hpb.legend({'Estimation $\hat{x}_1$',...
 close_system 
 
 %% Steps to Run Sinusoidal-input Model
-% The following procedure is used to simulate this example using the model in the file |network_estimation2.slx|:
+% The following procedure is used to simulate this example using the model in the file |network_estimation_with_intput.slx|:
 % 
 % * Open
-% <matlab:hybrid.examples.network_estimation2.network_estimation2 |network_estimation2.slx|> 
+% <matlab:hybrid.examples.network_estimation.network_estimation_with_intput |network_estimation_with_intput.slx|> 
 % in Simulink (clicking this link changes your working directory and opens the model).   
 % * Double-click the block labeled _Double Click to Initialize_.
 % * To start the simulation, click the _run_ button or select |Simulation>Run|.
@@ -286,13 +295,13 @@ close_system
 % 
 
 % Run the initialization script.
-hybrid.examples.network_estimation2.initialize
+hybrid.examples.network_estimation.initialize
 
 % Set seed for random number generator so we have reproducable outputs.
 rng(2)
 
 % Run the Simulink model.
-simulink_model_path = which('hybrid.examples.network_estimation2.network_estimation2');
+simulink_model_path = which('hybrid.examples.network_estimation.network_estimation_with_input');
 sim(simulink_model_path)
 close_system
 close all
@@ -307,11 +316,9 @@ solhatz = HybridArc(thatz, jhatz, hatz);
 % When the Simulink model is open, the blocks can be viewed and modified by
 % double clicking on them.
 
-
 % Open .slx model. A screenshot of the subsystem will be
 % automatically included in the published document.
-example_name = 'network_estimation2';
-model_path = ['hybrid.examples.', example_name ,'.', example_name];
+model_path = 'hybrid.examples.network_estimation.network_estimation_with_input';
 open_system(which(model_path))
 
 %% Sinusoidal-input Example Output
@@ -329,10 +336,6 @@ hpb.legend({'Estimation $\hat{x}_1$',...
     'Estimation $\hat{x}_2$','Estimation $\hat{x}_3$',...
     'Estimation $\hat{x}_4$'},'Location', 'eastoutside')...
     .plotFlows(solhatz.slice(1:4)) 
-
-%% Modifying the Model
-% See [Insert example with link] for an explanation for how to modify this
-% example.
 
 %% 
 

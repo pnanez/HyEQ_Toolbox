@@ -18,7 +18,7 @@ classdef getFolderLocationTest < matlab.unittest.TestCase
         end
 
         function testExamples(testCase)
-            path = hybrid.getFolderLocation('examples', 'Example_1.2-Bouncing_Ball');
+            path = hybrid.getFolderLocation('examples', '+hybrid', '+examples');
             testCase.assertDirectoryExists(path);
         end
 

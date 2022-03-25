@@ -5,10 +5,19 @@
 % is available at the next sampling time.
 % In this example, a ZOH model is modeled in Simulink as a hybrid system 
 % with an input, where the input is the signal to sample.
+
+%% 
+% The files for this example are found in the package
+% |hybrid.examples.zero_order_hold|:
 % 
-% Click
-% <matlab:hybrid.hybrid.examples.zero_order_hold.zero_order_hold here> 
-% to open the Simulink model for this example. 
+% * <matlab:open('hybrid.examples.zero_order_hold.initialize') initialize.m> 
+% * <matlab:hybrid.examples.zero_order_hold.zero_order_hold zero_order_hold.slx> 
+% * <matlab:open('hybrid.examples.zero_order_hold.postprocess') postprocess.m> 
+% 
+% The contents of this package are located in
+% <matlab:cd(hybrid.getFolderLocation('Examples','+hybrid','+examples','+zero_order_hold')) |Examples\+hybrid\+examples\zero_order_hold|>
+% (clicking this link changes your working directory). 
+
 %% Mathematical Model
 % 
 % The ZOH system is modeled as a hybrid system
@@ -111,10 +120,6 @@ hpb.legend('ZOH input', 'ZOH input')...
 hpb.legend('ZOH output', 'ZOH output')...
     .color('blue')...
     .plotFlows(sol_zoh.slice(1:2));
-
-%% Modifying the Model
-% See [Insert example with link] for an explanation for how to modify this
-% example.
 
 %% 
 

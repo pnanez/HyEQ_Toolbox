@@ -1,9 +1,17 @@
 %% CPS Example: Sample-and-hold Feedback Control for a Continuous Plant
+% In this example, a continuous-time plant is controlled by a digital controller using
+% sample-and-hold digital to analog converter.
+%% 
+% The files for this example are found in the package
+% |hybrid.examples.zoh_feedback_control|:
 % 
-%  
-% Click
-% <matlab:hybrid.examples.zoh_feedback_control.zoh_feedback_control here> 
-% to open the Simulink model for this example.
+% * <matlab:open('hybrid.examples.zoh_feedback_control.initialize') initialize.m> 
+% * <matlab:hybrid.examples.zoh_feedback_control.zoh_feedback_control zoh_feedback_control.slx> 
+% * <matlab:open('hybrid.examples.zoh_feedback_control.postprocess') postprocess.m> 
+% 
+% The contents of this package are located in
+% <matlab:cd(hybrid.getFolderLocation('Examples','+hybrid','+examples','+zoh_feedback_control')) |Examples\+hybrid\+examples\zoh_feedback_control|>
+% (clicking this link changes your working directory). 
 %%
 % Consider a physical process modeled as a linear system of the form 
 % $\dot x = Ax + Bu$, defined below. 

@@ -155,10 +155,6 @@ pb.legend('ADC output', 'ADC output')...
     .color('blue')...
     .plotFlows(sol);
 
-%% Modifying the Model
-% See [Insert example with link] for an explanation for how to modify this
-% example.
-
 %% 
 
 % Close the Simulink file.

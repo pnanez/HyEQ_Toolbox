@@ -1,10 +1,18 @@
 %% Example 1.8: Choosing Behavior in the Intersection of C and D
 % This example demonstrates how to define the behavior of simulations in the
 % intersection of the flow and jump sets.
+
+%% 
+% The files for this example are found in the package
+% |hybrid.examples.behavior_in_C_intersection_D|:
 % 
-% Click
-% <matlab:hybrid.examples.behavior_in_C_intersection_D.behavior_in_C_intersection_D here> 
-% to change open the Simulink model for this example. 
+% * <matlab:open('hybrid.examples.behavior_in_C_intersection_D.initialize') initialize.m> 
+% * <matlab:hybrid.examples.behavior_in_C_intersection_D.behavior_in_C_intersection_D behavior_in_C_intersection_D.slx> 
+% * <matlab:open('hybrid.examples.behavior_in_C_intersection_D.postprocess') postprocess.m> 
+% 
+% The contents of this package are located in
+% <matlab:cd(hybrid.getFolderLocation('Examples','+hybrid','+examples','+behavior_in_C_intersection_D')) |Examples\+hybrid\+examples\behavior_in_C_intersection_D|>
+% (clicking this link changes your working directory). 
 
 %% Mathematical Model
 % Consider the hybrid system with data

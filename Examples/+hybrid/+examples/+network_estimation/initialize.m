@@ -1,10 +1,10 @@
 % Initialization script for the estimation over network example
 
 % simulation horizon                                                    
-T = 50;                                                                 
-J = 50;  
+T = 30;                                                                 
+J = 100;  
 % Constants (NET)
-Tnmax = 10;
+Tnmax = 3;
 Tnmin = 0.2;
 % random communication events
 tk = rand(1,J)*(Tnmax-Tnmin)+Tnmin;
@@ -16,12 +16,11 @@ n = length(z0);
 % initial conditions (NET)
 tau0 = tk(1);
 j0 = 0;
-y0 = [0;j0;tau0];             
+y0 = [0; j0; tau0];             
 
 
 % initial conditions (Estimator)
-zhat0 = [0;1/2;0;0;0];
-
+zhat0 = [0; 1/2; 0; 0; 0];
 
 % System
 A = [0  1  0  0;

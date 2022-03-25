@@ -96,47 +96,26 @@ extract('zoh_feedback_control', 'ZOH/jump set D', 'Matlab2tex_CPS_ContinuousPlan
 extract('zoh_feedback_control', 'ZOH/flow map f', 'Matlab2tex_CPS_ContinuousPlant', 'f_ZOH')
 extract('zoh_feedback_control', 'ZOH/jump map g', 'Matlab2tex_CPS_ContinuousPlant', 'g_ZOH')
 
-%% Folder Matlab2tex_CPS_Network_1
+%% Folder Matlab2tex_CPS_Network
 
 % Plant
-extract('network_estimation1', 'Continuous Process/flow set C', 'Matlab2tex_CPS_Network_1', 'C')
-extract('network_estimation1', 'Continuous Process/jump set D', 'Matlab2tex_CPS_Network_1', 'D')
-extract('network_estimation1', 'Continuous Process/flow map f', 'Matlab2tex_CPS_Network_1', 'f')
-extract('network_estimation1', 'Continuous Process/jump map g', 'Matlab2tex_CPS_Network_1', 'g')
+extract('network_estimation', 'Continuous Process/flow set C', 'Matlab2tex_CPS_Network', 'C')
+extract('network_estimation', 'Continuous Process/jump set D', 'Matlab2tex_CPS_Network', 'D')
+extract('network_estimation', 'Continuous Process/flow map f', 'Matlab2tex_CPS_Network', 'f')
+extract('network_estimation', 'Continuous Process/jump map g', 'Matlab2tex_CPS_Network', 'g')
 
 % Network
-extract('network_estimation1', 'Network/flow set C', 'Matlab2tex_CPS_Network_1', 'C_network')
-extract('network_estimation1', 'Network/jump set D', 'Matlab2tex_CPS_Network_1', 'D_network')
-extract('network_estimation1', 'Network/flow map f', 'Matlab2tex_CPS_Network_1', 'f_network')
-extract('network_estimation1', 'Network/jump map g', 'Matlab2tex_CPS_Network_1', 'g_network')
+extract('network_estimation', 'Network/flow set C', 'Matlab2tex_CPS_Network', 'C_network')
+extract('network_estimation', 'Network/jump set D', 'Matlab2tex_CPS_Network', 'D_network')
+extract('network_estimation', 'Network/flow map f', 'Matlab2tex_CPS_Network', 'f_network')
+extract('network_estimation', 'Network/jump map g', 'Matlab2tex_CPS_Network', 'g_network')
 
 % Estimator
-extract('network_estimation1', 'Estimator/flow set C', 'Matlab2tex_CPS_Network_1', 'C_Estimator')
-extract('network_estimation1', 'Estimator/jump set D', 'Matlab2tex_CPS_Network_1', 'D_Estimator')
-extract('network_estimation1', 'Estimator/flow map f', 'Matlab2tex_CPS_Network_1', 'f_Estimator')
-extract('network_estimation1', 'Estimator/jump map g', 'Matlab2tex_CPS_Network_1', 'g_Estimator')
-
-
-%% Folder Matlab2tex_CPS_Network_2
-
-% Plant
-extract('network_estimation2', 'Continuous Process/flow set C', 'Matlab2tex_CPS_Network_2', 'C')
-extract('network_estimation2', 'Continuous Process/jump set D', 'Matlab2tex_CPS_Network_2', 'D')
-extract('network_estimation2', 'Continuous Process/flow map f', 'Matlab2tex_CPS_Network_2', 'f')
-extract('network_estimation2', 'Continuous Process/jump map g', 'Matlab2tex_CPS_Network_2', 'g')
-
-% Network
-extract('network_estimation2', 'Network/flow set C', 'Matlab2tex_CPS_Network_2', 'C_network')
-extract('network_estimation2', 'Network/jump set D', 'Matlab2tex_CPS_Network_2', 'D_network')
-extract('network_estimation2', 'Network/flow map f', 'Matlab2tex_CPS_Network_2', 'f_network')
-extract('network_estimation2', 'Network/jump map g', 'Matlab2tex_CPS_Network_2', 'g_network')
-
-% Estimator
-extract('network_estimation2', 'Estimator/flow set C', 'Matlab2tex_CPS_Network_2', 'C_Estimator')
-extract('network_estimation2', 'Estimator/jump set D', 'Matlab2tex_CPS_Network_2', 'D_Estimator')
-extract('network_estimation2', 'Estimator/flow map f', 'Matlab2tex_CPS_Network_2', 'f_Estimator')
-extract('network_estimation2', 'Estimator/jump map g', 'Matlab2tex_CPS_Network_2', 'g_Estimator')
-
+extract('network_estimation', 'Estimator/flow set C', 'Matlab2tex_CPS_Network', 'C_Estimator')
+extract('network_estimation', 'Estimator/jump set D', 'Matlab2tex_CPS_Network', 'D_Estimator')
+extract('network_estimation', 'Estimator/flow map f', 'Matlab2tex_CPS_Network', 'f_Estimator')
+extract('network_estimation', 'Estimator/jump map g', 'Matlab2tex_CPS_Network', 'g_Estimator')
+ 
 %% Folder Matlab2tex_FSM
 % Plant
 extract('finite_state_machine', 'FSM/flow set C', 'Matlab2tex_FSM', 'C')

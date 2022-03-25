@@ -5,12 +5,19 @@
 % The control input is assumed be remain between $\pm 1$, i.e., $u \in
 % [U_{\min},\ U_{\max}] := [-1,+1]$. Moreover, the unicycle is initialized at
 % the origin and required to reach the boundry of a circle of radius $X_{\max}$
-%  
-% Click
-% <matlab:hybrid.examples.mobile_robot.mobile_robot here> 
-% to open the Simulink model. 
+%% 
+% The files for this example are found in the package
+% |hybrid.examples.mobile_robot|:
+% 
+% * <matlab:open('hybrid.examples.mobile_robot.initialize') initialize.m> 
+% * <matlab:hybrid.examples.mobile_robot.mobile_robot mobile_robot.slx> 
+% * <matlab:open('hybrid.examples.mobile_robot.postprocess') postprocess.m> 
+% 
+% The contents of this package are located in
+% <matlab:cd(hybrid.getFolderLocation('Examples','+hybrid','+examples','+mobile_robot')) |Examples\+hybrid\+examples\mobile_robot|>
+% (clicking this link changes your working directory). 
 %% Mathematical Model
-% A unicycle mobile robot is a continuous time nonlinear system. Let $x_1$ and
+% A unicycle mobile robot is a continuous-time nonlinear system. Let $x_1$ and
 % $x_2$ be the position of the unicycle on 2D plane and $x_3$ be the
 % orientation. The kinematics model is given by
 %

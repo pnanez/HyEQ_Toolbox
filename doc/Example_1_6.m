@@ -1,9 +1,19 @@
 %% Example 1.6: Interconnection of Bouncing ball and Moving Platform
 % In this example, a ball bouncing on a moving platform is modeled in Simulink
 % as a pair of interconnected hybrid systems with inputs.  
-% Click
-% <matlab:hybrid.examples.coupled_subsystems.coupled_subsystems here> 
-% to open the Simulink model for this example. 
+ 
+%% 
+% The files for this example are found in the package
+% |hybrid.examples.coupled_subsystems|:
+% 
+% * <matlab:open('hybrid.examples.coupled_subsystems.initialize') initialize.m> 
+% * <matlab:hybrid.examples.coupled_subsystems.coupled_subsystems coupled_subsystems.slx> 
+% * <matlab:open('hybrid.examples.coupled_subsystems.postprocess') postprocess.m> 
+% 
+% The contents of this package are located in
+% <matlab:cd(hybrid.getFolderLocation('Examples','+hybrid','+examples','+coupled_subsystems')) |Examples\+hybrid\+examples\coupled_subsystems|>
+% (clicking this link changes your working directory). 
+
 %% Mathematical Model
 % Consider a bouncing ball $\mathcal{H}_1$ bouncing on a moving platform
 % $\mathcal{H}_2$ that accelerates due to gravity and and has discrete changes

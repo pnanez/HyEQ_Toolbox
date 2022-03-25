@@ -1,9 +1,18 @@
 %% Example 1.5: Vehicle on Path with Boundaries
 % In this example, a vehicle is controlled such that it moves along
 % a path. 
-% Click
-% <matlab:hybrid.examples.vehicle_on_constrained_path.vehicle_on_constrained_path here> 
-% to open the Simulink model for this example. 
+
+%% 
+% The files for this example are found in the package
+% |hybrid.examples.vehicle_on_constrained_path|:
+% 
+% * <matlab:open('hybrid.examples.vehicle_on_constrained_path.initialize') initialize.m> 
+% * <matlab:hybrid.examples.vehicle_on_constrained_path.vehicle_on_constrained_path vehicle_on_constrained_path.slx> 
+% * <matlab:open('hybrid.examples.vehicle_on_constrained_path.postprocess') postprocess.m> 
+% 
+% The contents of this package are located in
+% <matlab:cd(hybrid.getFolderLocation('Examples','+hybrid','+examples','+vehicle_on_constrained_path')) |Examples\+hybrid\+examples\vehicle_on_constrained_path|>
+% (clicking this link changes your working directory). 
 
 %%
 % Consider a vehicle modeled by a Dubins vehicle model

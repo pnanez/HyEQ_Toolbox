@@ -1,10 +1,18 @@
 %% Example 1.7: Synchronization of Two Fireflies
 % In this example, two hybrid subsystems in Simulink are used to model a pair of fireflies
 % that exhibit synchronization of their flashes.
-% Click
-% <matlab:hybrid.examples.fireflies.fireflies here> 
-% to change your working directory to the Example 1.7 folder and open the
-% Simulink model for this example. 
+
+%% 
+% The files for this example are found in the package
+% |hybrid.examples.fireflies|:
+% 
+% * <matlab:open('hybrid.examples.fireflies.initialize') initialize.m> 
+% * <matlab:hybrid.examples.fireflies.fireflies fireflies.slx> 
+% * <matlab:open('hybrid.examples.fireflies.postprocess') postprocess.m> 
+% 
+% The contents of this package are located in
+% <matlab:cd(hybrid.getFolderLocation('Examples','+hybrid','+examples','+fireflies')) |Examples\+hybrid\+examples\fireflies|>
+% (clicking this link changes your working directory). 
 
 %% 
 % Consider a biological example of the synchronization of two fireflies

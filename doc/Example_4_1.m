@@ -2,9 +2,19 @@
 % In this example, a finite state machine (FSM) is 
 % modeled in Simulink as a hybrid system with an input, where the input
 % triggers the discrete transitions (or jumps).
-% Click
-% <matlab:hybrid.examples.finite_state_machine.finite_state_machine here> 
-% to open the Simulink model. 
+
+%% 
+% The files for this example are found in the package
+% |hybrid.examples.finite_state_machine|:
+% 
+% * <matlab:open('hybrid.examples.finite_state_machine.initialize') initialize.m> 
+% * <matlab:hybrid.examples.finite_state_machine.finite_state_machine finite_state_machine.slx> 
+% * <matlab:open('hybrid.examples.finite_state_machine.postprocess') postprocess.m> 
+% 
+% The contents of this package are located in
+% <matlab:cd(hybrid.getFolderLocation('Examples','+hybrid','+examples','+finite_state_machine')) |Examples\+hybrid\+examples\finite_state_machine|>
+% (clicking this link changes your working directory). 
+
 %% Mathematical Model
 % A _finite state machine_ (FSM), also called a _deterministic finite automaton_ (DFA) is a system with
 % inputs, states, and outputs taking values from finite sets that are updated at discrete transitions (or jumps)
@@ -119,10 +129,6 @@ HybridPlotBuilder().subplots('on')...
     .labels('$q_{1}$', '$q_{2}$')...
     .legend('$q_{1}$', '$q_{2}$')...
     .plotFlows(sol)
-
-%% Modifying the Model
-% See [Insert example with link] for an explanation for how to modify this
-% example.
 
 %% 
 
