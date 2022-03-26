@@ -1,4 +1,4 @@
-%% CPS Example: A Mobile Robot
+%% CPS Component: Continuous Plant (Mobile Robot)
 % In this example a unicycle type mobile robot is simulated using the hybrid
 % system toolbox. It is assumed that the forward 
 % velocity can be either 1 or 0, and the control command is $u\in\mathbf{R}$.

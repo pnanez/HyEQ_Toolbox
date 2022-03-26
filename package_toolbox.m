@@ -9,8 +9,9 @@ function package_toolbox()
 %
 % By Paul Wintz, 2021-2022.
 
-% 'package_toolbox' is a function instead of script because functions don't
-% use the base workspace, they have their own workspace. This ensures that when
+% 'package_toolbox' is a function instead of script so that it has its own
+% variable workspace (functions don't use the base workspace, they have their
+% own workspace). This ensures that when 
 % package_toolbox() is called, nothing will be messed up by existing variables
 % in the workspace (e.g., a variable named 'plot' that hides the built-in 'plot'
 % function).
@@ -24,10 +25,10 @@ do_tests = true;
 do_package = true;
 
 projectFile = 'HybridEquationsToolbox.prj';
-toolbox_dirs = {'matlab', ...
-                'matlab/legacyPlottingFunctions', ...
-                'simulink/Library2014b', ...
-                'doc'};
+toolbox_dirs = {'Examples', ...
+                'matlab', ...
+                fullfile('matlab', 'legacyPlottingFunctions'), ...
+                'simulink'};
 
 wd_before_package_toolbox = pwd();
 proj_root = hybrid.getFolderLocation('');
@@ -38,8 +39,8 @@ for directory = toolbox_dirs
     addpath(directory{1})
 end
 
-functionSignituresAutocompleteInfoPath_dev = 'matlab/functionSignatures.json';
-functionSignituresAutocompleteInfoPath_package = 'matlab/functionSignatures_disabled.json';
+functionSignituresAutocompleteInfoPath_dev = fullfile('matlab', 'functionSignatures.json');
+functionSignituresAutocompleteInfoPath_package = fullfile('matlab', 'functionSignatures_disabled.json');
 
 if do_tests
     nTestsFailed = hybrid.tests.run();
@@ -111,6 +112,7 @@ delete(functionSignituresAutocompleteInfoPath_package)
 for directory = toolbox_dirs
     rmpath(directory{1})
 end
+rmpath(proj_root)
 
 close all
 fprintf('Packaging complete. ')

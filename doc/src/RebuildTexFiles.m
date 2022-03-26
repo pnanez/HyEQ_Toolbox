@@ -129,20 +129,6 @@ extract('analog_to_digital_converter', 'ADC/jump set D', 'Matlab2tex_CPS_ADC_1',
 extract('analog_to_digital_converter', 'ADC/flow map f', 'Matlab2tex_CPS_ADC_1', 'f')
 extract('analog_to_digital_converter', 'ADC/jump map g', 'Matlab2tex_CPS_ADC_1', 'g')
 
-%% Folder ADC_2
-
-% Plant
-extract('bouncing_ball_with_adc', 'HSu/flow set C', 'Matlab2tex_CPS_ADC_2', 'C')
-extract('bouncing_ball_with_adc', 'HSu/jump set D', 'Matlab2tex_CPS_ADC_2', 'D')
-extract('bouncing_ball_with_adc', 'HSu/flow map f', 'Matlab2tex_CPS_ADC_2', 'f')
-extract('bouncing_ball_with_adc', 'HSu/jump map g', 'Matlab2tex_CPS_ADC_2', 'g')
-
-% ADC
-extract('bouncing_ball_with_adc', 'ADC/flow set C', 'Matlab2tex_CPS_ADC_2', 'C_ADC')
-extract('bouncing_ball_with_adc', 'ADC/jump set D', 'Matlab2tex_CPS_ADC_2', 'D_ADC')
-extract('bouncing_ball_with_adc', 'ADC/flow map f', 'Matlab2tex_CPS_ADC_2', 'f_ADC')
-extract('bouncing_ball_with_adc', 'ADC/jump map g', 'Matlab2tex_CPS_ADC_2', 'g_ADC')
-
 %% Folder Matlab2tex_ZOH
 
 % Plant

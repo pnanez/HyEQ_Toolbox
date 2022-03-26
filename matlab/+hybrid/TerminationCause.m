@@ -33,6 +33,7 @@ classdef TerminationCause
     methods(Static, Hidden)
         function cause = getCause(t, j, x, C_vals, D_vals, tspan, jspan)
             % From the given data, compute the reason that the solution terminated. 
+            narginchk(7, 7)
             x_final = x(end,:);
 
             if any(isinf(x_final)) 
@@ -42,30 +43,22 @@ classdef TerminationCause
                 cause = hybrid.TerminationCause.STATE_IS_NAN;
                 return;
             end
-            if nargin == 7
-                if t(end) >= tspan(end)
-                    cause = hybrid.TerminationCause.T_REACHED_END_OF_TSPAN;
-                    return;
-                elseif j(end) >= jspan(end)
-                    cause = hybrid.TerminationCause.J_REACHED_END_OF_JSPAN;
-                    return;
-                end
+            if t(end) >= tspan(end)
+                cause = hybrid.TerminationCause.T_REACHED_END_OF_TSPAN;
+                return;
+            elseif j(end) >= jspan(end)
+                cause = hybrid.TerminationCause.J_REACHED_END_OF_JSPAN;
+                return;
             end
-            if nargin >= 5 && ~C_vals(end) && ~D_vals(end)
+            if ~C_vals(end) && ~D_vals(end)
                 cause = hybrid.TerminationCause.STATE_NOT_IN_C_UNION_D;
                 return
             end
-            if nargin == 7
-                % If there are no other reasons that the solution
-                % terminated, then it must have been canceled (or there is
-                % a defect).
-                cause = hybrid.TerminationCause.CANCELED;
-                return
-            else
-                % Not enough arguments to determine cause of termination.
-                cause = hybrid.TerminationCause.UNDETERMINED;
-                return
-            end
+            % If there are no other reasons that the solution
+            % terminated, then it must have been canceled (or there is
+            % a defect).
+            cause = hybrid.TerminationCause.CANCELED;
+            return
         end
     end
 end

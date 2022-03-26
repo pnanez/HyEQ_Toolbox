@@ -429,10 +429,11 @@ HybridPlotBuilder().color('matlab')...
 title('Output')
 
 %% Example: Zero-order Hold
-% As a case study in creating a composition of hybrid systems, consider the
-% following example. First, we create a linear time-invariant plant. The
-% class |hybrid.subsystems.LinearContinuousSubsystem| is a subclass of
-% |HybridSubsystem|. 
+% In the following example we create a composite system that consists of three 
+% subsystems: a linear time-invariant plant, a controller, and a zero-order hold. 
+% Each subsystem is a subclass of |HybridSubsystem|. 
+% First, create the linear time-invariant plant, using the
+% class |hybrid.subsystems.LinearContinuousSubsystem|. 
 
 A_c = [0, 1; -1, 0];
 B_c = [0; 1];
@@ -440,12 +441,15 @@ plant_zoh = hybrid.subsystems.LinearContinuousSubsystem(A_c, B_c);
      
 %% 
 % Create a linear feedback for the plant that asymptotically stabilizes the
-% origin of the closed loop system.
+% origin of the closed loop system. The controller is a
+% |hybrid.subsystems.MemorylessSubsystem| because it has no internal state
+% values.
 K = [0, -2];
 controller_zoh = hybrid.subsystems.MemorylessSubsystem(2, 1, @(x, u) K*u);
 
 %% 
-% Next, we create a zero-order hold subsystem. 
+% Next, we create a zero-order hold subsystem from the
+% |hybrid.subsystems.ZeroOrderHold| class.
 zoh_dim = plant_zoh.input_dimension;
 sample_time = 0.3;
 zoh = hybrid.subsystems.ZeroOrderHold(zoh_dim, sample_time);

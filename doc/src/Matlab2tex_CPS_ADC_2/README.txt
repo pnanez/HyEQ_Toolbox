@@ -1,1 +1,0 @@
-This folder is populated with .tex and/or .m files by running RebuildTexFiles.m in its parent directory.

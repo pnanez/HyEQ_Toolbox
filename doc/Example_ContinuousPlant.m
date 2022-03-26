@@ -1,4 +1,4 @@
-%% CPS Example: Sample-and-hold Feedback Control for a Continuous Plant
+%% Example 3: Sample-and-hold Feedback Control for a Continuous Plant
 % In this example, a continuous-time plant is controlled by a digital controller using
 % sample-and-hold digital to analog converter.
 %% 

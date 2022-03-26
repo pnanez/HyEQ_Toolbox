@@ -4,7 +4,7 @@ function openHelp(name)
     % the HyEQ Toolbox help is opened.
 
     if nargin == 0
-        name = 'HelpRoot.html';
+        name = 'TOC.html';
     end
 
     % Use strcmp and 'name((end-4):end)' instead of 'endswith' because

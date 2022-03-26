@@ -77,36 +77,6 @@ classdef TerminationCauseTest < matlab.unittest.TestCase
             testCase.assertEqual(cause, hybrid.TerminationCause.CANCELED)
         end
 
-        function testNoJspanAndInFlowOrJumpSetsThenUndetermined(testCase)
-            t = linspace(0, 2, 3)'; 
-            j = [0; 1; 2]; 
-            x = [0; 1; 3];
-            C = 1;
-            D = 0;
-            cause = hybrid.TerminationCause.getCause(t, j, x, C, D, [0, 100]);
-            testCase.assertEqual(cause, hybrid.TerminationCause.UNDETERMINED)
-        end
-
-        function testNoJspanAndNotInFlowOrJumpSets(testCase)
-            t = linspace(0, 2, 3)'; 
-            j = [0; 1; 2]; 
-            x = [0; 1; 3];
-            C = 0;
-            D = 0;
-            cause = hybrid.TerminationCause.getCause(t, j, x, C, D);
-            testCase.assertEqual(cause, hybrid.TerminationCause.STATE_NOT_IN_C_UNION_D)
-        end
-
-        function testNotInFlowSetAndNowJspanThenUndetermined(testCase)
-            t = linspace(0, 2, 3)'; 
-            j = [0; 1; 2]; 
-            x = [0; 1; 3];
-            C = 1;
-            D = 0;
-            cause = hybrid.TerminationCause.getCause(t, j, x, C, D, [0, 100]);
-            testCase.assertEqual(cause, hybrid.TerminationCause.UNDETERMINED)
-        end
-
     end
 
 end

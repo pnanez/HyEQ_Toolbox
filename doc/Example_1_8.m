@@ -1,4 +1,4 @@
-%% Example 1.8: Choosing Behavior in the Intersection of C and D
+%% Create and Solve Multiple Interlinked Hybrid Subsystems
 % This example demonstrates how to define the behavior of simulations in the
 % intersection of the flow and jump sets.
 

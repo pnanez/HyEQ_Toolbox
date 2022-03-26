@@ -1,4 +1,4 @@
-%% Example 4.2: Estimation Over a Network in Simulink
+%% Example 4: Estimation Over a Network
 % In this example, a physical plant, its output digitally transmitted 
 % through a network, and a state estimator are 
 % modeled in Simulink as a hybrid system.

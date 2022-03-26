@@ -1,4 +1,4 @@
-%% Example 1.2: Bouncing ball
+%% Modeling a Hybrid System with Interpreted MATLAB Function Blocks (Bouncing Ball)
 % In this example, a bouncing ball is modeled in Simulink as a hybrid system.
 %% 
 % The files for this example are found in the package

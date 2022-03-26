@@ -1,4 +1,4 @@
-%% Example 1.7: Synchronization of Two Fireflies
+%% Example 2: Synchronization of Two Fireflies
 % In this example, two hybrid subsystems in Simulink are used to model a pair of fireflies
 % that exhibit synchronization of their flashes.
 

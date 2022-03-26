@@ -1,4 +1,4 @@
-%% Example 4.3: Zero-order Hold in Simulink
+%% CPS Component: Zero Order Hold (ZOH)
 % A zero-order hold (ZOH) converts a digital signal at its input into an analog signal at
 % its output. Its output is updated at discrete time instants, typically
 % periodically, and held constant in between updates, until new information

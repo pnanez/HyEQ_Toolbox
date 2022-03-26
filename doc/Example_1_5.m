@@ -1,4 +1,4 @@
-%% Example 1.5: Vehicle on Path with Boundaries
+%% Example 1: Vehicle on Path with Boundaries
 % In this example, a vehicle is controlled such that it moves along
 % a path. 
 

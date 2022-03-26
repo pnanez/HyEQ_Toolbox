@@ -1,4 +1,4 @@
-%% Cyber-physical components
+%% Introduction to Cyber-physical Component Blocks
 % The HyEQ Toolbox includes a series of blocks that model elements 
 % of a cyber-physical system (CPS). Those models are special instances 
 % of the hybrid systems blocks described above, particularly the blocks 

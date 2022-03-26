@@ -1,4 +1,4 @@
-%% Example 1.6: Interconnection of Bouncing ball and Moving Platform
+%% Composition of Multiple Hybrid Subsystems (Bouncing Ball on Moving Platform)
 % In this example, a ball bouncing on a moving platform is modeled in Simulink
 % as a pair of interconnected hybrid systems with inputs.  
  

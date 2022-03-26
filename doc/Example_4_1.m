@@ -1,4 +1,4 @@
-%% Example 4.1: Finite State Machine with Input in Simulink
+%% CPS Component: Finite State Machine
 % In this example, a finite state machine (FSM) is 
 % modeled in Simulink as a hybrid system with an input, where the input
 % triggers the discrete transitions (or jumps).

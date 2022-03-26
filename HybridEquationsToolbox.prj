@@ -7,7 +7,7 @@
     <param.summary />
     <param.description />
     <param.screenshot />
-    <param.version>3.0.0.38</param.version>
+    <param.version>3.0.0.40</param.version>
     <param.output>${PROJECT_ROOT}\Hybrid Equations Toolbox.mltbx</param.output>
     <param.products.name />
     <param.products.id />
@@ -24,6 +24,7 @@ package_toolbox.m
 temp.m
 readme.rtf
 configure_development_path.m
+rename_variables.sh
 doc/src
 *_temp.*
 .git*
@@ -43,6 +44,9 @@ doc/src
 % **/*.bak
 **/*.tex
 **/*.asv
+**/*.slxc
+**/*.mexw64
+**/slprj
 **/*temp.m
 **/temp_*.m
 % Don't include functionSignatures.json because it is not supported on older 
@@ -160,9 +164,7 @@ doc/src
     <param.registered.apps />
     <param.docs>${PROJECT_ROOT}\info.xml</param.docs>
     <param.getting.started.guide>${PROJECT_ROOT}\doc\GettingStarted.mlx</param.getting.started.guide>
-    <param.matlabpath.excludes>
-      <item>/Examples</item>
-    </param.matlabpath.excludes>
+    <param.matlabpath.excludes />
     <param.javaclasspath.excludes />
     <param.exported.on.package>false</param.exported.on.package>
     <param.required.addons />
@@ -195,6 +197,7 @@ doc/src
       <param.demosxml />
       <param.apps />
       <param.registered.apps />
+      <param.matlabpath.excludes />
       <param.javaclasspath.excludes />
       <param.exported.on.package />
       <param.required.addons />
@@ -223,7 +226,7 @@ doc/src
       <file>${PROJECT_ROOT}\info.xml</file>
       <file>${PROJECT_ROOT}\LICENSE.txt</file>
       <file>${PROJECT_ROOT}\matlab</file>
-      <file>${PROJECT_ROOT}\rename_variables.sh</file>
+      <file>${PROJECT_ROOT}\README.md</file>
       <file>${PROJECT_ROOT}\simulink</file>
     </fileset.rootfiles>
     <fileset.depfun.included />
