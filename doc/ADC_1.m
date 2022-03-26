@@ -1,4 +1,4 @@
-%% Example: Analog to Digital Converter in Simulink
+%% CPS Component: Analog to Digital Converter (ADC)
 % In this example, an analog to digital converter (ADC) is 
 % modeled in Simulink as a hybrid system with an input, where the input
 % is sampled periodically by the ADC.
@@ -10,10 +10,19 @@
 % * <matlab:hybrid.examples.analog_to_digital_converter.analog_to_digital_converter analog_to_digital_converter.slx> 
 % * <matlab:open('hybrid.examples.analog_to_digital_converter.postprocess') postprocess.m> 
 % 
-% The contents of this package are located in
-% <matlab:cd(hybrid.getFolderLocation('Examples','+hybrid','+examples','+analog_to_digital_converter')) |Examples\+hybrid\+examples\analog_to_digital_converter|>
-% (clicking this link changes your working directory).
+% and in the package |hybrid.examples.bouncing_ball_with_adc|:
 % 
+% * <matlab:open('hybrid.examples.bouncing_ball_with_adc.initialize') initialize.m> 
+% * <matlab:hybrid.examples.bouncing_ball_with_adc.bouncing_ball_with_adc bouncing_ball_with_adc.slx> 
+% * <matlab:open('hybrid.examples.bouncing_ball_with_adc.postprocess') postprocess.m> 
+% 
+% The contents of these packages are located in
+% <matlab:cd(hybrid.getFolderLocation('Examples','+hybrid','+examples','+bouncing_ball_with_adc')) 
+%                   |Examples\+hybrid\+examples\bouncing_ball_with_adc|> and
+% <matlab:cd(hybrid.getFolderLocation('Examples','+hybrid','+examples','+analog_to_digital_converter')) 
+%                   |Examples\+hybrid\+examples\analog_to_digital_converter|>
+% (clicking these links changes your working directory).
+
 %% Mathematical Model
 % 
 % The analog to digital converter is modeled as a hybrid system
@@ -115,6 +124,71 @@ HybridPlotBuilder()...
 .legend('','ADC timer')...
 .slice(2)...
 .plotFlows(sol);
+
+
+%% ADC Connected to Bouncing Ball
+% In this section, the interconnection of a bouncing ball system and an
+% analog to digital converter (ADC) is modeled in Simulink.
+% 
+% The model of the ADC is the same as above and the model of the bouncing ball
+% subsystem is described in
+% <matlab:hybrid.internal.openHelp('Example_1_3') 
+%   Modeling a Hybrid System with Embedded Function Blocks (Bouncing Ball with
+%   Input)>.
+
+% Run the initialization script.
+hybrid.examples.bouncing_ball_with_adc.initialize
+
+% Run the Simulink model.
+warning('off','Simulink:Commands:LoadingOlderModel')
+simulink_model_path = which('hybrid.examples.bouncing_ball_with_adc.bouncing_ball_with_adc');
+sim(simulink_model_path)
+close_system
+close all
+
+% Convert the values t, j, x, and t1, j1, x1 output by the simulation into a HybridArc objects.
+sol = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j)
+sol1 = HybridArc(t1, j1, x1);
+
+%% Simulink Model for ADC Connected to Bouncing Ball
+% The following diagram shows the Simulink model with an ADC subsystem 
+% connected to the output of a bouncing ball subsystem. (The ball subsystem is
+% given <matlab:hybrid.internal.openHelp('Example_1_3') here>.)
+
+% Open the simulink window to produce screenshot.
+open_system(simulink_model_path)
+
+%% Example Output
+% Let the input function to the bouncing ball be $u(t,j) = 0.2$ and let 
+% $\gamma = -9.81$, $\lambda = 0.8$, and $T_s = 0.1$. 
+% The solution to the interconnection from an initial condition of $x(0,0)=[0,0]^\top$
+% for the bouncing ball and $x(0,0)=[0,0]^\top$ for the ADC, and with
+% |T=10, J=20, rule=1|, shows that the ADC samples the ball position and 
+% velocity every $0.1$ seconds.
+
+clf
+pb = HybridPlotBuilder()...
+    .subplots('on')...
+    .legend('Ball position', 'Ball velocity')...
+    .slice([1 2])...
+    .flowColor('black')...
+    .jumpColor('green')...
+    .plotFlows(sol1);
+hold on
+pb.legend('ADC output', 'ADC output')...
+    .slice([1 2])...
+    .color('blue')...
+    .plotFlows(sol);
+
+%% 
+
+% Close the Simulink file.
+close_system 
+
+% Navigate to the doc/ directory so that code is correctly included with
+% "<include>src/...</include>" commands.
+cd(hybrid.getFolderLocation('doc')) 
+
 
 %% 
 
