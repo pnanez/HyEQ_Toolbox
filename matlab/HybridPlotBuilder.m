@@ -125,8 +125,13 @@ classdef HybridPlotBuilder < handle
 
         function this = tickLabelSize(this, size)
             % Set the font size of tick mark labels.
+            % This function is not supported in R2014b. 
             %
             % See also: labelInterpreter, labelSize, titleSize.
+            if verLessThan('matlab', '8.5')
+                warning('Setting the ''tickLabelInterpreter'' with this function is not supported on R2014b.')
+            end
+
             this.settings.tick_label_size = size;
             this.last_function_call = 'tickLabelSize';
 
@@ -215,8 +220,12 @@ classdef HybridPlotBuilder < handle
         
         function this = tickLabelInterpreter(this, interpreter)
             % Set the text interpreter used in time, component, and legend entry labels.
+            % This function is not supported in R2014b.
             %  
             % See also: textInterpreter.
+            if verLessThan('matlab', '8.5')
+                warning('Setting the ''tickLabelInterpreter'' with this function is not supported on R2014b.')
+            end
             this.settings.tick_label_interpreter = interpreter;
             this.last_function_call = 'tickLabelInterpreter';
 
@@ -975,15 +984,24 @@ classdef HybridPlotBuilder < handle
                 % This section MUST come before we set the label sizes, otherwise
                 % the label sizes will be overwritten when we call
                 %   "ax.XAxis.FontSize = ..."
-                try
-                    for axis_name = {'XAxis', 'YAxis', 'ZAxis'}
-                        axes.(axis_name{1}).FontSize = this.settings.tick_label_size;
-                        axes.(axis_name{1}).TickLabelInterpreter = this.settings.tick_label_interpreter;
+                % Our method for adjusting tick labels does not work on older
+                % versions of MATLAB (not sure of the first version, so we'll
+                % increase this number as we test each version)
+                if ~verLessThan('matlab', '8.5')
+                    try
+                        for axis_name = {'XAxis', 'YAxis', 'ZAxis'}
+                            axes.(axis_name{1}).FontSize = this.settings.tick_label_size;
+                            axes.(axis_name{1}).TickLabelInterpreter = this.settings.tick_label_interpreter;
+                        end
+                    catch
+                        warning('HybridPlotBuilder:UnsupportedOperation:TickSettings', ...
+                            ['Setting the font size and interpreter for ticks is not supported ' ...
+                            'on this version of MATLAB. ' ...
+                            'If you see this warning, please ' ...
+                            '<a href="https://github.com/pnanez/HyEQ_Toolbox/issues/new">' ... 
+                            'submit an issue</a> on our GitHub repository and include your MATLAB version number. ' ...
+                            'To disable this warning, click <a href="matlab:warning(''off'', ''HybridPlotBuilder:UnsupportedOperation:TickSettings'')">here</a>.'])
                     end
-                catch
-                    warning('HybridPlotBuilder:UnsupportedOperation', ...
-                        ['Could not set font size or interpreter for ticks. ' ...
-                        'This might be fixed by updating to a newer version of MATLAB.'])
                 end
 
                 % Apply labels
