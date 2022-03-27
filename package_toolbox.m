@@ -3,9 +3,7 @@ function package_toolbox()
 % 
 % Before running this script to generate a released toolbox package, perform the
 % following steps: 
-% 1. Open doc/GettingStarted.mlx. Run once to generate plots, then clear the output
-%    of "configure_toolbox" in the first cell.
-% 2. Update the build number in HybridEquationsToolbox.prj.
+% 1. Update the build number in HybridEquationsToolbox.prj.
 %
 % By Paul Wintz, 2021-2022.
 

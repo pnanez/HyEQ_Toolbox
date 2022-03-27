@@ -1,11 +1,19 @@
-function [nFailed, nIncomplete] = run()
+function [nFailed, nIncomplete] = run(filter)
+
+if ~exist('filter', 'var') || strcmpi(filter, 'all')
+    test_packages = {'hybrid.tests', 'hybrid.tests.slow_essential', 'hybrid.tests.slow_dev_only'};
+elseif strcmpi(filter, 'essential')
+    test_packages = {'hybrid.tests', 'hybrid.tests.slow_essential'};
+elseif strcmpi(filter, 'fast')
+    test_packages = {'hybrid.tests'};
+end
 
 if verLessThan('matlab', '9.2') 
     % I'm not sure when 'Strict' was introduced as a runtests option.
     % Please increase the version number as needed.
-    results = runtests('hybrid.tests');
+    results = runtests(test_packages);
 else
-    results = runtests('hybrid.tests', 'Strict', true);
+    results = runtests(test_packages, 'Strict', true);
 end
 
 nPassed = 0;

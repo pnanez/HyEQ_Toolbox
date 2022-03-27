@@ -50,7 +50,7 @@ promptMessage = sprintf(['Do you want to run automated tests?\n' ...
                     'The tests will take less than a minute.']);
 button = questdlg(promptMessage, 'Run Tests', 'Run Tests', 'Skip Tests', 'Run Tests');
 if strcmpi(button, 'Run Tests')
-  nFailed = hybrid.tests.run;
+  nFailed = hybrid.tests.run('essential');
   if nFailed > 0
     fprintf(['\nThe Hybrid Equations Toolbox is installed but %d tests failed. ' ...
             'Some features will not work as expected.\n'], nFailed);

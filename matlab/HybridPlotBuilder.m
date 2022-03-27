@@ -14,7 +14,7 @@ classdef HybridPlotBuilder < handle
         settings % plot settings
     end
     
-    properties(Access = {?hybrid.tests.HybridPlotBuilderTest})
+    properties(Access = {?hybrid.tests.slow_essential.HybridPlotBuilderTest})
         % Legend options
         plots_for_legend = [];
         axes_for_legend = [];
