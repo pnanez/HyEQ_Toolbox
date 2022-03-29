@@ -27,6 +27,8 @@
             <tocitem target="html/Example_ContinuousPlant.html">Example 3: Sample-and-hold Feedback Control</tocitem>
             <tocitem target="html/Example_4_2.html">Example 4: Estimation over a Network</tocitem>
         </tocitem>
+        <tocitem target="html/changelog.html">Version Change Log</tocitem>
+        <tocitem target="html/acknowledgements.html">Acknowledgements</tocitem>
     </tocitem>
     <!--<tocitem target="html/Example_4_0.html">Example 4.0: Simple mathematical model of a physical component</tocitem>-->
 </toc>

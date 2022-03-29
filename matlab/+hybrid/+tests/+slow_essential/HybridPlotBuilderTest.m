@@ -27,6 +27,12 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             HybridPlotBuilder.defaults.reset();
         end
     end
+
+    methods(TestClassSetup)
+        function setupTearDown(testCase)
+            testCase.addTeardown(@() close()) % Close the figure
+        end
+    end
     
     methods (Test)
         function testSubplotsDefaultOff(testCase)

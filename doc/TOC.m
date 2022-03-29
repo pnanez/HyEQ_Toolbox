@@ -35,7 +35,7 @@
 % The following pages describe how to use the
 % Simulink-based portion of the Hybrid Equations Toolbox.
 % 
-% * <matlab:hybrid.internal.openHelp('SimulinkLibrary_doc.m') 
+% * <matlab:hybrid.internal.openHelp('SimulinkLibrary_doc') 
 %       Introduction to HyEQ Simulink library.>
 % * <matlab:hybrid.internal.openHelp('Example_1_2')
 %       Modeling a Hybrid System with Interpreted Function Blocks (Bouncing Ball)>
@@ -69,7 +69,10 @@
 %       Sample-and-hold Feedback Control>
 % * <matlab:hybrid.internal.openHelp('Example_4_2') Example 4: 
 %       Estimation over a Network>
+%
 
+% DEVELOPEMENT NOTES (leave an empty line before this section so that it is
+% excluded from published HTML):
 % The contents of TOC.m serve as the master copy of the table of
 % contents for the HyEQ Toolbox help subsections. 
 % The subsections of this file should be

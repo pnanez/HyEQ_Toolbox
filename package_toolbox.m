@@ -1,9 +1,8 @@
 function package_toolbox()
 % Create a MATLAB Toolbox package from the Hybrid Equations Toolbox source code.
 % 
-% Before running this script to generate a released toolbox package, perform the
-% following steps: 
-% 1. Update the build number in HybridEquationsToolbox.prj.
+% Before running this script to generate a released toolbox package,
+% update the build number in HybridEquationsToolbox.prj.
 %
 % By Paul Wintz, 2021-2022.
 
@@ -54,37 +53,12 @@ if do_publish
     RebuildTexFiles;
     cd(proj_root)
 
-    % Export GettingStarted.mlx. We can't use 'publish' on GettingStarted
-    % because it is a live script.
-    mlxloc = fullfile(pwd(),'doc','GettingStarted.mlx');
-    fileout = fullfile(pwd(),'doc','html','GettingStarted.html');
-    % The following call to 'matlab.internal.liveeditor.openAndConvert' is
-    % 'fragile' and might break on future versions of MATLAB. On MATLAB 2022a
-    % and later, we can use the 'export' function.  
-    matlab.internal.liveeditor.openAndConvert(mlxloc,fileout) 
-    fprintf(['Published %s\n' ...
-             '       to %s\n'], mlxloc, fileout)
-
     % Publish help files via 'publish' command.
-    directory = 'doc';
-    cd(directory);
+    cd('doc');
     m_demo_paths = dir(fullfile('*.m'));
     for i = 1:numel(m_demo_paths)
-        file = fullfile(m_demo_paths(i).folder, m_demo_paths(i).name);
-        assert(isfile(file));
-        
-        % Close any simulink systems that happen to have the same name as the
-        % example.
-        DISABLE_WARNING = 0;
-        close_system(m_demo_paths(i).name(1:end-2), DISABLE_WARNING)
-
-        if endsWith(m_demo_paths(i).name, 'demo.m')
-            html_file = publish(file, 'showCode', true);
-        else
-            html_file = publish(file, 'showCode', false);
-        end
-        fprintf(['Published %s \n' ...
-            '       to %s.\n'], file, html_file)
+        mfile_path = fullfile(m_demo_paths(i).folder, m_demo_paths(i).name);
+        publish_to_html(mfile_path)
     end
     cd(hybrid.getFolderLocation('root'));
 
@@ -122,4 +96,16 @@ end
 
 cd(wd_before_package_toolbox)
 
+end
+
+function publish_to_html(mfile_path)
+    assert(isfile(mfile_path));
+    
+    if endsWith(mfile_path, 'demo.m')
+        html_file = publish(mfile_path, 'showCode', true);
+    else
+        html_file = publish(mfile_path, 'showCode', false);
+    end
+    fprintf(['Published %s \n' ...
+        '       to %s.\n'], mfile_path, html_file)
 end

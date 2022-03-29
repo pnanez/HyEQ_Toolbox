@@ -21,7 +21,7 @@ Before intalling version 3.0 of the HyEQ Toolbox, it is necessary to uninstall p
 
 In order to install the HyEQ Toolbox, MATLAB R2014b or newer is required.
 
-**On MATLAB R2016a and later**
+### On MATLAB R2016a and later
 The HyEQ Toolbox can be installed through the MATLAB Add-on Manager.
 
 1. Open MATLAB
@@ -31,7 +31,6 @@ The HyEQ Toolbox can be installed through the MATLAB Add-on Manager.
 5. Click the "Add" button to open a dropdown menu and select "Add to MATLAB".
 6. A license agreement will open. Click "I Accept" to start the installation.
 7. When the installation is complete, a "Getting Started" guide will open in MATLAB. 
-8. In the 
 
 ### On MATLAB R2014b, R2015a, and R2015b
 The MATLAB Add-on Manager is not supported on versions of MATLAB before MATLAB R2016a, so for versions R2014b through R2015b, the HyEQ Toolbox must be installed by the following process.
@@ -57,8 +56,8 @@ The MATLAB Add-on Manager is not supported on versions of MATLAB before MATLAB R
 To access the HyEQ Toolbox documentation, open MATLAB Help (F1) and navigate to Supplemental Software>Hybrid Equations Toolbox.
 
 Software downloads:
-https://hybrid.soe.ucsc.edu/software
-http://www.mathworks.com/matlabcentral/fileexchange/41372-hybrid-equations-toolbox-v2-02
+[UCSC Hybrid Systems Laboratory - Old versions of the toolbox](https://hybrid.soe.ucsc.edu/software)
+[MATLAB File exchange](http://www.mathworks.com/matlabcentral/fileexchange/41372-hybrid-equations-toolbox-v2-02)
 [Manual](https://hybrid.soe.ucsc.edu/biblio/2014/hybrid-equations-hyeq-toolbox)
 [Examples](http://hybridsimulator.wordpress.com/)
 
@@ -67,15 +66,15 @@ http://www.mathworks.com/matlabcentral/fileexchange/41372-hybrid-equations-toolb
 ## Setting Up the Development Environment
 
 ### Step 1. Setup Git and Git Large File System (LFS):
-1. Download and install git and git LFS. 
-1. After installing the git LFS binary, run git lfs install. 
-1. Generate a SSH key on your computer as described here : Generating SSH keys.
-1. Login to your GitHub account: GitHub Login.
-In your account, add the newly generated SSH Key: My account SSH keys.
+1. Download and install [Git](https://git-scm.com/downloads) and [Git LFS](https://git-lfs.github.com/). 
+1. After running the Git LFS installation binary, run `git lfs install`. 
+1. Generate a SSH key on your computer as described here: [Generating SSH keys](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent).
+1. Login to your [GitHub account](https://github.com/login).
+In your account, [add the newly generated SSH Key](https://github.com/settings/ssh).
 
 ### Step 2. Setup a Local Version of the Repository
 1. Install MATLAB R2014b or later and Simulink.
-1. Uninstall or disable any existing versions of the toolbox (you will replace it with the development version downloaded with git).
+1. Uninstall or disable any existing versions of the toolbox (you will replace it with the development version downloaded with Git).
 1. Clone the repository from GitHub with the following command: `git clone git@github.com:pwintz/HyEQ_Toolbox.git`. The repository will be downloaded to your current working directory. 
 1. Open MATLAB and navigate to the root folder of the toolbox (`HyEQ_Toolbox/`, by default, in the directory where you cloned the repository).
 1. Make sure you are on the `dev` branch by running `git branch`. If you are not on `dev`, run the command `git checkout dev`. 

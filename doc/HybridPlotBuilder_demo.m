@@ -533,6 +533,7 @@ ax.YAxisLocation = 'right';
 % and |plotHybrid|, this will be one 
 % integer, and for phase plots generated with |plot|, this will be an array of
 % two or three integers, depending on the dimension of the plot.
+clf
 HybridPlotBuilder()...
     .subplots('on')...
     .legend('A', 'B')...
@@ -541,7 +542,6 @@ HybridPlotBuilder()...
 
 function apply_plot_settings(ax, component_ndxs)
     title(ax, sprintf('This is the plot of component %d', component_ndxs))
-    subtitle(ax, 'An Insightful Subtitle','FontAngle','italic')
     % Set the location of the legend in each plot to different positions.
     switch component_ndxs 
         case 1
