@@ -50,7 +50,7 @@ if do_publish
     % Publish help files
 
     cd('doc/src')
-    RebuildTexFiles;
+    ExtractSimulinkFunctionBlocks;
     cd(proj_root)
 
     % Publish help files via 'publish' command.
