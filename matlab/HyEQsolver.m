@@ -54,9 +54,6 @@ function [t, j, x] = HyEQsolver(f,g,C,D,x0,TSPAN,JSPAN,rule,options,solver,E,pro
 %         % * Finally, the simulation is run by clicking the run button in
 %         % run_ex1_2.m or by calling run_ex1_2.m in the MATLAB command window.
 %
-%         % For further information, type in the command window:
-%         web(['Example_1_2.html']);
-%
 %         % Define initial conditions
 %         x1_0 = 1;
 %         x2_0 = 0;

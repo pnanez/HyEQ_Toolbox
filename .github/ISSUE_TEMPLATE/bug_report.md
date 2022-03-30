@@ -26,7 +26,7 @@ If applicable, add screenshots to help explain your problem.
 **Desktop (please complete the following information):**
  - OS: [e.g. iOS, Windows]
  - MATLAB Version [e.g. R2014b, R2020b]
- - MATLAB Version (if relevant)
+ - Simulink Version (if relevant)
  - Hybrid Toolbox Version [e.g. v2.40, v3.0]
 
 **Additional context**

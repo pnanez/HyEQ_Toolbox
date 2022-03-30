@@ -37,37 +37,37 @@
 % 
 % * <matlab:hybrid.internal.openHelp('SimulinkLibrary_doc') 
 %       Introduction to HyEQ Simulink library.>
-% * <matlab:hybrid.internal.openHelp('Example_1_2')
+% * <matlab:hybrid.internal.openHelp('Help_bouncing_ball')
 %       Modeling a Hybrid System with Interpreted Function Blocks (Bouncing Ball)>
-% * <matlab:hybrid.internal.openHelp('Example_1_3')
+% * <matlab:hybrid.internal.openHelp('Help_bouncing_ball_with_input')
 %       Modeling a Hybrid System with Embedded Function Blocks (Bouncing Ball with Input)>
-% * <matlab:hybrid.internal.openHelp('Example_1_6') 
+% * <matlab:hybrid.internal.openHelp('Help_coupled_subsystems') 
 %       Composition of Multiple Hybrid Subsystems (Bouncing Ball on Moving Platform)>
-% * <matlab:hybrid.internal.openHelp('Example_1_8')
+% * <matlab:hybrid.internal.openHelp('Help_behavior_in_C_intersection_D')
 %       Defining Jump/Flow Behavior in the Intersection of |C| and |D|>
 % 
 % <html><h2>Cyber-physical System (CPS) Components</h2></html>
 % 
 % * <matlab:hybrid.internal.openHelp('CPS_Components_doc') 
 %       Introduction to Cyber-physical Component Blocks.> 
-% * <matlab:hybrid.internal.openHelp('Example_ContinuousPlant2.html') 
+% * <matlab:hybrid.internal.openHelp('CPS_continuous_plant.html') 
 %       Continuous Plant>
-% * <matlab:hybrid.internal.openHelp('Example_4_3')
+% * <matlab:hybrid.internal.openHelp('CPS_zero_order_hold')
 %        Zero Order Hold (ZOH)>
-% * <matlab:hybrid.internal.openHelp('ADC_1') 
+% * <matlab:hybrid.internal.openHelp('CPS_analog_to_digital_converter') 
 %       Analog to Digital Converter (ADC)>
-% * <matlab:hybrid.internal.openHelp('Example_4_1')
+% * <matlab:hybrid.internal.openHelp('CPS_finite_state_machine')
 %       Finite State Machine (FSM)>
 % 
 % <html><h2>Applications of Hybrid Systems</h2></html>
 % 
-% * <matlab:hybrid.internal.openHelp('Example_1_5') Example 1: 
+% * <matlab:hybrid.internal.openHelp('Example_vehicle_on_path') Example 1: 
 %       A Vehicle Following a Path>
-% * <matlab:hybrid.internal.openHelp('Example_1_7') Example 2: 
+% * <matlab:hybrid.internal.openHelp('Example_fireflies') Example 2: 
 %       Synchronization of Two Fireflies>
-% * <matlab:hybrid.internal.openHelp('Example_ContinuousPlant.html') Example 3: 
+% * <matlab:hybrid.internal.openHelp('Example_zoh_feedback_control.html') Example 3: 
 %       Sample-and-hold Feedback Control>
-% * <matlab:hybrid.internal.openHelp('Example_4_2') Example 4: 
+% * <matlab:hybrid.internal.openHelp('Example_network_estimation') Example 4: 
 %       Estimation over a Network>
 %
 

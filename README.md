@@ -86,3 +86,12 @@ In your account, [add the newly generated SSH Key](https://github.com/settings/s
 * `simulink/`: contains the source code for the Simulink portion of the toolbox.
 * `docs/`: contains the source code for Toolbox documentation.
 * `Examples/`: contains the source code for the examples that are described in the documentation.
+
+## Packaging a New Version of the HyEQ Toolbox
+To create a MATLAB toolbox package for the Toolbox:
+1. Navigate to the root folder of the Toolbox in MATLAB.
+2. Right-click (on Windows) or CMD-click (MAC) on the file `HybridEquationsToolbox.prj`
+and select "Open As Text". 
+3. In `HybridEquationsToolbox.prj`, increment the `<param.version>` as desired and save.
+4. Run 'package_toolbox' in the MATLAB command line to generate a `.mltbx`. This
+file can then be uploaded to the MATLAB File Exchange. 

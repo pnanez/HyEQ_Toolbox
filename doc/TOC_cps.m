@@ -2,11 +2,11 @@
 % 
 % * <matlab:hybrid.internal.openHelp('CPS_Components_doc') 
 %       Introduction to Cyber-physical Component Blocks.> 
-% * <matlab:hybrid.internal.openHelp('Example_ContinuousPlant2.html') 
+% * <matlab:hybrid.internal.openHelp('CPS_continuous_plant.html') 
 %       Continuous Plant>
-% * <matlab:hybrid.internal.openHelp('Example_4_3')
+% * <matlab:hybrid.internal.openHelp('CPS_zero_order_hold')
 %        Zero Order Hold (ZOH)>
-% * <matlab:hybrid.internal.openHelp('ADC_1') 
+% * <matlab:hybrid.internal.openHelp('CPS_analog_to_digital_converter') 
 %       Analog to Digital Converter (ADC)>
-% * <matlab:hybrid.internal.openHelp('Example_4_1')
+% * <matlab:hybrid.internal.openHelp('CPS_finite_state_machine')
 %       Finite State Machine (FSM)>

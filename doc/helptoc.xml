@@ -8,24 +8,24 @@
             <tocitem target="html/ConvertingLegacyCodeToVersion3_demo.html">Update Code Designed for v2.04 to Use v3.0 Features.</tocitem>
         </tocitem>
         <tocitem target="html/TOC_simulink.html">The HyEQ Simulink Library
-            <tocitem target="html/SimulinkLibrary_doc.html">Introduction to Simulink-based Solver</tocitem>
-            <tocitem target="html/Example_1_2.html">Hybrid System with Interpreted Function Blocks</tocitem>
-            <tocitem target="html/Example_1_3.html">Hybrid System with Embedded Function Blocks</tocitem>
-            <tocitem target="html/Example_1_6.html">Composition of Multiple Hybrid Subsystems</tocitem>
-            <tocitem target="html/Example_1_8.html">Jump/Flow Behavior in the Intersection of |C| and |D|</tocitem>
+            <tocitem target="html/Help_SimulinkLibrary.html">Introduction to Simulink-based Solver</tocitem>
+            <tocitem target="html/Help_bouncing_ball.html">Hybrid System with Interpreted Function Blocks</tocitem>
+            <tocitem target="html/Help_bouncing_ball_with_input.html">Hybrid System with Embedded Function Blocks</tocitem>
+            <tocitem target="html/Help_coupled_subsystems.html">Composition of Multiple Hybrid Subsystems</tocitem>
+            <tocitem target="html/Help_behavior_in_C_intersection_D.html">Jump/Flow Behavior in the Intersection of C and D</tocitem>
         </tocitem>
         <tocitem target="html/TOC_cps.html">CPS Components
-            <tocitem target="html/CPS_Components_doc.html">Intro to CPS Simulink blocks</tocitem>
-            <tocitem target="html/Example_ContinuousPlant2.html">Continuous Plant</tocitem>
-            <tocitem target="html/Example_4_3.html">Zero Order Hold</tocitem>
-            <tocitem target="html/ADC_1.html">Analog to Digital Converter</tocitem>
-            <tocitem target="html/Example_4_1.html">Finite State Machine</tocitem>
+            <tocitem target="html/CPS_Components.html">Intro to CPS Simulink blocks</tocitem>
+            <tocitem target="html/CPS_continuous_plant.html">Continuous Plant</tocitem>
+            <tocitem target="html/CPS_zero_order_hold.html">Zero Order Hold</tocitem>
+            <tocitem target="html/CPS_analog_to_digital_converter.html">Analog to Digital Converter</tocitem>
+            <tocitem target="html/CPS_finite_state_machine.html">Finite State Machine</tocitem>
         </tocitem>
         <tocitem target="html/TOC_examples.html">Applications
-            <tocitem target="html/Example_1_5.html">Example 1: Vehicle Following a Track</tocitem>
-            <tocitem target="html/Example_1_7.html">Example 2: Fireflies</tocitem>
-            <tocitem target="html/Example_ContinuousPlant.html">Example 3: Sample-and-hold Feedback Control</tocitem>
-            <tocitem target="html/Example_4_2.html">Example 4: Estimation over a Network</tocitem>
+            <tocitem target="html/Example_vehicle_on_path.html">Example 1: Vehicle Following a Track</tocitem>
+            <tocitem target="html/Example_fireflies.html">Example 2: Fireflies</tocitem>
+            <tocitem target="html/Example_zoh_feedback_control.html">Example 3: Sample-and-hold Feedback Control</tocitem>
+            <tocitem target="html/Example_network_estimation.html">Example 4: Estimation over a Network</tocitem>
         </tocitem>
         <tocitem target="html/changelog.html">Version Change Log</tocitem>
         <tocitem target="html/acknowledgements.html">Acknowledgements</tocitem>

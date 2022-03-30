@@ -1,10 +1,10 @@
 %% Applications of Hybrid Systems
 % 
-% * <matlab:hybrid.internal.openHelp('Example_1_5') Example 1: 
+% * <matlab:hybrid.internal.openHelp('Example_vehicle_on_path') Example 1: 
 %       A Vehicle Following a Path>
-% * <matlab:hybrid.internal.openHelp('Example_1_7') Example 2: 
+% * <matlab:hybrid.internal.openHelp('Example_fireflies') Example 2: 
 %       Synchronization of Two Fireflies>
-% * <matlab:hybrid.internal.openHelp('Example_ContinuousPlant.html') Example 3: 
+% * <matlab:hybrid.internal.openHelp('Example_zoh_feedback_control.html') Example 3: 
 %       Sample-and-hold Feedback Control>
-% * <matlab:hybrid.internal.openHelp('Example_4_2') Example 4: 
+% * <matlab:hybrid.internal.openHelp('Example_network_estimation') Example 4: 
 %       Estimation over a Network>
