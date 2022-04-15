@@ -75,13 +75,42 @@ classdef HybridArc
         end
 
         function transformed_arc = transform(this, f)
-            % Replace the values of x by the function f(x).
+            % Replace the values of x by the function f(x, t, j).
+            % 
+            % Evaluate a function at each point along the solution.
+            % The function handle 'f' is evaluated with the
+            % arguments of the state 'x', continuous time 't' (optional),
+            % and discrete time 'j' (optional). This function returns a
+            % HybridArc with the same hybrid time domain as the original
+            % HybridArc. 
+            % 
+            % The argument 'f' must be a function handle
+            % that has the input arguments "(x)", "(x, t)", or "(x, t, j)", and
+            % returns a column vector of fixed length.
             x_transformed = this.evaluateFunction(f);
             transformed_arc = HybridArc(this.t, this.j, x_transformed);
         end
 
         function sliced_arc = slice(this, ndxs)
             % Create a new HybridArc with only the selected component indicies.
+            % 
+            % Example: 
+            %     n = 3;        % State dimension
+            %     tsteps = 100; % Number of time steps.
+            %     x = rand(tsteps, n);
+            %     t = linspace(0, 100, tsteps)';
+            %     j = zeros(tsteps, 1);
+            %     h_arc = HybridArc(t, j, x);
+            %     
+            %     % Select the first component.
+            %     x1_arc = h_arc.slice(1);
+            %
+            %     % Select the first and second component.
+            %     x12_arc = h_arc.slice(1:2);
+            %
+            %     % Select the third and first component (in that order).
+            %     x31_arc = h_arc.slice([3, 1]);
+            
             x_sliced = this.x(:, ndxs);
             sliced_arc = HybridArc(this.t, this.j, x_sliced);
         end

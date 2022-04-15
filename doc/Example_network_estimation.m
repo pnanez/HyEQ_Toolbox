@@ -9,7 +9,7 @@
 % 
 % * <matlab:open('hybrid.examples.network_estimation.initialize') initialize.m> 
 % * <matlab:hybrid.examples.network_estimation.network_estimation network_estimation.slx> 
-% * <matlab:hybrid.examples.network_estimation.network_estimation_with_intput network_estimation_with_intput.slx> 
+% * <matlab:hybrid.examples.network_estimation.network_estimation_with_input network_estimation_with_input.slx> 
 % * <matlab:open('hybrid.examples.network_estimation.postprocess') postprocess.m> 
 % 
 % The contents of this package are located in
@@ -21,9 +21,9 @@
 % Consider a physical process given in terms of the state-space model
 %
 % $$
-% \begin{array}{ll}
-% \dot{x}&=A x ,\\
-% y&= M x
+% \begin{array}{l}
+% \dot{x}=A x,\\
+% y= M x
 % \end{array}  
 % $$
 %
@@ -168,7 +168,7 @@
 % 
 % * Open
 % <matlab:hybrid.examples.network_estimation.network_estimation |network_estimation.slx|> 
-% in Simulink (clicking this link changes your working directory and opens the model).   
+% in Simulink.   
 % * Double-click the block labeled _Double Click to Initialize_.
 % * To start the simulation, click the _run_ button or select |Simulation>Run|.
 % * Once the simulation finishes, click the block labeled _Double Click to Plot
@@ -283,11 +283,11 @@ hpb.legend({'Estimation $\hat{x}_1$',...
 close_system 
 
 %% Steps to Run Sinusoidal-input Model
-% The following procedure is used to simulate this example using the model in the file |network_estimation_with_intput.slx|:
+% The following procedure is used to simulate this example using the model in the file |network_estimation_with_input.slx|:
 % 
 % * Open
-% <matlab:hybrid.examples.network_estimation.network_estimation_with_intput |network_estimation_with_intput.slx|> 
-% in Simulink (clicking this link changes your working directory and opens the model).   
+% <matlab:hybrid.examples.network_estimation.network_estimation_with_input |network_estimation_with_input.slx|> 
+% in Simulink.   
 % * Double-click the block labeled _Double Click to Initialize_.
 % * To start the simulation, click the _run_ button or select |Simulation>Run|.
 % * Once the simulation finishes, click the block labeled _Double Click to Plot

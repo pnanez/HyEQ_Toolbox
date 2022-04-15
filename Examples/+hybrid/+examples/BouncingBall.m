@@ -11,7 +11,8 @@ classdef BouncingBall < HybridSystem
         % the abstract functions from HybridSystem.m
 
         function this = BouncingBall()
-            this = this@HybridSystem(2);
+            state_dim = 2;
+            this = this@HybridSystem(state_dim);
         end
 
         function xdot = flowMap(this, x, t, j)

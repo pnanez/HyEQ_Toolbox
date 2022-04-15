@@ -3,8 +3,8 @@
 % equation simulator from the Hybrid Equations Toolbox, including an introduction
 % to the primary components and a description of their internal workings. 
 % For documentation regarding cyber-physical components, see 
-% <matlab:hybrid.internal.openHelp('CPS_Components_doc.m') here>. A list of examples are
-% available <matlab:hybrid.internal.openHelp('examples_TOC.m') here>.
+% <matlab:hybrid.internal.openHelp('CPS_Components') here>. A list of examples are
+% available <matlab:hybrid.internal.openHelp('TOC_examples') here>.
 
 %% Primary Components
 % The HyEQ Toolbox includes three main Simulink library blocks that allow for simulation of 

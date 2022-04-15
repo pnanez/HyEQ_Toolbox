@@ -1,5 +1,4 @@
-% Project: Simulation of a hybrid system (Analog-to-digital converter)
-% Description: initialization ADC
+% Initialization script for CPS Example: Zero-order Hold.
                                                                  
 % Initial conditions (bouncing ball)
 x0bb = [1;0];   

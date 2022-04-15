@@ -2,8 +2,8 @@
 <toc version="2.0">
     <tocitem target="html/TOC.html">Hybrid Equation Toolbox
         <tocitem target="html/TOC_matlab.html">The HyEQ MATLAB Library
-            <tocitem target="html/HybridSystem_demo.html">Implement and Solve Hybrid Systems</tocitem>
-            <tocitem target="html/HybridPlotBuilder_demo.html">Plot Solutions</tocitem>
+            <tocitem target="html/HybridSystem_demo.html">Creating and Solving Hybrid Systems</tocitem>
+            <tocitem target="html/HybridPlotBuilder_demo.html">Plotting Hybrid Arcs</tocitem>
             <tocitem target="html/CompositeHybridSystem_demo.html">Composition of Hybrid Subsystems</tocitem>
             <tocitem target="html/ConvertingLegacyCodeToVersion3_demo.html">Update Code Designed for v2.04 to Use v3.0 Features.</tocitem>
         </tocitem>

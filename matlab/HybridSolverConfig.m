@@ -47,10 +47,10 @@ classdef HybridSolverConfig < handle
 
             % Parse Name/Value pairs from arguments.
             parser = inputParser(); % Replace this with a for-loop that loops through the varargin.
-            addParameter(parser,'RelTol',NaN);
-            addParameter(parser,'AbsTol',NaN);
-            addParameter(parser,'MaxStep',NaN);
-            addParameter(parser,'Refine',NaN);
+            addParameter(parser,'RelTol', NaN);
+            addParameter(parser,'AbsTol', NaN);
+            addParameter(parser,'MaxStep', NaN);
+            addParameter(parser,'Refine', NaN);
             addParameter(parser,'Jacobian', NaN)
             addParameter(parser,'odeSolver', NaN);
             parse(parser, varargin{:})
@@ -186,14 +186,20 @@ classdef HybridSolverConfig < handle
             % Set an arbitrary ODE option via name-value pair.
             % See documentation for odeset.
             % 
-            % The 'Events' function is not supported because we use the
+            % The 'Events' option is not supported because we use the
             % eventing system to detect jumps within the hybrid solver.
             %
             % See also: odeset, ode45.
             if strcmp(name, 'Events')
-                % The 'Events' function is not supported because we use the
+                % The 'Events' option is not supported because we use the
                 % eventing system to detect jump events.
-                error('Setting ''Events'' is not supported.')
+                error(['Setting ''Events'' is not supported because the hybrid solver ' ...
+                    'uses the eventing system to detect jumps within the hybrid solver.'])
+            elseif strcmp(name, 'OutputFcn')
+                % The 'OutputFcn' option is not supported because we use the
+                % output function to publish progress reports.
+                error(['Setting ''OutputFcn'' is not supported because the hybrid solver ' ...
+                    'uses the output function to publish progress reports.'])
             end
 
             this.ode_options.(name) = value;
@@ -272,7 +278,6 @@ classdef HybridSolverConfig < handle
             copy_of_this.hybrid_priority = this.hybrid_priority;
             copy_of_this.mass_matrix = this.mass_matrix;
             copy_of_this.progressListener = this.progressListener;
-            
         end
     end
 

@@ -1,8 +1,8 @@
 %% Cyber-physical System (CPS) Components
 % 
-% * <matlab:hybrid.internal.openHelp('CPS_Components_doc') 
+% * <matlab:hybrid.internal.openHelp('CPS_Components') 
 %       Introduction to Cyber-physical Component Blocks.> 
-% * <matlab:hybrid.internal.openHelp('CPS_continuous_plant.html') 
+% * <matlab:hybrid.internal.openHelp('CPS_continuous_plant') 
 %       Continuous Plant>
 % * <matlab:hybrid.internal.openHelp('CPS_zero_order_hold')
 %        Zero Order Hold (ZOH)>

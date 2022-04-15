@@ -25,9 +25,6 @@ classdef TerminationCause
       
       % The hybrid solver was cancelled. 
       CANCELED
-
-      % Insufficient information was provided to determine cause of termination.
-      UNDETERMINED
    end
 
     methods(Static, Hidden)

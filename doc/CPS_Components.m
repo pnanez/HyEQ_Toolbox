@@ -46,7 +46,7 @@
 % $$
 % 
 % This model can be implemented with the |HSu| simulink block found
-% <matlab:hybrid.internal.openHelp('SimulinkLibrary_doc.m') at this link> 
+% <matlab:hybrid.internal.openHelp('Help_SimulinkLibrary') at this link> 
 % and above.
 % 
 %% Models of cyber components

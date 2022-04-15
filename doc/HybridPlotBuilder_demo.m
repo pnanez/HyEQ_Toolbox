@@ -1,4 +1,4 @@
-%% Creating plots with HybridPlotBuilder
+%% Plotting Hybrid Arcs
 %% Setup
 % We first create several solutions that are used in
 % subsequent examples.

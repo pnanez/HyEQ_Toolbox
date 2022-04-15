@@ -22,9 +22,9 @@
 % MATLAB-based portion of the Hybrid Equations Toolbox.
 % 
 % * <matlab:hybrid.internal.openHelp('HybridSystem_demo') 
-%       How to Implement and Solve a Hybrid System> 
+%       Creating and Solving Hybrid Systems> 
 % * <matlab:hybrid.internal.openHelp('HybridPlotBuilder_demo') 
-%       Creating plots with HybridPlotBuilder> 
+%       Plotting Hybrid Arcs> 
 % * <matlab:hybrid.internal.openHelp('CompositeHybridSystem_demo') 
 %       Create and Solve Multiple Interlinked Hybrid Subsystems> 
 % * <matlab:hybrid.internal.openHelp('ConvertingLegacyCodeToVersion3_demo') 
@@ -35,7 +35,7 @@
 % The following pages describe how to use the
 % Simulink-based portion of the Hybrid Equations Toolbox.
 % 
-% * <matlab:hybrid.internal.openHelp('SimulinkLibrary_doc') 
+% * <matlab:hybrid.internal.openHelp('Help_SimulinkLibrary') 
 %       Introduction to HyEQ Simulink library.>
 % * <matlab:hybrid.internal.openHelp('Help_bouncing_ball')
 %       Modeling a Hybrid System with Interpreted Function Blocks (Bouncing Ball)>
@@ -48,9 +48,9 @@
 % 
 % <html><h2>Cyber-physical System (CPS) Components</h2></html>
 % 
-% * <matlab:hybrid.internal.openHelp('CPS_Components_doc') 
+% * <matlab:hybrid.internal.openHelp('CPS_Components') 
 %       Introduction to Cyber-physical Component Blocks.> 
-% * <matlab:hybrid.internal.openHelp('CPS_continuous_plant.html') 
+% * <matlab:hybrid.internal.openHelp('CPS_continuous_plant') 
 %       Continuous Plant>
 % * <matlab:hybrid.internal.openHelp('CPS_zero_order_hold')
 %        Zero Order Hold (ZOH)>

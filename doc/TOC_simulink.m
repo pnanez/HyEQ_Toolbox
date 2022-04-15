@@ -2,7 +2,7 @@
 % The following pages describe how to use the
 % Simulink-based portion of the Hybrid Equations Toolbox.
 % 
-% * <matlab:hybrid.internal.openHelp('SimulinkLibrary_doc') 
+% * <matlab:hybrid.internal.openHelp('Help_SimulinkLibrary') 
 %       Introduction to HyEQ Simulink library.>
 % * <matlab:hybrid.internal.openHelp('Help_bouncing_ball')
 %       Modeling a Hybrid System with Interpreted Function Blocks (Bouncing Ball)>

@@ -8,8 +8,9 @@
 % |hybrid.examples.bouncing_ball_with_input|:
 % 
 % * <matlab:open('hybrid.examples.bouncing_ball_with_input.initialize') initialize.m> 
-% * <matlab:hybrid.examples.bouncing_ball_with_input.bouncing_ball_with_input bouncing_ball_with_input.slx> 
-% * <matlab:hybrid.examples.bouncing_ball_with_input.bouncing_ball_with_input bouncing_ball_with_input_alternative.slx> 
+% * <matlab:hybrid.examples.bouncing_ball_with_input.bouncing_ball_with_input
+% bouncing_ball_with_input.slx>
+% * <matlab:hybrid.examples.bouncing_ball_with_input.bouncing_ball_with_input_alternative bouncing_ball_with_input_alternative.slx>
 % * <matlab:open('hybrid.examples.bouncing_ball_with_input.postprocess') postprocess.m> 
 % 
 % The contents of this package are located in
@@ -79,6 +80,8 @@ model_path = ['hybrid.examples.', example_name ,'.', example_name];
 block_path = [example_name, '/HS'];
 load_system(which(model_path))
 open_system(block_path)
+snapnow
+close_system
 
 %%
 % The Simulink blocks for the hybrid system in this example are included below.
