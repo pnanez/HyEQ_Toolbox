@@ -64,8 +64,7 @@ close all
 
 % Open .slx model. A screenshot of the subsystem will be
 % automatically included in the published document.
-example_name = 'mobile_robot';
-model_path = ['hybrid.examples.', example_name ,'.', example_name];
+model_path = 'hybrid.examples.mobile_robot.mobile_robot';
 open_system(which(model_path))
 
 %%

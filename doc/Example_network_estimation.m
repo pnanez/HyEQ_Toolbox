@@ -8,8 +8,8 @@
 % |hybrid.examples.network_estimation|:
 % 
 % * <matlab:open('hybrid.examples.network_estimation.initialize') initialize.m> 
-% * <matlab:hybrid.examples.network_estimation.network_estimation network_estimation.slx> 
-% * <matlab:hybrid.examples.network_estimation.network_estimation_with_input network_estimation_with_input.slx> 
+% * <matlab:hybrid.examples.network_estimation.network network.slx> 
+% * <matlab:hybrid.examples.network_estimation.network_with_input.network_with_input.slx> 
 % * <matlab:open('hybrid.examples.network_estimation.postprocess') postprocess.m> 
 % 
 % The contents of this package are located in
@@ -164,10 +164,10 @@
 
 %% Steps to Run Zero-input Model
 % 
-% The following procedure is used to simulate the zero-input example using the model in the file |network_estimation.slx|:
+% The following procedure is used to simulate the zero-input example using the model in the file |network.slx|:
 % 
 % * Open
-% <matlab:hybrid.examples.network_estimation.network_estimation |network_estimation.slx|> 
+% <matlab:hybrid.examples.network_estimation.network |network.slx|> 
 % in Simulink.   
 % * Double-click the block labeled _Double Click to Initialize_.
 % * To start the simulation, click the _run_ button or select |Simulation>Run|.
@@ -182,7 +182,7 @@ rng(2)
 
 % Run the Simulink model.
 warning('off','Simulink:Commands:LoadingOlderModel')
-simulink_model_path = which('hybrid.examples.network_estimation.network_estimation');
+simulink_model_path = which('hybrid.examples.network_estimation.network');
 sim(simulink_model_path)
 close_system
 close all
@@ -199,8 +199,7 @@ solhatz = HybridArc(thatz, jhatz, hatz);
 
 % Open .slx model. A screenshot of the subsystem will be
 % automatically included in the published document.
-example_name = 'network_estimation';
-model_path = ['hybrid.examples.', example_name ,'.', example_name];
+model_path = 'hybrid.examples.network_estimation.network';
 open_system(which(model_path))
  
 %%
@@ -283,10 +282,10 @@ hpb.legend({'Estimation $\hat{x}_1$',...
 close_system 
 
 %% Steps to Run Sinusoidal-input Model
-% The following procedure is used to simulate this example using the model in the file |network_estimation_with_input.slx|:
+% The following procedure is used to simulate this example using the model in the file |network_with_input.slx|:
 % 
 % * Open
-% <matlab:hybrid.examples.network_estimation.network_estimation_with_input |network_estimation_with_input.slx|> 
+% <matlab:hybrid.examples.network_estimation.network_with_input |network_with_input.slx|> 
 % in Simulink.   
 % * Double-click the block labeled _Double Click to Initialize_.
 % * To start the simulation, click the _run_ button or select |Simulation>Run|.
@@ -301,7 +300,7 @@ hybrid.examples.network_estimation.initialize
 rng(2)
 
 % Run the Simulink model.
-simulink_model_path = which('hybrid.examples.network_estimation.network_estimation_with_input');
+simulink_model_path = which('hybrid.examples.network_estimation.network_with_input');
 sim(simulink_model_path)
 close_system
 close all
@@ -318,7 +317,7 @@ solhatz = HybridArc(thatz, jhatz, hatz);
 
 % Open .slx model. A screenshot of the subsystem will be
 % automatically included in the published document.
-model_path = 'hybrid.examples.network_estimation.network_estimation_with_input';
+model_path = 'hybrid.examples.network_estimation.network_with_input';
 open_system(which(model_path))
 
 %% Sinusoidal-input Example Output

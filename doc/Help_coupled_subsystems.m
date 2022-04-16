@@ -7,7 +7,7 @@
 % |hybrid.examples.coupled_subsystems|:
 % 
 % * <matlab:open('hybrid.examples.coupled_subsystems.initialize') initialize.m> 
-% * <matlab:hybrid.examples.coupled_subsystems.coupled_subsystems coupled_subsystems.slx> 
+% * <matlab:hybrid.examples.coupled_subsystems.coupled coupled.slx> 
 % * <matlab:open('hybrid.examples.coupled_subsystems.postprocess') postprocess.m> 
 % 
 % The contents of this package are located in
@@ -101,7 +101,7 @@ hybrid.examples.coupled_subsystems.initialize
 
 % Run the Simulink model.
 warning('off','Simulink:Commands:LoadingOlderModel')
-simulink_model_path = which('hybrid.examples.coupled_subsystems.coupled_subsystems');
+simulink_model_path = which('hybrid.examples.coupled_subsystems.coupled');
 sim(simulink_model_path)
 close_system
 close all
@@ -122,8 +122,7 @@ eta2_arc = sol_2.slice(2);
 
 % Open .slx model. A screenshot of the subsystem will be
 % automatically included in the published document.
-example_name = 'coupled_subsystems';
-model_path = ['hybrid.examples.', example_name ,'.', example_name];
+model_path = 'hybrid.examples.coupled_subsystems.coupled';
 open_system(which(model_path))
 
 %% 

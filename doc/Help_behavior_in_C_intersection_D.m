@@ -7,7 +7,7 @@
 % |hybrid.examples.behavior_in_C_intersection_D|:
 % 
 % * <matlab:open('hybrid.examples.behavior_in_C_intersection_D.initialize') initialize.m> 
-% * <matlab:hybrid.examples.behavior_in_C_intersection_D.behavior_in_C_intersection_D behavior_in_C_intersection_D.slx> 
+% * <matlab:hybrid.examples.behavior_in_C_intersection_D.hybrid_priority hybrid_priority.slx> 
 % * <matlab:open('hybrid.examples.behavior_in_C_intersection_D.postprocess') postprocess.m> 
 % 
 % The contents of this package are located in
@@ -74,7 +74,7 @@ rule = 1; %#ok<NASGU> Used in Simulink model.
 
 % Run the Simulink model.
 warning('off','Simulink:Commands:LoadingOlderModel')
-simulink_model_path = which('hybrid.examples.behavior_in_C_intersection_D.behavior_in_C_intersection_D');
+simulink_model_path = which('hybrid.examples.behavior_in_C_intersection_D.hybrid_priority');
 sim(simulink_model_path)
 close_system
 
@@ -103,7 +103,7 @@ rule = 2; %#ok<NASGU> Variable is used within the Simulink model.
 
 % Run the Simulink model.
 warning('off','Simulink:Commands:LoadingOlderModel')
-simulink_model_path = which('hybrid.examples.behavior_in_C_intersection_D.behavior_in_C_intersection_D');
+simulink_model_path = which('hybrid.examples.behavior_in_C_intersection_D.hybrid_priority');
 sim(simulink_model_path)
 close_system
 
@@ -164,7 +164,7 @@ rng(12)
 
 % Run the Simulink model.
 warning('off','Simulink:Commands:LoadingOlderModel')
-simulink_model_path = which('hybrid.examples.behavior_in_C_intersection_D.behavior_in_C_intersection_D');
+simulink_model_path = which('hybrid.examples.behavior_in_C_intersection_D.hybrid_priority');
 sim(simulink_model_path)
 close_system
 
@@ -181,7 +181,7 @@ hybrid.examples.behavior_in_C_intersection_D.initialize
 x0 = 6.2; % Must be strictly between 6 and 7.
 
 % Run the Simulink model.
-simulink_model_path = which('hybrid.examples.behavior_in_C_intersection_D.behavior_in_C_intersection_D');
+simulink_model_path = which('hybrid.examples.behavior_in_C_intersection_D.hybrid_priority');
 sim(simulink_model_path)
 close_system
 

@@ -7,13 +7,13 @@
 % |hybrid.examples.analog_to_digital_converter|:
 % 
 % * <matlab:open('hybrid.examples.analog_to_digital_converter.initialize') initialize.m> 
-% * <matlab:hybrid.examples.analog_to_digital_converter.analog_to_digital_converter analog_to_digital_converter.slx> 
+% * <matlab:hybrid.examples.analog_to_digital_converter.adc adc.slx> 
 % * <matlab:open('hybrid.examples.analog_to_digital_converter.postprocess') postprocess.m> 
 % 
 % and in the package |hybrid.examples.bouncing_ball_with_adc|:
 % 
 % * <matlab:open('hybrid.examples.bouncing_ball_with_adc.initialize') initialize.m> 
-% * <matlab:hybrid.examples.bouncing_ball_with_adc.bouncing_ball_with_adc bouncing_ball_with_adc.slx> 
+% * <matlab:hybrid.examples.bouncing_ball_with_adc.ball_with_adc ball_with_adc.slx> 
 % * <matlab:open('hybrid.examples.bouncing_ball_with_adc.postprocess') postprocess.m> 
 % 
 % The contents of these packages are located in
@@ -49,7 +49,7 @@
 % The following procedure is used to simulate this example:
 % 
 % * Open
-% <matlab:hybrid.examples.analog_to_digital_converter.analog_to_digital_converter |hybrid.examples.analog_to_digital_converter.analog_to_digital_converter.slx|>.   
+% <matlab:hybrid.examples.analog_to_digital_converter.adc |hybrid.examples.analog_to_digital_converter.adc.slx|>.   
 % * Double-click the block labeled _Double Click to Initialize_.
 % * To start the simulation, click the _run_ button or select |Simulation>Run|.
 % * Once the simulation finishes, click the block labeled _Double Click to Plot
@@ -61,7 +61,7 @@ hybrid.examples.analog_to_digital_converter.initialize
 
 % Run the Simulink model.
 warning('off','Simulink:Commands:LoadingOlderModel')
-simulink_model_path = which('hybrid.examples.analog_to_digital_converter.analog_to_digital_converter');
+simulink_model_path = which('hybrid.examples.analog_to_digital_converter.adc');
 sim(simulink_model_path)
 close_system
 close all
@@ -141,7 +141,7 @@ hybrid.examples.bouncing_ball_with_adc.initialize
 
 % Run the Simulink model.
 warning('off','Simulink:Commands:LoadingOlderModel')
-simulink_model_path = which('hybrid.examples.bouncing_ball_with_adc.bouncing_ball_with_adc');
+simulink_model_path = which('hybrid.examples.bouncing_ball_with_adc.ball_with_adc');
 sim(simulink_model_path)
 close_system
 close all

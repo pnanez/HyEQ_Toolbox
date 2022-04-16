@@ -1,4 +1,4 @@
-function RebuildTexFiles()
+function ExtractSimulinkFunctionBlocks()
 % Script to rebuild tex files from source files
 
 disp('===== Generating .m files from source files =====')
@@ -37,115 +37,112 @@ copyfile(which([example_1_2_package, 'f']), out_dir_1_2, 'f')
 copyfile(which([example_1_2_package, 'g']), out_dir_1_2, 'f')
 
 %% Folder Matlab2tex_1_3
-extract('bouncing_ball_with_input', 'HS/flow set C', 'Matlab2tex_1_3', 'C')
-extract('bouncing_ball_with_input', 'HS/jump set D', 'Matlab2tex_1_3', 'D')
-extract('bouncing_ball_with_input', 'HS/flow map f', 'Matlab2tex_1_3', 'f')
-extract('bouncing_ball_with_input', 'HS/jump map g', 'Matlab2tex_1_3', 'g')
+extract('bouncing_ball_with_input', 'ball_with_input', 'HS/flow set C', 'Matlab2tex_1_3', 'C')
+extract('bouncing_ball_with_input', 'ball_with_input', 'HS/jump set D', 'Matlab2tex_1_3', 'D')
+extract('bouncing_ball_with_input', 'ball_with_input', 'HS/flow map f', 'Matlab2tex_1_3', 'f')
+extract('bouncing_ball_with_input', 'ball_with_input', 'HS/jump map g', 'Matlab2tex_1_3', 'g')
 
 %% Folder Matlab2tex_1_5
-extract('vehicle_on_constrained_path', 'HS/flow set C', 'Matlab2tex_1_5', 'C')
-extract('vehicle_on_constrained_path', 'HS/jump set D', 'Matlab2tex_1_5', 'D')
-extract('vehicle_on_constrained_path', 'HS/flow map f', 'Matlab2tex_1_5', 'f')
-extract('vehicle_on_constrained_path', 'HS/jump map g', 'Matlab2tex_1_5', 'g')
+extract('vehicle_on_constrained_path', 'vehicle_on_path', 'HS/flow set C', 'Matlab2tex_1_5', 'C')
+extract('vehicle_on_constrained_path', 'vehicle_on_path', 'HS/jump set D', 'Matlab2tex_1_5', 'D')
+extract('vehicle_on_constrained_path', 'vehicle_on_path', 'HS/flow map f', 'Matlab2tex_1_5', 'f')
+extract('vehicle_on_constrained_path', 'vehicle_on_path', 'HS/jump map g', 'Matlab2tex_1_5', 'g')
 
 %% Folder Matlab2tex_CPS_ContinuousPlant2
-extract('mobile_robot', 'HSu/flow set C', 'Matlab2tex_CPS_ContinuousPlant_2', 'C')
-extract('mobile_robot', 'HSu/jump set D', 'Matlab2tex_CPS_ContinuousPlant_2', 'D')
-extract('mobile_robot', 'HSu/flow map f', 'Matlab2tex_CPS_ContinuousPlant_2', 'f')
-extract('mobile_robot', 'HSu/jump map g', 'Matlab2tex_CPS_ContinuousPlant_2', 'g')
+extract('mobile_robot', 'mobile_robot', 'HSu/flow set C', 'Matlab2tex_CPS_ContinuousPlant_2', 'C')
+extract('mobile_robot', 'mobile_robot', 'HSu/jump set D', 'Matlab2tex_CPS_ContinuousPlant_2', 'D')
+extract('mobile_robot', 'mobile_robot', 'HSu/flow map f', 'Matlab2tex_CPS_ContinuousPlant_2', 'f')
+extract('mobile_robot', 'mobile_robot', 'HSu/jump map g', 'Matlab2tex_CPS_ContinuousPlant_2', 'g')
 
 %% Folder Matlab2tex_1_6
 
 % Subsystem 1
-extract('coupled_subsystems', 'Ball/flow set C', 'Matlab2tex_1_6', 'C1')
-extract('coupled_subsystems', 'Ball/jump set D', 'Matlab2tex_1_6', 'D1')
-extract('coupled_subsystems', 'Ball/flow map f', 'Matlab2tex_1_6', 'f1')
-extract('coupled_subsystems', 'Ball/jump map g', 'Matlab2tex_1_6', 'g1')
+extract('coupled_subsystems', 'coupled', 'Ball/flow set C', 'Matlab2tex_1_6', 'C1')
+extract('coupled_subsystems', 'coupled', 'Ball/jump set D', 'Matlab2tex_1_6', 'D1')
+extract('coupled_subsystems', 'coupled', 'Ball/flow map f', 'Matlab2tex_1_6', 'f1')
+extract('coupled_subsystems', 'coupled', 'Ball/jump map g', 'Matlab2tex_1_6', 'g1')
 
 % Subsystem 2
-extract('coupled_subsystems', 'Platform/flow set C', 'Matlab2tex_1_6', 'C2')
-extract('coupled_subsystems', 'Platform/jump set D', 'Matlab2tex_1_6', 'D2')
-extract('coupled_subsystems', 'Platform/flow map f', 'Matlab2tex_1_6', 'f2')
-extract('coupled_subsystems', 'Platform/jump map g', 'Matlab2tex_1_6', 'g2')
+extract('coupled_subsystems', 'coupled', 'Platform/flow set C', 'Matlab2tex_1_6', 'C2')
+extract('coupled_subsystems', 'coupled', 'Platform/jump set D', 'Matlab2tex_1_6', 'D2')
+extract('coupled_subsystems', 'coupled', 'Platform/flow map f', 'Matlab2tex_1_6', 'f2')
+extract('coupled_subsystems', 'coupled', 'Platform/jump map g', 'Matlab2tex_1_6', 'g2')
 
 %% Folder Matlab2tex_1_7
 
 % Firefly 1 and 2 have the same data
-extract('fireflies', 'Firefly 1/flow set C', 'Matlab2tex_1_7', 'C')
-extract('fireflies', 'Firefly 1/jump set D', 'Matlab2tex_1_7', 'D')
-extract('fireflies', 'Firefly 1/flow map f', 'Matlab2tex_1_7', 'f')
-extract('fireflies', 'Firefly 1/jump map g', 'Matlab2tex_1_7', 'g')
+extract('fireflies', 'fireflies', 'Firefly 1/flow set C', 'Matlab2tex_1_7', 'C')
+extract('fireflies', 'fireflies', 'Firefly 1/jump set D', 'Matlab2tex_1_7', 'D')
+extract('fireflies', 'fireflies', 'Firefly 1/flow map f', 'Matlab2tex_1_7', 'f')
+extract('fireflies', 'fireflies', 'Firefly 1/jump map g', 'Matlab2tex_1_7', 'g')
 
 %% Folder Matlab2tex_CPS_ContinuousPlant
 
 % Plant
-extract('zoh_feedback_control', 'HSu/flow set C', 'Matlab2tex_CPS_ContinuousPlant', 'C')
-extract('zoh_feedback_control', 'HSu/jump set D', 'Matlab2tex_CPS_ContinuousPlant', 'D')
-extract('zoh_feedback_control', 'HSu/flow map f', 'Matlab2tex_CPS_ContinuousPlant', 'f')
-extract('zoh_feedback_control', 'HSu/jump map g', 'Matlab2tex_CPS_ContinuousPlant', 'g')
+extract('zoh_feedback_control', 'zoh_feedback', 'HSu/flow set C', 'Matlab2tex_CPS_ContinuousPlant', 'C')
+extract('zoh_feedback_control', 'zoh_feedback', 'HSu/jump set D', 'Matlab2tex_CPS_ContinuousPlant', 'D')
+extract('zoh_feedback_control', 'zoh_feedback', 'HSu/flow map f', 'Matlab2tex_CPS_ContinuousPlant', 'f')
+extract('zoh_feedback_control', 'zoh_feedback', 'HSu/jump map g', 'Matlab2tex_CPS_ContinuousPlant', 'g')
 
 % ADC
-extract('zoh_feedback_control', 'ADC/flow set C', 'Matlab2tex_CPS_ContinuousPlant', 'C_ADC')
-extract('zoh_feedback_control', 'ADC/jump set D', 'Matlab2tex_CPS_ContinuousPlant', 'D_ADC')
-extract('zoh_feedback_control', 'ADC/flow map f', 'Matlab2tex_CPS_ContinuousPlant', 'f_ADC')
-extract('zoh_feedback_control', 'ADC/jump map g', 'Matlab2tex_CPS_ContinuousPlant', 'g_ADC')
+extract('zoh_feedback_control', 'zoh_feedback', 'ADC/flow set C', 'Matlab2tex_CPS_ContinuousPlant', 'C_ADC')
+extract('zoh_feedback_control', 'zoh_feedback', 'ADC/jump set D', 'Matlab2tex_CPS_ContinuousPlant', 'D_ADC')
+extract('zoh_feedback_control', 'zoh_feedback', 'ADC/flow map f', 'Matlab2tex_CPS_ContinuousPlant', 'f_ADC')
+extract('zoh_feedback_control', 'zoh_feedback', 'ADC/jump map g', 'Matlab2tex_CPS_ContinuousPlant', 'g_ADC')
 
 % ZOH
-extract('zoh_feedback_control', 'ZOH/flow set C', 'Matlab2tex_CPS_ContinuousPlant', 'C_ZOH')
-extract('zoh_feedback_control', 'ZOH/jump set D', 'Matlab2tex_CPS_ContinuousPlant', 'D_ZOH')
-extract('zoh_feedback_control', 'ZOH/flow map f', 'Matlab2tex_CPS_ContinuousPlant', 'f_ZOH')
-extract('zoh_feedback_control', 'ZOH/jump map g', 'Matlab2tex_CPS_ContinuousPlant', 'g_ZOH')
+extract('zoh_feedback_control', 'zoh_feedback', 'ZOH/flow set C', 'Matlab2tex_CPS_ContinuousPlant', 'C_ZOH')
+extract('zoh_feedback_control', 'zoh_feedback', 'ZOH/jump set D', 'Matlab2tex_CPS_ContinuousPlant', 'D_ZOH')
+extract('zoh_feedback_control', 'zoh_feedback', 'ZOH/flow map f', 'Matlab2tex_CPS_ContinuousPlant', 'f_ZOH')
+extract('zoh_feedback_control', 'zoh_feedback', 'ZOH/jump map g', 'Matlab2tex_CPS_ContinuousPlant', 'g_ZOH')
 
 %% Folder Matlab2tex_CPS_Network
 
 % Plant
-extract('network_estimation', 'Continuous Process/flow set C', 'Matlab2tex_CPS_Network', 'C')
-extract('network_estimation', 'Continuous Process/jump set D', 'Matlab2tex_CPS_Network', 'D')
-extract('network_estimation', 'Continuous Process/flow map f', 'Matlab2tex_CPS_Network', 'f')
-extract('network_estimation', 'Continuous Process/jump map g', 'Matlab2tex_CPS_Network', 'g')
+extract('network_estimation', 'network', 'Continuous Process/flow set C', 'Matlab2tex_CPS_Network', 'C')
+extract('network_estimation', 'network', 'Continuous Process/jump set D', 'Matlab2tex_CPS_Network', 'D')
+extract('network_estimation', 'network', 'Continuous Process/flow map f', 'Matlab2tex_CPS_Network', 'f')
+extract('network_estimation', 'network', 'Continuous Process/jump map g', 'Matlab2tex_CPS_Network', 'g')
 
 % Network
-extract('network_estimation', 'Network/flow set C', 'Matlab2tex_CPS_Network', 'C_network')
-extract('network_estimation', 'Network/jump set D', 'Matlab2tex_CPS_Network', 'D_network')
-extract('network_estimation', 'Network/flow map f', 'Matlab2tex_CPS_Network', 'f_network')
-extract('network_estimation', 'Network/jump map g', 'Matlab2tex_CPS_Network', 'g_network')
+extract('network_estimation', 'network', 'Network/flow set C', 'Matlab2tex_CPS_Network', 'C_network')
+extract('network_estimation', 'network', 'Network/jump set D', 'Matlab2tex_CPS_Network', 'D_network')
+extract('network_estimation', 'network', 'Network/flow map f', 'Matlab2tex_CPS_Network', 'f_network')
+extract('network_estimation', 'network', 'Network/jump map g', 'Matlab2tex_CPS_Network', 'g_network')
 
 % Estimator
-extract('network_estimation', 'Estimator/flow set C', 'Matlab2tex_CPS_Network', 'C_Estimator')
-extract('network_estimation', 'Estimator/jump set D', 'Matlab2tex_CPS_Network', 'D_Estimator')
-extract('network_estimation', 'Estimator/flow map f', 'Matlab2tex_CPS_Network', 'f_Estimator')
-extract('network_estimation', 'Estimator/jump map g', 'Matlab2tex_CPS_Network', 'g_Estimator')
+extract('network_estimation', 'network', 'Estimator/flow set C', 'Matlab2tex_CPS_Network', 'C_Estimator')
+extract('network_estimation', 'network', 'Estimator/jump set D', 'Matlab2tex_CPS_Network', 'D_Estimator')
+extract('network_estimation', 'network', 'Estimator/flow map f', 'Matlab2tex_CPS_Network', 'f_Estimator')
+extract('network_estimation', 'network', 'Estimator/jump map g', 'Matlab2tex_CPS_Network', 'g_Estimator')
  
 %% Folder Matlab2tex_FSM
-% Plant
-extract('finite_state_machine', 'FSM/flow set C', 'Matlab2tex_FSM', 'C')
-extract('finite_state_machine', 'FSM/jump set D', 'Matlab2tex_FSM', 'D')
-extract('finite_state_machine', 'FSM/flow map f', 'Matlab2tex_FSM', 'f')
-extract('finite_state_machine', 'FSM/jump map g', 'Matlab2tex_FSM', 'g')
+extract('finite_state_machine', 'fsm', 'FSM/flow set C', 'Matlab2tex_FSM', 'C')
+extract('finite_state_machine', 'fsm', 'FSM/jump set D', 'Matlab2tex_FSM', 'D')
+extract('finite_state_machine', 'fsm', 'FSM/flow map f', 'Matlab2tex_FSM', 'f')
+extract('finite_state_machine', 'fsm', 'FSM/jump map g', 'Matlab2tex_FSM', 'g')
 
 %% Folder ADC_1
-extract('analog_to_digital_converter', 'ADC/flow set C', 'Matlab2tex_CPS_ADC_1', 'C')
-extract('analog_to_digital_converter', 'ADC/jump set D', 'Matlab2tex_CPS_ADC_1', 'D')
-extract('analog_to_digital_converter', 'ADC/flow map f', 'Matlab2tex_CPS_ADC_1', 'f')
-extract('analog_to_digital_converter', 'ADC/jump map g', 'Matlab2tex_CPS_ADC_1', 'g')
+extract('analog_to_digital_converter', 'adc', 'ADC/flow set C', 'Matlab2tex_CPS_ADC_1', 'C')
+extract('analog_to_digital_converter', 'adc', 'ADC/jump set D', 'Matlab2tex_CPS_ADC_1', 'D')
+extract('analog_to_digital_converter', 'adc', 'ADC/flow map f', 'Matlab2tex_CPS_ADC_1', 'f')
+extract('analog_to_digital_converter', 'adc', 'ADC/jump map g', 'Matlab2tex_CPS_ADC_1', 'g')
 
 %% Folder Matlab2tex_ZOH
-
-% Plant
-extract('zero_order_hold', 'ZOH/flow set C', 'Matlab2tex_ZOH', 'C')
-extract('zero_order_hold', 'ZOH/jump set D', 'Matlab2tex_ZOH', 'D')
-extract('zero_order_hold', 'ZOH/flow map f', 'Matlab2tex_ZOH', 'f')
-extract('zero_order_hold', 'ZOH/jump map g', 'Matlab2tex_ZOH', 'g')
+extract('zero_order_hold', 'zoh', 'ZOH/flow set C', 'Matlab2tex_ZOH', 'C')
+extract('zero_order_hold', 'zoh', 'ZOH/jump set D', 'Matlab2tex_ZOH', 'D')
+extract('zero_order_hold', 'zoh', 'ZOH/flow map f', 'Matlab2tex_ZOH', 'f')
+extract('zero_order_hold', 'zoh', 'ZOH/jump map g', 'Matlab2tex_ZOH', 'g')
 
 warning('on','Simulink:Commands:LoadingOlderModel') % Renable warning.
 disp('Finished.')
 end
 
-function extract(example, embfnc, outdir, mfilename)
-slx_file = which(['hybrid.examples.', example, '.', example]);
+function extract(example, model_name, embfnc, outdir, mfilename)
+slx_file = which(['hybrid.examples.', example, '.', model_name]);
 out_dir = hybrid.getFolderLocation('doc', 'src', outdir);
 mfilename = [mfilename, '.m'];
-extractSimulinkFunction(slx_file, [example, '/', embfnc], fullfile(out_dir, mfilename))
+extractSimulinkFunction(slx_file, [model_name, '/', embfnc], fullfile(out_dir, mfilename))
 end
 
 function extractSimulinkFunction(simsys, embfnc, mfilename)

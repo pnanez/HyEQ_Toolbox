@@ -6,7 +6,7 @@
 % |hybrid.examples.zoh_feedback_control|:
 % 
 % * <matlab:open('hybrid.examples.zoh_feedback_control.initialize') initialize.m> 
-% * <matlab:hybrid.examples.zoh_feedback_control.zoh_feedback_control zoh_feedback_control.slx> 
+% * <matlab:hybrid.examples.zoh_feedback_control.zoh_feedback zoh_feedback.slx> 
 % * <matlab:open('hybrid.examples.zoh_feedback_control.postprocess') postprocess.m> 
 % 
 % The contents of this package are located in
@@ -103,7 +103,7 @@ hybrid.examples.zoh_feedback_control.initialize
 
 % Run the Simulink model.
 warning('off','Simulink:Commands:LoadingOlderModel')
-simulink_model_path = which('hybrid.examples.zoh_feedback_control.zoh_feedback_control');
+simulink_model_path = which('hybrid.examples.zoh_feedback_control.zoh_feedback');
 sim(simulink_model_path)
 close_system
 close all
@@ -117,8 +117,7 @@ close all
 
 % Open .slx model. A screenshot of the subsystem will be
 % automatically included in the published document.
-example_name = 'zoh_feedback_control';
-model_path = ['hybrid.examples.', example_name ,'.', example_name];
+model_path = 'hybrid.examples.zoh_feedback_control.zoh_feedback';
 open_system(which(model_path))
 
 %% Continuous Time Plant

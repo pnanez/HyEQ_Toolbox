@@ -11,7 +11,7 @@
 % |hybrid.examples.zero_order_hold|:
 % 
 % * <matlab:open('hybrid.examples.zero_order_hold.initialize') initialize.m> 
-% * <matlab:hybrid.examples.zero_order_hold.zero_order_hold zero_order_hold.slx> 
+% * <matlab:hybrid.examples.zero_order_hold.zoh zoh.slx> 
 % * <matlab:open('hybrid.examples.zero_order_hold.postprocess') postprocess.m> 
 % 
 % The contents of this package are located in
@@ -45,10 +45,10 @@
 % where the input and the state are given by $u \in \mathbf{R}^{2}$, and $x = (m_{s}, \tau_{s})\in \mathbf{R}\times \mathbf{R}^{2}$, respectively.
 %% Steps to Run Model
 % 
-% The following procedure is used to simulate this example using the model in the file |zero_order_hold.slx|:
+% The following procedure is used to simulate this example using the model in the file |zoh.slx|:
 % 
 % * Open
-% <matlab:hybrid.examples.zero_order_hold.zero_order_hold |zero_order_hold.slx|> 
+% <matlab:hybrid.examples.zero_order_hold.zoh |zoh.slx|> 
 % in Simulink (clicking this link changes your working directory and opens the model).   
 % * Double-click the block labeled _Double Click to Initialize_.
 % * To start the simulation, click the _run_ button or select |Simulation>Run|.
@@ -61,7 +61,7 @@ hybrid.examples.zero_order_hold.initialize
 
 % Run the Simulink model.
 warning('off','Simulink:Commands:LoadingOlderModel')
-simulink_model_path = which('hybrid.examples.zero_order_hold.zero_order_hold');
+simulink_model_path = which('hybrid.examples.zero_order_hold.zoh');
 sim(simulink_model_path)
 close_system
 close all
@@ -80,8 +80,7 @@ sol_input = HybridArc(t1, j1, x1);
 
 % Open .slx model. A screenshot of the subsystem will be
 % automatically included in the published document.
-example_name = 'zero_order_hold';
-model_path = ['hybrid.examples.', example_name ,'.', example_name];
+model_path = 'hybrid.examples.zero_order_hold.zoh';
 open_system(which(model_path))
 
 %%

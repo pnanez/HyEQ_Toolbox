@@ -8,7 +8,7 @@
 % |hybrid.examples.finite_state_machine|:
 % 
 % * <matlab:open('hybrid.examples.finite_state_machine.initialize') initialize.m> 
-% * <matlab:hybrid.examples.finite_state_machine.finite_state_machine finite_state_machine.slx> 
+% * <matlab:hybrid.examples.finite_state_machine.fsm fsm.slx> 
 % * <matlab:open('hybrid.examples.finite_state_machine.postprocess') postprocess.m> 
 % 
 % The contents of this package are located in
@@ -54,7 +54,7 @@
 % The following procedure is used to simulate this example using the model in the file |FSM_example.slx|:
 % 
 % * Open
-% <matlab:hybrid.examples.finite_state_machine |hybrid.examples.finite_state_machine.finite_state_machine|> 
+% <matlab:hybrid.examples.finite_state_machine.fsm |hybrid.examples.finite_state_machine.fsm.slx|> 
 % in Simulink (clicking this link changes your working directory and opens the model).   
 % * Double-click the block labeled _Double Click to Initialize_.
 % * To start the simulation, click the _run_ button or select |Simulation>Run|.
@@ -66,7 +66,7 @@ hybrid.examples.finite_state_machine.initialize
 
 % Run the Simulink model.
 warning('off','Simulink:Commands:LoadingOlderModel')
-simulink_model_path = which('hybrid.examples.finite_state_machine.finite_state_machine');
+simulink_model_path = which('hybrid.examples.finite_state_machine.fsm');
 sim(simulink_model_path)
 close_system
 close all
@@ -82,8 +82,7 @@ sol = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j')
 
 % Open .slx model. A screenshot of the subsystem will be
 % automatically included in the published document.
-example_name = 'finite_state_machine';
-model_path = ['hybrid.examples.', example_name ,'.', example_name];
+model_path = 'hybrid.examples.finite_state_machine.fsm';
 open_system(which(model_path))
 
 %%

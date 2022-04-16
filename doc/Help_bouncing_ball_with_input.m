@@ -8,9 +8,8 @@
 % |hybrid.examples.bouncing_ball_with_input|:
 % 
 % * <matlab:open('hybrid.examples.bouncing_ball_with_input.initialize') initialize.m> 
-% * <matlab:hybrid.examples.bouncing_ball_with_input.bouncing_ball_with_input
-% bouncing_ball_with_input.slx>
-% * <matlab:hybrid.examples.bouncing_ball_with_input.bouncing_ball_with_input_alternative bouncing_ball_with_input_alternative.slx>
+% * <matlab:hybrid.examples.bouncing_ball_with_input.ball_with_input ball_with_input.slx>
+% * <matlab:hybrid.examples.bouncing_ball_with_input.ball_with_input2 ball_with_input2.slx>
 % * <matlab:open('hybrid.examples.bouncing_ball_with_input.postprocess') postprocess.m> 
 % 
 % The contents of this package are located in
@@ -44,7 +43,7 @@
 % The following procedure is used to simulate this example using the model in the file |Example_1_3.slx|:
 % 
 % # Open
-% <matlab:hybrid.examples.bouncing_ball_with_input.bouncing_ball_with_input |hybrid.examples.bouncing_ball_with_input.bouncing_ball_with_input.slx|> 
+% <matlab:hybrid.examples.bouncing_ball_with_input.ball_with_input |hybrid.examples.bouncing_ball_with_input.ball_with_input.slx|> 
 % in Simulink.   
 % # In Simulink, double click the block "Double Click to Initialize" to 
 % <matlab:open('hybrid.examples.bouncing_ball_with_input.initialize') |initialize variables|> 
@@ -59,7 +58,7 @@ hybrid.examples.bouncing_ball_with_input.initialize
 
 % Run the Simulink model.
 warning('off','Simulink:Commands:LoadingOlderModel')
-simulink_model_path = which('hybrid.examples.bouncing_ball_with_input.bouncing_ball_with_input');
+simulink_model_path = which('hybrid.examples.bouncing_ball_with_input.ball_with_input');
 sim(simulink_model_path)
 close_system
 close all
@@ -75,9 +74,8 @@ sol = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j')
 
 % Open subsystem "HS" in Example1_3.slx. A screenshot of the subsystem will be
 % automatically included in the published document.
-example_name = 'bouncing_ball_with_input';
-model_path = ['hybrid.examples.', example_name ,'.', example_name];
-block_path = [example_name, '/HS'];
+model_path = 'hybrid.examples.bouncing_ball_with_input.ball_with_input';
+block_path = 'ball_with_input/HS';
 load_system(which(model_path))
 open_system(block_path)
 snapnow
@@ -111,9 +109,9 @@ close_system
 % Open subsystem "HS" in Example1_4.slx. A screenshot of the subsystem will be
 % automatically included in the published document.
 warning('off','Simulink:Commands:LoadingOlderModel')
-model_path = 'hybrid.examples.bouncing_ball_with_input.bouncing_ball_with_input_alternative';
+model_path = 'hybrid.examples.bouncing_ball_with_input.ball_with_input2';
 load_system(which(model_path))
-open_system('bouncing_ball_with_input_alternative/HS')
+open_system('ball_with_input2/HS')
 snapnow();
 
 %% Example Output

@@ -7,7 +7,7 @@
 % |hybrid.examples.vehicle_on_constrained_path|:
 % 
 % * <matlab:open('hybrid.examples.vehicle_on_constrained_path.initialize') initialize.m> 
-% * <matlab:hybrid.examples.vehicle_on_constrained_path.vehicle_on_constrained_path vehicle_on_constrained_path.slx> 
+% * <matlab:hybrid.examples.vehicle_on_constrained_path.vehicle_on_path vehicle_on_path.slx> 
 % * <matlab:open('hybrid.examples.vehicle_on_constrained_path.postprocess') postprocess.m> 
 % 
 % The contents of this package are located in
@@ -70,7 +70,7 @@ hybrid.examples.vehicle_on_constrained_path.initialize
 
 % Run the Simulink model.
 warning('off','Simulink:Commands:LoadingOlderModel')
-simulink_model_path = which('hybrid.examples.vehicle_on_constrained_path.vehicle_on_constrained_path');
+simulink_model_path = which('hybrid.examples.vehicle_on_constrained_path.vehicle_on_path');
 sim(simulink_model_path)
 close_system
 close all
