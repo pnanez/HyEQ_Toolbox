@@ -1,4 +1,4 @@
-% Initialization script for Example 1.7: Synchronization of Fireflies.
+% Initialization script for Synchronization of Fireflies.
                                                          
 % Initial conditions                                                    
 x1_0 = 0.5;                                                            

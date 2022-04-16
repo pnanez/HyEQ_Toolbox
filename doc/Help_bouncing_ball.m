@@ -75,7 +75,7 @@ open_system(block_path)
 % plain text. 
 % The downsides to this approach, however, is that it does not support systems with 
 % inputs and is slightly slower than using embedded function blocks (see
-% <matlab:hybrid.internal.openHelp('Example_1_3') Example 1.3: Bouncing ball with input>).
+% <matlab:hybrid.internal.openHelp('Example_1_3') Bouncing ball with input>).
 
 %% 
 % The MATLAB source code for $f, C, g,$ and $D$ is included below.

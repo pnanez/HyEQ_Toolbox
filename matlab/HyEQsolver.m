@@ -12,9 +12,9 @@ function [t, j, x] = HyEQsolver(f,g,C,D,x0,TSPAN,JSPAN,rule,options,solver,E,pro
 %
 %   x0 defines the initial condition for the state.
 %
-%   TSPAN = [TSTART TFINAL] is the time interval. JSPAN = [JSTART JSTOP] is
-%       the interval for discrete jumps. The algorithm stop when the first
-%       stop condition is reached.
+%   TSPAN = [TSTART TFINAL] is the time interval. 
+%   JSPAN = [JSTART JSTOP] is the interval for discrete jumps. 
+%       The algorithm stop when the first stop condition is reached.
 %
 %   rule (optional parameter) - rule for jumps
 %       rule = 1 (default) -> priority for jumps rule = 2 -> priority for
@@ -39,8 +39,8 @@ function [t, j, x] = HyEQsolver(f,g,C,D,x0,TSPAN,JSPAN,rule,options,solver,E,pro
 %
 %         Example: Bouncing ball with Lite HyEQ Solver
 %
-%         % Consider the hybrid system model for the bouncing ball with data given in
-%         % Example 1.2. For this example, we consider the ball to be bouncing on a
+%         % Consider the hybrid system model for the bouncing ball.
+%         % For this example, we consider the ball to be bouncing on a
 %         % floor at zero height. The constants for the bouncing ball system are
 %         % \gamma=9.81 and \lambda=0.8. The following procedure is used to
 %         % simulate this example in the Lite HyEQ Solver:

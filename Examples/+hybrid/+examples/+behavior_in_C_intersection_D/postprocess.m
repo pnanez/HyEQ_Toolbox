@@ -1,4 +1,4 @@
-% Postprocessing script
+% Postprocessing script for Jump/Flow Behavior in the Intersection of C and D
 
 sol_a = HybridArc(t, j, x); %#ok<*IJCL> <- suppress warning about 'j'. 
 

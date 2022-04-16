@@ -1,4 +1,4 @@
-% Initialization script for Example 1.2: Bouncing Ball.
+% Initialization script for Bouncing Ball example.
 
 % Initial conditions
 x0 = [1; 0];

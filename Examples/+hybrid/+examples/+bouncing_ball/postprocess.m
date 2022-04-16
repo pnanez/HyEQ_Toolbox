@@ -1,4 +1,4 @@
-% Postprocessing for Example 1.2: Bouncing Ball.
+% Postprocessing for Bouncing Ball example.
 
 % Construct a HybridArc object from (t, j, x) computed by Simulink so that we
 % can use the plotting tools associated with HybridArcs, namely

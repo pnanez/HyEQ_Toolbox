@@ -1,4 +1,4 @@
-% Postprocessing script for Example 1.6: Simulation of a bouncing ball and moving platform.
+% Postprocessing script for smulation of a bouncing ball and moving platform.
  
 sol1 = HybridArc(t1, j1, x1);
 sol2 = HybridArc(t2, j2, x2);

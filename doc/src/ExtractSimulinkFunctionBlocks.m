@@ -35,6 +35,8 @@ copyfile(which([example_1_2_package, 'C']), out_dir_1_2, 'f')
 copyfile(which([example_1_2_package, 'D']), out_dir_1_2, 'f')
 copyfile(which([example_1_2_package, 'f']), out_dir_1_2, 'f')
 copyfile(which([example_1_2_package, 'g']), out_dir_1_2, 'f')
+copyfile(which([example_1_2_package, 'initialize']), out_dir_1_2, 'f')
+copyfile(which([example_1_2_package, 'postprocess']), out_dir_1_2, 'f')
 
 %% Folder Matlab2tex_1_3
 extract('bouncing_ball_with_input', 'ball_with_input', 'HS/flow set C', 'Matlab2tex_1_3', 'C')

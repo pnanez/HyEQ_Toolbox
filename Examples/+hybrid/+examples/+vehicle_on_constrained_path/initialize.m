@@ -1,4 +1,4 @@
-% Initialization script for Example 1.5: A Vehicle on a Track with Boundaries.
+% Initialization script for a Vehicle on a Track with Boundaries.
                                                                                                                                  
 % Initial conditions                                                    
 x0 = [0; 0; pi/4; 2];                                                                                               

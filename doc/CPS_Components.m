@@ -106,8 +106,8 @@
 % $$
 % 
 % Note that there is no notion of ordinary time $t$ associated with the FSM model above. 
-% An example of this model is presented in <matlab:hybrid.internal.openHelp('Example_4_1') Example 1.4>.
-% In addition, the |FSM| block shown at the top of this pave can be used to model
+% An example of this model is presented in <matlab:hybrid.internal.openHelp('Example_4_1') Finite State Machine>.
+% In addition, the |FSM| block shown at the top of this page can be used to model
 % these type of systems. 
 % 
 % *2. Analog-to-Digital Converters.*

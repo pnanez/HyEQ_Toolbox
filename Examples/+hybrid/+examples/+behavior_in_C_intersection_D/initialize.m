@@ -1,4 +1,4 @@
-% Initialization for Example 1.8                                           
+% Initialization script for Jump/Flow Behavior in the Intersection of C and D           
                                                                         
 % Initial condition   
 x0 = 1;                                                                                                                     

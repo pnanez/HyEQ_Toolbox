@@ -1,4 +1,4 @@
-% Postprocessing script for Example 1.7: Synchronization of Fireflies
+% Postprocessing script for Synchronization of Fireflies
 
 % Construct HybridArc objects for the trajectory of each subsystem, 
 % as computed by Simulink, so that we can use the plotting tools associated

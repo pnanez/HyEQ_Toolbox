@@ -1,9 +1,9 @@
-% Postprocessing script for the example 1.5: A vehicle on a track with boundaries.
+% Postprocessing script for a vehicle on a track with boundaries.
 
 % Construct a HybridArc object from (t, j, x) computed by Simulink so that we
 % can use the plotting tools associated with HybridArcs, namely
 % HybridPlotBuilder.
-sol = HybridArc(t, j, x);
+sol = HybridArc(t, j, x); %#ok<IJCL> 
 
 % Plot solution                                           
 figure(1)                                                 

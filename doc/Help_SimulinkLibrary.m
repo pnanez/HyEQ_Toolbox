@@ -87,10 +87,10 @@
 % the maximum flow time specified by |T|, the maximum number of jumps specified by |J|, 
 % and tolerances used when simulating. 
 % These can be changed by editing the script file |initialization.m|. 
-% The following sample code is used to initialize the bouncing ball example, 
-% <matlab:hybrid.internal.openHelp('Example_1_2') Example 1.2>.
+% The following sample code is used to initialize the
+% <matlab:hybrid.internal.openHelp('Example_1_2') bouncing ball example>.
 % 
-% <include>src/Matlab2tex/initializationBB_inst.m</include>
+% <include>src/Matlab2tex_1_2/initialize.m</include>
 
 %%
 % It is important to note that variables called in the 
@@ -108,11 +108,11 @@
 % The solutions can be plotted by double-clicking on the block at the top of the Simulink Model 
 % labeled _Double Click to Plot Solutions_ which calls the script |postprocessing.m|. 
 % The script |postprocessing.m| may be edited to include the desired postprocessing and solution plots. 
-% See below for sample code to plot solutions to the bouncing ball example, Example 1.2. 
+% See below for sample code to plot solutions to the bouncing ball example. 
 % The functions used to generate the plots are described in
 % <matlab:hybrid.internal.openHelp('HybridPlotBuilder_demo') Creating plots with HybridPlotBuilder>.
 % 
-% <include>src/Matlab2tex/postprocesingBB_inst.m</include>
+% <include>src/Matlab2tex_1_2/postprocess.m</include>
 
 %% The Integrator System
 % In this section we discuss the internals of the _Integrator System_: 
