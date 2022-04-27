@@ -1,7 +1,7 @@
 function blkStruct = slblocks
 % Specify that the product should appear in the library browser
 % and be cached in its repository
-    Browser.Library = 'HyEQ_Library_R2012a';
+    Browser.Library = 'HyEQ_Library';
     Browser.Name    = 'Hybrid Equations Toolbox';
     Browser(1).Choice = 0 ;
     blkStruct.Browser = Browser;

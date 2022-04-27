@@ -1,8 +1,7 @@
-% Project: Simulation of a hybrid system (Finite state machine)
-% Description: initialization FSM                                                                    
+% Initialization script for the finite state machine.                                                
 
 % Initial conditions                                                    
-x0 = [1;2];             
+q0 = [1; 2];             
 
 % Simulation horizon                                                    
 T = 10;                                                                 

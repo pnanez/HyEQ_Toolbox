@@ -1,7 +1,7 @@
 % Initialization for Continuous Plant Example
                                                                 
 % Initial conditions                                                    
-x0 = [0; 0; 0];   
+z0 = [0; 0; 0];   
 
 % Parameters
 minU = -1;

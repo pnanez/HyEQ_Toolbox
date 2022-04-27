@@ -28,7 +28,7 @@ classdef getFolderLocationTest < matlab.unittest.TestCase
         end
 
         function testSimulink(testCase)
-            path = hybrid.getFolderLocation('simulink', 'HyEQ_No_C_Compiler.slx');
+            path = hybrid.getFolderLocation('simulink', 'HyEQ_Library.slx');
             testCase.assertFileExists(path);
         end
 

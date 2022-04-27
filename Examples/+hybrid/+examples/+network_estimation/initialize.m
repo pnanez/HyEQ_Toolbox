@@ -1,26 +1,23 @@
-% Initialization script for the estimation over network example
+% Initialization script for example: Estimation over Network
 
-% simulation horizon                                                    
+% Simulation horizon                                                    
 T = 30;                                                                 
 J = 100;  
-% Constants (NET)
-Tnmax = 3;
-Tnmin = 0.2;
-% random communication events
-tk = rand(1,J)*(Tnmax-Tnmin)+Tnmin;
 
-% initial conditions (Linear system)
-z0 = [1;0.1;1;0.6]; 
+% Constants (Network)
+T_max = 3;  % Max time between communication events.
+T_min = 0.2;% Min time between communication events.
+
+% Initial conditions for Linear system.
+z0 = [5; 0.1; 1; 0.6]; 
 n = length(z0);
 
-% initial conditions (NET)
-tau0 = tk(1);
-j0 = 0;
-y0 = [0; j0; tau0];             
+% Initial conditions for Network.
+ms_0 = 0; % Initial output for Network.
+tau_0 = 0;% Initial timer value for Network.         
 
-
-% initial conditions (Estimator)
-zhat0 = [0; 1/2; 0; 0; 0];
+% Initial condition for Estimator
+zhat0 = [-10; 1/2; 0; 0; 0];
 
 % System
 A = [0  1  0  0;

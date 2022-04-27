@@ -52,9 +52,9 @@ extract('vehicle_on_constrained_path', 'vehicle_on_path', 'HS/jump map g', 'Matl
 
 %% Folder Matlab2tex_CPS_ContinuousPlant2
 extract('mobile_robot', 'mobile_robot', 'HSu/flow set C', 'Matlab2tex_CPS_ContinuousPlant_2', 'C')
-extract('mobile_robot', 'mobile_robot', 'HSu/jump set D', 'Matlab2tex_CPS_ContinuousPlant_2', 'D')
+% extract('mobile_robot', 'mobile_robot', 'HSu/jump set D', 'Matlab2tex_CPS_ContinuousPlant_2', 'D')
 extract('mobile_robot', 'mobile_robot', 'HSu/flow map f', 'Matlab2tex_CPS_ContinuousPlant_2', 'f')
-extract('mobile_robot', 'mobile_robot', 'HSu/jump map g', 'Matlab2tex_CPS_ContinuousPlant_2', 'g')
+% extract('mobile_robot', 'mobile_robot', 'HSu/jump map g', 'Matlab2tex_CPS_ContinuousPlant_2', 'g')
 
 %% Folder Matlab2tex_1_6
 

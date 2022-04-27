@@ -87,6 +87,10 @@ In your account, [add the newly generated SSH Key](https://github.com/settings/s
 * `docs/`: contains the source code for Toolbox documentation.
 * `Examples/`: contains the source code for the examples that are described in the documentation.
 
+## Editing the Simulink Library
+The HyEQ Simulink library is contained in `simulink/HyEQ_Library.slx`. 
+In order to ensure that the Simulink library and examples are backward compatible to R2014b, the associated Simulink models should only be edited in R2014b. If a Simulink model is edited in a later version, then it must be exported using "Export to Previous Version" with compatibility set to R2014b. 
+
 ## Packaging a New Version of the HyEQ Toolbox
 To create a MATLAB toolbox package for the Toolbox:
 1. Navigate to the root folder of the Toolbox in MATLAB.

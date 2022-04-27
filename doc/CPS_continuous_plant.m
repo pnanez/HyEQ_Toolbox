@@ -76,15 +76,10 @@ open_system(which(model_path))
 %
 % *flow set* |C| *block*
 % 
-% <include>src/Matlab2tex_CPS_ContinuousPlant_2/g.m</include>
-%
-% *jump map* |g| *block*
-% 
 % <include>src/Matlab2tex_CPS_ContinuousPlant_2/C.m</include>
 %
-% *jump set* |D| *block*
-% 
-% <include>src/Matlab2tex_CPS_ContinuousPlant_2/D.m</include>
+% The *jump set* |C| *block* is given as a constant block with value zero
+% and the *jump map* |D| *block* is unused.
 
 %% Example Output
 % The following plot shows a solution to the closed-loop system.
