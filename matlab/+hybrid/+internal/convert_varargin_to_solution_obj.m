@@ -47,6 +47,13 @@ end
 if ~exist('slice_ndxs', 'var') || isempty(slice_ndxs)
     label_ids = (1:size(x, 2))';
     value_ids = (1:size(x, 2))';
+elseif min(slice_ndxs) < 1
+    error('All slice indices bust be at least 1, but the minimum index was %d.', ...
+        min(slice_ndxs));
+elseif max(slice_ndxs) > size(x, 2)
+    error(['The maximum index in slice was %d ' ...
+           'but there are only %d components in x.'], ...
+        max(slice_ndxs), size(x, 2));
 else
     x = x(:, slice_ndxs);
     label_ids = slice_ndxs';

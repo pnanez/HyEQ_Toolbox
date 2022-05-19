@@ -1019,6 +1019,10 @@ classdef HybridPlotBuilder < handle
 
             if this.settings.auto_subplots
                 % Link the subplot axes.
+                if isempty(plot_data_array)
+                    error('No data to plot. This might be caused because the hybrid arc has dimension zero.')
+                end
+
                 is2D = size(plot_data_array(1).plot_values, 2) == 2;
                 if is2D
                     % Link the x-axes of the subplots so zooming and panning

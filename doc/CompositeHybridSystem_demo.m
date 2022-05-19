@@ -317,7 +317,8 @@ sys_bb = CompositeHybridSystem('Ball', ball_subsys, 'Controller', controller_sub
 % time |j| for that subsystem, which is _not_ (in general) the same as the
 % discrete time of the composite system.
 % 
-% As with output functions, any unused input arguments (especially |y1|, |y1|,
+% As with output functions, any unused input arguments (especially the inputs 
+% that recieve outputs from other systems, e.g., |y1|, |y2|,
 % etc.) should be omitted or replaced with |'~'| so that the solver can
 % determine which order to evaluate the input and output functions.
 % 
@@ -339,7 +340,7 @@ sys_bb
 % standard |HybridSystem| except that the first argument is a cell array 
 % that contains the initial states of each subsystem (rather than passing the
 % entire composite state |[x_1; x_2; ... x_N]|). Internally, the solve function
-% handles the % necessary concatenation of the states and appends the discrete
+% handles the necessary concatenation of the states and appends the discrete
 % time variables |j1| and |j2|. 
 x_ball_initial = [1;  0];
 x_controller_initial = [0; 0];
@@ -351,7 +352,13 @@ sol_bb = sys_bb.solve(x0_cell, tspan, jspan)
 %%
 % The |CompositeHybridSystem.solve| function supports the optional arguments
 % supported by |HybridSystem.solve|, such as an |HybridSolverConfig| object or
-% |'silent'|. See |doc HybridSystem.solve| and |doc HybridSolverConfig|.
+% |'silent'|. See 
+% 
+%   doc HybridSystem.solve
+% 
+% and 
+% 
+%   doc HybridSolverConfig.
 
 %% Plotting Solutions
 % Plotting |sol|, we see all of the states of the composite system.
@@ -408,7 +415,7 @@ hpb.plotFlows(sol_bb('Ball'));
 clf
 % Plot Input Signal
 subplot(2, 1, 1)
-% A single HybridPlotBuilder is used twice so both plots are included in the legend. 
+% We reuse a single HybridPlotBuilder for both plots so they are both included in the legend. 
 hpb = HybridPlotBuilder().title('Input Signal').jumpColor('none')...
     .filter(~sol_bb.is_jump_start)...
     .legend('$u_{C}$')...
@@ -547,7 +554,7 @@ x0 = {[10; 0], [], [], 1};
 sol_switched = sys_switched.solve(x0, [0, 100], [0, 100]);
 
 %% 
-% Plot the solution, using different colors when $q=0$ and $q=2$.
+% Plot the solution, using different colors when $q=0$ and $q=1$.
 clf  
 hold on
 q = sol_switched('switcher').x;

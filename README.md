@@ -51,6 +51,11 @@ The MATLAB Add-on Manager is not supported on versions of MATLAB before MATLAB R
 **Problem**: I just uninstalled v2.40 and installed v3.0 of the Hybrid Equations Toolbox. Now X is not working.
 **Solution**: Try restarting MATLAB.
 
+**Problem** My Simulink model produces the following error message: 
+	An error occurred while running the simulation and the simulation was terminated
+	Simulink cannot solve the algebraic loop containing '<model name>/Integrator System/ICx' at time 0.0 using the TrustRegion-based algorithm due to one of the following reasons: the model is ill-defined i.e., the system equations do not have a solution; or the nonlinear equation solver failed to converge due to numerical issues.
+**Solution** This error is often caused when creating closed-loop systems out of several subystem blocks. When passing the state of a Hybrid Subsystem block to another block, use the "x-" output, not the "x" output.
+
 ## More Help
 
 To access the HyEQ Toolbox documentation, open MATLAB Help (F1) and navigate to Supplemental Software>Hybrid Equations Toolbox.
