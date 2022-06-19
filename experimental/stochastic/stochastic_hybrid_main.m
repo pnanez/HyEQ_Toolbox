@@ -1,27 +1,28 @@
-mu = @(t, x) -1*x;
-sigma = @(t, x) 1/x;
-D = @(x) x <= 0;
+mu = @(t, x) [0, -1; 1, 0]*x - 1*x/norm(x);
+sigma = @(t, x) 0.1*[abs(x(1)); abs(x(2))];
+D = @(x) norm(x) <= 1;
 
 a = -3;
 % sde = SDE(mu, sigma);
 
-T = 10;
+T = 30;
 N = 1000;
-X0 = 10;
+X0 = [10; 0];
 event_error_tol = 1e-9;
 delta_t = T / N;
-X = nan(N, 1);
+X = nan(N, size(X0, 1));
 t = nan(N, 1);
-X(1) = X0;
+X(1, :) = X0';
 t(1) = 0;
 
 % Try non-OOP approach
 for k = 1:(N-1)
+    X_k = X(k, :)';
     w0 = 0;
     wf = normrnd(0, sqrt(delta_t)); % W(t_k+1) - W(t_k)
-    mu_k = mu(t(k), X(k));
-    sigma_k = sigma(t(k), X(k));
-    x_next_candidate = X(k) + delta_t * mu_k + sigma_k * wf;
+    mu_k = mu(t(k), X_k);
+    sigma_k = sigma(t(k), X_k);
+    x_next_candidate = X_k + delta_t * mu_k + sigma_k * wf;
 
     figure(1)
     clf
@@ -35,7 +36,7 @@ for k = 1:(N-1)
             % between t0 and tf.
             t_sample = (t0 + tf) / 2;
             w = sampleWienerMidpoint(t0, tf, w0, wf);
-            y = X(k) + mu_k * t_sample + sigma_k * w;
+            y = X_k + mu_k * t_sample + sigma_k * w;
 
             subplot(3, 1, 1)
             plot(i, tf, 'vb')
@@ -51,15 +52,15 @@ for k = 1:(N-1)
             hold on
             legend('w_f', 'w', 'w_0')
 
-            subplot(3, 1, 3)
-            if y < 0
-                semilogy(i, -y, 'm_')
-                hold on
-            else
-                semilogy(i, y, 'k+')
-                hold on
-            end
-            hold on
+%             subplot(3, 1, 3)
+%             if y < 0
+%                 semilogy(i, -y, 'm_')
+%                 hold on
+%             else
+%                 semilogy(i, y, 'k+')
+%                 hold on
+%             end
+%             hold on
 
             % Check if the sample would would take X into the 
             % jump set. 
@@ -72,19 +73,21 @@ for k = 1:(N-1)
             end
         end
         t(k+1) = t(k) + t_sample;
-        X(k+1) = y;
+        X(k+1, :) = y';
         break
     end
     t(k+1) = t(k) + delta_t;
-    X(k+1) = x_next_candidate;
+    X(k+1, :) = x_next_candidate';
 end
 
+%
 figure(2)
 clf
-plot(t, abs(X))
-min(X)
+plot(X(:, 1), X(:, 2))
+min(vecnorm(X'))
+axis equal
 % ylim([0, inf])
-xlim([0, T])
+% xlim([0, T])
 
 
 
