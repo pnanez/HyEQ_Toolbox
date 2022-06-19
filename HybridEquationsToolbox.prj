@@ -24,6 +24,7 @@ package_toolbox.m
 temp.m
 readme.rtf
 configure_development_path.m
+experimental
 rename_variables.sh
 doc/src
 *_temp.*
