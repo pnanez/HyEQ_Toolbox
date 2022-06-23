@@ -102,8 +102,11 @@ classdef HybridSolverConfig < handle
         function this = priority(this, priority)
             % Set the hybrid priority that determines the behavior of solutions in the intersection of the flow set and the jump set.
             %
-            % Value must be ''jump'', ''flow'' (case insensitive),
-            % hybrid.Priority.JUMP, or hybrid.Priority.FLOW.
+            % Value must be one of the following 
+            %   - ''jump'' (case insensitive)
+            %   - ''flow'' (case insensitive)
+            %   - hybrid.Priority.JUMP
+            %   - hybrid.Priority.FLOW
             % 
             % See also: hybrid.Priority, HybridSystem.solve, HyEQsolver.
             if strcmpi(priority, 'jump') % Case insenstive

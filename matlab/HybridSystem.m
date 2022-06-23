@@ -116,7 +116,8 @@ classdef (Abstract) HybridSystem < handle
             end
             if ~isempty(varargin) && isa(varargin{1}, 'HybridSolverConfig')
                 assert(numel(varargin) == 1, ...
-                    'If a HybridSolverConfig is provided in the 4th argument, then there cannot be any more arguments.')
+                    ['If a HybridSolverConfig is provided in the 4th argument, ' ...
+                    'then there cannot be any more arguments.'])
                 config = varargin{1};
             else
                 config = HybridSolverConfig(varargin{:});
@@ -436,7 +437,8 @@ classdef (Abstract) HybridSystem < handle
                     % includes "this" in the first argument.
                     func_lambda = @(x, t, j) func_handle(x, t, j);
                 otherwise
-                    error('Functions must have 2,3, or 4 arguments (including ''this''). Instead the function had %d.', nargs) 
+                    error(['Functions must have 2,3, or 4 arguments ' ...
+                        '(including ''this''). Instead the function had %d.'], nargs) 
             end
         end
 
@@ -508,8 +510,10 @@ arg_name_validators = {
     @(arg2_name)    ~strcmp(arg2_name, 't') ...
     };
 error_string_fmts = {
-    'The first argument in ''%s'' must be ''this'', ''self'', ''obj'', or ''~'' but instead was ''%s''.%0d',
-    'The second argument in ''%s'' must be the state vector (e.g. ''x'') but instead was ''t''. Did you remember the first ''this'' argument?'
+    ['The first argument in ''%s'' must be ''this'', ''self'', ''obj'', ' ...
+    'or ''~'' but instead was ''%s''.%0d'],
+    ['The second argument in ''%s'' must be the state vector (e.g. ''x'') ' ...
+    'but instead was ''t''. Did you remember the first ''this'' argument?']
     }; %#ok<COMNL>
 hybrid.internal.checkMethodArgumentNames(this, fnc_names, arg_name_validators, error_string_fmts);
 end

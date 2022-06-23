@@ -188,8 +188,6 @@ if ~isempty(E)
     end
 end
 
-options = odeset(options, 'OutputFcn', @ODE_callback);
-
 odeX = str2func(solver);
 f = wrap_with_3args(f);
 g = wrap_with_3args(g);
@@ -213,6 +211,8 @@ else
     error('Error, x0 does not have the proper size')
 end
 
+options.OutputFcn = @ODE_callback;
+
 progress.init(TSPAN, JSPAN);
 function stop = ODE_callback(t, ~, flag)
     if isempty(flag) % Only update if not 'init' or 'done'   
@@ -226,7 +226,7 @@ end
 cleanup = onCleanup(@progress.done);
 
 while (j < JSPAN(end) && tout(end) < TSPAN(end) && ~progress.is_cancel_solver)
-    options = odeset(options,'Events',@(t,x) zeroevents(x,t,j,C,D,rule));
+    options.Events = @(t,x) zeroevents(x,t,j,C,D,rule);
     
     % Check if it is possible to flow from current position
     insideC = C(xout(end,:).',tout(end),j);
@@ -326,7 +326,7 @@ progress.done();
 end
 
 function [value,isterminal,direction] = zeroevents(x,t,j,C,D,rule)
-% ZEROEVENTS Creates an event to terminate the ode solver when the state leaves C or enters D (if rule == 1).
+% Creates an event to terminate the ode solver when the state leaves C or enters D (if rule == 1).
 
 insideC = C(x,t,j);
 insideD = D(x,t,j);
@@ -355,6 +355,7 @@ j = j+1;
 n = size(xout, 2);
 y = g(xout(end,:).',tout(end),jout(end)); 
 assert(size(y, 1) == n, 'Output of jump map was expected to be %d but instead was %d', n, size(y, 1))
+assert(size(y, 2) == 1, 'Output of jump map was not a column vector.')
 % Save results
 tout = [tout; tout(end)];
 xout = [xout; y.'];
@@ -362,7 +363,7 @@ jout = [jout; j];
 end
 
 function fh_out = wrap_with_3args(fh_in)
-%wrap_with_3args Convert variable input function to take three arguments (x, t, j).
+% Convert a function that has 1, 2, or 3 input arguments to take exactly three arguments (x, t, j).
 %   Given a function handle fh_in of 1, 2, or 3 input arguments,
 %   wrap_with_3args(fh_in) converts fh_in to a function that takes exactly
 %   three arguments, namely x, t, and j. 

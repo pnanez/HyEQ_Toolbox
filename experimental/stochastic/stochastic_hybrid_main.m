@@ -1,96 +1,61 @@
-mu = @(t, x) [0, -1; 1, 0]*x - 1*x/norm(x);
-sigma = @(t, x) 0.1*[abs(x(1)); abs(x(2))];
-D = @(x) norm(x) <= 1;
 
-a = -3;
-% sde = SDE(mu, sigma);
+flowNoiseSD = @(x, t, j) [0, 0; 0, 0.0];
+jumpNoiseSD = @(x, t, j) [0; 0.5*norm(x)^2];
 
-T = 30;
-N = 1000;
-X0 = [10; 0];
-event_error_tol = 1e-9;
-delta_t = T / N;
-X = nan(N, size(X0, 1));
-t = nan(N, 1);
-X(1, :) = X0';
-t(1) = 0;
+sys = HybridSystemBuilder()...
+    .flowMap(@(x) [0, 1; -1, 0]*x)...
+    .flowSetIndicator(@(x) 1)...
+    .jumpSetIndicator(@(x) 0)...
+    .build();
 
-% Try non-OOP approach
-for k = 1:(N-1)
-    X_k = X(k, :)';
-    w0 = 0;
-    wf = normrnd(0, sqrt(delta_t)); % W(t_k+1) - W(t_k)
-    mu_k = mu(t(k), X_k);
-    sigma_k = sigma(t(k), X_k);
-    x_next_candidate = X_k + delta_t * mu_k + sigma_k * wf;
+sys = hybrid.examples.BouncingBall();
+sys.bounce_coeff = 0.9;
+stochastic_sys = StochasticHybridSystem(sys, flowNoiseSD, jumpNoiseSD)
 
-    figure(1)
-    clf
-    if D(x_next_candidate)  
-        i = -1;
-        t0 = 0; % Step size lower bound
-        tf = delta_t; % Step size upper bound
-        while abs(tf - t0) > event_error_tol
-            i = i +1;
-            % For the next update, use the halfway point 
-            % between t0 and tf.
-            t_sample = (t0 + tf) / 2;
-            w = sampleWienerMidpoint(t0, tf, w0, wf);
-            y = X_k + mu_k * t_sample + sigma_k * w;
+tspan = [0, 10];
+jspan = [0, 10];
+config = HybridSolverConfig('odeSolver', 'sde45')
+sol = stochastic_sys.solve([1; 0], tspan, jspan, config)
+plotPhase(sol)
 
-            subplot(3, 1, 1)
-            plot(i, tf, 'vb')
-            hold on
-            plot(i, t0, '^b')
-            legend('t_f', 't_0')
+1-norm(sol.x(end, :)')
 
-            subplot(3, 1, 2)
-            plot(i, w0, 'rv')
-            hold on
-            plot(i, w, 'rx')
-            plot(i, wf, 'r^')
-            hold on
-            legend('w_f', 'w', 'w_0')
+return
+%%
 
-%             subplot(3, 1, 3)
-%             if y < 0
-%                 semilogy(i, -y, 'm_')
-%                 hold on
-%             else
-%                 semilogy(i, y, 'k+')
-%                 hold on
-%             end
-%             hold on
+f = @(x, t, j) [x(2); -9.8];
+sigma = @(x, t, j) 0.1*[0, 0; 0, 1];%*abs(x(2));
+g = @(x, t, j) [x(1); -0.9*x(2)];
+C = @(x) x(1) >= 0 || x(2) >= 0;
+D = @(x) x(1) <= 0 && x(2) <= 0;
 
-            % Check if the sample would would take X into the 
-            % jump set. 
-            if D(y)
-                tf = t_sample;
-                wf = w;
-            else
-                t0 = t_sample;
-                w0 = w;
-            end
-        end
-        t(k+1) = t(k) + t_sample;
-        X(k+1, :) = y';
-        break
-    end
-    t(k+1) = t(k) + delta_t;
-    X(k+1, :) = x_next_candidate';
-end
+tspan = [0, 30];
+jspan = [0, 100];
+x0 = [10; 0];
 
-%
+% [t, x] = sdeEulerForward(mu, sigma, tspan, X0, options);
+rule = 2;
+options = odeset();
+options.sigma = sigma;
+[t, j, x] = HyEQsolver(f,g,C,D,x0,tspan,jspan, rule, options, 'sdeEulerForward');
+sol = HybridArc(t, j, x);
+
 figure(2)
 clf
-plot(X(:, 1), X(:, 2))
-min(vecnorm(X'))
-axis equal
+plotPhase(sol);
+% hold on
+% theta = linspace(0, 2*pi);
+% plot(cos(theta), sin(theta), 'r--');
+
+% plot(x(:, 1), x(:, 2))
+% min(vecnorm(X'))
+% axis equal
 % ylim([0, inf])
 % xlim([0, T])
 
 
 
+return
 %%
 for k = 1:N
     discretized_sde = DiscretizedSDE(sde, t(k), X(k));
@@ -170,14 +135,4 @@ plot(t, w)
 function x_next = dimensionlessStep(mu, t)
     assert(delta_t <= 1, 'delta_t was greater than 1.')
     x_next = mu * t + sqrt(t) * randn();
-end
-
-
-function w = sampleWienerMidpoint(t0, tf, w0, wf)
-    % For t0 < tf and t = (t0 + tf)/2 
-    % draw a sample w = W(t) given
-    % W(t0) = w0 and W(tf) = wf. 
-    mean = (w0 + wf)/2;
-    sd = sqrt((tf - t0)/4);
-    w = normrnd(mean, sd);
 end
