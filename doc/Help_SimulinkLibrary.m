@@ -7,17 +7,19 @@
 % available <matlab:hybrid.internal.openHelp('TOC_examples') here>.
 
 %% Primary Components
-% The HyEQ Toolbox includes three main Simulink library blocks that allow for simulation of 
+% The HyEQ Toolbox includes four main Simulink library blocks that allow for simulation of 
 % hybrid systems:
 % 
 % * $\mathcal{H}$ *defined with external functions*. For this block, the data of
-% the system $(C, f, D, g)$ are defined as MATLAB functinos in plain-text |.m|
+% the system $(C, f, D, g)$ are defined as MATLAB functions in plain-text |.m|
 % files. This block does not support systems with inputs.
+% * $\mathcal{H}$ *defined with external functions and inputs*. 
+% This block is the same as the prior one, except that it has inputs.
 % * $\mathcal{H}$ *defined with embedded functions*. For this block, the data of
 % the system $(C, f, D, g)$ are defined as embedded functions that can only be
 % edited within Simulink. This block does not support systems with inputs. 
 % * $\mathcal{H}$ *defined with embedded functions and inputs*. This block is the
-% same as the prior one, except that the system has inputs.
+% same as the prior one, except that it has inputs.
 % 
 % The following image shows these blocks in the Simulink Library Browser.
 % 
@@ -51,14 +53,55 @@
 % input is a vector with components $x^-$ and 
 % input $u$ of the _Integrator system_.  
 % Its output is equal to $1$ if the state belongs to $D$ or equal to $0$ otherwise.
-% 
+
+%% Initialization and Postprocessing Scripts
 % In the HyEQ Toolbox examples, MATLAB |.m| script files are used to initialize
 % variables and plot results.
-% The file |initialization.m| is used to define initial variables before simulation and 
-% |postprocessing.m| is used to plot the solutions after a simulation
+% The file |initialize.m| is used to define initial variables before simulation and 
+% |postprocess.m| is used to plot the solutions after a simulation
 % is complete (see "Postprocessing and Plotting solutions", below). 
-% These two |.m| scripts are called by double-clicking the _Double Click to..._ 
-% blocks at the top of the Simulink Model.
+% 
+% These scripts are run automatically when the model is simulated using
+% _model callbacks_. 
+% To define model callbacks, open the "Modeling" tab in Simulink
+% and select the "Modeling Setup" menu and click "Model Properties".  In the
+% Model Properties dialog, select the "Callbacks" tab. Use |InitFcn| to specify
+% code to run before the Simulink model starts and |StopFcn| to specify code to
+% run after the model finishes.
+%
+% The initialization and postprocessing scripts can also be run by
+% double-clicking the blocks labeled "Double Click to..."
+
+%% Initialization
+% The script |initialize.m| defines the initial conditions
+% of the state components, parameters, 
+% the maximum flow time |T|, the maximum number of jumps |J|, 
+% and the relative integration tolerance |RelTol|. 
+% The following sample code is used to initialize the
+% <matlab:hybrid.internal.openHelp('Example_1_2') bouncing ball example>.
+% 
+% <include>src/Matlab2tex_1_2/initialize.m</include>
+%
+% After initialization, the simulation is run by clicking the run button 
+% or selecting |Simulation>Start|.
+
+%% Block Parameters
+% It is important to note that variables called in the 
+% _Embedded MATLAB function blocks_
+% must be added as inputs and labeled as "parameters". 
+% This can be done by opening the embedded function block,
+% selecting |Tools>Edit Data/Ports|, and setting the scope to |Parameter|.
+
+%% Postprocessing and Plotting solutions
+% A similar procedure is used to define the plots of solutions after the simulation is run. 
+% The solutions can be plotted by double-clicking on the block at the top of the Simulink Model 
+% labeled _Double Click to Plot Solutions_ which calls the script |postprocess.m|. 
+% The script |postprocess.m| may be edited to include the desired postprocessing and solution plots. 
+% See below for sample code to plot solutions to the bouncing ball example. 
+% The functions used to generate the plots are described in
+% <matlab:hybrid.internal.openHelp('HybridPlotBuilder_demo') Creating plots with HybridPlotBuilder>.
+% 
+% <include>src/Matlab2tex_1_2/postprocess.m</include>
 
 %% Configuring the Integration Scheme
 % Using the default integration settings does not always give the most 
@@ -68,51 +111,17 @@
 % One way to edit these settings is to open the Simulink Model, 
 % select |Simulation>Configuration Parameters>Solver|, 
 % and change the settings there. To simplify modifying the values, we have defined variables 
-% for configuration parameters in the |initialization.m| file. 
-% The last few lines of the |initialization.m| file look like that given below.
+% for configuration parameters in the |initialize.m| file. 
+% The last few lines of the |initialize.m| file are shown below.
 % 
 % <include>src/Matlab2tex/config_inst.m</include>
-
-%%
-% In these lines, |RelTol = 1e-8| and |MaxStep = 0.001| define the relative tolerance 
+%
+% In these lines, |RelTol = 1e-8| and |MaxStep = 1e-3| define the relative tolerance 
 % and maximum step size of the ODE solver, respectively. 
-% These parameters greatly affect the speed and accuracy of solutions.
-% 
-%% Initialization
-% When the block labeled _Double Click to Initialize_ at the top of the 
-% Simulink Model is double-clicked, the simulation variables are initialized 
-% by calling the script |initialization.m|. 
-% The script |initialization.m| defines the initial conditions by defining 
-% the initial values of the state components, any necessary parameters, 
-% the maximum flow time specified by |T|, the maximum number of jumps specified by |J|, 
-% and tolerances used when simulating. 
-% These can be changed by editing the script file |initialization.m|. 
-% The following sample code is used to initialize the
-% <matlab:hybrid.internal.openHelp('Example_1_2') bouncing ball example>.
-% 
-% <include>src/Matlab2tex_1_2/initialize.m</include>
-
-%%
-% It is important to note that variables called in the 
-% _Embedded MATLAB function blocks_
-% must be added as inputs and labeled as "parameters". 
-% This can be done by opening the embedded function block,
-% selecting |Tools>Edit Data/Ports|, and setting the scope to |Parameter|.
-% 
-% After the block labeled _Double Click to Initialize_ is double-clicked 
-% and the variables initialized, the simulation is run by clicking the run button 
-% or selecting |Simulation>Start|.
-
-%% Postprocessing and Plotting solutions
-% A similar procedure is used to define the plots of solutions after the simulation is run. 
-% The solutions can be plotted by double-clicking on the block at the top of the Simulink Model 
-% labeled _Double Click to Plot Solutions_ which calls the script |postprocessing.m|. 
-% The script |postprocessing.m| may be edited to include the desired postprocessing and solution plots. 
-% See below for sample code to plot solutions to the bouncing ball example. 
-% The functions used to generate the plots are described in
-% <matlab:hybrid.internal.openHelp('HybridPlotBuilder_demo') Creating plots with HybridPlotBuilder>.
-% 
-% <include>src/Matlab2tex_1_2/postprocess.m</include>
+% See
+% <https://www.mathworks.com/help/matlab/ref/odeset.html#namevaluepairarguments
+% odeset for a description of |RelTol| and |MaxStep|>.
+% These parameters can have significant effects on the speed and accuracy of solutions.
 
 %% The Integrator System
 % In this section we discuss the internals of the _Integrator System_: 
@@ -147,7 +156,7 @@
 % <<images/JumpLogic.png>>
 % 
 % The variable _rule_ defines whether the simulator gives priority to jumps, 
-% priority to flows, or no priority. It is initialized in |initialization.m|.
+% priority to flows, or no priority. It is initialized in |initialize.m|.
 % 
 % The output of the Jump Logic is equal to |1|, triggering a jump, when:
 %

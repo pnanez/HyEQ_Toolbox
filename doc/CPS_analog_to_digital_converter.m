@@ -100,9 +100,9 @@ open_system(simulink_model_path)
 % <include>src/Matlab2tex_CPS_ADC_1/D.m</include>
 
 %% Example Output
-% Let the input function be $u(t,j) = sin(t)$ and let $T_s = \pi/8$. 
+% Let the input function be $u(t,j) = \sin(t)$ and let $T_s = \pi/8$. 
 % The solution to the ADC system from $x(0,0)=[0,0]^\top$ and with
-% |T=10, J=20, rule=1| shows that the ADC samples the sinusoidal input 
+% |T=10|, |J=20, |rule=1| shows that the ADC samples the sinusoidal input 
 % every $\pi/8$ seconds.
 
 clf

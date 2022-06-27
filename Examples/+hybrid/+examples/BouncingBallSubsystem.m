@@ -7,6 +7,12 @@ classdef BouncingBallSubsystem < HybridSubsystem
         bounce_coef = 0.9; 
         gravity = -9.8;
     end
+
+    properties(SetAccess = immutable)
+        % Define properties for referencing the state components
+        height_index = 1;
+        velocity_index = 2;
+    end
     
     methods
         function obj = BouncingBallSubsystem() % Constructor.
@@ -18,19 +24,26 @@ classdef BouncingBallSubsystem < HybridSubsystem
         end
         
         function xdot = flowMap(this, x, u, t, j)  
-            xdot = [x(2); this.gravity];
+            v = x(this.velocity_index);
+            xdot = [v; this.gravity];
         end
 
         function xplus = jumpMap(this, x, u, t, j) 
-            xplus = [x(1); -this.bounce_coef*x(2) + u];
+            h = x(this.height_index);
+            v = x(this.velocity_index);
+            xplus = [h; -this.bounce_coef*v + u];
         end 
 
         function C = flowSetIndicator(this, x, u, t, j)
-            C = x(1) >= 0 || x(2) >= 0;
+            h = x(this.height_index);
+            v = x(this.velocity_index);
+            C = h >= 0 || v >= 0;
         end 
 
         function D = jumpSetIndicator(this, x, u, t, j)
-            D = x(1) <= 0 && x(2) <= 0;
+            h = x(this.height_index);
+            v = x(this.velocity_index);
+            D = h <= 0 && v <= 0;
         end
     end
 end
