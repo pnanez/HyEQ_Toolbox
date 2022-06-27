@@ -1,4 +1,4 @@
-%% Modeling a Hybrid System with Embedded MATLAB Function Blocks (Bouncing Ball with Input)
+%% Modeling a Hybrid System with Embedded Functions (Bouncing Ball with Input)
 % In this example, a ball bouncing on a moving platform is 
 % modeled in Simulink as a hybrid system with an input, where the input
 % determines the height of the platform.

@@ -1,4 +1,4 @@
-%% Modeling a Hybrid System with Interpreted MATLAB Function Blocks (Bouncing Ball)
+%% Modeling a Hybrid System with External Functions (Bouncing Ball)
 % In this example, a bouncing ball is modeled in Simulink as a hybrid system.
 %% 
 % The files for this example are found in the package
@@ -56,7 +56,7 @@ open_system(example_name)
 %%
 % Double-click |HS_ex| to see inside of the hybrid subsystem.
 % The contents of the |HS_ex| block is shown here. 
-block_path = [example_name, '/HS_ex'];
+block_path = [example_name, '/Hybrid System'];
 open_system(block_path)
 
 %%
