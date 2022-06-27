@@ -56,9 +56,9 @@ classdef StochasticHybridSystem < handle
 %             end
 %             this.assert_functions_can_be_evaluated_at_point(x0, tspan(1), jspan(1));           
 
-            config.odeOption('sigma', this.flowNoise);
+            config.odeOption('sigma', @(t, x) this.flowNoise(x,t));
             if strcmp(config.ode_solver, 'ode45')
-                config.odeSolver('sde2');
+                config.odeSolver('sde45');
             end
 
             function noise = jumpNoise(x, t, j)

@@ -4,17 +4,30 @@ function [t, x] = sde45(mu, tspan, x0, options)
 
 % Much of this function was adapted from the code in ode45.
 
+% solver_name = 'sde45';
+% [n_equations, tspan, ntspan, next, t0, tfinal, tdir, y0, f0, odeArgs, odeFcn, ...
+%   options, threshold, rtol, normcontrol, normy, hmax, htry, htspan, dataType] = ...
+%   odearguments(FcnHandlesUsed, solver_name, mu, tspan, y0, options, varargin);
 if isfield(options, 'sigma')
     sigma = options.sigma;
 else
     sigma = @(t, x) 0;
 end
 
+defaultl_max_step = 0.1 * (tspan(2) - tspan(1));
+hmax = odeget(options, 'MaxStep', defaultl_max_step);
+
+outputFcn = odeget(options,'OutputFcn',[],'fast');
+if isempty(outputFcn)
+    outputFcn = @(t, y, flag) 0; % Do nothing.
+end
+
 % TO-DO: Add assertions on input arguments.
 
 % TO-DO: Read error tolerance and timestep from options.
-abs_tol = 1e-9;
-rel_tol = 1e-7;
+
+abs_tol = odeget(options, 'AbsTol', 1e-6); % These defaults were not carefully picked.
+rel_tol = odeget(options, 'RelTol', 1e-6); % These defaults were not carefully picked.
 
 event_error_tol = 1e-9;
 delta_t = 1e-5; % Initial step size.
@@ -56,7 +69,10 @@ e5=-17253/339200;
 e6=22/525;
 e7=-1/40;
 
-function [x_next, h_next] = ode45(t, x, h)
+
+feval(outputFcn,tspan,x0,'init');
+
+function [x_next, h_next] = ode45_step(t, x, h)
 
     pow = 1/5;
     hmin = 16*eps(t);
@@ -124,7 +140,6 @@ function [x_next, h_next] = ode45(t, x, h)
         end
     end
 
-
 end
 
 k = 1;
@@ -136,7 +151,7 @@ while t(k) < tspan(end)
     %     mu_k = mu(t(k), x_k);
     sigma_k = sigma(t(k), x_k);
 
-    [x_det_next, h_next] = ode45(t_k, x_k, h);
+    [x_det_next, h_next] = ode45_step(t_k, x_k, h);
     x_next_candidate = x_det_next + sigma_k * wf;
 
     if ~event_fnc(t_k, x_next_candidate) % Event has occurred
@@ -149,7 +164,7 @@ while t(k) < tspan(end)
             % between t0 and tf.
             t_sample = (t0 + tf) / 2;
             dw = sampleWienerMidpoint(t0, tf, w0, wf);
-            y = ode45(t_k, x_k, t_sample) + sigma_k * dw;
+            y = ode45_step(t_k, x_k, t_sample) + sigma_k * dw;
 
             % Check if the sample would would take X into the
             % jump set.
@@ -167,9 +182,12 @@ while t(k) < tspan(end)
     end
     t(k+1, 1) = t(k) + h;
     x(k+1, :) = x_next_candidate';
-    h = h_next;
+    h = min(hmax, h_next);
     k = k+1;
+
+    feval(outputFcn,t(k, 1),x_next_candidate,'');
 end
+feval(outputFcn,[],[],'done');
 
 end
 
