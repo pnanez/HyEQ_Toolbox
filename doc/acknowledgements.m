@@ -7,7 +7,7 @@
 % his thoughtful feedback and advice as well as 
 % Torstein Ingebrigtsen Bo for his comments 
 % and initial version of the lite simulator code.
-% %
+% 
 % Also, we would like to include the list of 
 % people that helped us to test this toolbox:
 % 
@@ -19,6 +19,19 @@
 % Major revisions to the Toolbox were made 
 % in version 3.0 by Paul Wintz.
 % 
-% We would like to thank 
-% Ryan Johnson, Santiago Leudo, Nan Wang, and Adeel Akhtar
-% for help with updating the documentation.
+% We would like to thank the following people.
+% 
+% For help updating the documentation:
+% 
+% * Ryan Johnson - University of California, Santa Cruz
+% * Santiago Leudo - University of California, Santa Cruz
+% * Nan Wang - University of California, Santa Cruz 
+% * Adeel Akhtar - University of California, Santa Cruz
+%
+% For proofreading the documentation:
+% 
+% * Ryan Johnson - University of California, Santa Cruz
+% * Adeel Akhtar - University of California, Santa Cruz
+% * Kunal Garg  - University of California, Santa Cruz
+% * Nathan Wu - University of California, Santa Cruz
+% * Zachary Lamb - University of California, Santa Cruz.

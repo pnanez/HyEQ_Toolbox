@@ -1,7 +1,7 @@
 % Initialization script for the finite state machine.                                                
 
 % Initial conditions                                                    
-q0 = [1; 2];             
+q0 = [0; 0];             
 
 % Simulation horizon                                                    
 T = 10;                                                                 

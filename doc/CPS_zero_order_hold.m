@@ -73,10 +73,11 @@ sol_zoh = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j')
 sol_input = HybridArc(t1, j1, x1);
 
 %% Simulink Model
-% The following diagram shows the Simulink model of the ZOH. The
-% contents of the blocks *flow map* |f|, *flow set* |C|, etc., are shown below. 
+% The following diagram shows the Simulink model of the ZOH.
 % When the Simulink model is open, the blocks can be viewed and modified by
-% double clicking on them.
+% double clicking on them. To look inside the ZOH block, click the down arrow in
+% the lower-left corner of the block or open the block's context menu and select
+% Mask > Look under mask.
 
 % Open .slx model. A screenshot of the subsystem will be
 % automatically included in the published document.
@@ -84,7 +85,7 @@ model_path = 'hybrid.examples.zero_order_hold.zoh';
 open_system(which(model_path))
 
 %%
-% The Simulink blocks for the hybrid system in this example are included below.
+% The functions used to define $(f, g, C, D)$ within the ZOH block are included below.
 %
 % *flow map* |f| *block*
 % 

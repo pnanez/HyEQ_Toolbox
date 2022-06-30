@@ -60,7 +60,8 @@ close_system
 close all
 
 %% Simulink Model
-% The following diagram shows the Simulink model of the continuous plant
+% The following diagram shows the Simulink model for this example. 
+% The mobile robot is represented by the |Continuous Plant| block.
 
 % Open .slx model. A screenshot of the subsystem will be
 % automatically included in the published document.
@@ -68,7 +69,8 @@ model_path = 'hybrid.examples.mobile_robot.mobile_robot';
 open_system(which(model_path))
 
 %%
-% The Simulink blocks for the hybrid system in this example are included below.
+% The flow map and flow set functions for the |Continuous Plant| block 
+% in this example are included below.
 %
 % *flow map* |f| *block*
 % 
@@ -82,7 +84,9 @@ open_system(which(model_path))
 % and the *jump map* |D| *block* is unused.
 
 %% Example Output
-% The following plot shows a solution to the closed-loop system.
+% The following plot shows a solution to the closed-loop system. The robot
+% starts at the origin and then drives until it eventually hits the target set,
+% which is a circle with radius 5 centered at the origin. 
 hybrid.examples.mobile_robot.postprocess
 
 %% 

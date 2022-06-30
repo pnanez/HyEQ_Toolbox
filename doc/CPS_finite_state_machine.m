@@ -40,15 +40,15 @@
 %    & C := \{ (q,u) \in Q \times \Sigma \mid \delta(q, u) = q \} 
 % \\ 
 % g(q,u):= \delta(q, u) = \left[ \begin{array}{c} 
-%                    3 - u_{1} \\ 3 - u_{2}
+%                    u_{1} + u_2 \\ u_1 - u_{2}
 %                \end{array}\right],
 %    & D: = \{ (q,u) \in Q \times \Sigma \mid \delta(q, u) \neq q\} 
 % \\ 
 %   y:= h(q) = q
 % \end{array}$$
 %
-% where the state is given by $q = (q_{1}, q_{2})\in Q := \{1, 2\}\times \{1, 2\}$ 
-% and the input is given by $u = (u_{1}, u_{2})\in \Sigma := \{1, 2\}\times \{1, 2\}$.
+% where the state is given by $q = (q_{1}, q_{2})\in Q := \{0, 1, 2\}\times \{-1, 0, 1\}$ 
+% and the input is given by $u = (u_{1}, u_{2})\in \Sigma := \{0, 1\}\times \{0, 1\}$.
 %% Steps to Run Model
 % 
 % The following procedure is used to simulate this example using the model in the file |FSM_example.slx|:
@@ -75,8 +75,7 @@ close all
 sol = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j')
 
 %% Simulink Model
-% The following diagram shows the Simulink model of the FSM. The
-% contents of the blocks *flow map* |f|, *flow set* |C|, etc., are shown below. 
+% The following diagram shows the Simulink model of the FSM.
 % When the Simulink model is open, the blocks can be viewed and modified by
 % double clicking on them.
 
@@ -86,7 +85,8 @@ model_path = 'hybrid.examples.finite_state_machine.fsm';
 open_system(which(model_path))
 
 %%
-% The Simulink blocks for the hybrid system in this example are included below.
+% The functions used to define $f, g, C,$ and $D$ in the |FSM| blocks 
+% are included below.
 %
 % *flow map* |f| *block*
 % 
@@ -109,24 +109,39 @@ open_system(which(model_path))
 % 
 % $$\begin{array}{ll}
 % u_{1}(t,u):=\left\{\begin{array}{ll}
-%    2 & \textrm{if } t\in[2k,\ 2k + 0.4)\\
-%    1 & \textrm{if } t\notin [2k,\ 2k + 0.4)\\
+%    1 & \textrm{if } t\in[2k,\ 2k + 0.4) = [0, 0.4) \cup [2, 2.4) \cup \cdots \\
+%    0 & \textrm{otherwise} \\
 %  \end{array}\right., \\ \\
 % u_{2}(t,u):=\left\{\begin{array}{ll}
-%    2 & \textrm{if } t\in[3k + 1,\ 3k + 1.6)\\
-%    1 & \textrm{if } t\notin [3k + 1,\ 3k + 1.6)\\
+%    1 & \textrm{if } t\in[3k + 1,\ 3k + 1.6) = [1, 1.6) \cup [4, 4.6) \cup \cdots\\
+%    0 & \textrm{otherwise} \\
 %  \end{array}\right.
 % \end{array}
 % $$
 % 
-% for all $k\in \mathbf{N}$
-% The solution to the FSM system from $x(0,0)=[1,2]^\top$ and with
-% |T=10|, |J=20, |rule=1| shows the mode transition of the FSM system.
+% for all $k\in \mathbf{N}$.
+clf
+input = HybridArc(t, j, vs); %#ok<IJCL> 
+% stairs(vs)
+HybridPlotBuilder().subplots('on')...
+    .color('matlab')...
+    .jumpMarker('none')...
+    .labels('$u_{1}$', '$u_{2}$')...
+    .legend('$u_{1}$', '$u_{2}$')...
+    .configurePlots(@(ax, ndx) ylim(ax, 'padded'))...
+    .plotFlows(input)
+
+%%
+% The solution to the FSM system from $x(0,0)=[0,0]^\top$ and with
+% |T=10|, |J=20|, |rule=1| shows the mode transition of the FSM system.
+% By comparing with the prior figure, we see that $q_1 = u_1 + u_2$ and 
+% $q_2 = u_1 - u_1,$ as expected. 
 
 clf
 HybridPlotBuilder().subplots('on')...
     .labels('$q_{1}$', '$q_{2}$')...
-    .legend('$q_{1}$', '$q_{2}$')...
+    .legend({'$q_{1}$', '$q_{2}$'}, 'Location', 'best')...
+    .configurePlots(@(ax, ndx) ylim(ax, 'padded'))...
     .plotFlows(sol)
 
 %% 

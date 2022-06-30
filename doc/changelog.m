@@ -1,9 +1,12 @@
 %% Change Log for the Hybrid Equations Toolbox
 %% New Features in Version 3.0
-% Version 3.0 of the Hybrid Equations Toolbox is a substantial update to many 
-% components of the toolbox. The following improvements were made to the MATLAB-based 
-% Hybrid System solver:
-%% 
+% Version 3.0 of the Hybrid Equations Toolbox is a substantial update to 
+% components throughout the toolbox. 
+% 
+% <html><h3>MATLAB-based Library</h3></html> 
+% 
+% The following improvements were made to the MATLAB-based Hybrid System solver:
+%
 % *Object-Oriented Definitions of Hybrid Systems.* A hybrid system can now 
 % be defined in a single file by creating a subclass of the |HybridSystem| class. 
 % This allows for the definition of multiple hybrid systems without name conflicts 
@@ -50,7 +53,30 @@
 % 
 % *Code Autocompletion.* The Hybrid Equations Toolbox supports MATLAB's auto-completion 
 % (introduced to the MATLAB code editor in R2021b).
+%%
+% 
+% <html><h3>Simulink-based Library</h3></html> 
+% 
+% The following improvements were made to the Simulink-based 
+% Hybrid System solver:
+% 
+% *Hybrid System with External Functions and Inputs.* A new Simulink block
+% allows for a hybrid system with an input to be defined using plaintext |.m| 
+% MATLAB function files to specify $f, g, C,$ and $D$.
+% 
+% *Block Parameters.* Simulink block masks were added to the
+% HyEQ blocks to allow users to set block parameters without needing to modify
+% anything inside the block. Parameters are now set in a popup dialog that opens
+% when each block is clicked.
+% 
+% *Instructions for How To Use Blocks* Each block in the HyEQ Simulink library
+% now includes instructions in the popup dialog that opens when the block is
+% clicked.
+
 %% 
+% 
+% <html><h3>General Improvements</h3></html> 
+% 
 % The following updates apply to the entire toolbox:
 %
 % * *Easier Installation and Updates*. v3.0 is packaged using MATLAB's toolbox 

@@ -1,13 +1,14 @@
 %% Introduction to Cyber-physical Component Blocks
 % The HyEQ Toolbox includes a series of blocks that model elements 
 % of a cyber-physical system (CPS). Those models are special instances 
-% of the hybrid systems blocks described above, particularly the blocks 
-% that use embedded MATLAB functions.
+% of the hybrid systems blocks described in the
+% <matlab:hybrid.internal.openHelp('Help_SimulinkLibrary') Introduction to the Simulink-based Simulator>, 
+% particularly the blocks that use embedded MATLAB functions.
 % A cyber-physical system is given by the interconnection between a physical process, 
 % _the plant_, a computer algorithm used for control, _the controller_; 
 % and  the subsystems needed to interconnect the plant and the controller, i.e., 
 % _the interfaces, converters, and signal conditioners_. 
-% Most of the elements described in this section are presented in an extended form in~\cite{San17}.
+% Most of the elements described in this section are presented in an extended form in [1].
 % 
 % In these notes, the temporal evolution of the variables of a cyber-physical system
 % are captured using dynamical models.
@@ -23,7 +24,8 @@
 % the continuous and discrete variables according to the said
 % equations/inclusions can be conveniently captured by functions of the
 % variables, inputs, and outputs.  
-% The following Simulink blocks for cyber and physical blocks are provided with the HyEQ simulator:
+% The following Simulink blocks for cyber-physical components are provided with
+% the HyEQ simulator: 
 %  
 % <<images/CPS_components.png>>
 % 
@@ -134,9 +136,23 @@
 % 
 % $$
 % \begin{array}{ll}
-% \dot{\tau}_s = 1, \quad \dot{m}_s = 0
+%   \left[\begin{array}{cc} 
+%     \dot{\tau}_s, \\ 
+%     \dot{m}_s
+%   \end{array}\right] =
+%   \left[\begin{array}{cc} 
+%     1 \\ 
+%     0
+%   \end{array}\right]
 %   & \textrm{ when } \tau_s \in [0,T^*_s] \\ 
-% \tau_s^+ = 0, \quad  m_s^+ = v_s 
+%   \left[\begin{array}{cc} 
+%    \tau_s^+ \\  
+%    m_s^+ 
+%   \end{array}\right] =
+%   \left[\begin{array}{cc} 
+%     0 \\ 
+%     v_s
+%   \end{array}\right]
 %   & \textrm{ when } \tau_s \geq T^*_s
 % \end{array}
 % $$
@@ -177,11 +193,25 @@
 % 
 % $$ 
 % \begin{array}{ll}
-% \dot{\tau}_h = -1, \quad
-% \dot{m}_h = 0 
+%   \left[\begin{array}{cc} 
+%       \dot{\tau}_h \\
+%       \dot{m}_h
+%   \end{array}\right]
+%   \left[\begin{array}{cc} 
+%       -1 \\ 
+%       0
+%   \end{array}\right]
 % &\textrm{ when } \tau_h \in [T^{\textrm{min}},T^{\textrm{max}}] \\ 
-% \tau_h^+  = \tau_r, \quad 
-% m_h^+ = v_h  & \textrm{ when } \tau_h \leq T^{\textrm{min}}.
+%   \left[\begin{array}{cc} 
+%       \tau_h^+ \\
+%       m_h^+  
+%   \end{array}\right]
+%   =
+%   \left[\begin{array}{cc} 
+%       \tau_r \\
+%       v_h
+%   \end{array}\right]
+% & \textrm{ when } \tau_h \leq T^{\textrm{min}}.
 % \end{array}
 % $$
 % 
@@ -226,12 +256,28 @@
 % 
 % $$ 
 % \begin{array}{ll}
-% \dot{\tau}_N =\ -1,   \ \
-% \dot{m}_N  =\ 0,   \ \
-% \dot{j}_N =\ 0 & \textrm{ when } \tau_N \in [0,T^{*\max}_{N}] \\
-% \tau_N^+  \in [T^{*\min}_{N},T^{*\max}_{N}],  \ \
-% m_N^+ =\ v_N,  \ \
-% j_N^+ = j_N+1 &  \textrm{ when } \tau_N \leq 0
+%   \left[\begin{array}{c} 
+%     \dot{\tau}_N \\
+%     \dot{m}_N \\
+%     \dot{j}_N  
+%   \end{array}\right] 
+%   =
+%   \left[\begin{array}{c} 
+%     -1 \\
+%     0 \\
+%     0 
+%   \end{array}\right] & \textrm{ when } \tau_N \in [0,T^{*\max}_{N}] \\ \\
+%   \left\{\begin{array}{c}
+%     \tau_N^+ \in [T^{*\min}_{N},T^{*\max}_{N}]  \\
+%     \left[\begin{array}{c} 
+%         m_N^+  \\
+%         j_N^+ 
+%     \end{array}\right] = 
+%     \left[\begin{array}{c} 
+%         v_N \\
+%         j_N+1
+%     \end{array}\right] 
+%   \end{array}\right. &  \textrm{ when } \tau_N \leq 0
 % \end{array}
 % $$
 % 
@@ -242,3 +288,7 @@
 % Similar to the models proposed for conversion, 
 % the model of the digital link does not include delays nor quantization, but
 % such effects can be incorporated if needed. 
+
+%% References
+% [1] R. G. Sangelice. CMPE142 Class Notes - Introduction  to Cyber-Physical
+% Systems. <https://hybrid.soe.ucsc.edu/cmpe149-249-2016>

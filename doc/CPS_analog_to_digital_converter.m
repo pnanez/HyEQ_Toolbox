@@ -128,7 +128,8 @@ HybridPlotBuilder()...
 
 %% ADC Connected to Bouncing Ball
 % In this section, the interconnection of a bouncing ball system and an
-% analog to digital converter (ADC) is modeled in Simulink.
+% analog to digital converter (ADC) is modeled in Simulink. This shows how an
+% ADC block can be used to discretize a hybrid system.
 % 
 % The model of the ADC is the same as above and the model of the bouncing ball
 % subsystem is described in

@@ -1,4 +1,4 @@
-%% Simulink-based Hybrid Equation Simulator
+%% Introduction to the Simulink-based Hybrid Equation Simulator
 % This document describes the Simulink-based hybrid
 % equation simulator from the Hybrid Equations Toolbox, including an introduction
 % to the primary components and a description of their internal workings. 
