@@ -5,10 +5,12 @@
 % * <matlab:hybrid.internal.openHelp('Help_SimulinkLibrary') 
 %       Introduction to HyEQ Simulink library.>
 % * <matlab:hybrid.internal.openHelp('Help_bouncing_ball')
-%       Modeling a Hybrid System with External Functions (Bouncing Ball)>
+%       Example Hybrid System with External Functions (Bouncing Ball)>
 % * <matlab:hybrid.internal.openHelp('Help_bouncing_ball_with_input')
-%       Modeling a Hybrid System with Embedded Functions (Bouncing Ball with Input)>
+%       Example Hybrid System with Embedded Functions (Bouncing Ball with Input)>
 % * <matlab:hybrid.internal.openHelp('Help_coupled_subsystems') 
 %       Composition of Multiple Hybrid Subsystems (Bouncing Ball on Moving Platform)>
 % * <matlab:hybrid.internal.openHelp('Help_behavior_in_C_intersection_D')
 %       Defining Jump/Flow Behavior in the Intersection of |C| and |D|>
+% * <matlab:hybrid.internal.openHelp('help_integrator_system') 
+%       The Integrator System>

@@ -70,11 +70,6 @@ classdef ExamplesTest < matlab.unittest.TestCase
             checkExample('network_estimation','network')
         end
 
-        function test_network_estimation2(~)
-            clear
-            checkExample('network_estimation', 'network_with_input')
-        end
-
         function test_vehicle_on_constrained_path(~)
             clear
             checkExample('vehicle_on_constrained_path', 'vehicle_on_path')

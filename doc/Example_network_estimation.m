@@ -162,9 +162,9 @@
 % 
 % For each hybrid system in the Simulink Model (Continuous Process, network, and Estimator) we have the following Matlab embedded functions that describe the sets $C$ and $D$ and functions $f$ and $g$.
 
-%% Steps to Run Zero-input Model
+%% Steps to Run Model
 % 
-% The following procedure is used to simulate the zero-input example using the model in the file |network.slx|:
+% The following procedure is used to simulate the example using the model in the file |network.slx|:
 % 
 % * Open
 % <matlab:hybrid.examples.network_estimation.network |network.slx|> 
@@ -192,7 +192,7 @@ solz = HybridArc(tz, jz, z);
 solhatz = HybridArc(thatz, jhatz, hatz);
 
 %% Simulink Model
-% The following diagram shows the Simulink model of the estimator over a network zero-input example. The
+% The following diagram shows the Simulink model of the estimator over a network example. The
 % contents of the blocks *flow map* |f|, *flow set* |C|, etc., are shown below. 
 % When the Simulink model is open, the blocks can be viewed and modified by
 % double clicking on them.
@@ -261,74 +261,15 @@ open_system(which(model_path))
 % <include>src/Matlab2tex_CPS_Network/D_Estimator.m</include>
 %
 
-%% Zero-input Example Output
-% The solution to the estimation over network system from $z(0,0)=[1, 0.1, 1, 0.6]^\top, \hat{z}(0,0)=[0, 0.5, 0, 0, 0]^\top$, zero input and with
-% |T=50, J=50, rule=1| shows that the estimated state approaches the system's state before $t
-% = 30$, with a relatively small error.
+%% Example Output
+% The solution to the estimation over network system from 
+% $z(0,0)=[1, 0.1, 1, 0.6]^\top, \hat{z}(0,0)=[-10, 0.5, 0, 0, 0]^\top$, 
+% u(t)=50*sin(0.1*t),and with |T=30|, |J=100|, |rule=1| shows that the estimated
+% state approaches the system's state before $t = T$, with a small error.
 clf
 hpb = HybridPlotBuilder().subplots('on').color('matlab');
 hpb.legend({'System state $x_1$','System state $x_2$',...
     'System state $x_3$','System state $x_4$'},'Location', 'best')...
-    .plotFlows(solz) 
-hold on
-hpb.legend({'Estimation $\hat{x}_1$',...
-    'Estimation $\hat{x}_2$','Estimation $\hat{x}_3$',...
-    'Estimation $\hat{x}_4$'},'Location', 'eastoutside')...
-    .plotFlows(solhatz.slice(1:4)) 
-
-%% 
-
-% Close the Simulink file.
-close_system 
-
-%% Steps to Run Sinusoidal-input Model
-% The following procedure is used to simulate this example using the model in the file |network_with_input.slx|:
-% 
-% * Open
-% <matlab:hybrid.examples.network_estimation.network_with_input |network_with_input.slx|> 
-% in Simulink.   
-% * Double-click the block labeled _Double Click to Initialize_.
-% * To start the simulation, click the _run_ button or select |Simulation>Run|.
-% * Once the simulation finishes, click the block labeled _Double Click to Plot
-% Solutions_. Several plots of the computed solution will open.
-% 
-
-% Run the initialization script.
-hybrid.examples.network_estimation.initialize
-
-% Set seed for random number generator so we have reproducable outputs.
-rng(2)
-
-% Run the Simulink model.
-simulink_model_path = which('hybrid.examples.network_estimation.network_with_input');
-sim(simulink_model_path)
-close_system
-close all
-
-% Convert the values t, j, and x output by the simulation into a HybridArc object.
-solz = HybridArc(tz, jz, z);
-solhatz = HybridArc(thatz, jhatz, hatz);
-
-%% Simulink Model
-% The following diagram shows the Simulink model of the estimator over a network with a sinusoidal input. The
-% contents of the blocks *flow map* |f|, *flow set* |C|, etc., are as shown above. 
-% When the Simulink model is open, the blocks can be viewed and modified by
-% double clicking on them.
-
-% Open .slx model. A screenshot of the subsystem will be
-% automatically included in the published document.
-model_path = 'hybrid.examples.network_estimation.network_with_input';
-open_system(which(model_path))
-
-%% Sinusoidal-input Example Output
-% The solution to the estimation over network system from $z(0,0)=[1, 0.1, 1, 0.6]^\top, \hat{z}(0,0)=[0, 0, 0, 0, 0]^\top$, 
-% u(t)=sin(t),and with
-% |T=20|, |J=20|, |rule=1| shows that the estimated state approaches the system's state before $t
-% = 10$, with a small error.
-clf
-hpb = HybridPlotBuilder().subplots('on').color('matlab');
-hpb.legend('System state $x_1$','System state $x_2$',...
-    'System state $x_3$','System state $x_4$')...
     .plotFlows(solz) 
 hold on
 hpb.legend({'Estimation $\hat{x}_1$',...

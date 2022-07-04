@@ -107,9 +107,6 @@ simulink_model_path = which('hybrid.examples.behavior_in_C_intersection_D.hybrid
 sim(simulink_model_path)
 close_system
 
-% Convert the values t, j, and x output by the simulation into a HybridArc object.
-sol_b = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j')
-
 %%
 % Note that the stopping logic is implemented such that when the
 % state of the hybrid system is not in $(C \cup D)$, then the
@@ -169,11 +166,13 @@ sim(simulink_model_path)
 close_system
 
 %% Numerical Limitations
-% Isolated points in $D$ that are in the interior of $C$, such as $x=7$, require
+% Isolated points in $D$ that are also in $C$, such as $x=7$, require
 % extra care. If a solution starts at |x0=6.1|, then it will almost
 % certainly flow pass $7 \in D$ without jumping (even if |rule=1|)
 % because the odds of the numerical value of |x| ever being exactly $7$ is
 % minuscule. Thus, from a numerical standpoint, |x| never enters $D$. 
+% Isolated points in $D$ on the boundary of $C$ require similar care, 
+% as the solution is likely to terminate rather than enter the jump set.
 
 % Run the initialization script.
 hybrid.examples.behavior_in_C_intersection_D.initialize
@@ -184,10 +183,6 @@ x0 = 6.2; % Must be strictly between 6 and 7.
 simulink_model_path = which('hybrid.examples.behavior_in_C_intersection_D.hybrid_priority');
 sim(simulink_model_path)
 close_system
-
- % Set the seed for the random number generator so that we consistently 
- % generate an interesting plot.
-rng(7)
 
 %%
 % Furthermore, suppose the jump map given above is modified by removing the
@@ -214,7 +209,7 @@ rng(7)
 % not included in the HTML. 
 
 % Close the Simulink file.
-close_system 
+close_system('', 0)
 warning('on','Simulink:Commands:LoadingOlderModel') % Renable warning.
 
 % Navigate to the doc/ directory so that code is correctly included with

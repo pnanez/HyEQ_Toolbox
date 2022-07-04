@@ -4,12 +4,13 @@
 x0 = [1; 0];                                                                                                                
           
 % Physical variables
-gamma = -9.81; % gravity constant
-lambda = 0.8;  % restitution coefficent
+parameters = struct();
+parameters.gamma = -9.81; % gravity constant
+parameters.lambda = 0.8;  % restitution coefficent
 
 % Simulation horizon                                                    
 T = 10;                                                                 
-J = 20;                                                                 
+J = 30;                                                                 
                                                                         
 % Set the behavior of solutions when the state is in the intersection of
 % the flow and jump sets.

@@ -9,7 +9,6 @@ hpb = HybridPlotBuilder();
 hpb.label('$x$').jumpLineStyle(':').tLabel('Flows [$t$]').jLabel('Jumps [$j$]');
 
 subplot(2,1,1)
-% figure(1)
 switch rule
     case 1
         figure_title = 'Jump Priority (\texttt{rule=1})';
@@ -23,10 +22,15 @@ end
 hpb.title(figure_title).plotFlows(sol_a)
 xlim([t(1), t(end)])
 ylim([0, 9])
-grid minor
+grid on
 
 subplot(2,1,2)
 hpb.title('').plotJumps(sol_a)
 xlim([j(1)-0.5, j(end)+0.5])
 ylim([0, 9])
-grid minor
+grid on
+
+figure(2)
+clf
+hpb.title(figure_title).plotHybrid(sol_a)
+view(72,10.5)

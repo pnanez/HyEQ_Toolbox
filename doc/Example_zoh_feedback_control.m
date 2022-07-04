@@ -138,44 +138,11 @@ open_system(which(model_path))
 % *jump set* |D| *block*
 % 
 % <include>src/Matlab2tex_CPS_ContinuousPlant/D.m</include>
-
-%% Analog-to-Digital Converter (ADC)
-% The Simulink blocks for the ADC subsystem are included below.
-%
-% *flow map* |f| *block*
 % 
-% <include>src/Matlab2tex_CPS_ContinuousPlant/f_ADC.m</include>
-%
-% *flow set* |C| *block*
-% 
-% <include>src/Matlab2tex_CPS_ContinuousPlant/g_ADC.m</include>
-%
-% *jump map* |g| *block*
-% 
-% <include>src/Matlab2tex_CPS_ContinuousPlant/C_ADC.m</include>
-%
-% *jump set* |D| *block*
-% 
-% <include>src/Matlab2tex_CPS_ContinuousPlant/D_ADC.m</include>
-
-%% Zero-Order hold (ZOH)
-% The Simulink blocks for the ZOH subsystem in this example are included below.
-%
-% *flow map* |f| *block*
-% 
-% <include>src/Matlab2tex_CPS_ContinuousPlant/f_ZOH.m</include>
-%
-% *flow set* |C| *block*
-% 
-% <include>src/Matlab2tex_CPS_ContinuousPlant/g_ZOH.m</include>
-%
-% *jump map* |g| *block*
-% 
-% <include>src/Matlab2tex_CPS_ContinuousPlant/C_ZOH.m</include>
-%
-% *jump set* |D| *block*
-% 
-% <include>src/Matlab2tex_CPS_ContinuousPlant/D_ZOH.m</include>
+% The ADC and ZOH blocks are described in
+% <matlab:hybrid.internal.openHelp('CPS_analog_to_digital_converter') Analog to Digital Converter> 
+% and
+% <matlab:hybrid.internal.openHelp('CPS_zero_order_hold') Zero Order Hold>.
 
 %% Example output
 % A solution to the system in this example is plotted below.

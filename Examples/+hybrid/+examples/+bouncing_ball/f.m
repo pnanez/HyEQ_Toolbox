@@ -1,5 +1,5 @@
-function xdot = f(x)
+function xdot = f(x, parameters)
     % Flow map for Bouncing Ball.
-    gravity = -9.81;
+    gravity = parameters.gravity;
     xdot = [x(2); gravity];
 end

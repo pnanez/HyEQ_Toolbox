@@ -1,5 +1,5 @@
-function xplus = g(x)
+function xplus = g(x, parameters)
     % Jump map for Bouncing Ball.
-    lambda = 0.8; % Coefficient of bounce restitution.
+    lambda = parameters.lambda; % Coefficient of bounce restitution.
     xplus = [-x(1); -lambda*x(2)];
 end

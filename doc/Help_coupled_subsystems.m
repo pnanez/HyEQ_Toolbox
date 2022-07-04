@@ -16,10 +16,10 @@
 
 %% Mathematical Model
 % Consider a bouncing ball $\mathcal{H}_1$ bouncing on a moving platform
-% $\mathcal{H}_2$ that accelerates due to gravity and and has discrete changes
-% in velocity due to collisions with the ball. This problem  
-% lends itself to being modeled by a pair of interconnected hybrid systems
-% because the states of each system affect the 
+% $\mathcal{H}_2$. The ball accelerates due to gravity and both the ball and
+% platform have discrete changes in velocity due to collisions between them. 
+% This problem lends itself to being modeled by a pair of interconnected hybrid
+% systems because the states of each system affect the 
 % behavior of the other system. In this interconnection, the bouncing ball will
 % contact the platform, bounce back up, and pushing the
 % platform toward the ground. In order to model this system,
@@ -74,7 +74,7 @@
 % $$\left\{\begin{array}{ll}
 % f_2(\eta,u_2,v_2):=\left[\begin{array}{c}
 %    \eta_2 \\
-%    -\eta_1-2\eta_2 +v_{12}
+%    -\eta_1-\beta\eta_2 +v_{12}
 %  \end{array} \right],
 %    & C_2 : = \{(\eta,u_2) \mid \eta_1 \leq u_2, \eta_1 \geq 0\}
 %  \\ \\
@@ -84,8 +84,10 @@
 % \end{array} \right],
 %    & D_2: =\{(\eta,u_2) \mid \eta_1 = u_2, \eta_1 \geq 0 \},
 %  \\ \\
-% y_2 = h_2(\eta) := \eta_1.    
+% y_2 = h_2(\eta) := \eta_1, 
 % \end{array}\right.$$
+% 
+% where $\beta \geq 0$ is a velocity damping coefficient.
 % 
 % The interconnection between $\mathcal H_1$ and $\mathcal H_2$ is
 % defined by the input assignment 
@@ -165,7 +167,7 @@ open_system(which(model_path))
 %% Example Output
 % 
 % A solution to the composition of $\mathcal{H}_1$ and
-% $\mathcal{H}_2$ is shown below with $\gamma = 0.8$, $b=0.1$, |T=18|, |J=20|,
+% $\mathcal{H}_2$ is shown below with $\gamma = 0.8$, $\beta=2$, |T=18|, |J=20|,
 % and |rule=1|. The inputs $v_{11}$, $v_{12}$, $v_{22}$ are zero and $v_{21}$ is a
 % sinusoidal signal.
 figure(1) % H1 Flows and Jumps        

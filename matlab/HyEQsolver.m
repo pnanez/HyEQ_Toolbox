@@ -280,7 +280,7 @@ while (j < JSPAN(end) && tout(end) < TSPAN(end) && ~progress.is_cancel_solver)
             xout = [xout; x_flow(2:end,:)]; %#ok<AGROW>
             jout = [jout; j*ones(1,nt-1)']; %#ok<AGROW>
         else 
-            % If the second state in the flow will not flow, then this
+            % If the second state in the flow should not flow, then this
             % indicates that the flow started in the flow set then
             % immediately left it. In this case, we calculate the next step
             % using the Euler forward method with a very small time step

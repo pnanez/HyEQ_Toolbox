@@ -52,9 +52,7 @@ extract('vehicle_on_constrained_path', 'vehicle_on_path', 'HS/jump map g', 'Matl
 
 %% Folder Matlab2tex_CPS_ContinuousPlant2
 extract('mobile_robot', 'mobile_robot', 'Continuous Plant/flow set C', 'Matlab2tex_CPS_ContinuousPlant_2', 'C')
-% extract('mobile_robot', 'mobile_robot', 'HSu/jump set D', 'Matlab2tex_CPS_ContinuousPlant_2', 'D')
 extract('mobile_robot', 'mobile_robot', 'Continuous Plant/flow map f', 'Matlab2tex_CPS_ContinuousPlant_2', 'f')
-% extract('mobile_robot', 'mobile_robot', 'HSu/jump map g', 'Matlab2tex_CPS_ContinuousPlant_2', 'g')
 
 %% Folder Matlab2tex_1_6
 
@@ -86,31 +84,21 @@ extract('zoh_feedback_control', 'zoh_feedback', 'HSu/jump set D', 'Matlab2tex_CP
 extract('zoh_feedback_control', 'zoh_feedback', 'HSu/flow map f', 'Matlab2tex_CPS_ContinuousPlant', 'f')
 extract('zoh_feedback_control', 'zoh_feedback', 'HSu/jump map g', 'Matlab2tex_CPS_ContinuousPlant', 'g')
 
-% ADC
-extract('zoh_feedback_control', 'zoh_feedback', 'ADC/flow set C', 'Matlab2tex_CPS_ContinuousPlant', 'C_ADC')
-extract('zoh_feedback_control', 'zoh_feedback', 'ADC/jump set D', 'Matlab2tex_CPS_ContinuousPlant', 'D_ADC')
-extract('zoh_feedback_control', 'zoh_feedback', 'ADC/flow map f', 'Matlab2tex_CPS_ContinuousPlant', 'f_ADC')
-extract('zoh_feedback_control', 'zoh_feedback', 'ADC/jump map g', 'Matlab2tex_CPS_ContinuousPlant', 'g_ADC')
+% ADC (same as ADC, below)
 
-% ZOH
-extract('zoh_feedback_control', 'zoh_feedback', 'ZOH/flow set C', 'Matlab2tex_CPS_ContinuousPlant', 'C_ZOH')
-extract('zoh_feedback_control', 'zoh_feedback', 'ZOH/jump set D', 'Matlab2tex_CPS_ContinuousPlant', 'D_ZOH')
-extract('zoh_feedback_control', 'zoh_feedback', 'ZOH/flow map f', 'Matlab2tex_CPS_ContinuousPlant', 'f_ZOH')
-extract('zoh_feedback_control', 'zoh_feedback', 'ZOH/jump map g', 'Matlab2tex_CPS_ContinuousPlant', 'g_ZOH')
+% ZOH (Same as ZOH below)
 
 %% Folder Matlab2tex_CPS_Network
 
 % Plant
 extract('network_estimation', 'network', 'Continuous Process/flow set C', 'Matlab2tex_CPS_Network', 'C')
-extract('network_estimation', 'network', 'Continuous Process/jump set D', 'Matlab2tex_CPS_Network', 'D')
 extract('network_estimation', 'network', 'Continuous Process/flow map f', 'Matlab2tex_CPS_Network', 'f')
-extract('network_estimation', 'network', 'Continuous Process/jump map g', 'Matlab2tex_CPS_Network', 'g')
 
 % Network
-extract('network_estimation', 'network', 'Network/flow set C', 'Matlab2tex_CPS_Network', 'C_network')
-extract('network_estimation', 'network', 'Network/jump set D', 'Matlab2tex_CPS_Network', 'D_network')
-extract('network_estimation', 'network', 'Network/flow map f', 'Matlab2tex_CPS_Network', 'f_network')
-extract('network_estimation', 'network', 'Network/jump map g', 'Matlab2tex_CPS_Network', 'g_network')
+extractFromLibrary('cps', 'Network/flow set C', 'Matlab2tex_CPS_Network', 'C_network')
+extractFromLibrary('cps', 'Network/jump set D', 'Matlab2tex_CPS_Network', 'D_network')
+extractFromLibrary('cps', 'Network/flow map f', 'Matlab2tex_CPS_Network', 'f_network')
+extractFromLibrary('cps', 'Network/jump map g', 'Matlab2tex_CPS_Network', 'g_network')
 
 % Estimator
 extract('network_estimation', 'network', 'Estimator/flow set C', 'Matlab2tex_CPS_Network', 'C_Estimator')
@@ -125,16 +113,16 @@ extract('finite_state_machine', 'fsm', 'FSM/flow map f', 'Matlab2tex_FSM', 'f')
 extract('finite_state_machine', 'fsm', 'FSM/jump map g', 'Matlab2tex_FSM', 'g')
 
 %% Folder ADC_1
-extract('analog_to_digital_converter', 'adc', 'ADC/flow set C', 'Matlab2tex_CPS_ADC_1', 'C')
-extract('analog_to_digital_converter', 'adc', 'ADC/jump set D', 'Matlab2tex_CPS_ADC_1', 'D')
-extract('analog_to_digital_converter', 'adc', 'ADC/flow map f', 'Matlab2tex_CPS_ADC_1', 'f')
-extract('analog_to_digital_converter', 'adc', 'ADC/jump map g', 'Matlab2tex_CPS_ADC_1', 'g')
+extractFromLibrary('cps', 'Analog to Digital Converter/flow set C', 'Matlab2tex_CPS_ADC_1', 'C')
+extractFromLibrary('cps', 'Analog to Digital Converter/jump set D', 'Matlab2tex_CPS_ADC_1', 'D')
+extractFromLibrary('cps', 'Analog to Digital Converter/flow map f', 'Matlab2tex_CPS_ADC_1', 'f')
+extractFromLibrary('cps', 'Analog to Digital Converter/jump map g', 'Matlab2tex_CPS_ADC_1', 'g')
 
 %% Folder Matlab2tex_ZOH
-extract('zero_order_hold', 'zoh', 'ZOH/flow set C', 'Matlab2tex_ZOH', 'C')
-extract('zero_order_hold', 'zoh', 'ZOH/jump set D', 'Matlab2tex_ZOH', 'D')
-extract('zero_order_hold', 'zoh', 'ZOH/flow map f', 'Matlab2tex_ZOH', 'f')
-extract('zero_order_hold', 'zoh', 'ZOH/jump map g', 'Matlab2tex_ZOH', 'g')
+extractFromLibrary('cps', 'Zero-order Hold/flow set C', 'Matlab2tex_ZOH', 'C')
+extractFromLibrary('cps', 'Zero-order Hold/jump set D', 'Matlab2tex_ZOH', 'D')
+extractFromLibrary('cps', 'Zero-order Hold/flow map f', 'Matlab2tex_ZOH', 'f')
+extractFromLibrary('cps', 'Zero-order Hold/jump map g', 'Matlab2tex_ZOH', 'g')
 
 warning('on','Simulink:Commands:LoadingOlderModel') % Renable warning.
 disp('Finished.')
@@ -147,6 +135,26 @@ mfilename = [mfilename, '.m'];
 extractSimulinkFunction(slx_file, [model_name, '/', embfnc], fullfile(out_dir, mfilename))
 end
 
+function extractFromLibrary(sublibrary, block_path, outdir, mfilename)
+    slx_file = which('HyEQ_Library');
+    switch sublibrary
+        case 'embedded'
+            sublib_path = 'Hybrid System Blocks (embedded functions)/';
+        case 'external'
+            sublib_path = 'Hybrid Systems Blocks (external functions)/';
+        case 'cps'
+            sublib_path = 'Cyber Physical Systems/';
+        case ''
+            sublib_path = '';
+        otherwise
+            error(['sublibrary not recognized: ', sublibrary])
+    end
+    path = ['HyEQ_Library/', sublib_path, block_path];
+    out_dir = hybrid.getFolderLocation('doc', 'src', outdir);
+    mfilename = [mfilename, '.m'];
+    extractSimulinkFunction(slx_file, path, fullfile(out_dir, mfilename))
+end
+
 function extractSimulinkFunction(simsys, embfnc, mfilename)
     %   Generates and save a .m file (mfilename) from an embedded
     %   simulink function (embfnc) of a simulink model (symsys).
@@ -155,7 +163,12 @@ function extractSimulinkFunction(simsys, embfnc, mfilename)
     %	mfilename: name of the generated m and tex file.
     sf = sfroot();
     load_system(simsys);
-    block = sf.find('Path',embfnc,'-isa','Stateflow.EMChart');
+    block = sf.find('Path', embfnc,'-isa','Stateflow.EMChart');
+    if isempty(block)
+        warning('A block with the path\n\t''%s''\nwas not found in\n\t ''%s''', embfnc, simsys)
+        close_system(simsys);
+        return;
+    end
     script = block.Script;
     fid = fopen(mfilename, 'w');
     fprintf(fid, '%s\r\n', script);

@@ -242,7 +242,9 @@ HybridPlotBuilder()...
     .plotHybrid(sol)
 
 %% Plot Titles
-% Adding titles is similar to adding labels. (Update?)
+% Adding titles is similar to adding labels. 
+% Titles are set via the |titles| functions (or, optionally,
+% the |title| function if there is only one title). 
 clf
 HybridPlotBuilder().subplots('on').slice([2 1])...
     .titles('Component 1', 'Component 2')...

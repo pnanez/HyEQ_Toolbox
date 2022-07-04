@@ -69,9 +69,12 @@
 % anything inside the block. Parameters are now set in a popup dialog that opens
 % when each block is clicked.
 % 
-% *Instructions for How To Use Blocks* Each block in the HyEQ Simulink library
+% *Instructions for How To Use Blocks.* Each block in the HyEQ Simulink library
 % now includes instructions in the popup dialog that opens when the block is
 % clicked.
+% 
+% *Signal Sizes.* HyEQ Simulink library blocks now determine the signal sizes
+% for inputs and outputs to help identify errors and aid in debugging.
 
 %% 
 % 
@@ -89,9 +92,25 @@
 % has been redone to make it easier to access and navigate in MATLAB Help.
 
 %% Changes Between Builds
+%%
+% *3.0.0.40* $\to$ *3.0.0.50*
+% (Built July 5, 2022)
+% Simulink Library:
+% 
+% * Refactor how parameters are passed to Hybrid System Simulink blocks.
+% * Change to using linked blocks for library blocks except for Hybrid
+% Systems with Embedded Functions, Finite State Machines, and Continuous
+% Plants.
+% * Use dropdown menu for Flow/Jump priority option in Hybrid System
+%   blocks.
+% * Added Integrator System as a block in the Simulink library. All
+%   instances are now linked copies of the library version.
+% * Add field datatype hints for fields in mask dialogs.
+% * Add signal size data to hybrid system blocks to help with debugging. 
+%% 
 % *3.0.0.33* $\to$ *3.0.0.40*
 % (Built March 26, 2022)
-%% 
+%
 % * Moved documention source files to doc/src.
 % * Reoraganized help files and switched from using LaTeX to MATLAB Publish.
 % * Added missing documentation for CPS examples.

@@ -1,4 +1,4 @@
-%% Modeling a Hybrid System with External Functions (Bouncing Ball)
+%% Example Hybrid System with External Functions (Bouncing Ball)
 % In this example, a bouncing ball is modeled in Simulink as a hybrid system.
 %% 
 % The files for this example are found in the package
@@ -38,8 +38,7 @@
 % 
 % where $g > 0$ is the gravity constant
 % and $\lambda \in [0,1)$ is the restitution coefficient.
-% For this example, we consider a ball bouncing on a floor at zero height. 
-% The constants for the bouncing ball system are $g = 9.81$ and $\lambda=0.8$.
+% For this example, we consider a ball bouncing on a floor at zero height.
 
 %% Simulink Model
 % The following diagram shows the Simulink model of the bouncing ball. 
@@ -48,21 +47,38 @@
 
 % Open subsystem "HS" in Example1_3.slx. A screenshot of the subsystem will be
 % automatically included in the published document.
+warning('off','Simulink:Commands:LoadingOlderModel')
 example_name = 'bouncing_ball';
 model_path = ['hybrid.examples.', example_name ,'.', example_name];
 load_system(which(model_path))
 open_system(example_name)
+snapnow
+close_system()
 
 %%
-% Double-click |HS_ex| to see inside of the hybrid subsystem.
-% The contents of the |HS_ex| block is shown here. 
+% Double-click black hybrid system $\mathcal{H}$ block open a dialog box where
+% you can specify function handles for $f$, $g$, $C$, and $D$, and other system
+% configuration options. 
+% 
+% <<images/bb_mask_dialog.png>>
+
+%% 
+% To "look inside" the block, click the arrow in the
+% lower-left corner of the block or open the block's context menu and select
+% Mask > Look Under Mask. (To implement a hybrid system with external functions,
+% you do not need to modify anything under the mask. All the necessary
+% configuration is done in the mask dialog box.)
+% The contents of the hybrid system block is shown here. 
 block_path = [example_name, '/Hybrid System'];
-open_system(block_path)
+load_system(which(model_path))
+open_system(block_path, 'force')
+snapnow
+close_system()
 
 %%
 % The *flow map* |f|, *flow set* |C|, *jump map* |g|, and 
 % *jump set* |D| are defined by interpreted MATLAB function blocks. 
-% These blocks call the MATLAB functions in 
+% These blocks call the MATLAB functions chosen in the mask dialog, namely 
 % <matlab:open('hybrid.examples.bouncing_ball.C') |C.m|>,  
 % <matlab:open('hybrid.examples.bouncing_ball.f') |f.m|>, 
 % <matlab:open('hybrid.examples.bouncing_ball.D') |D.m|>,
@@ -70,15 +86,7 @@ open_system(block_path)
 % in the 
 % <matlab:cd(hybrid.getFolderLocation('Examples','+hybrid','+examples','+bouncing_ball')) |hybrid.examples.bouncing_ball|>
 % package.
-% Defining a hybrid systems in this way makes it easier to track changes in a
-% source control management tool, such as Git, because the code is stored as
-% plain text. 
-% The downsides to this approach, however, is that it does not support systems with 
-% inputs and is slightly slower than using embedded function blocks (see
-% <matlab:hybrid.internal.openHelp('Example_1_3') Bouncing ball with input>).
-
-%% 
-% The MATLAB source code for $f, C, g,$ and $D$ is included below.
+% The MATLAB source code each function is included below.
 %
 % *f.m:*
 % 
@@ -123,7 +131,8 @@ sol = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j')
 %% Solution
 % A solution to the bouncing ball system from 
 % $x(0,0)=[1,0]^\top$ and with 
-% |TSPAN = [0 10], JSPAN = [0 20], rule = 1|, 
+% |TSPAN = [0 10]|, |JSPAN = [0 20]|, |rule = 1|, $g = -9.8$, and $\lambda =
+% 0.9$
 % is shown plotted against continuous time $t$:
 figure(1)
 clf

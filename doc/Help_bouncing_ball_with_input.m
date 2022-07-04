@@ -1,4 +1,4 @@
-%% Modeling a Hybrid System with Embedded Functions (Bouncing Ball with Input)
+%% Example Hybrid System with Embedded Functions (Bouncing Ball with Input)
 % In this example, a ball bouncing on a moving platform is 
 % modeled in Simulink as a hybrid system with an input, where the input
 % determines the height of the platform.
@@ -67,8 +67,7 @@ close all
 sol = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j')
 
 %% Simulink Model
-% The following diagram shows the Simulink model of the bouncing ball. The
-% contents of the blocks *flow map* |f|, *flow set* |C|, etc., are shown below. 
+% The following diagram shows the Simulink model of the bouncing ball.
 % When the Simulink model is open, the blocks can be viewed and modified by
 % double clicking on them.
 
@@ -77,9 +76,19 @@ sol = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j')
 model_path = 'hybrid.examples.bouncing_ball_with_input.ball_with_input';
 block_path = 'ball_with_input/HS';
 load_system(which(model_path))
-open_system(block_path)
+open_system('ball_with_input/')
 snapnow
-close_system
+close_system()
+
+%%
+% Looking inside the hybrid system block 'HS' shows that the functions $f, g,
+% C,$ and $D$ are defined using MATLAB function blocks
+% The contents of the blocks *flow map* |f|, *flow set* |C|, etc., 
+% are shown below. 
+load_system(which(model_path))
+open_system(block_path, 'force') % The 'force' argument allows us to look under the mask.
+snapnow
+close_system()
 
 %%
 % The Simulink blocks for the hybrid system in this example are included below.
@@ -103,6 +112,9 @@ close_system
 % <include>src/Matlab2tex_1_3/D.m</include>
 
 %% Alternative Simulink Model
+% Above, the functions $f, g, C,$ and $D$ are defined using MATLAB function
+% blocks, but in some cases, one may want to use other Simulink blocks instead
+% of writing custom functions.
 % The Simulink model, below, shows the jump set |D| modeled in Simulink using
 % operational blocks instead of a MATLAB function block.
 
@@ -115,11 +127,11 @@ open_system('ball_with_input2/HS')
 snapnow();
 
 %% Example Output
-% Let the input function be $u(t,j) = 0.5$ for $t \in [0, 2.5)$ and $u(t, j) = 0$
-% for $t \geq 2.5$, and let $\gamma = 9.81$ and $\lambda=0.8$. 
+% Let the input function be $u(t,j) = 0.6$ for $t \in [0, 2.5)$ and $u(t, j) = 0$
+% for $t \geq 2$, and let $\gamma = 9.81$ and $\lambda=0.8$. 
 % The solution to the bouncing ball system from $x(0,0)=[1,0]^\top$ and with
-% |T=10, J=20, rule=1| shows that the ball bounces at a height of |0.5| until $t
-% = 2.5$, when the platform drops to $0$.
+% |T=10|, |J=20, |rule=1| shows that the ball bounces at a height of |0.6| until $t
+% = 2$, when the platform drops to $0$.
 
 clf
 plotFlows(sol)
@@ -130,36 +142,6 @@ clf
 plotHybrid(sol.slice(1))     
 grid on
 view(37.5, 30) 
-
-%% Defining Parameters
-% To add parameters to an embedded function block, 
-% open the function, navigate to the |Function| tab,
-% select |Ports and Data Manager| in the toolbar, and click |Add>Data|. 
-% A new item will appear in the list. 
-% Set the name as desired and change the scope to |Parameter|.
-% Once a parameter is defined this way, it is passed to the function as an
-% input with the given name.
-% In this example, |gamma| and |lambda| are defined in this way and the values
-% are set within
-% <matlab:open('hybrid.examples.bouncing_ball_with_input.initialize') initialize.m>. 
-
-%% Defining the Simulation Time-Horizon and Initial Condition
-% The time flow time horizon |T|, the jump horizon |J|, the
-% initial condition |x0| are defined in
-% <matlab:open('hybrid.examples.bouncing_ball_with_input.initialize') initialize.m>.
-% The names of the variables must match the names specificied in the 
-% |Integrator System| settings, which are opened by double-clicking |HS| and
-% then on the |Integrator System|.
-% 
-% <<images/IntegratorSettings.png>>
-
-%% Solver Configuration
-% The initialization script 
-% <matlab:open('hybrid.examples.bouncing_ball_with_input.initialize') initialize.m>, 
-% also sets the values for the priority |rule| for $C \cap D$
-% and solver tolerances |RelTol| and |MaxStep|. 
-% The solver tolerances are defined in Simulink by opening 
-% |Modeling>Model Settings>Solver| and inputting |T|, |RelTol|, |MaxStep|, etc.
 
 %% 
 

@@ -47,9 +47,8 @@
 % \end{array}
 % $$
 % 
-% This model can be implemented with the |HSu| simulink block found
-% <matlab:hybrid.internal.openHelp('Help_SimulinkLibrary') at this link> 
-% and above.
+% This model can be implemented with the Hybrid System with Inputs simulink block found
+% <matlab:hybrid.internal.openHelp('Help_SimulinkLibrary') at this link>.
 % 
 %% Models of cyber components
 % 
