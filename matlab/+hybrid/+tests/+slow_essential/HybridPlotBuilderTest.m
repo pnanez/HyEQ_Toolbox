@@ -92,6 +92,45 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             end
             testCase.check3PlottingFunctions(pb, testCase.sol_3, @check)
         end
+
+
+        function testOnlyIntegerTicksOnJ(testCase)
+            % For the j-axis, the locations of tickmarks should only be at
+            % integers.
+            ax = gca();
+            ruler = get(ax, 'XAxis');
+            if ischar(ruler) || ~isprop(ruler, 'LimitsChangedFcn') ...
+                    || ~isprop(ruler, 'TickValues')
+                testCase.assumeFail(['On this current of MATLAB, we ', ...
+                    'don''t remove noninteger ticks for the j-axis.']);
+            end
+            function is_all = allInteger(property_name)
+                prop = get(gca(), property_name);
+                is_integer = abs(fix(prop) - prop) < 1e-6;
+                is_all = all(is_integer);
+            end
+
+            % Scale so the y ticks have decimal values.
+            sol = testCase.sol_1.transform(@(x) 0.01*x); 
+            sol3 = testCase.sol_3.transform(@(x)0.01*x);
+            plotJumps(sol);
+            testCase.assertTrue(allInteger('XTick')) % j-axis
+            testCase.assertFalse(allInteger('YTick'))
+
+            plotFlows(sol);
+            testCase.assertFalse(allInteger('XTick'))
+            testCase.assertFalse(allInteger('YTick'))
+
+            plotHybrid(sol);
+            testCase.assertFalse(allInteger('XTick'))
+            testCase.assertTrue(allInteger('YTick')) % j-axis
+            testCase.assertFalse(allInteger('ZTick'))
+
+            plotPhase(sol3);
+            testCase.assertFalse(allInteger('XTick'))
+            testCase.assertFalse(allInteger('YTick'))
+            testCase.assertFalse(allInteger('ZTick'))
+        end
         
         function testSliceSwitchedOrderWithSubplots(testCase)
             pb = HybridPlotBuilder().subplots('on')...

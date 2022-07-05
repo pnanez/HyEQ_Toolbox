@@ -15,6 +15,13 @@ classdef PlotData < handle
         legend_label
         title
         subplot_ndx
+        is_axis1_discrete
+        is_axis2_discrete
+        is_axis3_discrete
+
+        % Cell array containing 2 or 3 entries that are some combination 't',
+        % 'j', and 'x'. 
+        axis_ids 
     end
 
     methods
@@ -74,6 +81,10 @@ classdef PlotData < handle
             else
                 axis3_id = [];
             end   
+            this.axis_ids = {axis1_id, axis2_id, axis3_id};
+            this.is_axis1_discrete = strcmp(axis1_id, 'j');
+            this.is_axis2_discrete = strcmp(axis2_id, 'j');
+            this.is_axis3_discrete = strcmp(axis3_id, 'j');
             plot_vals = hybrid.internal.createPlotValuesFromIds(hybrid_sol, axis1_id, axis2_id, axis3_id);
 
             if ~isempty(timesteps_filter)

@@ -17,7 +17,6 @@
 % (clicking this link changes your working directory). 
 
 %% Mathematical Model
-% 
 % The bouncing ball system on a moving platform is modeled as a hybrid system
 % with the following data: 
 % 

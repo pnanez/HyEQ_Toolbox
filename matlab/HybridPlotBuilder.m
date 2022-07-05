@@ -910,6 +910,8 @@ classdef HybridPlotBuilder < handle
     
     methods(Access = private)
         function plot_data_array = createPlotDataArray(this, hybrid_sol, x_ndxs, value_ids, axis_symbols)
+            % axis_symbols: a cell array containing 2 or 3 cells that contain
+            % a combination of 't', 'j' and 'x'.
             plot_data_array = hybrid.internal.buildPlotDataArray(...
                                 axis_symbols, x_ndxs, value_ids, hybrid_sol, this.settings);
         end
@@ -921,7 +923,8 @@ classdef HybridPlotBuilder < handle
             % The length of each entry is the number of plots to draw. If
             % automatic subplots is on, then each plot is automatically placed
             % into a new subplot.
-            n_plots = size(plot_data_array, 2);
+            % 
+            % plot_data_array is an array of ??? 
              
             % Save the 'hold' status.
             is_hold_on_before = ishold();
@@ -1009,6 +1012,18 @@ classdef HybridPlotBuilder < handle
                 this.ylabel(axes, plt_data.ylabel)
                 this.zlabel(axes, plt_data.zlabel)
                 this.applyTitle(axes, plt_data.title)
+
+                % For 'j' axes, the ticks should only be integers, so 
+                % we delete all non-integer ticks.
+                if plt_data.is_axis1_discrete
+                    enableRemoveNonIntegerTicksCallback(axes, 'XAxis')
+                end
+                if plt_data.is_axis2_discrete
+                    enableRemoveNonIntegerTicksCallback(axes, 'YAxis')
+                end
+                if plt_data.is_axis3_discrete
+                    enableRemoveNonIntegerTicksCallback(axes, 'ZAxis')
+                end
 
                 % Adjust padding.
                 xlim(axes, plt_data.xlim)
@@ -1198,4 +1213,33 @@ function on_off = logical2on_off(b)
     else
         on_off = 'off';
     end
+end
+
+function enableRemoveNonIntegerTicksCallback(ax, axis_name)
+    ruler = get(ax, axis_name);
+    if ischar(ruler) || ~isprop(ruler, 'LimitsChangedFcn') || ~isprop(ruler, 'TickValues')
+        % On old versions (e.g. R2014b), NumericalRulers do not have the
+        % fields 'TickValues' or 'LimitsChangedFcn', so our approach for
+        % removing noninteger tick marks does not work.
+        return
+    end
+    removeNonintegerTicks(ruler)
+    ruler.LimitsChangedFcn = @removeNonintegerTicks;
+end
+
+function removeNonintegerTicks(ruler,~)
+
+    % Make ruler value mode automatic, momentaryily, (if it isn't already) 
+    % so that the location of the tick marks are recomputed.
+    ruler.TickValuesMode = 'auto';
+    
+    % Now, hide any tick marks that are not integers.
+    tick_values = ruler.TickValues;
+
+    % Sometimes the '0' tick mark is off by ~1e-17, so we use a small range of
+    % values.
+    integer_indices = abs(fix(tick_values) - tick_values) < 1e-12;
+
+    % Keep only the (approximately) integer values.
+    ruler.TickValues = tick_values(integer_indices);
 end
