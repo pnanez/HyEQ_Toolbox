@@ -26,7 +26,7 @@
 % $$\begin{array}{ll}
 % f(x) := \left[\begin{array}{c}
 %       x_{2} \\
-%     -g
+%     -\gamma
 %  \end{array}\right],
 %    & C := \{ x \in \mathbf{R}^{2} \times \mathbf{R} \mid x_{1} \geq 0 \} 
 % \\ \\
@@ -36,7 +36,7 @@
 %    & D := \{x \in \mathbf{R}^2 \times \mathbf{R} \mid x_1 \leq 0,\ x_2 \leq 0\}
 % \end{array}$$
 % 
-% where $g > 0$ is the gravity constant
+% where $\gamma > 0$ is the gravity constant
 % and $\lambda \in [0,1)$ is the restitution coefficient.
 % For this example, we consider a ball bouncing on a floor at zero height.
 

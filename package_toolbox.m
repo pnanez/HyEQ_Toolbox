@@ -20,7 +20,7 @@ configure_development_path
 do_publish_docs = false;
 do_tests = false;
 do_package = true;
-do_cleanup_path = false;
+do_cleanup_path = do_package && true;
 
 projectFile = 'HybridEquationsToolbox.prj';
 toolbox_dirs = {'Examples', ...

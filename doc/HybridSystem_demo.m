@@ -361,7 +361,7 @@ bb_system.solve(x0, tspan, jspan, config);
 % is in the intersection of the flow and jump sets. This can be changed by
 % setting the |priority| to one of the (case insensitive) strings |'flow'| or
 % |'jump'|. For an example for how changing the priority affects solutions, see 
-% <matlab:hybrid.internal.openHelp('Help_behavior_in_C_intersection_D') Jump/Flow Behavior in the Intersection of C and D> 
+% <matlab:hybrid.internal.openHelp('Help_behavior_in_C_intersection_D') Behavior in the Intersection of C and D> 
 % (the linked example uses Simulink instead of MATLAB, which has an additional 
 % "random" priority mode, not currently supported in the MATLAB HyEQ library). 
 config.priority('flow');

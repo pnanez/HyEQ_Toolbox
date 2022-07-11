@@ -5,7 +5,7 @@ x0 = [1; 0];
           
 % Physical variables
 parameters = struct();
-parameters.gravity = -9.81;  % gravity constant
+parameters.gamma = -9.81;  % gravity constant
 parameters.lambda = 0.9; % restitution coefficent
 
 % Simulation horizon

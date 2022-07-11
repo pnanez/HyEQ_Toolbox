@@ -25,23 +25,20 @@
 % D \to \mathbf{R}^n$ is called the _jump map_, and the set $D
 % \subset \mathbf{R}^n$ is called the _jump set_.
 % 
-% Roughly speaking, a function $\phi : E \to \mathbf{R}^n$ is a _solution_ 
+% Roughly speaking, a function $\phi : \mathrm{dom}\:\phi \to \mathbf{R}^n$ is a _solution_ 
 % to $\mathcal{H}$ if the following conditions are satisfied:
 %  
-% *1.* $\phi(0, 0) \in \overline{C} \cup D.$
-% 
-% *2.* The domain $E \subset \mathbf{R} \times \mathbf{N}$ is in the form 
-% 
-% $$ E = \bigcup_{j=0}^{J-1} \Big( [t_j, t_{j+1}] \times \{j\}\Big)$$
-% 
-% for some (possibly infinite) sequence of times $0 = t_0 \leq t_1 \leq t_2 \leq
-% \cdots \leq t_J.$
-% 
-% *3.* During each _interval of flow_ $[t_j, t_{j+1}]$, the solution $\phi$ satisfies 
-% $\dot{\phi}(t, j) = f(\phi(t, j))$ and $\phi(t, j) \in C$ for almost all $t
-% \in [t_j, t_{j+1}].$
-% 
-% *4.* At each $(t, j) \in E$ such that $(t, j+1) \in E$, then
+% # $\phi(0, 0) \in \overline{C} \cup D.$
+% # The domain $\mathrm{dom}\:\phi \subset \mathbf{R} \times \mathbf{N}$ is a 
+% _hybrid time domain_ where the $\mathbf{R}$ component corresponds to the amount
+% of ordinary time $t$ that has elapsed and the $\mathbf{N}$ component
+% corresponds to the number $j$ of discrete jumps that have occured.
+% # During each interval $[t_j, t_{j+1}]$ such that $t_j < t_{j+1},$ 
+% $(t_j, j)\in \mathrm{dom}\:\phi$, and $(t_{j+1}, j+1) \in \mathrm{dom}\:\phi$, the solution $\phi$ satisfies 
+% $\frac{d\phi}{dt} = f(\phi(t, j))$ and $\phi(t, j) \in C$ for almost all $t
+% \in [t_j, t_{j+1}].$ 
+% We call such an interval $[t_j, t_{j+1}]$ an _interval of flow_.
+% # At each $(t, j) \in \mathrm{dom}\:$ such that $(t, j+1) \in E$, then
 % $\phi(t, j) \in D$ and $\phi(t, j+1) = g(\phi(t, j))$. We call such a $(t, j)$
 % a _jump time_.
 % 
@@ -71,7 +68,7 @@
 % <http://www.mathworks.com/videos/hyeq-a-toolbox-for-simulation-of-hybrid-dynamical-systems-81992.html here> 
 % (a free MathWorks registration is required).
 % 
-%% Using the Toolbox 
+%% Table of Contents for HyEQ Toolbox Help
 % A list of help topics is given below.
 % 
 % <html><h3>The Hybrid Equations MATLAB Library</h3></html>
