@@ -246,8 +246,9 @@ classdef (Abstract) HybridSystem < handle
             inC = this.checkPoint('flow', this.flowMap_3args, ...
                                     this.flowSetIndicator_3args, varargin{:});
             if ~inC
+                str = xtj_arguments_to_string(varargin{:});
                 error('HybridSystem:AssertInCFailed', ... 
-                      'Point was expected to be inside C but was not.');
+                      'The point%swas expected to be inside C but was not.', str);
             end
         end
 
@@ -256,8 +257,9 @@ classdef (Abstract) HybridSystem < handle
             % See also: flowSetIndicator, assertInC, assertInD, assertNotInD.
             inC = this.checkPoint('flow', [], this.flowSetIndicator_3args, varargin{:});
             if inC
+                str = xtj_arguments_to_string(varargin{:});
                 error('HybridSystem:AssertNotInCFailed', ...
-                    'Point was expected to not be inside C but actually was.');
+                    'The point%swas expected to not be inside C but actually was.', str);
             end
         end
 
@@ -267,8 +269,9 @@ classdef (Abstract) HybridSystem < handle
             inD = this.checkPoint('jump', this.jumpMap_3args, ...
                                   this.jumpSetIndicator_3args, varargin{:});
             if ~inD
+                str = xtj_arguments_to_string(varargin{:});
                 error('HybridSystem:AssertInDFailed', ... 
-                      'Point was expected to be inside D but was not.');
+                      'The point%swas expected to be inside D but was not.', str);
             end
         end
 
@@ -277,8 +280,9 @@ classdef (Abstract) HybridSystem < handle
             % See also: jumpSetIndicator, assertInC, assertNotInC, assertInD.
             inD = this.checkPoint('jump', [], this.jumpSetIndicator_3args, varargin{:});
             if inD
+                str = xtj_arguments_to_string(varargin{:});
                 error('HybridSystem:AssertNotInDFailed', ...
-                    'Point was expected to not be inside D but actually was.');
+                    'The point%swas expected to not be inside D but actually was.', str);
             end
         end
     end
@@ -433,10 +437,11 @@ classdef (Abstract) HybridSystem < handle
                 case 3
                     % We cannot simplify this as "func_lambda =
                     % func_handle" because func_handle has varargsin, which
-                    % includes "this" in the first argument.
+                    % includes "this" in the first argument.a
                     func_lambda = @(x, t, j) func_handle(x, t, j);
                 otherwise
-                    error('Functions must have 2,3, or 4 arguments (including ''this''). Instead the function had %d.', nargs) 
+                    error(['Functions must have 2,3, or 4 arguments ' ...
+                          '(including ''this''). Instead the function had %d.'], nargs) 
             end
         end
 
@@ -517,11 +522,25 @@ end
 function assert_function_can_be_evaluated(func_handl, x, t, j, function_name)
     try
         func_handl(x, t, j);
-    catch e        
+    catch e
         cause = MException('HybridSystem:CannotEvaluateFunction', ...
             'Could not evaluate ''%s'' at x0=%s, t=%0.2f, j=%d.', ...
             function_name, mat2str(x), t, j);
         e = e.addCause(cause);
         rethrow(e)
     end
+end
+
+function str = xtj_arguments_to_string(x, t, j)
+    % Convert the arguments x, t (optional), and j (optional) to a user-friendly
+    % string for use in error messages.
+    str = [newline, '  x: '];
+    str = [str, mat2str(x)];
+    if exist('t', 'var')
+        str = [str, newline, '  t: ', num2str(t)];
+    end
+    if exist('j', 'var')
+        str = [str, newline, '  j: ', num2str(j)];
+    end
+    str = [str, newline];
 end
