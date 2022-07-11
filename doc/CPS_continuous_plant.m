@@ -1,4 +1,4 @@
-%% CPS Component: Continuous Plant (Mobile Robot)
+%% CPS Component: Continuous-time Plant (Mobile Robot)
 % In this example a unicycle type mobile robot is simulated using the hybrid
 % system toolbox. It is assumed that the forward 
 % velocity can be either 1 or 0, and the control command is $u\in\mathbf{R}$.
@@ -61,7 +61,7 @@ close all
 
 %% Simulink Model
 % The following diagram shows the Simulink model for this example. 
-% The mobile robot is represented by the |Continuous Plant| block.
+% The mobile robot is represented by the |Continuous-time Plant| block.
 
 % Open .slx model. A screenshot of the subsystem will be
 % automatically included in the published document.
@@ -69,7 +69,7 @@ model_path = 'hybrid.examples.mobile_robot.mobile_robot';
 open_system(which(model_path))
 
 %%
-% The flow map and flow set functions for the |Continuous Plant| block 
+% The flow map and flow set functions for the |Continuous-time Plant| block 
 % in this example are included below.
 %
 % *flow map* |f| *block*

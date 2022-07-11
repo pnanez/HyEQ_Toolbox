@@ -1,6 +1,6 @@
-%% Example 3: Sample-and-hold Feedback Control for a Continuous Plant
+%% Example 3: Sample-and-hold Feedback Control for a Continuous-time Plant
 % In this example, a continuous-time plant is controlled by a digital controller using
-% sample-and-hold digital to analog converter.
+% sample-and-hold digital-to-analog converter.
 %% 
 % The files for this example are found in the package
 % |hybrid.examples.zoh_feedback_control|:
@@ -120,7 +120,7 @@ close all
 model_path = 'hybrid.examples.zoh_feedback_control.zoh_feedback';
 open_system(which(model_path))
 
-%% Continuous Time Plant
+%% Continuous-Time Plant
 % The Simulink blocks for the plant subsystem in this example are included below.
 %
 % *flow map* |f| *block*
@@ -140,9 +140,9 @@ open_system(which(model_path))
 % <include>src/Matlab2tex_CPS_ContinuousPlant/D.m</include>
 % 
 % The ADC and ZOH blocks are described in
-% <matlab:hybrid.internal.openHelp('CPS_analog_to_digital_converter') Analog to Digital Converter> 
+% <matlab:hybrid.internal.openHelp('CPS_analog_to_digital_converter') Analog-to-Digital Converter> 
 % and
-% <matlab:hybrid.internal.openHelp('CPS_zero_order_hold') Zero Order Hold>.
+% <matlab:hybrid.internal.openHelp('CPS_zero_order_hold') Zero-Order Hold>.
 
 %% Example output
 % A solution to the system in this example is plotted below.

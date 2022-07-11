@@ -116,7 +116,7 @@ title('Negative Height')
 %    doc HybridSolution.evaluateFunction
 % 
 % for details.
-g = system.gravity;
+g = system.gamma; % gravity
 HybridPlotBuilder().plotFlows(sol, @(x) g*x(1) + 0.5*x(2)^2); 
 title('Total Energy')
 

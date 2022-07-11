@@ -60,7 +60,9 @@ close_system()
 % you can specify function handles for $f$, $g$, $C$, and $D$, and other system
 % configuration options. 
 % 
-% <<images/bb_mask_dialog.png>>
+% <html> 
+% <img src="images/bb_mask_dialog.png"  style='width: 100%; max-width: 450px; object-fit: contain'> 
+% </html>
 
 %% 
 % To "look inside" the block, click the arrow in the
@@ -68,7 +70,7 @@ close_system()
 % Mask > Look Under Mask. (To implement a hybrid system with external functions,
 % you do not need to modify anything under the mask. All the necessary
 % configuration is done in the mask dialog box.)
-% The contents of the hybrid system block is shown here. 
+% The contents of the hybrid system block are shown here. 
 block_path = [example_name, '/Hybrid System'];
 load_system(which(model_path))
 open_system(block_path, 'force')

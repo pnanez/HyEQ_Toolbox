@@ -1,4 +1,4 @@
-% Postprocessing script from Continuous Plant example.
+% Postprocessing script from Continuous-time Plant example.
 
 sol_plant = HybridArc(ty, jy, y); % Plant state.
 sol_ADC   = HybridArc(tzs, jzs, zs); % Digitized output of plant.

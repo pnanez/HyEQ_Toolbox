@@ -42,7 +42,7 @@ Use the eqnarray environment instead of align. The resulting HTML from make4ht i
 % model will create a _linked_ copy of the block (changes to the block will be
 % reflected automatically in all of the linked blocks). This is not the case, 
 % however, for the Hybrid System blocks with embedded functions and the
-% Continuous Plant block because these blocks because the internals of the
+% Continuous-time Plant block because these blocks because the internals of the
 % blocks must be modified by users in order to specify the hybrid system. In
 % particular, users must modify the |f|, |g|, |C|, and |D| blocks. To see the
 % code that "breaks the link" when a library block is added to a model, see

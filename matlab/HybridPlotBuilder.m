@@ -1126,7 +1126,7 @@ classdef HybridPlotBuilder < handle
         end
                 
         function xlabel(this, axes, label)
-            % xlabel Add a label to the x-axis for thecreateLegendLabel component at 'index'.
+            % xlabel Add a label to the x-axis for the component at 'index'.
             xlabel(axes, label, this.settings.labelArguments{:})
             set(axes, 'LabelFontSizeMultiplier', 1.0);
         end

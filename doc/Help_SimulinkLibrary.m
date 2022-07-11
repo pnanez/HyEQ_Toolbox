@@ -25,15 +25,19 @@
 % 
 % The following image shows these blocks in the Simulink Library Browser.
 % 
-% <<images/embedded_blocks.png>>
-% 
-% <<images/external_blocks.png>>
+% <html> 
+% <img src="images/embedded_blocks.png"  style='width: 100%; max-height: 200px; object-fit: contain'> 
+% <br><br>
+% <img src="images/external_blocks.png"  style='width: 100%; max-height: 200px; object-fit: contain'> 
+% </html>
 % 
 % Next, we see inside the Simulink blocks for simulating 
 % a hybrid system $\mathcal{H}$ with inputs implemented with using _embedded
 % MATLAB function blocks_.  
 % 
-% <<images/HSinput.png>>
+% <html> 
+% <img src="images/HSinput.png"  style='width: 100%; max-height: 472px; object-fit: contain'>
+% </html>
 % 
 % In this implementation, four blocks are used to define the _data_ 
 % of the hybrid system $\mathcal{H}$:
@@ -92,7 +96,7 @@
 % # Connect the intputs and outputs as desired. For Hybrid System blocks with inputs, there
 % are two state outputs $x$ and $x^-$. Most of the time, you should use the $x$
 % output, as it is the current state of the Hybrid Subsystem block. Sometimes,
-% however, when you have a closed loop system, Simulink warns of an " <https://www.mathworks.com/help/simulink/ug/algebraic-loops.html Alegbraic
+% however, when you have a closed loop system, Simulink warns of an "<https://www.mathworks.com/help/simulink/ug/algebraic-loops.html Alegbraic
 % Loop>" error. This means that there is a dependency loop that must be resolved.
 % To fix it, switch from using the $x$ output to the $x^-$ output somewhere in
 % the loop (changing a single connection is sufficient). The $x^-$ output is delayed by one

@@ -51,8 +51,8 @@ extract('vehicle_on_constrained_path', 'vehicle_on_path', 'HS/flow map f', 'Matl
 extract('vehicle_on_constrained_path', 'vehicle_on_path', 'HS/jump map g', 'Matlab2tex_1_5', 'g')
 
 %% Folder Matlab2tex_CPS_ContinuousPlant2
-extract('mobile_robot', 'mobile_robot', 'Continuous Plant/flow set C', 'Matlab2tex_CPS_ContinuousPlant_2', 'C')
-extract('mobile_robot', 'mobile_robot', 'Continuous Plant/flow map f', 'Matlab2tex_CPS_ContinuousPlant_2', 'f')
+extract('mobile_robot', 'mobile_robot', 'Continuous-time Plant/flow set C', 'Matlab2tex_CPS_ContinuousPlant_2', 'C')
+extract('mobile_robot', 'mobile_robot', 'Continuous-time Plant/flow map f', 'Matlab2tex_CPS_ContinuousPlant_2', 'f')
 
 %% Folder Matlab2tex_1_6
 
@@ -79,10 +79,10 @@ extract('fireflies', 'fireflies', 'Firefly 1/jump map g', 'Matlab2tex_1_7', 'g')
 %% Folder Matlab2tex_CPS_ContinuousPlant
 
 % Plant
-extract('zoh_feedback_control', 'zoh_feedback', 'HSu/flow set C', 'Matlab2tex_CPS_ContinuousPlant', 'C')
-extract('zoh_feedback_control', 'zoh_feedback', 'HSu/jump set D', 'Matlab2tex_CPS_ContinuousPlant', 'D')
-extract('zoh_feedback_control', 'zoh_feedback', 'HSu/flow map f', 'Matlab2tex_CPS_ContinuousPlant', 'f')
-extract('zoh_feedback_control', 'zoh_feedback', 'HSu/jump map g', 'Matlab2tex_CPS_ContinuousPlant', 'g')
+extract('zoh_feedback_control', 'zoh_feedback', 'Plant/flow set C', 'Matlab2tex_CPS_ContinuousPlant', 'C')
+extract('zoh_feedback_control', 'zoh_feedback', 'Plant/jump set D', 'Matlab2tex_CPS_ContinuousPlant', 'D')
+extract('zoh_feedback_control', 'zoh_feedback', 'Plant/flow map f', 'Matlab2tex_CPS_ContinuousPlant', 'f')
+extract('zoh_feedback_control', 'zoh_feedback', 'Plant/jump map g', 'Matlab2tex_CPS_ContinuousPlant', 'g')
 
 % ADC (same as ADC, below)
 
@@ -113,10 +113,10 @@ extract('finite_state_machine', 'fsm', 'FSM/flow map f', 'Matlab2tex_FSM', 'f')
 extract('finite_state_machine', 'fsm', 'FSM/jump map g', 'Matlab2tex_FSM', 'g')
 
 %% Folder ADC_1
-extractFromLibrary('cps', 'Analog to Digital Converter/flow set C', 'Matlab2tex_CPS_ADC_1', 'C')
-extractFromLibrary('cps', 'Analog to Digital Converter/jump set D', 'Matlab2tex_CPS_ADC_1', 'D')
-extractFromLibrary('cps', 'Analog to Digital Converter/flow map f', 'Matlab2tex_CPS_ADC_1', 'f')
-extractFromLibrary('cps', 'Analog to Digital Converter/jump map g', 'Matlab2tex_CPS_ADC_1', 'g')
+extractFromLibrary('cps', 'Analog-to-Digital Converter/flow set C', 'Matlab2tex_CPS_ADC_1', 'C')
+extractFromLibrary('cps', 'Analog-to-Digital Converter/jump set D', 'Matlab2tex_CPS_ADC_1', 'D')
+extractFromLibrary('cps', 'Analog-to-Digital Converter/flow map f', 'Matlab2tex_CPS_ADC_1', 'f')
+extractFromLibrary('cps', 'Analog-to-Digital Converter/jump map g', 'Matlab2tex_CPS_ADC_1', 'g')
 
 %% Folder Matlab2tex_ZOH
 extractFromLibrary('cps', 'Zero-order Hold/flow set C', 'Matlab2tex_ZOH', 'C')

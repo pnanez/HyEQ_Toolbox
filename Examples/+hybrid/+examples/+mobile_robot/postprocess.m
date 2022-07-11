@@ -1,4 +1,4 @@
-% Postprocessing script for Continuous plant Example 2
+% Postprocessing script for Continuous-time Plant Example
 
 % Plot state trajectory
 figure(1)

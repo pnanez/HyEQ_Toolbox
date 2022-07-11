@@ -26,8 +26,10 @@
 % variables, inputs, and outputs.  
 % The following Simulink blocks for cyber-physical components are provided with
 % the HyEQ simulator: 
-%  
-% <<images/CPS_components.png>>
+% 
+% <html> 
+% <img src="images/CPS_components.png"  style='width: 100%; max-height: 250px; object-fit: contain'> 
+% </html>
 % 
 
 %% Models of physical components

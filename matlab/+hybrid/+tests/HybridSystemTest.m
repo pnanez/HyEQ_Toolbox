@@ -87,7 +87,7 @@ classdef HybridSystemTest < matlab.unittest.TestCase
                 'HybridSystem:JumpSetIndicatorNotLogical');
         end
 
-        % Test assertInC
+        % Test asssertions
 
         function testAssertInC(testCase)
             ss = HybridSystemBuilder() ...
@@ -109,13 +109,22 @@ classdef HybridSystemTest < matlab.unittest.TestCase
         end
 
         % Test assertInD
-        function testAssertInD(testCase)
+        function testAssertInD_x(testCase)
             ss = HybridSystemBuilder() ...
                     .jumpSetIndicator(@(x) x >= 0)...
                     .build();
             ss.assertInD(1, nan, nan);
             testCase.verifyError(@() ss.assertInD(-1, nan, nan), ...
                                     'HybridSystem:AssertInDFailed')
+        end
+
+        function testAssertInD_xtj(testCase)
+            ss = HybridSystemBuilder() ...
+                    .jumpSetIndicator(@(x, t, j) x(1) > 0)...
+                    .build();
+            ss.assertInD(1, 1, 2);
+            testCase.verifyError(@() ss.assertInD([-1;4], 1, 2), ...
+                'HybridSystem:AssertInDFailed')
         end
 
         % Test assertNotInC

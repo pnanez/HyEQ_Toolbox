@@ -1,4 +1,4 @@
-%% Create and Simulate Multiple Interlinked Hybrid Systems
+%% Creating and Simulating Multiple Interlinked Hybrid Systems
 %% Mathematical Formulation
 % In this document, we demonstrate how to simulate multiple interlinked hybrid systems. 
 % Consider the controlled hybrid systems $\mathcal H_1$ and $\mathcal H_2$ with 
@@ -137,9 +137,9 @@ help hybrid.subsystems
 % to implement a |HybridSubsystem|. Mathematically, we write the hybrid subsystem as
 % 
 % $$ \mathcal{H}_{\mathrm{BB}}:\left\{\begin{array}{ll} 
-%    \dot{x} = f_{\mathrm{BB}}(x) := \left[\matrix{x_2 \\ -g}\right]
-%       & x \in C_{\mathrm{BB}} := \{(x_1, x_2) \in R^2 \mid x_1 \geq 0, x_2 \geq 0\} \\
-%    x^+ = g_{\mathrm{BB}}(x, u_{D}) := \left[\matrix{x_1 \\ \gamma x_2}\right] 
+%    \dot{x} = f_{\mathrm{BB}}(x) := \left[\matrix{x_2 \\ -\gamma}\right]
+%       & x \in C_{\mathrm{BB}} := \{(x_1, x_2) \in R^2 \mid x_1 \geq 0 \textrm{ or } x_2 \geq 0\} \\
+%    x^+ = g_{\mathrm{BB}}(x, u_{D}) := \left[\matrix{x_1 \\ -\lambda x_2}\right] 
 %                                       + \left[\matrix{0 \\ 1}\right]u_D
 %       & x \in D_{\mathrm{BB}} := \{(x_1, x_2) \in R^2 \mid x_1 \leq 0, x_2 \leq 0\}
 % \end{array} \right.$$
@@ -193,7 +193,7 @@ HybridSubsystemBuilder()...
 % prototypes or demonstrations (such as this tutorial) becuase it makes code
 % execution slower and dubugging more difficult.
 
-%% Creating a Composition of Hybrid Subsystems
+%% Creating a Compositite Hybrid System from Multiple Subsystems
 % In this example, two subsystems are created. The first is a bouncing ball with
 % controlled impulses applied at each bounce. 
 ball_subsys = hybrid.examples.BouncingBallSubsystem();
@@ -328,7 +328,11 @@ sys_bb = CompositeHybridSystem('Ball', ball_subsys, 'Controller', controller_sub
 % (i.e., when it hits the ground).
 
 sys_bb.setJumpInput('Ball',  @( ~, y_controller) y_controller);
-sys_bb.setInput('Controller', @(y_ball,  ~) ball_subsys.jumpSetIndicator(y_ball));
+
+% The controller input is the indicator function for the ball's jump map. 
+% Thus, the input to the controller is 1 if the ball should jump and 0 otherwise.
+controller_fcn = @(y_ball,  ~) ball_subsys.jumpSetIndicator(y_ball);
+sys_bb.setInput('Controller', controller_fcn);
 
 %%
 % Calling |sys_bb| without a semicolon prints useful information for verifying

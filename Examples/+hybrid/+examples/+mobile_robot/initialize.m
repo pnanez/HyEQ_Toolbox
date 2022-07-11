@@ -1,4 +1,4 @@
-% Initialization for Continuous Plant Example
+% Initialization for Continuous-time Plant Example
                                                                 
 % Initial conditions                                                    
 z0 = [0; 0; 0];   

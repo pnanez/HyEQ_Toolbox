@@ -1,5 +1,5 @@
-%% CPS Component: Analog to Digital Converter (ADC)
-% In this example, an analog to digital converter (ADC) is 
+%% CPS Component: Analog-to-Digital Converter (ADC)
+% In this example, an analog-to-digital converter (ADC) is 
 % modeled in Simulink as a hybrid system with an input, where the input
 % is sampled periodically by the ADC.
 %% 
@@ -25,7 +25,7 @@
 
 %% Mathematical Model
 % 
-% The analog to digital converter is modeled as a hybrid system
+% The ADC is modeled as a hybrid system
 % with the following data: 
 % 
 % $$\begin{array}{ll}
@@ -128,7 +128,7 @@ HybridPlotBuilder()...
 
 %% ADC Connected to Bouncing Ball
 % In this section, the interconnection of a bouncing ball system and an
-% analog to digital converter (ADC) is modeled in Simulink. This shows how an
+% ADC is modeled in Simulink. This shows how an
 % ADC block can be used to discretize a hybrid system.
 % 
 % The model of the ADC is the same as above and the model of the bouncing ball

@@ -1,7 +1,9 @@
 %% The Integrator System
 % In this page we discuss the internals of the _Integrator System_: 
 % 
-% <<images/Integrator.png>>
+% <html> 
+% <img src="images/Integrator.png"  style='width: 100%; max-height: 350px; object-fit: contain'> 
+% </html>
 
 %% Continuous Time (CT) Dynamics
 %
@@ -36,7 +38,9 @@
 % indicating whether the state is in those sets or not, 
 % and a random signal with uniform distribution in $[0,1]$. 
 % 
-% <<images/JumpLogic.png>>
+% <html> 
+% <img src="images/JumpLogic.png" style='width: 100%; max-height: 250px; object-fit: contain'> 
+% </html>
 % 
 % The variable _rule_ defines whether the simulator gives priority to jumps, 
 % priority to flows, or no priority. It is initialized in |initialize.m|.
@@ -63,7 +67,9 @@
 % 
 % The _Update Logic_ block is shown here:
 % 
-% <<images/UpdateLogic.png>>
+% <html> 
+% <img src="images/UpdateLogic.png"  style='width: 100%; max-height: 200px; object-fit: contain'> 
+% </html>
 % 
 % The update logic uses the _state port_ information of the integrator. 
 % This port reports the value of the state of the integrator, $[t\ j\ x^\top]^\top$, 
@@ -96,7 +102,9 @@
 % 
 % The _Stop Logic_ block is shown here:
 % 
-% <<images/StopLogic.png>>
+% <html> 
+% <img src="images/StopLogic.png"  style='width: 100%; max-height: 250px; object-fit: contain'> 
+% </html>
 % 
 % It stops the simulation under any of the
 % following events:

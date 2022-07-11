@@ -1,103 +1,183 @@
-%% Creating and Solving Hybrid Systems
-%% How to create a HybridSystem Subclass
+%% Creating and Simulating Hybrid Systems
 % In this tutorial, we show how to create and solve a hybrid system 
-% using the |HybridSystem| class. A basic knowledge of hybrid systems is
-% assumed. For in-depth descriptions of hybrid systems, see [1,2].
-% 
-% Consider a bouncing ball with height $x_1$ and vertical velocity $x_2$. The 
-% ball can be modeled as the following hybrid system:
+% using the |HybridSystem| class. For a brief introduction to see the 
+% <matlab:hybrid.internal.openHelp() main HyEQ Toolbox Help page>.
+% For in-depth descriptions of hybrid systems, see [1, 2].
+
+%% How to create a HybridSystem Subclass 
+% In this page, we will consider, as an example,
+% a bouncing ball with state $x = (x_1, x_2)$ where $x_1$ is the height of the
+% ball and $x_2$ is the vertical velocity. The ball can be modeled as the
+% following hybrid system: 
 %
 % $$ 
 % \left\{\begin{array}{ll}
 %     \left[\begin{array}{c} \dot x_1 \\ \dot x_2 \end{array}\right] 
-%                    = \left[\begin{array}{c} x_2 \\ -g \end{array}\right] 
-%            & x \in C := \{ (x_1, x_2) \in R^2 \mid x_1 \geq 0 \textrm{ or } x_2 \geq 0 \}  \\
+%                    = \left[\begin{array}{c} x_2 \\ -\gamma \end{array}\right] 
+%            & x \in C := \{ (x_1, x_2) \in R^2 \mid x_1 \geq 0 \textrm{ or } x_2 \geq 0 \}  
+%       \\ \\
 %     \left[\begin{array}{c} x_1^+ \\ x_2^+ \end{array}\right]
-%                    = \left[\begin{array}{c} x_1 \\ -\gamma x_2 \end{array}\right]
+%                    = \left[\begin{array}{c} x_1 \\ -\lambda x_2 \end{array}\right]
 %            &x \in D := \{ (x_1, x_2) \in R^2 \mid x_1 \leq 0,\: x_2 \leq 0 \} 
 % \end{array} \right.
 % $$ 
 %
-% where $g >0$ is the acceleration due to gravity and $\gamma > 0$ is the
-% coeffient of restitution when the ball hits the ground.
-% We define a MATLAB implementation of the bouncing ball in 
-% |<matlab:open('hybrid.examples.BouncingBall') hybrid.examples.BouncingBall.m>|:
+% where $\gamma >0$ is the acceleration due to gravity and $\lambda > 0$ is the
+% coefficient of restitution when the ball hits the ground. 
 % 
-% <include>BouncingBall.m</include>
-
-%% 
-% In the first line of file, |"classdef BouncingBall  < 
+% We define a MATLAB implementation of the bouncing ball in 
+% |<matlab:open('hybrid.examples.BouncingBall')
+% hybrid.examples.BouncingBall.m>|. The structure of |BouncingBall.m| is as
+% follows.
+% 
+%   classdef BouncingBall < HybridSystem
+%       % Define bouncing ball system as a subclass of HybridSystem.
+%       properties
+%           % Define variable class properties.
+%           ...
+%       end
+%       properties(SetAccess = immutable)  
+%           % Define constant (i.e., "immutable") class properties.
+%           ...
+%       end
+%       methods 
+%           % Define functions, including definitions of f, g, C, and D.
+%           ...
+%       end
+%   end 
+% 
+% In the first line, |"classdef BouncingBall  < 
 % HybridSystem"| specifies that |BouncingBall| is a
-% subclass of the |HybridSystem| class, 
-% which means it inherits all the methods and properties of that class. Next, 
-% we define several variables in the |properties| block and functions in the |methods| 
-% block. Every subclass of |HybridSystem| must define the |flowMap, jumpMap, flowSetIndicator,| 
-% and |jumpSetIndicator| functions. The indicator functions must return |1| 
+% subclass of the |HybridSystem| class,
+% which means it inherits the attributes of that class.
+% Within MATLAB classes, |properties| blocks define 
+% variables and constants that can be accessed on instances of the class. For
+% |BouncingBall|, there are two |properties| blocks. The first defines variable
+% variables for the system parameters $\gamma$ and $\lambda$.
+% 
+%   classdef BouncingBall < HybridSystem
+%       properties
+%           gamma = 9.8; % Acceleration due to gravity.
+%           lambda = 0.9; % Coefficient of bounce restitution.
+%       end
+%       ...  
+%   end
+% 
+% The second properties block defines constants that cannot be modified. The
+% block attribute |SetAccess = immutable| means that the values cannot be
+% changed once an object is constructed. We define two "index" constants that
+% are useful for referencing components of the state vector |x|. 
+% 
+%   classdef BouncingBall < HybridSystem
+%       ...
+%       properties(SetAccess = immutable) 
+%           % The index of 'height' component within the state vector 'x'. 
+%           height_index = 1;
+%           % The index of 'velocity' component within the state vector 'x'. 
+%           velocity_index = 2;
+%       end
+%       ...
+%   end
+% 
+% For more complicated systems, it is sometimes useful to define constants for a
+% range of indices. For example, if  $u, v \in \mathbf{R}^{4}$ and 
+% 
+% $$x = \left[\begin{array}{c} u, v \end{array}\right],$$
+% 
+% then we could define the following immutable properties:
+% 
+%   v_indices = 1:4;
+%   u_indices = 4 + (1:4); % These parentheses are important!
+% 
+% Then, we can extract |u| and |v| from |x| as 
+% 
+%   v = x(v_indices);
+%   u = x(u_indices);
+% 
+% 
+% Next, in |BouncingBall|, is the |methods| block, which defines functions that
+% can be called on instances of |BouncingBall|. 
+% Every subclass of |HybridSystem| must define the functions
+% |flowMap|, |jumpMap|, |flowSetIndicator|, and |jumpSetIndicator|. 
+% The indicator functions must return |1| 
 % inside their respective sets and |0| otherwise.
+% 
+%   function xdot = flowMap(this, x, t, j)
+%       % Define the flow map f.
+%       % Set xdot to the value of f(x, t, j).
+%       ...
+%   end
+%
+%   function xplus = jumpMap(this, x, t, j)
+%       % Define the jump map g.
+%       % Set xplus to the value of g(x, t, j).
+%       ...
+%   end
+%     
+%   function inC = flowSetIndicator(this, x, t, j)
+%       % Define the flow set C. 
+%       % Set 'inC' to 1 if 'x' is in the flow set C and to 0 otherwise.
+%       ...
+%   end
+% 
+%   function inD = jumpSetIndicator(this, x, t, j)
+%       % Define the flow set C. 
+%       % Set 'inD' to 1 if 'x' is in the jump set D and to 0 otherwise.
+%       ...
+%   end
 % 
 % Notice that the first argument in each function method is |this|, which
 % provides a reference to the object on which the
-% function was called. The object's properties are referenced using |this.gravity| and
-% |this.bounce_coeff|. For more information about writing MATLAB classes, see
+% function was called. 
+% The object's properties are referenced within the methods using 
+% |this.gamma|, |this.lambda|, etc. After the |this| argument, there must be
+% one, two, or three arguments that are either |(x)|, |(x, t)|, or |(x, t, j)|, 
+% as needed.
+% The full class definition of |BouncingBall| is shown next.
+% 
+% <include>BouncingBall.m</include>
+%
+% An instance of the |BouncingBall| class is then created as follows.
+bb_system = hybrid.examples.BouncingBall();
+
+%% 
+% Values of the properties can be modified using dot indexing on the object:
+bb_system.gamma = 3.72;
+bb_system.lambda = 0.8;
+
+%%
+% For more information about writing MATLAB classes, see
 % the
 % <https://www.mathworks.com/help/matlab/matlab_oop/create-a-simple-class.html
 % online MATLAB documentation>.
 
-% Create an instance of the BouncingBall class.
-bb_system = hybrid.examples.BouncingBall();
-%% 
-% Values of the properties can be modified using dot indexing on the object:
-bb_system.gravity = 3.72;
-bb_system.bounce_coeff = 0.8;
-
-%%% Asserting Conditions on Hybrid Systems
-% When implementing a hybrid system, it is helpful to check whether $C$ and 
-% $D$ contain particular points.
-% This is accomplished in |HybridSystem| with four functions: 
-% |assertInC|, |assertInD|, |assertNotInC|, and |assertNotInD|.
-
-x_ball_above_ground = [1; 0];
-x_ball_at_ground    = [0; 0];
-x_ball_below_ground = [-1; -1]; % and moving down
-
-% Above ground.
-bb_system.assertInC(x_ball_above_ground);    
-bb_system.assertNotInD(x_ball_above_ground);
-
-% At ground, stationary.
-bb_system.assertInC(x_ball_at_ground); 
-bb_system.assertInD(x_ball_at_ground);
-
-% Below ground, moving down.
-bb_system.assertNotInC(x_ball_below_ground); 
-bb_system.assertInD(x_ball_below_ground);
-
 %%
-% In addition to checking that a given point is in the desired set, the functions 
-% |assertInC|, |assertInD| check that the flow or jump map, respectively, 
-% can be evaluated at the point and produces a vector with the correct dimensions.
+% WARNING: The functions |flowMap|, |flowSetIndicator|, and |jumpSetIndicator| must be
+% deterministic—each time they are called for a given set of inputs 
+% |(x, t, j)|, they must return the same output values.
+% In other words, |flowMap|, |flowSetIndicator|, and |jumpSetIndicator| must be
+% _functions_ in the mathematical sense. 
+% If they depend on system parameters stored as object properties, then
+% those parameters must be constant during each execution of
+% |HybridSystem.solve| (described below).
+% It is okay to change the system parameters, 
+% in between calls to |solve|, but all values that change during a solution, must be
+% included in the state vector |x|.  
 % 
-% If an assertion fails, as in following code, then an error is thrown and execution 
-% is terminated:
-
-try
-    bb_system.assertInD(x_ball_above_ground) % This fails.
-catch e 
-    fprintf(2,'Error: %s', e.message);
-end
-
-%%
-% WARNING: For any given values |(x, t, j)|, the
-% functions |flowMap|, |jumpMap|, |flowSetIndicator|, and |jumpSetIndicator|
-% must always return the same value each time they are called while computing a
-% solution. Modifying global variables or object properties within
-% |flowMap|, |jumpMap|, etc., will produce unpredictable behavior because the hybrid
-% solver sometimes backtracks in time (e.g., when searching for the time
-% when a jump occurs). Therefore, all values that change during a solution must
-% be included in the state vector |x|.
-% For this reason, we recommend storing each parameter as an
+% The reason for this warning is that modifying system parameters within
+% |flowMap|, |flowSetIndicator|, or |jumpSetIndicator| will produce
+% unpredictable behavior because the hybrid 
+% solver does not move monotonically forward in time;
+% Sometimes, the solver backtracks while computing a solution to $\dot{x} = f(x),$ 
+% such as when searching for the time when $x$ enters $D$ or leaves $C$.
+% The |jumpMap|, on the other hand, can be
+% nondeterministic, such as including random noise, without causing the same
+% sort of problems because the solver never backtracks across a jump.
+%  
+% To protect against accidentally modifying system parameters,
+% each parameter can be stored as an
 % <https://www.mathworks.com/help/matlab/matlab_oop/mutable-and-immutable-properties.html immutable object property> 
-% that is set in the constructor. 
+% that is set when the |HybridSystem| object is constructed. 
 % The value of an immutable property cannot be modified after an object is created.
 % An example of how to implement an immutable property is included here:
 %
@@ -120,11 +200,48 @@ end
 % For more information about immutable properties see the MATLAB documentation
 % <https://www.mathworks.com/help/matlab/matlab_oop/mutable-and-immutable-properties.html here>.
 
+%% Asserting Conditions on Hybrid Systems
+% When implementing a hybrid system, it is helpful to verify 
+% that certain points are or are not in $C$ or in $D.$
+% This is accomplished in |HybridSystem| with four functions: 
+% |assertInC|, |assertInD|, |assertNotInC|, and |assertNotInD|.
+
+% Define some points.
+x_ball_above_ground = [1; 0];
+x_ball_at_ground    = [0; 0]; % and stationary
+x_ball_below_ground = [-1; -1]; % and moving down
+
+% Check the above-ground point.
+bb_system.assertInC(x_ball_above_ground);    
+bb_system.assertNotInD(x_ball_above_ground);
+
+% Check the at-ground point.
+bb_system.assertInC(x_ball_at_ground); 
+bb_system.assertInD(x_ball_at_ground);
+
+% Check the below-ground point.
+bb_system.assertNotInC(x_ball_below_ground); 
+bb_system.assertInD(x_ball_below_ground);
+
+%%
+% In addition to checking that a given point is in the desired set, the functions 
+% |assertInC|, |assertInD| check that the flow or jump map, respectively, 
+% can be evaluated at the point and produces a vector with the correct dimensions.
+% 
+% If an assertion fails, as in following code, then an error is thrown and execution 
+% is terminated (unless caught by a try-catch block):
+
+try
+    bb_system.assertInD(x_ball_above_ground) % This fails.
+catch e 
+    fprintf(2,'Error: %s\n', e.message);
+end
+
 %% Compute Solutions
-% A solution is computed by calling the |solve| function. 
-% The |solve| function returns 
-% a |HybridSolution| object that contains information about the solution (use 
-% the properties |t|, |j,| and |x| to recover the standard output from |HyEQSolver|). 
+% A numerical approximation of a solution to the hybrid system is computed by calling the |solve|
+% function. The |solve| function returns 
+% a |HybridSolution| object that contains information about the (approximate) solution (use 
+% the properties |t|, |j|, and |x| to recover the standard output from |HyEQSolver|). 
 % To compute a solution, pass the initial state and time spans to the 
 % |solve| function (|solve| is defined in the |HybridSystem| class and |bb_system| is a 
 % |HybridSystem| object because |BouncingBall| 
@@ -204,17 +321,18 @@ hpb.color('red').legend('Modified').plotFlows(hybrid_arc)
 % *Example:* Suppose we want to compute the total energy
 % of the bouncing ball: 
 %
-% $$E(x) = gx_1 + \frac{1}{2} x_2^2.$$
+% $$E(x) = \gamma x_1 + \frac{1}{2} x_2^2.$$
 %
 % We can map the |HybridArc| object |sol| to a new |HybridArc| with the
 % |transform| function. (Note that the state dimension before ($n=2$) and after ($n=1$)
 % are not the same.)
 % 
 clf
-energy_fnc = @(x) bb_system.gravity*x(1) + 0.5*x(2)^2;
+energy_fnc = @(x) bb_system.gamma*x(1) + 0.5*x(2)^2;
 plotFlows(sol.transform(energy_fnc))
 title('Total Energy of Bouncing Ball')
-ylabel('E')
+ylabel('Energy')
+
 %%
 % 
 % <html><p id="configuration_options">
@@ -424,7 +542,7 @@ system_inline = HybridSystem(f, g, C, D);
 
 %% References
 % [1] R. Goebel, R. G. Sanfelice, and A. R. Teel, 
-% _Hybrid Dynamical Systems: Modeling, Stability, and Robustness._ 
+% _Hybrid Dynamical Systems: Modeling, Stability, and Robustness_. 
 % Princeton University Press, 2012.
 % 
 % [2] R. G. Sanfelice, _Hybrid Feedback Control._ Princeton University Press, 2021. 

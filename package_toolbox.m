@@ -17,9 +17,10 @@ close all
 
 configure_development_path
 
-do_publish = true;
-do_tests = true;
+do_publish_docs = false;
+do_tests = false;
 do_package = true;
+do_cleanup_path = false;
 
 projectFile = 'HybridEquationsToolbox.prj';
 toolbox_dirs = {'Examples', ...
@@ -46,7 +47,7 @@ else
     nTestsFailed = -1;
 end
 
-if do_publish
+if do_publish_docs
     % Publish help files
 
     cd('doc/src')
@@ -81,10 +82,12 @@ end
 delete(functionSignituresAutocompleteInfoPath_package)
 
 % Cleanup path
-for directory = toolbox_dirs
-    rmpath(directory{1})
+if do_cleanup_path
+    for directory = toolbox_dirs
+        rmpath(directory{1})
+    end
+    rmpath(proj_root)
 end
-rmpath(proj_root)
 
 close all
 fprintf('Packaging complete. ')

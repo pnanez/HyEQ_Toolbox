@@ -1,4 +1,4 @@
-% Initialization script for Continuous plant example.
+% Initialization script for Continuous-time Plant example.
                                                                  
 % Parameters
 b = 2;

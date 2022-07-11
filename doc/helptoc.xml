@@ -2,24 +2,24 @@
 <toc version="2.0">
     <tocitem target="html/TOC.html">Hybrid Equation Toolbox
         <tocitem target="html/TOC_matlab.html">The HyEQ MATLAB Library
-            <tocitem target="html/HybridSystem_demo.html">Creating and Solving Hybrid Systems</tocitem>
+            <tocitem target="html/HybridSystem_demo.html">Creating and Simulating Hybrid Systems</tocitem>
             <tocitem target="html/HybridPlotBuilder_demo.html">Plotting Hybrid Arcs</tocitem>
-            <tocitem target="html/CompositeHybridSystem_demo.html">Composition of Hybrid Subsystems</tocitem>
-            <tocitem target="html/ConvertingLegacyCodeToVersion3_demo.html">Update Code Designed for v2.04 to Use v3.0 Features.</tocitem>
+            <tocitem target="html/CompositeHybridSystem_demo.html">Composite Hybrid Subsystems</tocitem>
+            <tocitem target="html/ConvertingLegacyCodeToVersion3_demo.html">Updating Code Designed for v2.04 to Use v3.0 Features.</tocitem>
         </tocitem>
         <tocitem target="html/TOC_simulink.html">The HyEQ Simulink Library
             <tocitem target="html/Help_SimulinkLibrary.html">Introduction to Simulink-based Solver</tocitem>
             <tocitem target="html/Help_bouncing_ball.html">Example Using External Functions</tocitem>
             <tocitem target="html/Help_bouncing_ball_with_input.html">Example Using Embedded Functions</tocitem>
-            <tocitem target="html/Help_coupled_subsystems.html">Composition of Multiple Hybrid Subsystems</tocitem>
-            <tocitem target="html/Help_behavior_in_C_intersection_D.html">Jump/Flow Behavior in the Intersection of C and D</tocitem>
+            <tocitem target="html/Help_coupled_subsystems.html">Composing Multiple Hybrid Subsystems</tocitem>
+            <tocitem target="html/Help_behavior_in_C_intersection_D.html">Behavior in the Intersection of C and D</tocitem>
             <tocitem target="html/Help_integrator_system.html">The Integrator System</tocitem>
         </tocitem>
         <tocitem target="html/TOC_cps.html">CPS Components
             <tocitem target="html/CPS_Components.html">Intro to CPS Simulink blocks</tocitem>
-            <tocitem target="html/CPS_continuous_plant.html">Continuous Plant</tocitem>
-            <tocitem target="html/CPS_zero_order_hold.html">Zero Order Hold</tocitem>
-            <tocitem target="html/CPS_analog_to_digital_converter.html">Analog to Digital Converter</tocitem>
+            <tocitem target="html/CPS_continuous_plant.html">Continuous-time Plant</tocitem>
+            <tocitem target="html/CPS_zero_order_hold.html">Zero-Order Hold</tocitem>
+            <tocitem target="html/CPS_analog_to_digital_converter.html">Analog-to-Digital Converter</tocitem>
             <tocitem target="html/CPS_finite_state_machine.html">Finite State Machine</tocitem>
         </tocitem>
         <tocitem target="html/TOC_examples.html">Applications

@@ -123,6 +123,7 @@ warning('off','Simulink:Commands:LoadingOlderModel')
 model_path = 'hybrid.examples.bouncing_ball_with_input.ball_with_input2';
 load_system(which(model_path))
 open_system('ball_with_input2/HS')
+open_system('ball_with_input2/HS/flow map f')
 snapnow();
 
 %% Example Output

@@ -1,4 +1,4 @@
-%% Jump/Flow Behavior in the Intersection of C and D
+%% Behavior in the Intersection of C and D
 % This example demonstrates how to define the behavior of simulations in the
 % intersection of the flow and jump sets.
 

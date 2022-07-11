@@ -1,12 +1,8 @@
 # Hybrid Equations Toolbox
 The Hybrid Equations (HyEQ) Toolbox is implemented in MATLAB and Simulink for the simulation of hybrid dynamical systems. This toolbox is capable of simulating individual and interconnected hybrid systems with inputs. Examples of systems that can be simulated include a bouncing ball on a moving platform, fireflies synchronizing their flashing, and more. The Toolbox is comprised of two parts: a Simulink-based simulator and one that runs purely in MATLAB, without Simulink.
 
-The Simulink implementation includes four basic blocks that define the dynamics of a hybrid system. These include a flow map, flow set, jump map, and jump set. The flows and jumps of the system are computed by the integrator system which is comprised of blocks that compute the continuous dynamics of the hybrid system, trigger jumps, update the state of the system and simulation time at jumps, and stop the simulation. 
-
-The MATLAB-based simulator allows for faster simulation without using Simulink.
-
 ## How to Uninstall Version 2.04. 
-Before intalling version 3.0 of the HyEQ Toolbox, it is necessary to uninstall prior versions. The process for uninstalling v2.0 is described below. The process for earlier versions is similar. Once version 3.0 or later is installed, it is not necessary to uninstall the toolbox before updating to another version.
+Before installing version 3.0 of the HyEQ Toolbox, it is necessary to uninstall prior versions. The process for uninstalling v2.0 is described below. The process for earlier versions is similar. Once version 3.0 or later is installed, it is not necessary to manually uninstall the toolbox before updating to another version.
 
 1. Open Matlab.
 2. Go to the HyEQ Toolbox folder. 
@@ -17,9 +13,9 @@ Before intalling version 3.0 of the HyEQ Toolbox, it is necessary to uninstall p
 4. Restart Matlab.
 5. Check that the HyEQ Toolbox is uninstalled by running `which('HyEQsolver')`. The output should be `'HyEQsolver' not found.`
 
-## How to Install the Toolbox
+## How to Install the Toolbox v3.0
 
-In order to install the HyEQ Toolbox, MATLAB R2014b or newer is required.
+In order to install the HyEQ Toolbox v3.0, MATLAB R2014b or newer is required.
 
 ### On MATLAB R2016a and later
 The HyEQ Toolbox can be installed through the MATLAB Add-on Manager.
@@ -61,10 +57,10 @@ The MATLAB Add-on Manager is not supported on versions of MATLAB before MATLAB R
 To access the HyEQ Toolbox documentation, open MATLAB Help (F1) and navigate to Supplemental Software>Hybrid Equations Toolbox.
 
 Software downloads:
-[UCSC Hybrid Systems Laboratory - Old versions of the toolbox](https://hybrid.soe.ucsc.edu/software)
-[MATLAB File exchange](http://www.mathworks.com/matlabcentral/fileexchange/41372-hybrid-equations-toolbox-v2-02)
-[Manual](https://hybrid.soe.ucsc.edu/biblio/2014/hybrid-equations-hyeq-toolbox)
-[Examples](http://hybridsimulator.wordpress.com/)
+* [UCSC Hybrid Systems Laboratory - Old versions of the toolbox](https://hybrid.soe.ucsc.edu/software)
+* [MATLAB File exchange](http://www.mathworks.com/matlabcentral/fileexchange/41372-hybrid-equations-toolbox-v2-02)
+* [Manual](https://hybrid.soe.ucsc.edu/biblio/2014/hybrid-equations-hyeq-toolbox)
+* [Examples](http://hybridsimulator.wordpress.com/)
 
 # Contributing
 
@@ -104,3 +100,13 @@ and select "Open As Text".
 3. In `HybridEquationsToolbox.prj`, increment the `<param.version>` as desired and save.
 4. Run 'package_toolbox' in the MATLAB command line to generate a `.mltbx`. This
 file can then be uploaded to the MATLAB File Exchange. 
+
+## Editing Documentation
+We use MATLAB [Publish](https://www.mathworks.com/help/matlab/matlab_prog/publishing-matlab-code.html) to generate HTML documentation pages from the `.m` files contained in `doc/`.
+
+TeX equations can be included using ``$$...$$`` delimiters, but the available macros are limited. Use the following replacements:
+Make the following replacements: 
+* `\mathbb` with `\mathbf` 
+* `\Re` and `\reals` with `\mathbf{R}`
+* `\begin{eqarray} . . .\end{eqarray}` with `\begin{array}{<column options>} . . . \end{array}` (make sure you have the right number of columns in <column options> (e.g., `cc` or `ll` if there are two columns).
+* `\text` with `\textrm`
