@@ -1,23 +1,15 @@
 classdef BouncingBallWithRandomPenetration < HybridSystem
     
-    properties 
-       getRandT
-       bb_sys = ExampleBouncingBallHybridSystem();
+    properties
+       bb_sys = hybrid.examples.BouncingBall();
+       rand_times = []
     end
     
     methods 
-        
-        function obj = BouncingBallWithRandomPenetration()
-            rand_times = {};
-            function T = getRandT(j)
-                if length(rand_times) < j || isempty(rand_times{j})
-                    rand_times{j} = rand(1);
-                end
-                T = rand_times{j};
-            end
-            obj.getRandT = @getRandT;
-        end
-        
+%         
+%         function obj = BouncingBallWithRandomPenetration()
+%         end
+%         
         function xdot = flowMap(this, x, t, j)  %#ok<*INUSD> (Surpress warnings in this file)
             C = 1; %% this.bb_sys.flowSetIndicator(x);
             D = this.bb_sys.jumpSetIndicator(x);
@@ -31,12 +23,21 @@ classdef BouncingBallWithRandomPenetration < HybridSystem
 
         function C = flowSetIndicator(this, x, t, j) 
             tau = x(3);
-            C = tau <= this.getRandT(j);
+            C = tau <= this.rand_times(j);
         end
         
         function D = jumpSetIndicator(this, x, t, j)
             tau = x(3);
-            D = tau >= this.getRandT(j);            
+            D = tau >= this.rand_times(j);            
+        end
+
+        function sol = solve(this, x0, tspan, jspan, varargin)
+            if numel(jspan) ~= 1
+                assert(jspan(1) == 1, 'j must start at 1 for this class.')
+            end
+            x0 = [x0; 0]; % Append timer variable.
+            this.rand_times = 0.4*rand(jspan(end) + 1);
+            sol = this.solve@HybridSystem(x0, tspan, jspan, varargin{:});
         end
     end
     
