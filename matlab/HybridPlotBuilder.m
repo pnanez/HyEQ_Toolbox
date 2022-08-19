@@ -1235,7 +1235,7 @@ function linkTimeAxes(plot_data_array, axes_array)
     if is2D
         % Link the x-axes of the subplots so zooming and panning
         % one subplot effects the others.
-        @() linkaxes(axes_array,'x')
+        @() linkaxes(axes_array,'x');
     else
         % Link the subplot axes so that the views are sync'ed.
         link = linkprop(axes_array, {'View', 'XLim', 'YLim'});
@@ -1257,8 +1257,9 @@ end
 
 function removeNonintegerTicks(ruler,~)
 % For the given ruler, delete all ticks that are at noninteger values.
+% This function is used as a callback for when the ruler limits change.
 
-    % Make ruler value mode automatic, momentarily, (if it isn't already) 
+    % Make ruler value mode 'auto', momentarily, (if it isn't already) 
     % so that the location of the tick marks are recomputed.
     ruler.TickValuesMode = 'auto';
     
