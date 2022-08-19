@@ -947,8 +947,13 @@ classdef HybridPlotBuilder < handle
                         this.settings.plot_function_2D(axes_array(i_sp), nan, nan);
                     end
                     hold on
-                    fh = @() hold(axes_array(i_sp), hold_status_before);
-                    restore_hold_on_cleanup(i_sp) = onCleanup(fh); %#ok<AGROW>
+
+                    % Reset the 'hold' status from before the start of this function.
+                    % It's possible that the axes were closed already, so we use
+                    % safeCallback to ensure that this doesn't cause any errors.
+                    reset_hold_fh = @() hold(axes_array(i_sp), hold_status_before);
+                    safe_reset_hold_fh = @() safeCallback(axes_array(i_sp), reset_hold_fh);                                                           
+                    restore_hold_on_cleanup(i_sp) = onCleanup(safe_reset_hold_fh); %#ok<AGROW>
                 end
             end
 
@@ -978,7 +983,6 @@ classdef HybridPlotBuilder < handle
                         this.plotFlow3D(axes, flows_x, plt_data.flow_args)
                         this.plotJump3D(axes, jumps_x, jumps_befores, jumps_afters, plt_data.jump_args)
                         view(axes, 34.8,16.8)
-
                     otherwise
                         error('plot_values must have 2 or 3 components.')
                 end
@@ -1038,16 +1042,7 @@ classdef HybridPlotBuilder < handle
                     error('No data to plot. This might be caused because the hybrid arc has dimension zero.')
                 end
 
-                is2D = size(plot_data_array(1).plot_values, 2) == 2;
-                if is2D
-                    % Link the x-axes of the subplots so zooming and panning
-                    % one subplot effects the others.
-                    linkaxes(axes_array,'x')
-                else
-                    % Link the subplot axes so that the views are sync'ed.
-                    link = linkprop(axes_array, {'View', 'XLim', 'YLim'});
-                    setappdata(gcf, 'StoreTheLink', link);
-                end
+                safeCallback(axes_array, @() linkTimeAxes(plot_data_array, axes_array))
             end
         end
        
@@ -1215,6 +1210,39 @@ function on_off = logical2on_off(b)
     end
 end
 
+function safeCallback(required_axes_handles, callback)
+% Check that 'required_handles' all still exist. If they do, 
+% run the callback. Otherwise, print an warning.
+    try
+        if all(isvalid(required_axes_handles))
+            callback();
+        end
+    catch e
+        id = e.identifier;
+        if strcmp(id,'MATLAB:class:InvalidHandle') ...
+            || strcmp(id, 'MATLAB:graphics:proplink')
+            % Don't bother warning. The figure was (probably) closed by the user.
+        else
+            rethrow(e)
+        end
+    end
+end
+
+function linkTimeAxes(plot_data_array, axes_array) 
+% Link the x- and possibly y-axes of each subplot together so that all of the
+% subplots move when any one of them pans or zooms.
+    is2D = size(plot_data_array(1).plot_values, 2) == 2;
+    if is2D
+        % Link the x-axes of the subplots so zooming and panning
+        % one subplot effects the others.
+        @() linkaxes(axes_array,'x')
+    else
+        % Link the subplot axes so that the views are sync'ed.
+        link = linkprop(axes_array, {'View', 'XLim', 'YLim'});
+        setappdata(gcf, 'StoreTheLink', link);
+    end
+end
+
 function enableRemoveNonIntegerTicksCallback(ax, axis_name)
     ruler = get(ax, axis_name);
     if ischar(ruler) || ~isprop(ruler, 'LimitsChangedFcn') || ~isprop(ruler, 'TickValues')
@@ -1228,8 +1256,9 @@ function enableRemoveNonIntegerTicksCallback(ax, axis_name)
 end
 
 function removeNonintegerTicks(ruler,~)
+% For the given ruler, delete all ticks that are at noninteger values.
 
-    % Make ruler value mode automatic, momentaryily, (if it isn't already) 
+    % Make ruler value mode automatic, momentarily, (if it isn't already) 
     % so that the location of the tick marks are recomputed.
     ruler.TickValuesMode = 'auto';
     
