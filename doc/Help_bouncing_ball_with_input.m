@@ -4,7 +4,7 @@
 % determines the height of the platform.
 
 %% 
-% The files for this example are found in the package
+% The files for this example are found in the <matlab:hybrid.internal.openHelp('MATLAB_packages') package>
 % |hybrid.examples.bouncing_ball_with_input|:
 % 
 % * <matlab:open('hybrid.examples.bouncing_ball_with_input.initialize') initialize.m> 
@@ -123,7 +123,6 @@ warning('off','Simulink:Commands:LoadingOlderModel')
 model_path = 'hybrid.examples.bouncing_ball_with_input.ball_with_input2';
 load_system(which(model_path))
 open_system('ball_with_input2/HS')
-open_system('ball_with_input2/HS/flow map f')
 snapnow();
 
 %% Example Output

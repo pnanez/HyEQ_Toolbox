@@ -3,7 +3,7 @@
 % as a pair of interconnected hybrid systems with inputs.  
  
 %% 
-% The files for this example are found in the package
+% The files for this example are found in the <matlab:hybrid.internal.openHelp('MATLAB_packages') package>
 % |hybrid.examples.coupled_subsystems|:
 % 
 % * <matlab:open('hybrid.examples.coupled_subsystems.initialize') initialize.m> 

@@ -1,6 +1,8 @@
 %% Creating and Simulating Multiple Interlinked Hybrid Systems
+% In this document, we demonstrate how to simulate multiple interlinked hybrid systems
+% using the <matlab:doc('CompositeHybridSystem') |CompositeHybridSystem|> class. 
+
 %% Mathematical Formulation
-% In this document, we demonstrate how to simulate multiple interlinked hybrid systems. 
 % Consider the controlled hybrid systems $\mathcal H_1$ and $\mathcal H_2$ with 
 % data $(f_1, g_1, C_1, D_1)$ and $(f_2, g_2, C_2, D_2)$ and state spaces 
 % $\mathcal X_1$ and $\mathcal X_2.$ Let $x_1 \in \mathcal X_1$ and $x_2 \in \mathcal X_2.$
@@ -86,7 +88,7 @@
 %       j_2 + 1 \end{array}\right].$$
 % 
 
-%% Implementation Introduction
+%% Outline of How To Create a Composite System
 % To implement a composite hyrbid system, we use the 
 % |CompositeHybridSystem| and |HybridSubsytem| classes. Each
 % |CompositeHybridSystem| contains one or more |HybridSubsystem| objects.
@@ -120,21 +122,21 @@
 % |hybrid.subsystems| package. 
 help hybrid.subsystems
 
+%%
+% See <matlab:hybrid.internal.openHelp('MATLAB_packages') here> for details 
+% regarding namespace packages. 
+
 %% 
-% Referencing a class from the hybrid.subsystems package requires 
-% the full package path to each class. 
-% For example, to use |ZeroOrderHold|, 
-% it must be referenced as |hybrid.subsystems.ZeroOrderHold|. 
-% The package path can be omitted
-% if the package is first imported by calling 
-% 
-%   import hybrid.subsystems.*
-% 
-% For clarity, however, we use the explicit package path for classes throughout
-% this document. 
-%
-% We will look at |hybrid.subsystem.BouncingBallSubsystem| as an example of how
-% to implement a |HybridSubsystem|. Mathematically, we write the hybrid subsystem as
+% We will look at 
+% <matlab:open('hybrid.examples.BouncingBallSubsystem') 
+% |hybrid.examples.BouncingBallSubsystem|> as an example of how
+% to implement a |HybridSubsystem|. 
+% A script for running this example is provided at
+% <matlab:open('hybrid.examples.run_bouncing_ball_with_input')
+% |hybrid.examples.run_bouncing_ball_with_input|> (the prefix |hybrid.examples.| indicates the 
+% <matlab:hybrid.internal.openHelp('MATLAB_packages') package namespace> that 
+% contains |BouncingBallSubsystem.m| and |run_bouncing_ball_with_input.m|).
+% Mathematically, we write the hybrid subsystem as
 % 
 % $$ \mathcal{H}_{\mathrm{BB}}:\left\{\begin{array}{ll} 
 %    \dot{x} = f_{\mathrm{BB}}(x) := \left[\matrix{x_2 \\ -\gamma}\right]
@@ -172,7 +174,7 @@ help hybrid.subsystems
 % In order for the solver to determine the order to evaluate input and outputs,
 % the |u| input argument must be omitted or replaced with |'~'| if it is unused.
 
-%% Defining HybridSubsystems in-line
+%% Defining HybridSubsystems In-Line
 % As an alternative to writing new |HybridSubsystem| subclasses, the
 % |HybridSubsystemBuilder| class can be used to create |HyrbidSubsystems|
 % in-line (see |doc HybridSubsystemBuilder| for details).
@@ -217,7 +219,10 @@ target_period = 2.0;
 p_ndx = 1;
 tau_ndx = 2;
 
-% At each jump, the controller updates first component based on whether the
+% During flows, p is constant and tau increases at a constant rate.
+f = @(x) [0; 1]; % pdot = 0, taudot = 1.
+
+% At each jump, the controller updates the first component based on whether the
 % timer was more or less than the target period.
 g = @(x, u) [max(0, x(p_ndx) + target_period-x(tau_ndx)); 0];
 
@@ -225,7 +230,7 @@ controller_subsys = HybridSubsystemBuilder()...
                     .stateDimension(2)... % state: p and \tau
                     .inputDimension(1)... % input: u=1 if ball should bounce and 0 otherwise.
                     .outputDimension(1)... % output: impulse p
-                    .flowMap(@(x) [0; 1])... % udot = 0, taudot = 1.
+                    .flowMap(f)... 
                     .jumpMap(g)...
                     .flowSetIndicator(@(x) 1)...
                     .jumpSetIndicator(@(~, u) u)... % 'u' will be 1 when the ball bounces.
@@ -322,15 +327,16 @@ sys_bb = CompositeHybridSystem('Ball', ball_subsys, 'Controller', controller_sub
 % etc.) should be omitted or replaced with |'~'| so that the solver can
 % determine which order to evaluate the input and output functions.
 % 
-% For our example, we set the jump input for the ball to be the output of the
-% controller. The input for the controller is set to be the output of
-% |jumpSetIndicator| so that the controller knows when the ball is in its jump set
-% (i.e., when it hits the ground).
+% For our example, we set the jump input for the ball such that the output of the
+% controller is passed as the input to the ball.
 
 sys_bb.setJumpInput('Ball',  @( ~, y_controller) y_controller);
 
-% The controller input is the indicator function for the ball's jump map. 
+%%
+% The input for the controller is set such that the output of the ball's
+% |jumpSetIndicator| is passed to the input of the controller. 
 % Thus, the input to the controller is 1 if the ball should jump and 0 otherwise.
+% This allows the controller to know when the ball hits the ground.
 controller_fcn = @(y_ball,  ~) ball_subsys.jumpSetIndicator(y_ball);
 sys_bb.setInput('Controller', controller_fcn);
 
@@ -343,7 +349,8 @@ sys_bb
 % To compute a solution, we call |solve| on the system, similar to a
 % standard |HybridSystem| except that the first argument is a cell array 
 % that contains the initial states of each subsystem (rather than passing the
-% entire composite state |[x_1; x_2; ... x_N]|). Internally, the solve function
+% entire composite state |[x_1; x_2; ... x_N, j_1, j_2, ..., j_N]|). 
+% Internally, the solve function
 % handles the necessary concatenation of the states and appends the discrete
 % time variables |j1| and |j2|. 
 x_ball_initial = [1;  0];
@@ -368,7 +375,7 @@ sol_bb = sys_bb.solve(x0_cell, tspan, jspan)
 % Plotting |sol|, we see all of the states of the composite system.
 hpb = HybridPlotBuilder().subplots('on')...
     .labels('$h$', '$v$', '$u$', '$\tau$', '$j_1$', '$j_2$')...
-    .titles('Ball Subsystems', '', 'Controller Subsystem', '', 'Discrete Times');
+    .titles('Ball Subsystem', '', 'Controller Subsystem', '', 'Discrete Times');
 hpb.slice(1:2).plotFlows(sol_bb); 
 snapnow() % Show current figure in document.
 hpb.slice(3:4).plotFlows(sol_bb);
@@ -429,7 +436,7 @@ hpb.jumpMarker('*').jumpColor('r').flowColor('none')...
     .filter(sol_bb.is_jump_start)...
     .legend({'$u_D$'}, 'location', 'northeast')...
     .plotFlows(sol_bb, sol_bb('Ball').u)
-title('Input')
+title('Plant Input')
 ylim('padded')
 
 % Plot Output Signal
@@ -437,66 +444,7 @@ subplot(2, 1, 2)
 HybridPlotBuilder().color('matlab')...
     .legend({'$h$', '$v$'}, 'location', 'southeast')...
     .plotFlows(sol_bb, sol_bb('Ball').y)
-title('Output')
-
-%% Example: Zero-order Hold
-% In the following example we create a composite system that consists of three 
-% subsystems: a linear time-invariant plant, a controller, and a zero-order hold. 
-% Each subsystem is a subclass of |HybridSubsystem|. 
-% First, create the linear time-invariant plant, using the
-% class |hybrid.subsystems.LinearContinuousSubsystem|. 
-
-A_c = [0, 1; -1, 0];
-B_c = [0; 1];
-plant_zoh = hybrid.subsystems.LinearContinuousSubsystem(A_c, B_c);
-     
-%% 
-% Create a linear feedback for the plant that asymptotically stabilizes the
-% origin of the closed loop system. The controller is a
-% |hybrid.subsystems.MemorylessSubsystem| because it has no internal state
-% values.
-K = [0, -2];
-controller_zoh = hybrid.subsystems.MemorylessSubsystem(2, 1, @(x, u) K*u);
-
-%% 
-% Next, we create a zero-order hold subsystem from the
-% |hybrid.subsystems.ZeroOrderHold| class.
-zoh_dim = plant_zoh.input_dimension;
-sample_time = 0.3;
-zoh = hybrid.subsystems.ZeroOrderHold(zoh_dim, sample_time);
-
-%% 
-% The composite hybrid system is created by passing the plant, controller,
-% and ZOH subsystems to the |CompositeHybridSystem| constructor.
-sys_zoh = CompositeHybridSystem(plant_zoh, controller_zoh, zoh);
-
-%%
-% Set the inputs functions for each subsystem.
-sys_zoh.setInput(plant_zoh, @(~, ~, y_zoh) y_zoh);
-sys_zoh.setInput(controller_zoh, @(y_plant, ~, ~) y_plant);
-sys_zoh.setInput(zoh, @(~, y_controller, ~) y_controller);
-
-%% 
-% Print the system to check that everything is connected as expected.
-sys_zoh
-
-%% 
-% Finally, simulate and plot.
-sol_zoh = sys_zoh.solve({[10; 0], [], [0; zoh.sample_time]}, [0, 10], [0, 100]);
-HybridPlotBuilder().subplots('on')...
-    .slice(1:3).labels('$x_1$', '$x_2$', '$u_{ZOH}$')...
-    .plotFlows(sol_zoh)
-
-%% 
-% The subsystem solutions can also be plotted in isolation.
-HybridPlotBuilder().subplots('on')...
-    .title('Trajectory of Plant State')...
-    .plotPhase(sol_zoh(plant_zoh))
-axis equal
-axis padded
-grid on
-set(gca(), 'XAxisLocation', 'origin'); 
-set(gca(), 'YAxisLocation', 'origin');
+title('Plant Output')
 
 %% Example: Single Subsystem
 % The |CompositeHybridSystem| class can also be used with a single subsystem
@@ -506,73 +454,3 @@ sys_1 = CompositeHybridSystem(ball_subsys);
 sys_1.setFlowInput(1, @(y1, t, j) -5);   
 sys_1.setJumpInput(1, @(y1, t, j) 0);   
 sol_1 = sys_1.solve({x_ball_initial}, tspan, jspan);
-
-%% Example: Switched System
-% We create a composite system that consists of a plant, two controllers, and a
-% switch that toggles between the controllers based on some criteria. 
-A = [0, 1; 0, 0];
-B = [0; 1];
-K0 = [-1, -1];
-K1 = [ 2, -1];
-input_dim = 1;
-plant_switched = hybrid.subsystems.LinearContinuousSubsystem(A, B);
-controller_0 = hybrid.subsystems.MemorylessSubsystem(2, 1, @(~, z_plant) K0*z_plant);
-controller_1 = hybrid.subsystems.MemorylessSubsystem(2, 1, @(~, z_plant) K1*z_plant);
-switcher = hybrid.subsystems.SwitchSubsystem(input_dim);
-sys_switched = CompositeHybridSystem('plant', plant_switched, ...
-                                     'kappa0', controller_0, ...
-                                     'kappa1', controller_1, ...
-                                     'switcher', switcher);
-
-%% 
-% The full state vector is passed as input to the controllers. We can ommit the
-% '~'s from the argument list since we only use the first argument is used. 
-sys_switched.setInput(controller_0, @(z_plant, ~, ~, ~) z_plant);  % '~'s included 
-sys_switched.setInput(controller_1, @(z_plant) z_plant); % '~'s omitted
-
-%%
-% The current choice of controller is stored as state variable |q|
-% in |switcher|, where |controller_0| is passed through as the output of
-% |switcher| whenever |q = 0| and |controller_1| is passed through when |q = 1|.
-% The plant state |z_plant| and output of the controllers, named |u0| and |u1|,
-% are passed to the switcher. The |SwitchSubsystem| class provides a |wrapInput|
-% method that handles the creation of the input vector from the given values. 
-% The third argument to |wrapInput| is the criteria for switching to 
-% to |q = 0| and the fourth argument is the criteria for switching to
-% |q = 1|. If 
-% # |q=0| and the third argument of |wrapInput| is zero, 
-% # |q=1| and fourth argument of |wrapInput| is zero, or 
-% # the third and fourth arguments of |wrapInput| are zero, 
-% then |q| is held constant.
-sys_switched.setInput(switcher, @(z_plant, u0, u1) ...
-                        switcher.wrapInput(u0, u1, norm(z_plant) >= 3, norm(z_plant) <= 1));
-                    
-%% 
-% The output of the switch is passed to the plant.
-sys_switched.setInput(plant_switched, @(~, ~, ~, u_switched) u_switched);
-
-%%
-% Compute a solution. Note that the MemorylessSubsystems have no state, so empty
-% arrays are given in |x0| for the corresponding subsystems.
-x0 = {[10; 0], [], [], 1};
-sol_switched = sys_switched.solve(x0, [0, 100], [0, 100]);
-
-%% 
-% Plot the solution, using different colors when $q=0$ and $q=1$.
-clf  
-hold on
-q = sol_switched('switcher').x;
-HybridPlotBuilder().jumpMarker('none')...
-    .filter(q == 0)...
-    .legend('$q = 0$')...
-    .plotPhase(sol_switched('plant'))...
-    .filter(q == 1)...
-    .legend('$q = 1$')...
-    .flowColor('green')...
-    .plotPhase(sol_switched('plant'));
-
-% Configure plot appearance
-axis equal
-axis padded
-set(gca(), 'XAxisLocation', 'origin'); 
-set(gca(), 'YAxisLocation', 'origin');

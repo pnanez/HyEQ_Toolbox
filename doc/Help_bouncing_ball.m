@@ -1,7 +1,7 @@
 %% Example Hybrid System with External Functions (Bouncing Ball)
 % In this example, a bouncing ball is modeled in Simulink as a hybrid system.
 %% 
-% The files for this example are found in the package
+% The files for this example are found in the <matlab:hybrid.internal.openHelp('MATLAB_packages') package>
 % |hybrid.examples.bouncing_ball|:
 % 
 % * <matlab:open('hybrid.examples.bouncing_ball.initialize') |initialize.m|> 

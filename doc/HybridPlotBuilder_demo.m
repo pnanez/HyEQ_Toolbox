@@ -107,6 +107,7 @@ HybridPlotBuilder().slice([2,1]).plotPhase(sol_3D);
 height = sol.x(:, 1); % Extract height component
 HybridPlotBuilder().plotFlows(sol, -height) % Plot negative height
 title('Negative Height')
+ylabel('$x_1$')
 
 %% 
 % Alternatively, a function handle can be evaluated along the solution and plotted
@@ -119,6 +120,7 @@ title('Negative Height')
 g = system.gamma; % gravity
 HybridPlotBuilder().plotFlows(sol, @(x) g*x(1) + 0.5*x(2)^2); 
 title('Total Energy')
+ylabel('$E$')
 
 %% 
 % The function handle passed to plotting function must have the input arguments 
@@ -162,7 +164,7 @@ HybridPlotBuilder().slice(2)...
     .jumpLineStyle('none')...
     .plotFlows(sol)
 title('Start of Each Jump') % An alternative way to add titles is shown below.
-
+ylabel('$x_2$')
 %%
 % Sequences of colors can be set by passing a cell array to
 % the color functions. When auto-subplots are off, the color
@@ -356,6 +358,7 @@ HybridPlotBuilder()...
     .titles(titles)...
     .slice(2)...
     .plotFlows(sol_3D);
+ylim([-1.1, 1.1])
 
 %%
 % The above method applies the same settings to the legends in all subplots. 

@@ -1,4 +1,14 @@
 function [nFailed, nIncomplete] = run(filter)
+% Run the tests in the HyEQ Toolbox. 
+% 
+% The tests that are run can be filtered by passing an optional string input
+% argument. The options for the input are listed here: 
+% *       'all': Run all tests (default).
+% * 'essential': then several slow tests are skipped that are only important during development.
+% *      'fast': then all slow tests are skipped. This includes tests of
+%                HybridPlotBuilder, which is included in the 'essential' tests.
+% 
+% Some tests are skipped automatically on older versions of MATLAB.
 
 if ~exist('filter', 'var') || strcmpi(filter, 'all')
     test_packages = {'hybrid.tests', 'hybrid.tests.slow_essential', 'hybrid.tests.slow_dev_only'};

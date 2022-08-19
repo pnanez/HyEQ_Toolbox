@@ -4,7 +4,7 @@
 % modeled in Simulink as a hybrid system.
 
 %% 
-% The files for this example are found in the package
+% The files for this example are found in the <matlab:hybrid.internal.openHelp('MATLAB_packages') package>
 % |hybrid.examples.network_estimation|:
 % 
 % * <matlab:open('hybrid.examples.network_estimation.initialize') initialize.m> 

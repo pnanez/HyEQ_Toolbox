@@ -2,7 +2,7 @@
 % In this example, a continuous-time plant is controlled by a digital controller using
 % sample-and-hold digital-to-analog converter.
 %% 
-% The files for this example are found in the package
+% The files for this example are found in the <matlab:hybrid.internal.openHelp('MATLAB_packages') package>
 % |hybrid.examples.zoh_feedback_control|:
 % 
 % * <matlab:open('hybrid.examples.zoh_feedback_control.initialize') initialize.m> 

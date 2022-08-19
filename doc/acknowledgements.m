@@ -30,6 +30,7 @@
 %
 % For proofreading the documentation:
 % 
+% * Ricardo Sanfelice - University of California, Santa Cruz
 % * Ryan Johnson - University of California, Santa Cruz
 % * Adeel Akhtar - University of California, Santa Cruz
 % * Kunal Garg  - University of California, Santa Cruz

@@ -3,7 +3,7 @@
 % a path. 
 
 %% 
-% The files for this example are found in the package
+% The files for this example are found in the <matlab:hybrid.internal.openHelp('MATLAB_packages') package>
 % |hybrid.examples.vehicle_on_constrained_path|:
 % 
 % * <matlab:open('hybrid.examples.vehicle_on_constrained_path.initialize') initialize.m> 
