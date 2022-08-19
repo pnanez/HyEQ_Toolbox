@@ -408,7 +408,8 @@ classdef PlotSettings < matlab.mixin.Copyable
     
     methods 
         function value = getTLabel(this)
-            if ~isempty(this.t_label)
+            % t_label is cast to char on creation if it is a string.
+            if ischar(this.t_label) 
                 value = this.t_label;
                 return
             end
@@ -427,7 +428,7 @@ classdef PlotSettings < matlab.mixin.Copyable
         end
         
         function value = getJLabel(this)
-            if ~isempty(this.j_label)
+            if ischar(this.j_label)
                 value = this.j_label;
                 return
             end
@@ -689,7 +690,7 @@ function color = checkColorArg(color)
 end
 
 function s = char_or_empty(s)
-    if isempty(s)
+    if isempty(s) && ~ischar(s)
         s = [];
     else
         assert_ischar_or_isstring(s);
