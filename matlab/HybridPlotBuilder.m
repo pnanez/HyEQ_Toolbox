@@ -129,7 +129,7 @@ classdef HybridPlotBuilder < handle
             %
             % See also: labelInterpreter, labelSize, titleSize.
             if verLessThan('matlab', '8.5')
-                warning('Setting the ''tickLabelInterpreter'' with this function is not supported on R2014b.')
+                warning('Setting the ''tickLabelSize'' with this function is not supported on R2014b.')
             end
 
             this.settings.tick_label_size = size;
@@ -716,10 +716,9 @@ classdef HybridPlotBuilder < handle
             % 
             % See also: plotJumps, plotHybrid, plotPhase,
             % HybridSolution.evaluateFunction.
-            import hybrid.internal.*;
-            [hybrid_sol, x_label_ndxs, x_values_ndxs] ...
-                = convert_varargin_to_solution_obj(varargin, this.settings.component_indices);
-            plot_data = this.createPlotDataArray(hybrid_sol, x_label_ndxs, x_values_ndxs, {'t', 'x'});
+            [hybrid_sol, x_label_ndxs] ...
+                = hybrid.internal.convert_varargin_to_solution_obj(varargin, this.settings.component_indices);
+            plot_data = this.createPlotDataArray(hybrid_sol, x_label_ndxs, {'t', 'x'});
             this.plot_from_plot_data_array(plot_data);
             this.last_function_call = [];
             
@@ -751,8 +750,8 @@ classdef HybridPlotBuilder < handle
             % 
             % See also: plotFlows, plotHybrid, plotPhase,
             % HybridSolution.evaluateFunction.
-            [hybrid_sol, x_label_ndxs, value_ids] = hybrid.internal.convert_varargin_to_solution_obj(varargin, this.settings.component_indices);
-            plot_struct = this.createPlotDataArray(hybrid_sol, x_label_ndxs, value_ids, {'j', 'x'});
+            [hybrid_sol, x_label_ndxs] = hybrid.internal.convert_varargin_to_solution_obj(varargin, this.settings.component_indices);
+            plot_struct = this.createPlotDataArray(hybrid_sol, x_label_ndxs, {'j', 'x'});
             this.plot_from_plot_data_array(plot_struct);
             this.last_function_call = [];
             
@@ -784,8 +783,9 @@ classdef HybridPlotBuilder < handle
             % 
             % See also: plotFlows, plotJumps, plotPhase,
             % HybridSolution.evaluateFunction.
-            [hybrid_sol, x_label_ndxs, x_values_ndxs] = hybrid.internal.convert_varargin_to_solution_obj(varargin, this.settings.component_indices);
-            plot_struct = this.createPlotDataArray(hybrid_sol, x_label_ndxs, x_values_ndxs, {'t', 'j', 'x'});
+            [hybrid_sol, x_label_ndxs] = hybrid.internal.convert_varargin_to_solution_obj(varargin, this.settings.component_indices);
+            
+            plot_struct = this.createPlotDataArray(hybrid_sol, x_label_ndxs, {'t', 'j', 'x'});
             this.plot_from_plot_data_array(plot_struct)
             this.last_function_call = [];
 
@@ -822,14 +822,12 @@ classdef HybridPlotBuilder < handle
             % 
             % See also: plotFlows, plotJumps, plotHybrid,
             % HybridSolution.evaluateFunction.
-            [hybrid_sol, x_label_ndxs, value_ids] = hybrid.internal.convert_varargin_to_solution_obj(varargin, this.settings.component_indices);
-            x_label_ndxs = x_label_ndxs';
-            value_ids = value_ids';
+            [hybrid_sol, x_label_ndxs] = hybrid.internal.convert_varargin_to_solution_obj(varargin, this.settings.component_indices);
             switch size(x_label_ndxs, 2)
                 case 2
-                    plot_struct = this.createPlotDataArray(hybrid_sol, x_label_ndxs, value_ids, {'x', 'x'});
+                    plot_struct = this.createPlotDataArray(hybrid_sol, x_label_ndxs, {'x', 'x'});
                 case 3
-                    plot_struct = this.createPlotDataArray(hybrid_sol, x_label_ndxs, value_ids, {'x', 'x', 'x'});
+                    plot_struct = this.createPlotDataArray(hybrid_sol, x_label_ndxs, {'x', 'x', 'x'});
                 otherwise
                     error('Expected ''x'' to be 2 or 3 dimensions, instead was %d.', size(x_label_ndxs, 2));
             end
@@ -909,22 +907,16 @@ classdef HybridPlotBuilder < handle
     end
     
     methods(Access = private)
-        function plot_data_array = createPlotDataArray(this, hybrid_sol, x_ndxs, value_ids, axis_symbols)
+        function plot_data_array = createPlotDataArray(this, hybrid_sol, x_labels_ndxs, axis_symbols)
             % axis_symbols: a cell array containing 2 or 3 cells that contain
             % a combination of 't', 'j' and 'x'.
             plot_data_array = hybrid.internal.buildPlotDataArray(...
-                                axis_symbols, x_ndxs, value_ids, hybrid_sol, this.settings);
+                                axis_symbols, x_labels_ndxs, hybrid_sol, this.settings);
         end
 
         function plot_from_plot_data_array(this, plot_data_array)
-            % axis_ids is a nx1 cell array. The kth entry contains a value that
-            % identifies what to plot in the kth dimension. Each entry can
-            % contain a scalar or a vector (each entry must have the same length). 
-            % The length of each entry is the number of plots to draw. If
-            % automatic subplots is on, then each plot is automatically placed
-            % into a new subplot.
-            % 
-            % plot_data_array is an array of ??? 
+            % Given the data in plot_data_array, generate a plot or series of
+            % subplots.
              
             % Save the 'hold' status.
             is_hold_on_before = ishold();

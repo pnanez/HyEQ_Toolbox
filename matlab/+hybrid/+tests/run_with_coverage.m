@@ -2,8 +2,8 @@ import matlab.unittest.TestSuite
 import matlab.unittest.TestRunner
 import matlab.unittest.plugins.CodeCoveragePlugin
 
-toolbox_matlab_dir = fullfile(proj_root, 'matlab');
-suite = TestSuite.fromPackage('hybrid.tests');
+toolbox_matlab_dir = hybrid.getFolderLocation('matlab');
+suite = TestSuite.fromPackage('hybrid.tests', 'IncludingSubpackages', true);
 
 % Create a test runner.
 runner = TestRunner.withTextOutput;

@@ -417,6 +417,12 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             pb.last_function_call = []; % To prevent a warning.
         end
         
+        function testWarnMultipleTitlesWhenAutoSubplotsOff(testCase)
+            labels = {'Title 1', 'Title 2'};
+            fh = @() HybridPlotBuilder().titles(labels).plotFlows(testCase.sol_2);
+            testCase.verifyWarning(fh, 'Hybrid:ExtraTitles');
+        end
+        
         function testLabelsAsCellArrayWithSubplots(testCase)
             labels{1} = 'Label 1';
             labels{3} = 'Label 3';
@@ -427,9 +433,15 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         end
         
         function testErrorLabelsWithOptions(testCase)
-            labels = {'Title 1', 'Title 2'};
+            labels = {'Label 1', 'Label 2'};
             fh = @() HybridPlotBuilder().labels(labels, 'FontSize', 3);
             testCase.verifyError(fh, 'Hybrid:UnexpectedOptions');
+        end
+        
+        function testNoWarnExtraLabelsInPhasePlot(testCase)
+            labels = {'Label 1', 'Label 2', 'Label 2'};
+            fh = @() HybridPlotBuilder().labels(labels).slice(1:2).plotPhase(testCase.sol_3);
+            testCase.verifyWarningFree(fh);
         end
         
         function testSingleLegend(testCase)
@@ -495,26 +507,27 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             testCase.assertLegendLabels('Plot 2')
         end
         
-        function testWarnTooManyLegendLabelsInPlotFlows(testCase)
-            pb = HybridPlotBuilder().subplots('on')...
-                .legend('Subplot 1', 'Subplot 2', 'Subplot 3');
-            testCase.verifyWarning(@() pb.plotJumps(testCase.sol_2), 'HybridPlotBuilder:TooManyLegends');
-            testCase.assertLegendLabels('Subplot 1', 'Subplot 2');
-        end
-        
-        function testTooManyLegendLabelsInPhasePlot(testCase)
+        function testExtraLegendLabelsInPhasePlot(testCase)
             pb = HybridPlotBuilder().subplots('on')...
                 .legend('Subplot 1', 'Subplot 2');
             testCase.verifyWarning(@() pb.plotPhase(testCase.sol_2), ...
-                'HybridPlotBuilder:TooManyLegends');
+                'Hybrid:ExtraLegendLabels');
             testCase.assertLegendLabels('Subplot 1')
         end
         
         function testTooFewLegendEntries(testCase)
             pb = HybridPlotBuilder().legend('Subplot 1');
             fh = @() pb.plotJumps(testCase.sol_2);
-            testCase.verifyWarning(fh, 'HybridPlotBuilder:TooFewLegends');
+            testCase.verifyWarning(fh, 'Hybrid:MissingLegendLabels');
             testCase.assertLegendLabels('Subplot 1', '')
+        end
+        
+        function testNoWarnExtraLegendLabelsInPlotFlows(testCase)
+            pb = HybridPlotBuilder().subplots('on')...
+                .legend('Subplot 1', 'Subplot 2', 'Subplot 3');
+            testCase.verifyWarning(@() pb.plotJumps(testCase.sol_2), ...
+                'Hybrid:ExtraLegendLabels');
+            testCase.assertLegendLabels('Subplot 1', 'Subplot 2');
         end
         
         function testAddLegendEntry(testCase)

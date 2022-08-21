@@ -140,6 +140,9 @@ classdef PlotSettings < matlab.mixin.Copyable
         end
         
         function set(this, varargin)
+            % Set the value of properties using name/value pairs.
+            % The name of each property is case insensitive and underscores can
+            % be replaced with spaces.
             if mod(length(varargin), 2) ~= 0
                 error('Hybrid:MissingValue', ...
                     'Must have an even number of Name/Value arguments') 
@@ -466,30 +469,54 @@ classdef PlotSettings < matlab.mixin.Copyable
         end 
         
         function title = getTitle(this, title_id)
-            if ~isscalar(title_id) || strcmp('single', title_id)
-                if isempty(this.component_titles)
-                    title = [];
-                else
-                    title = this.component_titles(1);
-                end
+            if isempty(this.component_titles)
+                % If there are no titles set, then the title returned is empty.
+                title = [];
+                return
+            end
+
+            if strcmp('single', title_id)
+                title = this.component_titles(1);
             elseif title_id <= length(this.component_titles)
                 title = this.component_titles(title_id);
             else
-                % No title
+                % No title if there are not enough titles given.
                 title = '';
-                return
             end            
         end
         
         function label = labelFromId(this, label_id)
+            % Get the axis label based on the 'label_id'. The output for each
+            % choice of 'label_id' is as follows:
+            %
+            %      't' -> continuous time 't' label
+            %      'j' -> discrete time 'j' label
+            %      []  -> empty (for axes that don't exist)
+            % 'single' -> the first state component label (if it was given
+            %             explicitly).
+            %  integer -> the corresponding state component label (if given),
+            %             otherwise a label is generated automatically based on 
+            %             the XLabelFormat.
+
             if strcmp('t', label_id)
                 label = this.getTLabel();
                 return
             elseif strcmp('j', label_id)
                 label = this.getJLabel();
                 return
-            elseif ~isscalar(label_id) || strcmp('single', label_id)
-                if isempty(this.component_labels) || isempty(label_id)
+            end 
+
+            if isempty(label_id)
+                % 'label_id' is empty for axes that don't exist (such as the
+                % nonexistent z-axis in a x-y plot).
+                label = [];
+                return
+            end
+            
+            if strcmp('single', label_id)
+                if isempty(this.component_labels)
+                    % When using the 'single' label, we don't use the x label
+                    % format to generate a label if one is not given explicitly.
                     label = [];
                 else
                     label = this.component_labels{1};
@@ -529,6 +556,7 @@ classdef PlotSettings < matlab.mixin.Copyable
                         % If the first nontime axis is 1, then the plot is a 2D
                         % or 3D phase plot, so the component labels should be
                         % used.
+                        return
                     case 2
                         ylabel = this.labelFromId('single');
                     case 3
@@ -540,19 +568,16 @@ classdef PlotSettings < matlab.mixin.Copyable
     
     methods % Candidates to move to a 'PlotData' class
         function label = createLegendLabel(this, index)
-            if ~isscalar(index) || strcmp('single', index)
-                if isempty(this.component_legend_labels)
-                    label = [];
-                else
-                    label = this.component_legend_labels(1);
-                end
+            if isempty(this.component_legend_labels)
+                label = [];
                 return
             end
 
-            if index <= length(this.component_legend_labels)
+            if strcmp('single', index)
+                label = this.component_legend_labels(1);
+            elseif index <= length(this.component_legend_labels)
                 label = this.component_legend_labels(index);  
             else
-                % warning('No label given for plot')
                 label = [];
             end
         end
