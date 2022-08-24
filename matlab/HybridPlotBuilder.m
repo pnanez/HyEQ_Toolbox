@@ -148,6 +148,8 @@ classdef HybridPlotBuilder < handle
             %  'none': 't'
             %   'tex': 't'
             % 'latex': '$t$'
+            % 
+            % To remove the label, use an empty string.
             %
             % See also: jLabel, label, labels, labelInterpreter.
             this.settings.t_label = t_label;
@@ -161,10 +163,13 @@ classdef HybridPlotBuilder < handle
 
         function this = jLabel(this, j_label)
             % Set the label for the discrete time axis 'j'.
+            %
             % The default value depends on the label interpreter:
             %  'none': 'j'
             %   'tex': 'j'
             % 'latex': '$j$'
+            % 
+            % To remove the label, use an empty string.
             %
             % See also: tLabel, label, labels, labelInterpreter.
             this.settings.j_label = j_label;
