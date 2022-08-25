@@ -10,7 +10,7 @@
 %       Creating and Simulating Composite Hybrid Subsystems> 
 % * <matlab:hybrid.internal.openHelp('ConvertingLegacyCodeToVersion3_demo') 
 %       Updating Code Designed for HyEQ Toolbox v2.04 to Use v3.0 Features.> 
-% * <matlab:hybrid.internal.openHelp('MATLAB_ZOH_example') 
+% * <matlab:hybrid.internal.openHelp('MATLAB_ZOH_example_demo') 
 %       Example: Composite Hybrid System with Zero-order Hold Subsystem.> 
-% * <matlab:hybrid.internal.openHelp('MATLAB_switched_system_example') 
-%       Example: Composite Hybrid System with Switched Subsystem.>
+% * <matlab:hybrid.internal.openHelp('MATLAB_switched_system_example_demo') 
+%       Example: Composite Hybrid System with Switched Subsystem.> 

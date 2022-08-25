@@ -7,8 +7,8 @@
             <tocitem target="html/HybridPlotBuilder_demo.html">Plotting Hybrid Arcs</tocitem>
             <tocitem target="html/CompositeHybridSystem_demo.html">Composite Hybrid Systems</tocitem>
             <tocitem target="html/ConvertingLegacyCodeToVersion3_demo.html">Updating Code Designed for v2.04 to Use v3.0 Features.</tocitem>
-            <tocitem target="html/MATLAB_ZOH_example.html">Example: CompositeHybridSystem with ZOH</tocitem>
-            <tocitem target="html/MATLAB_switched_system_example.html">Example: CompositeHybridSystem with Switching</tocitem>
+            <tocitem target="html/MATLAB_ZOH_example_demo.html">Example: CompositeHybridSystem with ZOH</tocitem>
+            <tocitem target="html/MATLAB_switched_system_example_demo.html">Example: CompositeHybridSystem with Switching</tocitem>
         </tocitem>
         <tocitem target="html/TOC_simulink.html">The HyEQ Simulink Library
             <tocitem target="html/Help_SimulinkLibrary.html">Introduction to Simulink-based Solver</tocitem>
