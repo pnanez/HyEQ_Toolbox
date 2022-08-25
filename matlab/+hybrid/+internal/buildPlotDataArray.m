@@ -31,7 +31,7 @@ assert(is2D || is3D, 'plot dimension must be 2 or 3, instead was %d', plt_dimens
 %               for a single curve.
 x_values_ndxs = 1:(size(hybrid_sol.x, 2));
 
-assert(all(size(x_label_ndxs)==size(x_values_ndxs), 'all'))
+assert(isequal(size(x_label_ndxs), size(x_values_ndxs)))
 if ~is_phase_plot
     % When not making a phase plot, each entry in x_label_ndxs and x_values_ndxs
     % represents a separate curve to plot. This is denoted by making them column
