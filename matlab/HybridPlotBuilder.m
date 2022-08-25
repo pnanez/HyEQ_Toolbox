@@ -578,29 +578,9 @@ classdef HybridPlotBuilder < handle
             % and the 'label' values corresponding to the plotted components are
             % added to each axis, if provided (otherwise default values are used).
             %
-            % See also: slice, configurePlots, titles, labels.
+            % See also: configurePlots, titles, labels.
             this.settings.auto_subplots = auto_subplots;
             this.last_function_call = 'subplots';
-
-            if nargout == 0
-                % Prevent output if function is not terminated with a semicolon.
-                clearvars this
-            end
-        end
-
-        function this = slice(this, component_indices)
-            % Select the components of x to plot. 
-            % 
-            % If plotting a function of the state, such as 
-            %   HybridPlotBuilder().slice(3).plotFlows(sol, @(x3) cos(x3));
-            % then x is sliced before it is passed to the given function, so
-            % the result would be a plot of cosine of the third component of x.
-            % 
-            % To reset to the default value, call slice([]).
-            %
-            % See also: filter.
-            this.settings.component_indices = component_indices;
-            this.last_function_call = 'slice';
 
             if nargout == 0
                 % Prevent output if function is not terminated with a semicolon.
@@ -617,7 +597,7 @@ classdef HybridPlotBuilder < handle
             %
             % To reset to the default value, call filter([]).
             %
-            % See also: slice.
+            % See also: select.
             this.settings.timesteps_filter = timesteps_filter;
             this.last_function_call = 'filter';
 
@@ -805,7 +785,7 @@ classdef HybridPlotBuilder < handle
             % Plot a phase plot of the hybrid solution.
             %
             % The output of depends on the dimension of the system 
-            % or the number of components selected with 'slice()'. 
+            % or the number of components selected with 'select()'. 
             % The if there are two components, then the plot is a a 2D phase
             % plot and if there are three components, then it is a 3D phase
             % plot. Otherwise, an error is thrown.
@@ -908,6 +888,44 @@ classdef HybridPlotBuilder < handle
             warning('Use HybridPlotBuilder.subplots() instead of autoSubplots()')
             this.subplots(auto_subplots);
             this.last_function_call = 'autoSubplots';
+        end
+
+        function this = slice(this, varargin)
+            % Select the components of x to plot (DEPRECATED). 
+            hybrid.internal.deprecationWarning('HybridPlotBuilder.slice', 'HybridArc.select')
+            this.select(varargin{:});
+            this.last_function_call = 'slice';
+            
+            if nargout == 0
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
+            end
+        end
+
+        function this = select(this, component_indices)
+            % Select the components of x to plot (DEPRECATED). 
+            % 
+            % If plotting a function of the state, such as 
+            %   HybridPlotBuilder().select(3).plotFlows(sol, @(x3) cos(x3));
+            % then x is selected before it is passed to the given function, so
+            % the result would be a plot of cosine of the third component of x.
+            % 
+            % To reset to the default value, call select([]).
+            %
+            % See also: filter.
+            
+            % We don't plot a deprecation warning, here, because this function was
+            % never publicly released---we keep it here so we can run the suite
+            % of tests written for HybridPlotBuilder.slice without failing tests
+            % due to unwanted warnings.
+
+            this.settings.component_indices = component_indices;
+            this.last_function_call = 'select';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
+            end
         end
     end
     

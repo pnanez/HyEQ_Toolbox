@@ -373,14 +373,20 @@ sol_bb = sys_bb.solve(x0_cell, tspan, jspan)
 
 %% Plotting Solutions
 % Plotting |sol|, we see all of the states of the composite system.
-hpb = HybridPlotBuilder().subplots('on')...
-    .labels('$h$', '$v$', '$u$', '$\tau$', '$j_1$', '$j_2$')...
-    .titles('Ball Subsystem', '', 'Controller Subsystem', '', 'Discrete Times');
-hpb.slice(1:2).plotFlows(sol_bb); 
+hpb = HybridPlotBuilder().subplots('on');
+hpb.title('Ball Subsystem')...
+    .labels('$h$', '$v$')...
+    .plotFlows(sol_bb.select(1:2)); 
 snapnow() % Show current figure in document.
-hpb.slice(3:4).plotFlows(sol_bb);
+
+hpb.title('Controller Subsystem')...
+    .labels('$u$', '$\tau$')...
+    .plotFlows(sol_bb.select(3:4));
 snapnow() % Show current figure in document.
-hpb.slice(5:6).plotFlows(sol_bb);
+
+hpb.title('Discrete Times')...
+    .labels('$j_1$', '$j_2$')...
+    .plotFlows(sol_bb.select(5:6));
 
 %% Subsystem Solutions
 % The |solve| function returns a |CompositeHybridSolution| object that contains

@@ -138,7 +138,7 @@ plotFlows(sol)
 %%
 % The following plot depicts the hybrid arc for the height of the ball in hybrid time. 
 clf
-plotHybrid(sol.slice(1))     
+plotHybrid(sol.select(1))     
 grid on
 view(37.5, 30) 
 

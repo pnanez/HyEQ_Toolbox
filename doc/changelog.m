@@ -151,7 +151,7 @@
 % of MATLAB had to run |configure_toolbox| to disable autocompletions or else 
 % see errors in the command line.
 % * Added functions for transforming |HybridSolution| objects. See |HybridSolution.transform|, 
-% |HybridSolution.slice|, |HybridSolution.restrictT|, and |HybridSolution.restrictJ.|
+% |HybridSolution.select|, |HybridSolution.restrictT|, and |HybridSolution.restrictJ.|
 % * Reorganized files.
 %% 
 % *3.0.0.13* $\to$ *3.0.0.20* 

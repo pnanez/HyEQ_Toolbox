@@ -15,7 +15,7 @@ classdef InequalityHybridSystem < HybridSystem
             D = this.jump_set_defining_map(x, t, j) <= 0;
         end
 
-%         function plotSets(this, slice, xlim, ylim)
+%         function plotSets(this, select, xlim, ylim)
 %             contourf
 %         end
     end

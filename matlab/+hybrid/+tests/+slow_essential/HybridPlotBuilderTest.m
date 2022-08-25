@@ -79,7 +79,7 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             pb = HybridPlotBuilder().subplots('on')...
                 .titles('Title 1', 'Title 2', 'Title 3')...
                 .labels('A', 'B', 'C')...
-                .slice([1 3]);
+                .select([1 3]);
             pb.plotFlows(testCase.sol_3);
             function check(testCase, plot_dim)
                 testCase.assertSubplotCount(2)
@@ -136,7 +136,7 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             pb = HybridPlotBuilder().subplots('on')...
                 .titles('Title 1', 'Title 2', 'Title 3')...
                 .labels('A', 'B', 'C')...
-                .slice([3 1]);
+                .select([3 1]);
             
             function check(testCase, plot_dim)
                 testCase.assertSubplotCount(2)
@@ -395,7 +395,7 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         function testSetXLabelFormatWithSubplots(testCase)
             HybridPlotBuilder().subplots('on')...
                 .xLabelFormat('$z_{%d}$')...
-                .slice([1 3])...
+                .select([1 3])...
                 .plotFlows(testCase.sol_3);
             testCase.assertSubplotYLabels('$z_{1}$', '$z_{3}$')
         end
@@ -440,7 +440,7 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         
         function testNoWarnExtraLabelsInPhasePlot(testCase)
             labels = {'Label 1', 'Label 2', 'Label 2'};
-            fh = @() HybridPlotBuilder().labels(labels).slice(1:2).plotPhase(testCase.sol_3);
+            fh = @() HybridPlotBuilder().labels(labels).select(1:2).plotPhase(testCase.sol_3);
             testCase.verifyWarningFree(fh);
         end
         
@@ -558,25 +558,25 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         end
         
         function testPlotConfig(testCase)  
-            slice_ndxs = [1, 3];
-            plt_fnc_callback = @(pb) pb.slice([1, 3]).plotFlows(testCase.sol_3);
+            select_ndxs = [1, 3];
+            plt_fnc_callback = @(pb) pb.select([1, 3]).plotFlows(testCase.sol_3);
             testCase.assertConfigurePlotsCallbackCalls(plt_fnc_callback, ...
-                length(slice_ndxs), num2cell(slice_ndxs))  
+                length(select_ndxs), num2cell(select_ndxs))  
             
-            slice_ndxs = 1:4;
-            plt_fnc_callback = @(pb) pb.slice(slice_ndxs).plotJumps(testCase.sol_4);
+            select_ndxs = 1:4;
+            plt_fnc_callback = @(pb) pb.select(select_ndxs).plotJumps(testCase.sol_4);
             testCase.assertConfigurePlotsCallbackCalls(plt_fnc_callback, ...
-                length(slice_ndxs), num2cell(slice_ndxs))
+                length(select_ndxs), num2cell(select_ndxs))
             
-            slice_ndxs = 2;
-            plt_fnc_callback = @(pb) pb.slice(2).plotHybrid(testCase.sol_3);
+            select_ndxs = 2;
+            plt_fnc_callback = @(pb) pb.select(2).plotHybrid(testCase.sol_3);
             testCase.assertConfigurePlotsCallbackCalls(plt_fnc_callback, ...
-                length(slice_ndxs), num2cell(slice_ndxs))
+                length(select_ndxs), num2cell(select_ndxs))
         end
         
         function testPlotConfigNosubplots(testCase)
             plt_fnc_callback = @(pb) pb.subplots('off')...
-                                        .slice([3, 2])...
+                                        .select([3, 2])...
                                         .plotFlows(testCase.sol_3);
             testCase.assertConfigurePlotsCallbackCalls(plt_fnc_callback, 2, {3, 2})
         end

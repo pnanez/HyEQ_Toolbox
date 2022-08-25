@@ -149,7 +149,7 @@ hpb.plotJumps(sol)
 %%
 % The next plot depicts the corresponding hybrid arc for the position state.
 clf
-hpb.plotHybrid(sol.slice(1))     
+hpb.plotHybrid(sol.select(1))     
 grid on
 view(37.5,30)
 

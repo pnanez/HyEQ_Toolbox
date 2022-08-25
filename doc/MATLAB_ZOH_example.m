@@ -49,8 +49,8 @@ sys_zoh
 % Finally, simulate and plot.
 sol_zoh = sys_zoh.solve({[10; 0], [], [0; zoh.sample_time]}, [0, 10], [0, 100]);
 HybridPlotBuilder().subplots('on')...
-    .slice(1:3).labels('$x_1$', '$x_2$', '$u_{ZOH}$')...
-    .plotFlows(sol_zoh)
+    .labels('$x_1$', '$x_2$', '$u_{ZOH}$')...
+    .plotFlows(sol_zoh.select(1:3))
 
 %% 
 % The subsystem solutions can also be plotted in isolation.

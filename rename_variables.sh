@@ -32,30 +32,32 @@ function rename() {
 #rename TerminationCause hybrid.TerminationCause
 
 ############# Rename 
-rename zoh_feedback_control.slx zoh_feedback.slx
-rename zero_order_hold.slx zoh.slx
-rename vehicle_on_constrained_path.slx vehicle_on_path.slx
-rename network_estimation_with_input.slx network_with_input.slx
-rename network_estimation.slx network.slx
-rename finite_state_machine.slx fsm.slx
-rename bouncing_ball_with_input_alternative.slx ball_with_input2.slx
-rename bouncing_ball_with_input.slx ball_with_input.slx
-rename bouncing_ball_with_adc.slx ball_with_adc.slx
-rename analog_to_digital_converter.slx adc.slx
-rename behavior_in_C_intersection_D.slx hybrid_priority.slx
-rename coupled_subsystems.slx coupled.slx
+#rename zoh_feedback_control.slx zoh_feedback.slx
+#rename zero_order_hold.slx zoh.slx
+#rename vehicle_on_constrained_path.slx vehicle_on_path.slx
+#rename network_estimation_with_input.slx network_with_input.slx
+#rename network_estimation.slx network.slx
+#rename finite_state_machine.slx fsm.slx
+#rename bouncing_ball_with_input_alternative.slx ball_with_input2.slx
+#rename bouncing_ball_with_input.slx ball_with_input.slx
+#rename bouncing_ball_with_adc.slx ball_with_adc.slx
+#rename analog_to_digital_converter.slx adc.slx
+#rename behavior_in_C_intersection_D.slx hybrid_priority.slx
+#rename coupled_subsystems.slx coupled.slx
 
 # Rename Paths
-rename zero_order_hold.zero_order_hold -> zero_order_hold.zoh
-rename zoh_feedback_control.zoh_feedback_control zoh_feedback_control.zoh_feedback
-rename zoh_feedback_control.zoh_feedback_control zoh_feedback_control.zoh
-rename vehicle_on_constrained_path.vehicle_on_constrained_path vehicle_on_constrained_path.vehicle_on_path
-rename network_estimation_with_input.network_estimation_with_input network_estimation_with_input.network_with_input
-rename network_estimation.network_estimation network_estimation.network
-rename finite_state_machine.finite_state_machine finite_state_machine.fsm
-rename bouncing_ball_with_input_alternative.bouncing_ball_with_input_alternative bouncing_ball_with_input_alternative.ball_with_input2
-rename bouncing_ball_with_input.bouncing_ball_with_input bouncing_ball_with_input.ball_with_input
-rename bouncing_ball_with_adc.bouncing_ball_with_adc bouncing_ball_with_adc.ball_with_adc
-rename analog_to_digital_converter.analog_to_digital_converter analog_to_digital_converter.adc
-rename behavior_in_C_intersection_D.behavior_in_C_intersection_D behavior_in_C_intersection_D.hybrid_priority
-rename coupled_subsystems.coupled_subsystems coupled_subsystems.coupled
+#rename zero_order_hold.zero_order_hold -> zero_order_hold.zoh
+#rename zoh_feedback_control.zoh_feedback_control zoh_feedback_control.zoh_feedback
+#rename zoh_feedback_control.zoh_feedback_control zoh_feedback_control.zoh
+#rename vehicle_on_constrained_path.vehicle_on_constrained_path vehicle_on_constrained_path.vehicle_on_path
+#rename network_estimation_with_input.network_estimation_with_input network_estimation_with_input.network_with_input
+#rename network_estimation.network_estimation network_estimation.network
+#rename finite_state_machine.finite_state_machine finite_state_machine.fsm
+#rename bouncing_ball_with_input_alternative.bouncing_ball_with_input_alternative bouncing_ball_with_input_alternative.ball_with_input2
+#rename bouncing_ball_with_input.bouncing_ball_with_input bouncing_ball_with_input.ball_with_input
+#rename bouncing_ball_with_adc.bouncing_ball_with_adc bouncing_ball_with_adc.ball_with_adc
+#rename analog_to_digital_converter.analog_to_digital_converter analog_to_digital_converter.adc
+#rename behavior_in_C_intersection_D.behavior_in_C_intersection_D behavior_in_C_intersection_D.hybrid_priority
+#rename coupled_subsystems.coupled_subsystems coupled_subsystems.coupled
+
+rename slice select

@@ -112,10 +112,10 @@ close all
 sol_1 = HybridArc(t1, j1, x1);
 sol_2 = HybridArc(t2, j2, x2);
 
-xi1_arc = sol_1.slice(1);                   
-xi2_arc = sol_1.slice(2);               
-eta1_arc = sol_2.slice(1);            
-eta2_arc = sol_2.slice(2);
+xi1_arc = sol_1.select(1);                   
+xi2_arc = sol_1.select(2);               
+eta1_arc = sol_2.select(1);            
+eta2_arc = sol_2.select(2);
 
 %% Simulink Model
 % The following diagram shows the Simulink model for the interconnected hybrid

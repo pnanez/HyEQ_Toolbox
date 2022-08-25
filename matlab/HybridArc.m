@@ -75,7 +75,7 @@ classdef HybridArc
         end
 
         function transformed_arc = transform(this, f)
-            % Replace the values of x by the function f(x, t, j).
+            % Create a new HybridArc with the values of x replaced by f(x, t, j).
             % 
             % Evaluate a function at each point along the solution.
             % The function handle 'f' is evaluated with the
@@ -86,47 +86,51 @@ classdef HybridArc
             % 
             % The argument 'f' must be a function handle
             % that has the input arguments "(x)", "(x, t)", or "(x, t, j)", and
-            % returns a column vector of fixed length.
+            % returns a column vector of fixed length with type 'double'.
             x_transformed = this.evaluateFunction(f);
             transformed_arc = HybridArc(this.t, this.j, x_transformed);
         end
 
-        function sliced_arc = slice(this, ndxs)
+        function selected_arc = select(this, ndxs)
             % Create a new HybridArc with only the selected component indicies.
             % 
+            % ndxs: A vector of positive integers less than or equal to the
+            %       dimension of this HybridArc. Repeated values are OK and the 
+            %       values can be in any order.
+            %
             % Example: 
             %     n = 3;        % State dimension
             %     tsteps = 100; % Number of time steps.
             %     x = rand(tsteps, n);
             %     t = linspace(0, 100, tsteps)';
             %     j = zeros(tsteps, 1);
-            %     h_arc = HybridArc(t, j, x);
+            %     h_arc = HybridArc(t, j, x); % Create an example HybridArc
             %     
             %     % Select the first component.
-            %     x1_arc = h_arc.slice(1);
+            %     x1_arc = h_arc.select(1);
             %
             %     % Select the first and second component.
-            %     x12_arc = h_arc.slice(1:2);
+            %     x12_arc = h_arc.select(1:2);
             %
             %     % Select the third and first component (in that order).
-            %     x31_arc = h_arc.slice([3, 1]);
+            %     x31_arc = h_arc.select([3, 1]);
             
             if min(ndxs) < 1
                 error('Hybrid:InvalidArgument', ...
-                    'All slice indices must be at least 1, but the smallest index was %d.', ...
+                    'All selected indices must be at least 1, but the smallest index was %d.', ...
                     min(ndxs));
             elseif max(ndxs) > size(this.x, 2)
-                error('Hybrid:InvalidArgument', ['The maximum index in slice was %d ' ...
+                error('Hybrid:InvalidArgument', ['The largest selected index was %d ' ...
                     'but there are only %d components in x.'], ...
                     max(ndxs), size(this.x, 2));
             end
 
-            x_sliced = this.x(:, ndxs);
-            sliced_arc = HybridArc(this.t, this.j, x_sliced);
+            x_selected = this.x(:, ndxs);
+            selected_arc = HybridArc(this.t, this.j, x_selected);
         end
 
         function restricted_sol = restrictT(this, tspan)
-            % Restrict the domain in ordinary time to the interval 'tspan'.
+            % Create a new HybridArc by restricting the domain in ordinary time to the interval 'tspan'.
             % 'tspan' must be a 2x1 array of real numbers. 
             % 
             % See also: HybridArc/restrictJ
@@ -140,7 +144,7 @@ classdef HybridArc
         end
 
         function restricted_sol = restrictJ(this, jspan)
-            % Restrict the domain in discrete time to the interval 'jspan'.
+            % Create a new HybridArc by restricting the domain in discrete time to the interval 'jspan'.
             % 'jspan' must be either a 2x1 array of integers or a single integer. 
             % 
             % See also: HybridArc/restrictT
@@ -208,6 +212,16 @@ classdef HybridArc
     end
     
     methods(Hidden)
+        function sliced_arc = slice(this, ndxs)
+            % Create a new HybridArc with only the selected component indicies (DEPRECATED). 
+            % 
+            % This function is deprecated. Use HybridArc.select(ndxs) insted. 
+            %
+            % See also: HybridArc/select.
+            hybrid.internal.deprecationWarning('HybridArc.slice', 'HybridArc.select')
+            sliced_arc = this.select(ndxs);
+        end
+
         function plotflows(varargin)
             warning('Please use the plotFlows function instead of plotflows.')
             this.plotFlows(varargin{:});

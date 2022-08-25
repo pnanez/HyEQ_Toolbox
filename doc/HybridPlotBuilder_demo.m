@@ -91,21 +91,21 @@ HybridPlotBuilder().subplots('on').plotFlows(sol)
 
 %% Choosing Components to Plot
 % Often, you may wish to plot only some of the components in a |HybridArc| 
-% object |sol|. To select particular components of |sol|, call 
-% <matlab:doc('HybridArc.slice') |sol.slice(ndxs)|>
+% object |hybrid_arc|. To select particular components of |hybrid_arc|, call 
+% <matlab:doc('HybridArc.select') |hybrid_arc.select(ndxs)|>
 % where |ndxs| is a vector containing the indices of the components you wish to
 % plot. 
 % Then, simply pass the output to one of the plotting functions.
 % For example, to plot components 1 and 2, pass the array |[1, 2]| 
-% or (equivalently) |1:2| to |slice|.
+% or (equivalently) |1:2| to |select|.
 clf
-plotPhase(sol_3D.slice([1,2]));
+plotPhase(sol_3D.select([1,2]));
 
 %% 
 % To switch the order of components in the plot, simply switch the order in the
 % array. Note that the labels $x_1$ and $x_2$ 
 % do not update to reflect the switched order.
-HybridPlotBuilder().plotPhase(sol_3D.slice([2,1]));
+HybridPlotBuilder().plotPhase(sol_3D.select([2,1]));
 
 %% Plotting Other Values
 % It is possible to plot values contained in an array while using the hybrid
@@ -140,7 +140,7 @@ HybridPlotBuilder()...
     .flowColor('black')...
     .flowLineWidth(2)...
     .flowLineStyle(':')...
-    .plotFlows(sol.slice(1))
+    .plotFlows(sol.select(1))
 
 %% 
 % Similarly, we can change the appearance of jumps.
@@ -152,7 +152,7 @@ HybridPlotBuilder()...
     .jumpStartMarkerSize(16)...
     .jumpEndMarker('o')...
     .jumpEndMarkerSize(10)...
-    .plotPhase(sol_3D.slice(1:2))
+    .plotPhase(sol_3D.select(1:2))
 
 %% 
 % To configure the the jump markers on _both_ sides of jumps with a single
@@ -160,7 +160,7 @@ HybridPlotBuilder()...
 HybridPlotBuilder()...
     .jumpMarker('s')... % square
     .jumpMarkerSize(12)...
-    .plotPhase(sol_3D.slice(1:2))
+    .plotPhase(sol_3D.select(1:2))
 
 %% 
 % To hide jumps or flows, set the corresponding color to 'none.' To hide jump
@@ -170,7 +170,7 @@ HybridPlotBuilder()...
     .flowColor('none')...
     .jumpEndMarker('none')...
     .jumpLineStyle('none')...
-    .plotFlows(sol.slice(2))
+    .plotFlows(sol.select(2))
 title('Start of Each Jump') % An alternative way to add titles is shown below.
 ylabel('$x_2$')
 
@@ -248,7 +248,7 @@ HybridPlotBuilder()...
 clf
 HybridPlotBuilder().subplots('on')...
     .xLabelFormat('$Z_{%d}$')...
-    .plotFlows(sol_8D.slice(1:4))
+    .plotFlows(sol_8D.select(1:4))
 
 %%
 % The labels for continuous-time and discrete-time axes (i.e., $t$ and $j$) can
@@ -257,7 +257,7 @@ clf
 HybridPlotBuilder()...
     .tLabel('$t$ [s]')...
     .jLabel('$j$ [count]')...
-    .plotHybrid(sol.slice(1))
+    .plotHybrid(sol.select(1))
 
 %%
 % 
@@ -292,7 +292,7 @@ HybridPlotBuilder().legend('Phase Plot').plotPhase(sol);
 clf
 HybridPlotBuilder().color('matlab')...
     .legend('Component 1', 'Component 2', 'Component 3', 'Component 4')...
-    .plotFlows(sol_8D.slice(1:4));
+    .plotFlows(sol_8D.select(1:4));
 
 %% 
 % Additional plots with legend entries can be added to the same figure by
@@ -478,7 +478,7 @@ builder.title('Phase Portrait') ...
     .labels('$x_1$', '$x_2$') ...
     .legend('$q = 0$') ...
     .filter(q == 0) ... % Only plot points where q is 0.
-    .plotPhase(sol_modes.slice([1,2]))
+    .plotPhase(sol_modes.select([1,2]))
 hold on % See the section below about 'hold on'
 % Plot in black the solution (still only the [1,2] components) for all time
 % steps where q == 1. 
@@ -486,7 +486,7 @@ builder.flowColor('black') ...
     .jumpColor('none') ...
     .legend('$q = 1$') ...
     .filter(q == 1) ... % Only plot points where q is 1.
-    .plotPhase(sol_modes.slice([1,2]))
+    .plotPhase(sol_modes.select([1,2]))
 axis padded
 axis equal
 
@@ -523,19 +523,19 @@ sol2 = system.solve([ 5, 10], tspan, jspan, config);
 
 clf
 HybridPlotBuilder()... % Plots blue flows and red jumps by default.
-    .plotFlows(sol1.slice(1))
+    .plotFlows(sol1.select(1))
 HybridPlotBuilder().flowColor('black').jumpColor('green')...
     .title('Multiple Calls to $\texttt{plotFlows}$ with \texttt{hold off}') ...
-    .plotFlows(sol2.slice(1))
+    .plotFlows(sol2.select(1))
 %% 
 % To plot multiple graphs on the same figure, use |hold on|, similar to
 % standard MATLAB plotting functions.
 clf
-HybridPlotBuilder().plotFlows(sol1.slice(1)) % Plots blue flows and red jumps by default.
+HybridPlotBuilder().plotFlows(sol1.select(1)) % Plots blue flows and red jumps by default.
 hold on
 HybridPlotBuilder().flowColor('black').jumpColor('green')...
     .title('Multiple Calls to $\texttt{plotFlows}$ with \texttt{hold on}')...
-    .plotFlows(sol2.slice(1))
+    .plotFlows(sol2.select(1))
 
 %% Modifying Defaults
 % The default values of all |HybridPlotBuilder| settings can be modified by
@@ -583,7 +583,7 @@ HybridPlotBuilder.defaults.set('text scale', 1.5, ...
 HybridPlotBuilder()...
     .title('Title')...
     .legend('height')...
-    .plotFlows(sol.slice(1));
+    .plotFlows(sol.select(1));
 
 HybridPlotBuilder.defaults.reset() % Cleanup
 

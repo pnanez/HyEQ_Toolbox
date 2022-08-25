@@ -20,7 +20,7 @@ figure(3)
 hpb = HybridPlotBuilder();
 hpb.subplots('on')...
     .legend('$q_{1}$')...
-    .plotHybrid(sol.slice(1))     
+    .plotHybrid(sol.select(1))     
 grid on
 view(37.5, 30) 
 

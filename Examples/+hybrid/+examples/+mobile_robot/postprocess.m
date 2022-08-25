@@ -4,8 +4,8 @@
 figure(1)
 clf
 plotHarcColor(x(:,1), j, x(:,2),t); %#ok<IJCL> 
-xlabel('x1')
-ylabel('x2')
+xlabel('$x_1$', 'Interpreter','latex')
+ylabel('$x_2$', 'Interpreter','latex')
 grid on
 c = colorbar;
 c.Label.String = '$t$ [s]';
