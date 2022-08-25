@@ -93,6 +93,20 @@
 
 %% Changes Between Builds
 %%
+% *3.0.0.50* $\to$ *3.0.0.55*
+% (Built August 25, 2022)
+% 
+% * RENAMED: |HybridArc.slice| to |HybridArc.select| (|HybridArc.slice | will 
+% print a deprecation warning, if used).
+% * DEPRECATED: |HybridPlotBuilder.slice| (use |HybridArc.select| instead).
+% * Misc. improvements to documentation and warning messages.
+% * Fixed: Errors that occured if the active figure was closed while
+% HybridPlotBuilder was currently creating a plot.
+% * Fixed: Allow |t| and |j| labels to be disabled in HybridPlotBuilder.
+% * Updated HybridPlotBuilder.plotJumps and .plotHybrid to hide
+% decimal-valued tick marks for the |j| axis.
+
+%%
 % *3.0.0.40* $\to$ *3.0.0.50*
 % (Built July 5, 2022)
 % Simulink Library:

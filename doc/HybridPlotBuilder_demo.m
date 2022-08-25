@@ -84,10 +84,31 @@ hpb.plotFlows(sol)
 %   hpb.flowColor('black').plotFlows(sol);
 
 %% Automatic Subplots
-% When using |HybridPlotBuilder|, automatic subplots can be enabled via the
-% |subplots| function. Note that state components are automatically labeled.
-clf % Clear figure
+% Automatic subplots can be enabled by calling
+% |HybridPlotBuilder.subplots('on')|.
+% When auto-subplots is |'on'| and |plotFlows|, |plotJumps|, or |plotHybrid| is
+% called, then a subplot is created for each plotted state component. If, on the
+% otherhand, |plotPhase| is called, then a single subplot is created. If the
+% current figure did not, previously, have the correct number of subplots, then
+% the figure is cleared before plotting.
 HybridPlotBuilder().subplots('on').plotFlows(sol)
+
+%%
+% When auto-subplots is |'off'|, all plots are placed in the current axes 
+% (the default value is |'off'|).
+clf % clear figure. Otherwise previous subplots are reused.
+subplot(2, 1, 1)
+HybridPlotBuilder().subplots('off').plotFlows(sol_8D)
+subplot(2, 1, 2)
+HybridPlotBuilder().subplots('off').plotPhase(sol)
+axis padded
+
+%%
+% At this point, if we call a plotting function with auto-subplots |'on'|, then
+% the figure is reset to the correct number of subplots.
+
+%    <- No 'clf' here. 
+HybridPlotBuilder().subplots('on').plotPhase(sol)
 
 %% Choosing Components to Plot
 % Often, you may wish to plot only some of the components in a |HybridArc| 
