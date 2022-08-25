@@ -17,8 +17,8 @@ close all
 
 configure_development_path
 
-do_publish_docs = true;
-do_tests = true;
+do_publish_docs = false;
+do_tests = false;
 do_package = true;
 do_cleanup_path = do_package && true;
 

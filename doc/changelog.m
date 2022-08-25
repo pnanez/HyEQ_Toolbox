@@ -93,7 +93,7 @@
 
 %% Changes Between Builds
 %%
-% *3.0.0.50* $\to$ *3.0.0.55*
+% *3.0.0.50* $\to$ *3.0.0.56*
 % (Built August 25, 2022)
 % 
 % * RENAMED: |HybridArc.slice| to |HybridArc.select| (|HybridArc.slice | will 
@@ -105,6 +105,11 @@
 % * Fixed: Allow |t| and |j| labels to be disabled in HybridPlotBuilder.
 % * Updated HybridPlotBuilder.plotJumps and .plotHybrid to hide
 % decimal-valued tick marks for the |j| axis.
+% * Add step to toolbox configuration to open and save the Simulink library
+% file. This prevents warnings that say it was last saved on an old version of
+% Simulink, and mitigates an Simulink defect where the mask dialogs are laid out
+% incorrectly.
+
 
 %%
 % *3.0.0.40* $\to$ *3.0.0.50*
