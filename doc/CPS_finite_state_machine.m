@@ -85,12 +85,15 @@ model_path = 'hybrid.examples.finite_state_machine.fsm';
 open_system(which(model_path))
 
 %%
-% The functions used to define $f, g, C,$ and $D$ in the |FSM| blocks 
-% are included below.
-%
-% *flow map* |f| *block*
-% 
-% <include>src/Matlab2tex_FSM/f.m</include>
+% The interior of the |FSM| block is shown here. 
+model_path = 'hybrid.examples.finite_state_machine.fsm';
+load_system(which(model_path))
+open_system('fsm/FSM', 'force') % the 'force' option looks inside the mask.
+
+%%
+% The functions used to define $g, C,$ and $D$ in the |FSM| blocks 
+% are included below. When using the finite state machine block, these functions
+% should be modified to in accordance with the system being modeled.
 %
 % *flow set* |C| *block*
 % 

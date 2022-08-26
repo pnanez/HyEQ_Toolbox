@@ -418,8 +418,9 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         end
         
         function testWarnMultipleTitlesWhenAutoSubplotsOff(testCase)
-            labels = {'Title 1', 'Title 2'};
-            fh = @() HybridPlotBuilder().titles(labels).plotFlows(testCase.sol_2);
+            titles = {'Title 1', 'Title 2'};
+            hpb = HybridPlotBuilder().titles(titles);
+            fh = @() hpb.plotFlows(testCase.sol_2);
             testCase.verifyWarning(fh, 'Hybrid:ExtraTitles');
         end
         
@@ -440,7 +441,8 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         
         function testNoWarnExtraLabelsInPhasePlot(testCase)
             labels = {'Label 1', 'Label 2', 'Label 2'};
-            fh = @() HybridPlotBuilder().labels(labels).select(1:2).plotPhase(testCase.sol_3);
+            hpb = HybridPlotBuilder().labels(labels).select(1:2);
+            fh = @() hpb.plotPhase(testCase.sol_3);
             testCase.verifyWarningFree(fh);
         end
         
