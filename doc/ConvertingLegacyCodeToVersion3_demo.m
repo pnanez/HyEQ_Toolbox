@@ -125,5 +125,4 @@
 %   sol = HybridArc(t, j, x);
 % 
 % Then, the hybrid arc can be plotted using all of the tools described in 
-% <matlab:hybrid.internal.openHelp('HybridPlotBuilder_demo') Creating plots with
-% HybridPlotBuilder>.
+% <matlab:hybrid.internal.openHelp('HybridPlotBuilder_demo') Plotting Hybrid Arcs>.

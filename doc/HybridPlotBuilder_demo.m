@@ -184,9 +184,9 @@ HybridPlotBuilder()...
     .plotPhase(sol_3D.select(1:2))
 
 %% 
-% To hide jumps or flows, set the corresponding color to 'none.' To hide jump
-% markers only, but show jump lines set the marker style to 'none'. Similarly,
-% to hide only jump lines, set the jump line style to 'none.'
+% To hide jumps or flows, set the corresponding color to |'none'|. To hide jump
+% markers only, but show jump lines set the marker style to |'none'|. Similarly,
+% to hide only jump lines, set the jump line style to |'none'|.
 HybridPlotBuilder()...
     .flowColor('none')...
     .jumpEndMarker('none')...
@@ -236,8 +236,8 @@ hpb.legend('$3h$', '$3v$').plotFlows(sol, @(x) 3*x);
 % For state axes, labels are set via the |labels| function (or, optionally,
 % the |label| function if there is only one label). 
 % Depending on the type of plot and whether auto-subplots is enabled, all
-% components can be grouped into a single label or each
-% component can have its own label. 
+% components will either be grouped into a single label or each
+% component will have its own label. 
 % All components are grouped into a single label if auto-subplots is |'off'| and
 % the plot is generated using |plotFlows|, |plotJumps|, or |plotHybrid| 
 % (in other words, any plotting function except |phasePlot|).
