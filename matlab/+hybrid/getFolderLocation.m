@@ -8,7 +8,7 @@ function f = getFolderLocation(name, varargin)
 % * 'matlab': The directory containing the MATLAB source code.
 % * 'simulink': The directory containing the SIMULINK source code.
 %
-% Subdirectories can be accessed by including additional input arguments.
+% Subdirectories and files can be accessed by including additional input arguments.
 % 
 % Added in HyEQ Toolbox version 3.0.
 

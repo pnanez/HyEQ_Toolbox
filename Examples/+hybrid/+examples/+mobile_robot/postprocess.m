@@ -1,5 +1,8 @@
 % Postprocessing script for Continuous-time Plant Example
 
+% Read parameters
+maxX = parameters.maxX;
+
 % Plot state trajectory
 figure(1)
 clf

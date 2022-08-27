@@ -4,8 +4,9 @@ solz = HybridArc(tz, jz, z);
 solhatz = HybridArc(thatz, jhatz, hatz);
 
 % Plot solution
-figure(1) 
+f = figure(1);
 clf
+f.Position = [100 100 740 500]; % Increase width
 hpb = HybridPlotBuilder();
 hpb.subplots('on').color('matlab');
 hpb.legend('System state $x_1$','System state $x_2$',...

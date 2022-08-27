@@ -7,7 +7,7 @@
     <param.summary />
     <param.description />
     <param.screenshot />
-    <param.version>3.0.0.59</param.version>
+    <param.version>3.0.0.60</param.version>
     <param.output>${PROJECT_ROOT}\Hybrid Equations Toolbox.mltbx</param.output>
     <param.products.name />
     <param.products.id />

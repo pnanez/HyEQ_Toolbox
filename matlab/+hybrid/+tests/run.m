@@ -18,6 +18,12 @@ elseif strcmpi(filter, 'fast')
     test_packages = {'hybrid.tests'};
 end
 
+
+% Close all Simulink systems.
+while ~isempty(gcs())
+    close_system(gcs());
+end
+
 if verLessThan('matlab', '9.2') 
     % I'm not sure when 'Strict' was introduced as a runtests option.
     % Please increase the version number as needed.

@@ -129,15 +129,7 @@ open_system(which(model_path))
 %
 % *flow set* |C| *block*
 % 
-% <include>src/Matlab2tex_CPS_ContinuousPlant/g.m</include>
-%
-% *jump map* |g| *block*
-% 
 % <include>src/Matlab2tex_CPS_ContinuousPlant/C.m</include>
-%
-% *jump set* |D| *block*
-% 
-% <include>src/Matlab2tex_CPS_ContinuousPlant/D.m</include>
 % 
 % The ADC and ZOH blocks are described in
 % <matlab:hybrid.internal.openHelp('CPS_analog_to_digital_converter') Analog-to-Digital Converter> 

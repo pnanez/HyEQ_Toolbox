@@ -101,8 +101,8 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             ruler = get(ax, 'XAxis');
             if ischar(ruler) || ~isprop(ruler, 'LimitsChangedFcn') ...
                     || ~isprop(ruler, 'TickValues')
-                testCase.assumeFail(['On this current of MATLAB, we ', ...
-                    'don''t remove noninteger ticks for the j-axis.']);
+                testCase.assumeFail(['On the current version of MATLAB, we ', ...
+                    'don''t remove noninteger ticks from the j-axis.']);
             end
             function is_all = allInteger(property_name)
                 prop = get(gca(), property_name);

@@ -86,9 +86,9 @@ open_system(which(model_path))
 
 %%
 % The interior of the |FSM| block is shown here. 
-model_path = 'hybrid.examples.finite_state_machine.fsm';
-load_system(which(model_path))
 open_system('fsm/FSM', 'force') % the 'force' option looks inside the mask.
+snapnow
+close_system('fsm');
 
 %%
 % The functions used to define $g, C,$ and $D$ in the |FSM| blocks 
@@ -152,8 +152,7 @@ HybridPlotBuilder().subplots('on')...
 % Clean up. It's important to include an empty line before this comment so it's
 % not included in the HTML. 
 
-% Close the Simulink file.
-close_system 
+% Restore warning.
 warning('on','Simulink:Commands:LoadingOlderModel') % Renable warning.
 
 % Navigate to the doc/ directory so that code is correctly included with
