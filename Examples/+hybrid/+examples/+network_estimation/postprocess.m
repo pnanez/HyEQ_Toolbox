@@ -4,8 +4,9 @@ solz = HybridArc(tz, jz, z);
 solhatz = HybridArc(thatz, jhatz, hatz);
 
 % Plot solution
-figure(1) 
+f = figure(1);
 clf
+f.Position = [100 100 740 500]; % Increase width
 hpb = HybridPlotBuilder();
 hpb.subplots('on').color('matlab');
 hpb.legend('System state $x_1$','System state $x_2$',...
@@ -15,4 +16,4 @@ hold on
 hpb.legend({'Estimation $\hat{x}_1$',...
            'Estimation $\hat{x}_2$','Estimation $\hat{x}_3$',...
            'Estimation $\hat{x}_4$'},'Location', 'eastoutside')...
-    .plotFlows(solhatz.slice(1:4)) 
+    .plotFlows(solhatz.select(1:4)) 

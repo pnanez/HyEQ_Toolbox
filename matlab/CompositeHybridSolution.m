@@ -1,7 +1,7 @@
 classdef CompositeHybridSolution < HybridSolution
 % A solution to a composite hybrid system.
 %
-% See also: HybridSolution, CompositeHybridSystem, HybridSubsystemSolution.
+% See also: HybridArc, HybridSolution, CompositeHybridSystem, HybridSubsystemSolution.
 % 
 % Added in HyEQ Toolbox version 3.0.
 

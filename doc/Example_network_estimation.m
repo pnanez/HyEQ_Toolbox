@@ -4,7 +4,7 @@
 % modeled in Simulink as a hybrid system.
 
 %% 
-% The files for this example are found in the package
+% The files for this example are found in the <matlab:hybrid.internal.openHelp('MATLAB_packages') package>
 % |hybrid.examples.network_estimation|:
 % 
 % * <matlab:open('hybrid.examples.network_estimation.initialize') initialize.m> 
@@ -275,7 +275,7 @@ hold on
 hpb.legend({'Estimation $\hat{x}_1$',...
     'Estimation $\hat{x}_2$','Estimation $\hat{x}_3$',...
     'Estimation $\hat{x}_4$'},'Location', 'eastoutside')...
-    .plotFlows(solhatz.slice(1:4)) 
+    .plotFlows(solhatz.select(1:4)) 
 
 %% 
 

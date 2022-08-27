@@ -50,7 +50,7 @@
             {"name": "transformed_arc", "type":"HybridArc"}
           ]
     },
-"HybridArc.slice": 
+"HybridArc.select": 
     { "inputs":
         [
             {"name":"this", "kind":"required", "type":"HybridArc"},
@@ -532,13 +532,6 @@
     { "inputs":
      [{"name":"this"},
       {"name":"on/off", "kind":"required", "type":"choices={'on', 'off'}"}
-      ], 
-     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
-    },
-"HybridPlotBuilder.slice": 
-    { "inputs":
-     [{"name":"this"},
-      {"name":"ndxs", "kind":"required", "type":["integer", "vector"], "purpose":"Component indices."}
       ], 
      "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
     },

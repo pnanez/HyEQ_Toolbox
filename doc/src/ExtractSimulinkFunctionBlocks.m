@@ -39,10 +39,10 @@ copyfile(which([example_1_2_package, 'initialize']), out_dir_1_2, 'f')
 copyfile(which([example_1_2_package, 'postprocess']), out_dir_1_2, 'f')
 
 %% Folder Matlab2tex_1_3
-extract('bouncing_ball_with_input', 'ball_with_input', 'HS/flow set C', 'Matlab2tex_1_3', 'C')
-extract('bouncing_ball_with_input', 'ball_with_input', 'HS/jump set D', 'Matlab2tex_1_3', 'D')
-extract('bouncing_ball_with_input', 'ball_with_input', 'HS/flow map f', 'Matlab2tex_1_3', 'f')
-extract('bouncing_ball_with_input', 'ball_with_input', 'HS/jump map g', 'Matlab2tex_1_3', 'g')
+extract('bouncing_ball_with_input', 'ball_with_input', 'HSu/flow set C', 'Matlab2tex_1_3', 'C')
+extract('bouncing_ball_with_input', 'ball_with_input', 'HSu/jump set D', 'Matlab2tex_1_3', 'D')
+extract('bouncing_ball_with_input', 'ball_with_input', 'HSu/flow map f', 'Matlab2tex_1_3', 'f')
+extract('bouncing_ball_with_input', 'ball_with_input', 'HSu/jump map g', 'Matlab2tex_1_3', 'g')
 
 %% Folder Matlab2tex_1_5
 extract('vehicle_on_constrained_path', 'vehicle_on_path', 'HS/flow set C', 'Matlab2tex_1_5', 'C')
@@ -109,7 +109,7 @@ extract('network_estimation', 'network', 'Estimator/jump map g', 'Matlab2tex_CPS
 %% Folder Matlab2tex_FSM
 extract('finite_state_machine', 'fsm', 'FSM/flow set C', 'Matlab2tex_FSM', 'C')
 extract('finite_state_machine', 'fsm', 'FSM/jump set D', 'Matlab2tex_FSM', 'D')
-extract('finite_state_machine', 'fsm', 'FSM/flow map f', 'Matlab2tex_FSM', 'f')
+% extract('finite_state_machine', 'fsm', 'FSM/flow map f', 'Matlab2tex_FSM', 'f')
 extract('finite_state_machine', 'fsm', 'FSM/jump map g', 'Matlab2tex_FSM', 'g')
 
 %% Folder ADC_1

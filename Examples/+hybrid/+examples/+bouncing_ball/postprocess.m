@@ -19,6 +19,6 @@ grid on
 % Plot the first component of the solution vs. t and j.
 figure(3)
 clf
-plotHybrid(sol.slice(1))     
+plotHybrid(sol.select(1))     
 grid on
 view(37.5,30)

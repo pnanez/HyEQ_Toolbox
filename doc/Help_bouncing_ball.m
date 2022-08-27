@@ -1,7 +1,7 @@
 %% Example Hybrid System with External Functions (Bouncing Ball)
 % In this example, a bouncing ball is modeled in Simulink as a hybrid system.
 %% 
-% The files for this example are found in the package
+% The files for this example are found in the <matlab:hybrid.internal.openHelp('MATLAB_packages') package>
 % |hybrid.examples.bouncing_ball|:
 % 
 % * <matlab:open('hybrid.examples.bouncing_ball.initialize') |initialize.m|> 
@@ -26,7 +26,7 @@
 % $$\begin{array}{ll}
 % f(x) := \left[\begin{array}{c}
 %       x_{2} \\
-%     -g
+%     -\gamma
 %  \end{array}\right],
 %    & C := \{ x \in \mathbf{R}^{2} \times \mathbf{R} \mid x_{1} \geq 0 \} 
 % \\ \\
@@ -36,7 +36,7 @@
 %    & D := \{x \in \mathbf{R}^2 \times \mathbf{R} \mid x_1 \leq 0,\ x_2 \leq 0\}
 % \end{array}$$
 % 
-% where $g > 0$ is the gravity constant
+% where $\gamma > 0$ is the gravity constant
 % and $\lambda \in [0,1)$ is the restitution coefficient.
 % For this example, we consider a ball bouncing on a floor at zero height.
 
@@ -149,7 +149,7 @@ hpb.plotJumps(sol)
 %%
 % The next plot depicts the corresponding hybrid arc for the position state.
 clf
-hpb.plotHybrid(sol.slice(1))     
+hpb.plotHybrid(sol.select(1))     
 grid on
 view(37.5,30)
 

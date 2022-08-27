@@ -7,7 +7,7 @@
     <param.summary />
     <param.description />
     <param.screenshot />
-    <param.version>3.0.0.51</param.version>
+    <param.version>3.0.0.60</param.version>
     <param.output>${PROJECT_ROOT}\Hybrid Equations Toolbox.mltbx</param.output>
     <param.products.name />
     <param.products.id />
@@ -49,7 +49,7 @@ doc/src
 **/slprj
 **/*temp.m
 **/temp_*.m
-% Don't include functionSignatures.json because it is not supported on older 
+% We exclude matlab/functionSignatures.json because it is not supported on older 
 % versions of MATLAB. Instead, we include functionSignatures_disabled.json, which 
 % we then move to "functionSignatures.json", if supported, at the end of installation.
 **/functionSignatures.json

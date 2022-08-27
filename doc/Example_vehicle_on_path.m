@@ -3,7 +3,7 @@
 % a path. 
 
 %% 
-% The files for this example are found in the package
+% The files for this example are found in the <matlab:hybrid.internal.openHelp('MATLAB_packages') package>
 % |hybrid.examples.vehicle_on_constrained_path|:
 % 
 % * <matlab:open('hybrid.examples.vehicle_on_constrained_path.initialize') initialize.m> 
@@ -108,25 +108,25 @@ subplot(3, 1, 1)
 hpb = HybridPlotBuilder().color('matlab')...
     .legend('$\xi_1$', '$\xi_2$');
 hpb.title('Position');
-hpb.plotFlows(sol.slice(1:2))
+hpb.plotFlows(sol.select(1:2))
 ylim('padded')
 
 subplot(3, 1, 2)
 hpb.legend('$\xi_3$');
 hpb.title('Orientation Angle');
-hpb.plotFlows(sol.slice(3))
+hpb.plotFlows(sol.select(3))
 ylim('padded')
 
 subplot(3, 1, 3)
 hpb.legend('$q$').title('Mode').color('black');
-hpb.plotFlows(sol.slice(4))
+hpb.plotFlows(sol.select(4))
 ylim('padded')
 
 %%
 % The following plot depicts the trajectory of the vehicle.
 clf
 HybridPlotBuilder().xLabelFormat('$\\xi_{%d}$')...
-    .plotPhase(sol.slice(1:2))
+    .plotPhase(sol.select(1:2))
 ylim('tight')
 
 %% 

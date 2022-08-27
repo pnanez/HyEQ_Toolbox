@@ -4,14 +4,15 @@
 % written using v2.04 should continue to work on v3.0, but will need to be to
 % modified to take advantage of some of the new features. This document
 % describes how to make those change. Hybrid systems defined in Simulink can be
-% left unchanged, but the plotting of solutions can be updated. 
+% left unmodified, but the plotting of solutions can be updated to
+% take advantage of new tools.
 
 %% Defining Hybrid Systems
 % In v2.04, a hybrid system was defined by creating four MATLAB function files
-% |C.m|, |f.m|, |D.m|, and |g.m| any where on the MATLAB search path. Examples
-% for the bouncing ball are shown after this paragraph. The only way that
+% |C.m|, |f.m|, |D.m|, and |g.m| anywhere on the MATLAB search path. Examples
+% for the bouncing ball are shown at the end of this section. The only way that
 % these four functions are grouped together, as far as MATLAB knows, is that
-% they would all be passed together to |HyEQsolver|, e.g., 
+% they are all be passed together to |HyEQsolver|, e.g., 
 % |HyEQsolver(@f, @g, @C, @D, ...)|.
 % 
 % In v3.0, we introduced the |HybridSystem| class so that all of the data 
@@ -39,6 +40,8 @@
 % single file, listed above, and the computation of solutions is slower and
 % harder to debug. For these reasons, we strongly reccomend writing new
 % |HybridSystem| subclasses whenever writing new code.
+% 
+% *Example Function Files for the Bouncing Ball Hybrid System*
 % 
 % *C.m*:
 % 
@@ -122,5 +125,4 @@
 %   sol = HybridArc(t, j, x);
 % 
 % Then, the hybrid arc can be plotted using all of the tools described in 
-% <matlab:hybrid.internal.openHelp('HybridPlotBuilder_demo') Creating plots with
-% HybridPlotBuilder>.
+% <matlab:hybrid.internal.openHelp('HybridPlotBuilder_demo') Plotting Hybrid Arcs>.

@@ -3,7 +3,7 @@
 % intersection of the flow and jump sets.
 
 %% 
-% The files for this example are found in the package
+% The files for this example are found in the <matlab:hybrid.internal.openHelp('MATLAB_packages') package>
 % |hybrid.examples.behavior_in_C_intersection_D|:
 % 
 % * <matlab:open('hybrid.examples.behavior_in_C_intersection_D.initialize') initialize.m> 

@@ -14,7 +14,19 @@ classdef ExamplesTest < matlab.unittest.TestCase
     end
 
     methods (Test)
-       
+        
+        % ===== Test MATLAB Examples =====
+
+        function test_run_bouncing_ball(~)
+            hybrid.examples.run_bouncing_ball
+        end
+
+        function test_run_bouncing_ball_with_input(~)
+            hybrid.examples.run_bouncing_ball_with_input
+        end
+
+        % ===== Test Simulink Examples =====
+
         function test_analog_to_digital_converter(~)
             clear
             checkExample('analog_to_digital_converter', 'adc')

@@ -129,7 +129,7 @@ classdef HybridPlotBuilder < handle
             %
             % See also: labelInterpreter, labelSize, titleSize.
             if verLessThan('matlab', '8.5')
-                warning('Setting the ''tickLabelInterpreter'' with this function is not supported on R2014b.')
+                warning('Setting the ''tickLabelSize'' with this function is not supported on R2014b.')
             end
 
             this.settings.tick_label_size = size;
@@ -148,6 +148,8 @@ classdef HybridPlotBuilder < handle
             %  'none': 't'
             %   'tex': 't'
             % 'latex': '$t$'
+            % 
+            % To remove the label, use an empty string.
             %
             % See also: jLabel, label, labels, labelInterpreter.
             this.settings.t_label = t_label;
@@ -161,10 +163,13 @@ classdef HybridPlotBuilder < handle
 
         function this = jLabel(this, j_label)
             % Set the label for the discrete time axis 'j'.
+            %
             % The default value depends on the label interpreter:
             %  'none': 'j'
             %   'tex': 'j'
             % 'latex': '$j$'
+            % 
+            % To remove the label, use an empty string.
             %
             % See also: tLabel, label, labels, labelInterpreter.
             this.settings.j_label = j_label;
@@ -573,29 +578,9 @@ classdef HybridPlotBuilder < handle
             % and the 'label' values corresponding to the plotted components are
             % added to each axis, if provided (otherwise default values are used).
             %
-            % See also: slice, configurePlots, titles, labels.
+            % See also: configurePlots, titles, labels.
             this.settings.auto_subplots = auto_subplots;
             this.last_function_call = 'subplots';
-
-            if nargout == 0
-                % Prevent output if function is not terminated with a semicolon.
-                clearvars this
-            end
-        end
-
-        function this = slice(this, component_indices)
-            % Select the components of x to plot. 
-            % 
-            % If plotting a function of the state, such as 
-            %   HybridPlotBuilder().slice(3).plotFlows(sol, @(x3) cos(x3));
-            % then x is sliced before it is passed to the given function, so
-            % the result would be a plot of cosine of the third component of x.
-            % 
-            % To reset to the default value, call slice([]).
-            %
-            % See also: filter.
-            this.settings.component_indices = component_indices;
-            this.last_function_call = 'slice';
 
             if nargout == 0
                 % Prevent output if function is not terminated with a semicolon.
@@ -612,7 +597,7 @@ classdef HybridPlotBuilder < handle
             %
             % To reset to the default value, call filter([]).
             %
-            % See also: slice.
+            % See also: select.
             this.settings.timesteps_filter = timesteps_filter;
             this.last_function_call = 'filter';
 
@@ -716,10 +701,9 @@ classdef HybridPlotBuilder < handle
             % 
             % See also: plotJumps, plotHybrid, plotPhase,
             % HybridSolution.evaluateFunction.
-            import hybrid.internal.*;
-            [hybrid_sol, x_label_ndxs, x_values_ndxs] ...
-                = convert_varargin_to_solution_obj(varargin, this.settings.component_indices);
-            plot_data = this.createPlotDataArray(hybrid_sol, x_label_ndxs, x_values_ndxs, {'t', 'x'});
+            [hybrid_sol, x_label_ndxs] ...
+                = hybrid.internal.convert_varargin_to_solution_obj(varargin, this.settings.component_indices);
+            plot_data = this.createPlotDataArray(hybrid_sol, x_label_ndxs, {'t', 'x'});
             this.plot_from_plot_data_array(plot_data);
             this.last_function_call = [];
             
@@ -751,8 +735,8 @@ classdef HybridPlotBuilder < handle
             % 
             % See also: plotFlows, plotHybrid, plotPhase,
             % HybridSolution.evaluateFunction.
-            [hybrid_sol, x_label_ndxs, value_ids] = hybrid.internal.convert_varargin_to_solution_obj(varargin, this.settings.component_indices);
-            plot_struct = this.createPlotDataArray(hybrid_sol, x_label_ndxs, value_ids, {'j', 'x'});
+            [hybrid_sol, x_label_ndxs] = hybrid.internal.convert_varargin_to_solution_obj(varargin, this.settings.component_indices);
+            plot_struct = this.createPlotDataArray(hybrid_sol, x_label_ndxs, {'j', 'x'});
             this.plot_from_plot_data_array(plot_struct);
             this.last_function_call = [];
             
@@ -784,8 +768,9 @@ classdef HybridPlotBuilder < handle
             % 
             % See also: plotFlows, plotJumps, plotPhase,
             % HybridSolution.evaluateFunction.
-            [hybrid_sol, x_label_ndxs, x_values_ndxs] = hybrid.internal.convert_varargin_to_solution_obj(varargin, this.settings.component_indices);
-            plot_struct = this.createPlotDataArray(hybrid_sol, x_label_ndxs, x_values_ndxs, {'t', 'j', 'x'});
+            [hybrid_sol, x_label_ndxs] = hybrid.internal.convert_varargin_to_solution_obj(varargin, this.settings.component_indices);
+            
+            plot_struct = this.createPlotDataArray(hybrid_sol, x_label_ndxs, {'t', 'j', 'x'});
             this.plot_from_plot_data_array(plot_struct)
             this.last_function_call = [];
 
@@ -800,7 +785,7 @@ classdef HybridPlotBuilder < handle
             % Plot a phase plot of the hybrid solution.
             %
             % The output of depends on the dimension of the system 
-            % or the number of components selected with 'slice()'. 
+            % or the number of components selected with 'select()'. 
             % The if there are two components, then the plot is a a 2D phase
             % plot and if there are three components, then it is a 3D phase
             % plot. Otherwise, an error is thrown.
@@ -822,14 +807,12 @@ classdef HybridPlotBuilder < handle
             % 
             % See also: plotFlows, plotJumps, plotHybrid,
             % HybridSolution.evaluateFunction.
-            [hybrid_sol, x_label_ndxs, value_ids] = hybrid.internal.convert_varargin_to_solution_obj(varargin, this.settings.component_indices);
-            x_label_ndxs = x_label_ndxs';
-            value_ids = value_ids';
+            [hybrid_sol, x_label_ndxs] = hybrid.internal.convert_varargin_to_solution_obj(varargin, this.settings.component_indices);
             switch size(x_label_ndxs, 2)
                 case 2
-                    plot_struct = this.createPlotDataArray(hybrid_sol, x_label_ndxs, value_ids, {'x', 'x'});
+                    plot_struct = this.createPlotDataArray(hybrid_sol, x_label_ndxs, {'x', 'x'});
                 case 3
-                    plot_struct = this.createPlotDataArray(hybrid_sol, x_label_ndxs, value_ids, {'x', 'x', 'x'});
+                    plot_struct = this.createPlotDataArray(hybrid_sol, x_label_ndxs, {'x', 'x', 'x'});
                 otherwise
                     error('Expected ''x'' to be 2 or 3 dimensions, instead was %d.', size(x_label_ndxs, 2));
             end
@@ -906,25 +889,57 @@ classdef HybridPlotBuilder < handle
             this.subplots(auto_subplots);
             this.last_function_call = 'autoSubplots';
         end
+
+        function this = slice(this, varargin)
+            % Select the components of x to plot (DEPRECATED). 
+            hybrid.internal.deprecationWarning('HybridPlotBuilder.slice', 'HybridArc.select')
+            this.select(varargin{:});
+            this.last_function_call = 'slice';
+            
+            if nargout == 0
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
+            end
+        end
+
+        function this = select(this, component_indices)
+            % Select the components of x to plot (DEPRECATED). 
+            % 
+            % If plotting a function of the state, such as 
+            %   HybridPlotBuilder().select(3).plotFlows(sol, @(x3) cos(x3));
+            % then x is selected before it is passed to the given function, so
+            % the result would be a plot of cosine of the third component of x.
+            % 
+            % To reset to the default value, call select([]).
+            %
+            % See also: filter.
+            
+            % We don't plot a deprecation warning, here, because this function was
+            % never publicly released---we keep it here so we can run the suite
+            % of tests written for HybridPlotBuilder.slice without failing tests
+            % due to unwanted warnings.
+
+            this.settings.component_indices = component_indices;
+            this.last_function_call = 'select';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
+            end
+        end
     end
     
     methods(Access = private)
-        function plot_data_array = createPlotDataArray(this, hybrid_sol, x_ndxs, value_ids, axis_symbols)
+        function plot_data_array = createPlotDataArray(this, hybrid_sol, x_labels_ndxs, axis_symbols)
             % axis_symbols: a cell array containing 2 or 3 cells that contain
             % a combination of 't', 'j' and 'x'.
             plot_data_array = hybrid.internal.buildPlotDataArray(...
-                                axis_symbols, x_ndxs, value_ids, hybrid_sol, this.settings);
+                                axis_symbols, x_labels_ndxs, hybrid_sol, this.settings);
         end
 
         function plot_from_plot_data_array(this, plot_data_array)
-            % axis_ids is a nx1 cell array. The kth entry contains a value that
-            % identifies what to plot in the kth dimension. Each entry can
-            % contain a scalar or a vector (each entry must have the same length). 
-            % The length of each entry is the number of plots to draw. If
-            % automatic subplots is on, then each plot is automatically placed
-            % into a new subplot.
-            % 
-            % plot_data_array is an array of ??? 
+            % Given the data in plot_data_array, generate a plot or series of
+            % subplots.
              
             % Save the 'hold' status.
             is_hold_on_before = ishold();
@@ -947,8 +962,13 @@ classdef HybridPlotBuilder < handle
                         this.settings.plot_function_2D(axes_array(i_sp), nan, nan);
                     end
                     hold on
-                    fh = @() hold(axes_array(i_sp), hold_status_before);
-                    restore_hold_on_cleanup(i_sp) = onCleanup(fh); %#ok<AGROW>
+
+                    % Reset the 'hold' status from before the start of this function.
+                    % It's possible that the axes were closed already, so we use
+                    % safeCallback to ensure that this doesn't cause any errors.
+                    reset_hold_fh = @() hold(axes_array(i_sp), hold_status_before);
+                    safe_reset_hold_fh = @() safeCallback(axes_array(i_sp), reset_hold_fh);                                                           
+                    restore_hold_on_cleanup(i_sp) = onCleanup(safe_reset_hold_fh); %#ok<AGROW>
                 end
             end
 
@@ -978,7 +998,6 @@ classdef HybridPlotBuilder < handle
                         this.plotFlow3D(axes, flows_x, plt_data.flow_args)
                         this.plotJump3D(axes, jumps_x, jumps_befores, jumps_afters, plt_data.jump_args)
                         view(axes, 34.8,16.8)
-
                     otherwise
                         error('plot_values must have 2 or 3 components.')
                 end
@@ -1038,16 +1057,7 @@ classdef HybridPlotBuilder < handle
                     error('No data to plot. This might be caused because the hybrid arc has dimension zero.')
                 end
 
-                is2D = size(plot_data_array(1).plot_values, 2) == 2;
-                if is2D
-                    % Link the x-axes of the subplots so zooming and panning
-                    % one subplot effects the others.
-                    linkaxes(axes_array,'x')
-                else
-                    % Link the subplot axes so that the views are sync'ed.
-                    link = linkprop(axes_array, {'View', 'XLim', 'YLim'});
-                    setappdata(gcf, 'StoreTheLink', link);
-                end
+                safeCallback(axes_array, @() linkTimeAxes(plot_data_array, axes_array))
             end
         end
        
@@ -1215,6 +1225,39 @@ function on_off = logical2on_off(b)
     end
 end
 
+function safeCallback(required_axes_handles, callback)
+% Check that 'required_handles' all still exist. If they do, 
+% run the callback. Otherwise, print an warning.
+    try
+        if all(isvalid(required_axes_handles))
+            callback();
+        end
+    catch e
+        id = e.identifier;
+        if strcmp(id,'MATLAB:class:InvalidHandle') ...
+            || strcmp(id, 'MATLAB:graphics:proplink')
+            % Don't bother warning. The figure was (probably) closed by the user.
+        else
+            rethrow(e)
+        end
+    end
+end
+
+function linkTimeAxes(plot_data_array, axes_array) 
+% Link the x- and possibly y-axes of each subplot together so that all of the
+% subplots move when any one of them pans or zooms.
+    is2D = size(plot_data_array(1).plot_values, 2) == 2;
+    if is2D
+        % Link the x-axes of the subplots so zooming and panning
+        % one subplot effects the others.
+        @() linkaxes(axes_array,'x');
+    else
+        % Link the subplot axes so that the views are sync'ed.
+        link = linkprop(axes_array, {'View', 'XLim', 'YLim'});
+        setappdata(gcf, 'StoreTheLink', link);
+    end
+end
+
 function enableRemoveNonIntegerTicksCallback(ax, axis_name)
     ruler = get(ax, axis_name);
     if ischar(ruler) || ~isprop(ruler, 'LimitsChangedFcn') || ~isprop(ruler, 'TickValues')
@@ -1228,8 +1271,10 @@ function enableRemoveNonIntegerTicksCallback(ax, axis_name)
 end
 
 function removeNonintegerTicks(ruler,~)
+% For the given ruler, delete all ticks that are at noninteger values.
+% This function is used as a callback for when the ruler limits change.
 
-    % Make ruler value mode automatic, momentaryily, (if it isn't already) 
+    % Make ruler value mode 'auto', momentarily, (if it isn't already) 
     % so that the location of the tick marks are recomputed.
     ruler.TickValuesMode = 'auto';
     

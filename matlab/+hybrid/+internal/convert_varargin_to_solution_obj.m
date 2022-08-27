@@ -1,25 +1,22 @@
-function [hybrid_arc, label_ids, value_ids] = convert_varargin_to_solution_obj(varargin_cell, slice_ndxs)
+function [hybrid_arc, original_ndxs] = convert_varargin_to_solution_obj(varargin_cell, select_ndxs)
 % Given varargin to a HybridArc object according to the following pattern:
-%     (sol) -> HybridArc(sol.t, sol.j, sol.x(:, slice_ndxs))
-%  (sol, x) -> HybridArc(sol.t, sol.j,x(:, slice_ndxs))
-% (sol, fh) -> HybridArc(sol.t, sol.j, fh(sol.x(:, slice_ndxs)), or
-% (t, j, x) -> HybridArc(t, j, x(:, slice_ndxs)),
+%     (sol) -> HybridArc(sol.t, sol.j, sol.x(:, select_ndxs))
+%  (sol, x) -> HybridArc(sol.t, sol.j,x(:, select_ndxs))
+% (sol, fh) -> HybridArc(sol.t, sol.j, fh(sol.x(:, select_ndxs)), or
+% (t, j, x) -> HybridArc(t, j, x(:, select_ndxs)),
 % 
-% If 'slice_ndxs' is not provided, then the entire x array is used.
-% % 
-% The value of 'label_ids' is set to 'slice_ndxs', unless 'slice_ndxs' is not
-% provided or 'fh' is used, in which case 'label_ids' is set to 1:length(x).
-% % 
-% The value of 'value_ids' is set to 1:length(x).
+% If 'select_ndxs' is not provided, then the entire x array is used.
+% 
+% The value of 'original_ndxs' is set to 'select_ndxs', unless 'select_ndxs' is not
+% provided or 'fh' is used, in which case 'original_ndxs' is set to 1:length(x).
 
-% Parse the base values of t, j, x.
-if isa(varargin_cell{1}, 'HybridArc')
-    assert(length(varargin_cell) <= 2)
-    hybrid_sol_in = varargin_cell{1};
-    t = hybrid_sol_in.t;
-    j = hybrid_sol_in.j;
-    x = hybrid_sol_in.x;
-else 
+if ~exist('select_ndxs', 'var')
+    select_ndxs = [];
+end
+do_select = ~isempty(select_ndxs);
+
+if isnumeric(varargin_cell{1})
+% If the first index is numeric, then varargin_cell must be in the form (t, j, x).
     if length(varargin_cell) ~= 3
         throw(MException('Hybrid:InvalidArgument', ...
             ['If the first argument is not a HybridArc, then there must be ' ...
@@ -43,71 +40,59 @@ else
             'When passing three arguments, the third argument must be numeric');
         throwAsCaller(e);
     end
+    hybrid_arc = HybridArc(t, j, x);
+
+    if do_select
+        hybrid_arc = hybrid_arc.select(select_ndxs);
+        original_ndxs = select_ndxs;
+    else
+        original_ndxs = 1:size(x, 2);
+    end
+    return
 end
-if ~exist('slice_ndxs', 'var') || isempty(slice_ndxs)
-    label_ids = (1:size(x, 2))';
-    value_ids = (1:size(x, 2))';
-elseif min(slice_ndxs) < 1
-    error('All slice indices bust be at least 1, but the minimum index was %d.', ...
-        min(slice_ndxs));
-elseif max(slice_ndxs) > size(x, 2)
-    error(['The maximum index in slice was %d ' ...
-           'but there are only %d components in x.'], ...
-        max(slice_ndxs), size(x, 2));
+
+% From this point on, the first argument must be a HybridArc. 
+hybrid_arc = varargin_cell{1};
+if ~isa(hybrid_arc, 'HybridArc')
+    e = MException('Hybrid:InvalidArgument', ...
+    'When passing one argument, it must be a HybridArc. Instead it was a %s.', ...
+    class(hybrid_arc));
+    throwAsCaller(e);
+end
+
+% The optional second argument can be 'fh' or 'x'.
+assert(length(varargin_cell) <= 2, 'Hybrid:InvalidArgument', 'Expected 1, 2 arguments.')
+
+do_transform = false;
+if length(varargin_cell) == 2 
+    second_arg_is_x = isnumeric(varargin_cell{2});
+    second_arg_is_fh = isa(varargin_cell{2}, 'function_handle');
+    assert(second_arg_is_x || second_arg_is_fh, 'Hybrid:InvalidArgument')
+    if second_arg_is_x
+        t = hybrid_arc.t;
+        j = hybrid_arc.j;
+        x = varargin_cell{2};
+        hybrid_arc = HybridArc(t, j, x);
+    end
+    if second_arg_is_fh
+        do_transform = true;
+        fh = varargin_cell{2};
+    end
+end
+
+if do_select
+    hybrid_arc = hybrid_arc.select(select_ndxs);
+    original_ndxs = select_ndxs;
 else
-    x = x(:, slice_ndxs);
-    label_ids = slice_ndxs';
-    value_ids = (1:size(x, 2))';
-end
-hybrid_arc = HybridArc(t, j, x);
-
-assert(length(label_ids) == size(hybrid_arc.x, 2))
-switch length(varargin_cell)
-    case 1
-        if ~isa(varargin_cell{1}, 'HybridArc')
-            e = MException('Hybrid:InvalidArgument', ...
-            'When passing one argument, it must be a HybridArc. Instead it was a %s.', ...
-            class(hybrid_sol_in));
-            throwAsCaller(e);
-        end
-        return
-    case 2
-        if ~isa(varargin_cell{1}, 'HybridArc')
-            e = MException('Hybrid:InvalidArgument', ...
-            ['When passing two arguments, the first argument must be a ' ...
-            'HybridArc. Instead it was a %s.'], ...
-            class(varargin_cell{1}));
-            throwAsCaller(e);
-        end
-        if isa(varargin_cell{2}, 'function_handle')
-            fh = varargin_cell{2};
-            x = hybrid_arc.evaluateFunction(fh);
-        elseif isnumeric(varargin_cell{2})
-            x = varargin_cell{2}; % Replace x with second argument
-
-            if exist('slice_ndxs', 'var')  && ~isempty(slice_ndxs)
-                x = x(:, slice_ndxs);
-            end
-        else
-            error('Incorrect')
-        end
-        label_ids = (1:size(x, 2))';
-        value_ids = (1:size(x, 2))';
-        hybrid_arc = HybridArc(t, j, x);
-    case 3
-        hybrid_arc = HybridArc(t, j, x);
-    otherwise
-        error('Hybrid:InvalidArgument', 'Expected 1, 2, or 3 arguments.')
-end
-if length(t) ~= length(j)
-    e = MException('HybridToolbox:MismatchedSizes', 'length(t)=%d ~= length(j)=%d', length(t), length(j));
-    throwAsCaller(e)
-end
-if length(t) ~= size(x, 1)
-    e = MException('HybridToolbox:MismatchedSizes', 'length(t)=%d ~= size(values, 1)=%d', length(t), size(x, 1));
-    throwAsCaller(e)
+    original_ndxs = 1:size(hybrid_arc.x, 2);
 end
 
-assert(size(hybrid_arc.x, 2) == numel(label_ids))
+if do_transform
+    hybrid_arc = hybrid_arc.transform(fh);
+    original_ndxs = 1:size(hybrid_arc.x, 2);
+end
+
+assert(size(hybrid_arc.x, 2) == numel(original_ndxs))
+assert(isrow(original_ndxs))
 
 end

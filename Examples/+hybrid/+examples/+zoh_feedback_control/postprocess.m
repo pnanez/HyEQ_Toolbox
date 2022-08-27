@@ -8,15 +8,21 @@ figure(1)
 clf
 subplot(2,1,1)
 hpb = HybridPlotBuilder();
-hpb.color('matlab').title('States and measured states');
-hpb.legend('$y_1$', '$y_2$').flowLineWidth(1).plotFlows(sol_plant)
+hpb.color('matlab')...
+    .title('States and measured states')...
+    .legend('$y_1$', '$y_2$')...
+    .flowLineWidth(1)...
+    .plotFlows(sol_plant)
 hold on
-hpb.legend('$zs_1$', '$zs_2$').plotFlows(sol_ADC.slice(1:2))
+hpb.legend('$zs_1$', '$zs_2$')...
+    .plotFlows(sol_ADC.select(1:2))
 grid on
 
 subplot(2,1,2)
 hpb = HybridPlotBuilder();
-hpb.title('Control Signal').color('matlab');
-hpb.plotFlows(sol_ZOH.slice(1));
+hpb.title('Control Signal')...
+    .legend({'$u$'}, 'Location', 'southeast')...
+    .color('matlab')...
+    .plotFlows(sol_ZOH.select(1));
 grid on
 

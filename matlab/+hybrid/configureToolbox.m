@@ -5,6 +5,7 @@ function configureToolbox()
 % 2. Prompts the user to run automated tests.
 % 3. Enables autocomplete data for the MATLAB editor in supported versions of
 %    MATLAB. 
+% 4. Saves the Simulink Library file with the current MATLAB version.
 % 
 % Added in HyEQ Toolbox version 3.0 
 
@@ -24,13 +25,14 @@ if length(hyeqsolver_paths) > 1
                 uninstall_script_path = uninstall_script_candidate_path;
                 disp(['A previous version of the Hybrid Equations Toolbox was found at "', toolbox_root_path_candidate, '".'])
                 disp(['Click <a href="matlab:run(''', uninstall_script_path,''')">here</a> to start the unstallation. ', ...
-                    'Afterwards, please run <a href="matlab:run(''hybrid.configureToolbox'')">configure_toolbox.m</a> again.'])
+                    'Afterwards, please run <a href="matlab:run(''hybrid.configureToolbox'')">hybrid.configureToolbox</a> again.'])
                 return
             end
         end
+        error('An uninstall script could not be found for any of the installed versions of the HyEQ Toolbox.')
     catch e
         warning('Hybrid:FailedAutomaticUninstall', ...
-            ['The following error occured when to start the automatic removal of ' ...
+            ['The following error occured when trying to remove the ' ...
             'old toolbox versions: %s. Please uninstall old versions manually.'], e.message)
         disp('Multiple versions of the HyEQsolver function were found on the MATLAB path at the following locations:')
         hyeqsolver_paths  %#ok<NOPRT> 
@@ -42,10 +44,20 @@ elseif isempty(hyeqsolver_paths)
     error('The Hybrid Equations Toolbox is not installed.')
 end
 
+% Enable Autocomplete information (if supported)
 if ~verLessThan('matlab','9.10')
     enable_enhanced_autocomplete(hyeqsolver_paths)
 end
 
+% Open and save the Simulink Library
+close_system('HyEQ_Library', 0) % Ensure there is not an old version of the library open.
+% Open, save, and close the new version.
+file_path = fullfile(hybrid.getFolderLocation('Simulink'), 'HyEQ_Library.slx');
+open_system(file_path)
+save_system(file_path)
+close_system(file_path)
+
+% Prompt to run automated tests.
 promptMessage = sprintf(['Do you want to run automated tests?\n' ...
                     'The tests will take less than a minute.']);
 button = questdlg(promptMessage, 'Run Tests', 'Run Tests', 'Skip Tests', 'Run Tests');

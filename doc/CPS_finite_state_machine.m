@@ -85,12 +85,15 @@ model_path = 'hybrid.examples.finite_state_machine.fsm';
 open_system(which(model_path))
 
 %%
-% The functions used to define $f, g, C,$ and $D$ in the |FSM| blocks 
-% are included below.
-%
-% *flow map* |f| *block*
-% 
-% <include>src/Matlab2tex_FSM/f.m</include>
+% The interior of the |FSM| block is shown here. 
+open_system('fsm/FSM', 'force') % the 'force' option looks inside the mask.
+snapnow
+close_system('fsm');
+
+%%
+% The functions used to define $g, C,$ and $D$ in the |FSM| blocks 
+% are included below. When using the finite state machine block, these functions
+% should be modified to in accordance with the system being modeled.
 %
 % *flow set* |C| *block*
 % 
@@ -149,8 +152,7 @@ HybridPlotBuilder().subplots('on')...
 % Clean up. It's important to include an empty line before this comment so it's
 % not included in the HTML. 
 
-% Close the Simulink file.
-close_system 
+% Restore warning.
 warning('on','Simulink:Commands:LoadingOlderModel') % Renable warning.
 
 % Navigate to the doc/ directory so that code is correctly included with

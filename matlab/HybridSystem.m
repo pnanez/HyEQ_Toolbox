@@ -534,6 +534,7 @@ end
 function str = xtj_arguments_to_string(x, t, j)
     % Convert the arguments x, t (optional), and j (optional) to a user-friendly
     % string for use in error messages.
+    newline = sprintf('\n'); % Backwards compatible version of 'newline'.
     str = [newline, '  x: '];
     str = [str, mat2str(x)];
     if exist('t', 'var')

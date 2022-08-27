@@ -4,7 +4,7 @@
 % determines the height of the platform.
 
 %% 
-% The files for this example are found in the package
+% The files for this example are found in the <matlab:hybrid.internal.openHelp('MATLAB_packages') package>
 % |hybrid.examples.bouncing_ball_with_input|:
 % 
 % * <matlab:open('hybrid.examples.bouncing_ball_with_input.initialize') initialize.m> 
@@ -70,10 +70,10 @@ sol = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j')
 % When the Simulink model is open, the blocks can be viewed and modified by
 % double clicking on them.
 
-% Open subsystem "HS" in Example1_3.slx. A screenshot of the subsystem will be
+% Open subsystem "HSu" in Example1_3.slx. A screenshot of the subsystem will be
 % automatically included in the published document.
 model_path = 'hybrid.examples.bouncing_ball_with_input.ball_with_input';
-block_path = 'ball_with_input/HS';
+block_path = 'ball_with_input/HSu';
 load_system(which(model_path))
 open_system('ball_with_input/')
 snapnow
@@ -122,8 +122,7 @@ close_system()
 warning('off','Simulink:Commands:LoadingOlderModel')
 model_path = 'hybrid.examples.bouncing_ball_with_input.ball_with_input2';
 load_system(which(model_path))
-open_system('ball_with_input2/HS')
-open_system('ball_with_input2/HS/flow map f')
+open_system('ball_with_input2/HS', 'force')
 snapnow();
 
 %% Example Output
@@ -139,7 +138,7 @@ plotFlows(sol)
 %%
 % The following plot depicts the hybrid arc for the height of the ball in hybrid time. 
 clf
-plotHybrid(sol.slice(1))     
+plotHybrid(sol.select(1))     
 grid on
 view(37.5, 30) 
 

@@ -17,10 +17,10 @@ close all
 
 configure_development_path
 
-do_publish_docs = false;
-do_tests = false;
+do_publish_docs = true;
+do_tests = true;
 do_package = true;
-do_cleanup_path = false;
+do_cleanup_path = do_package && true;
 
 projectFile = 'HybridEquationsToolbox.prj';
 toolbox_dirs = {'Examples', ...
@@ -37,8 +37,8 @@ for directory = toolbox_dirs
     addpath(directory{1})
 end
 
-functionSignituresAutocompleteInfoPath_dev = fullfile('matlab', 'functionSignatures.json');
-functionSignituresAutocompleteInfoPath_package = fullfile('matlab', 'functionSignatures_disabled.json');
+functionSignituresAutocompleteInfoPath_dev = hybrid.getFolderLocation('matlab', 'functionSignatures.json');
+functionSignituresAutocompleteInfoPath_package = hybrid.getFolderLocation('matlab', 'functionSignatures_disabled.json');
 
 if do_tests
     nTestsFailed = hybrid.tests.run();
@@ -50,18 +50,18 @@ end
 if do_publish_docs
     % Publish help files
 
-    cd('doc/src')
+    % Extract MATLAB code from Simulink blocks to include in the documentation.
+    cd(hybrid.getFolderLocation('doc', 'src'));
     ExtractSimulinkFunctionBlocks;
-    cd(proj_root)
 
     % Publish help files via 'publish' command.
-    cd('doc');
+    cd(hybrid.getFolderLocation('doc'));
     m_demo_paths = dir(fullfile('*.m'));
     for i = 1:numel(m_demo_paths)
         mfile_path = fullfile(m_demo_paths(i).folder, m_demo_paths(i).name);
         publish_to_html(mfile_path)
     end
-    cd(hybrid.getFolderLocation('root'));
+    cd(proj_root);
 
     % Close all the figures that were opened.
     close all

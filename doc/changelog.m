@@ -93,6 +93,25 @@
 
 %% Changes Between Builds
 %%
+% *3.0.0.50* $\to$ *3.0.0.56*
+% (Built August 25, 2022)
+% 
+% * RENAMED: |HybridArc.slice| to |HybridArc.select| (|HybridArc.slice | will 
+% print a deprecation warning, if used).
+% * DEPRECATED: |HybridPlotBuilder.slice| (use |HybridArc.select| instead).
+% * Misc. improvements to documentation and warning messages.
+% * Fixed: Errors that occured if the active figure was closed while
+% HybridPlotBuilder was currently creating a plot.
+% * Fixed: Allow |t| and |j| labels to be disabled in HybridPlotBuilder.
+% * Updated HybridPlotBuilder.plotJumps and .plotHybrid to hide
+% decimal-valued tick marks for the |j| axis.
+% * Add step to toolbox configuration to open and save the Simulink library
+% file. This prevents warnings that say it was last saved on an old version of
+% Simulink, and mitigates an Simulink defect where the mask dialogs are laid out
+% incorrectly.
+
+
+%%
 % *3.0.0.40* $\to$ *3.0.0.50*
 % (Built July 5, 2022)
 % Simulink Library:
@@ -151,7 +170,7 @@
 % of MATLAB had to run |configure_toolbox| to disable autocompletions or else 
 % see errors in the command line.
 % * Added functions for transforming |HybridSolution| objects. See |HybridSolution.transform|, 
-% |HybridSolution.slice|, |HybridSolution.restrictT|, and |HybridSolution.restrictJ.|
+% |HybridSolution.select|, |HybridSolution.restrictT|, and |HybridSolution.restrictJ.|
 % * Reorganized files.
 %% 
 % *3.0.0.13* $\to$ *3.0.0.20* 

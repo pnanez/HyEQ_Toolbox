@@ -69,10 +69,10 @@ classdef HybridArcTest < matlab.unittest.TestCase
             x = rand(100, 3);
 
             sol = HybridArc(t, j, x);
-            sliced_sol = sol.slice([1, 3]);
-            testCase.assertEqual(sliced_sol.t, t)
-            testCase.assertEqual(sliced_sol.j, j)
-            testCase.assertEqual(sliced_sol.x, [x(:, 1), x(:, 3)])
+            selected_sol = sol.select([1, 3]);
+            testCase.assertEqual(selected_sol.t, t)
+            testCase.assertEqual(selected_sol.j, j)
+            testCase.assertEqual(selected_sol.x, [x(:, 1), x(:, 3)])
         end
 
         function testRestrictT(testCase)

@@ -294,6 +294,27 @@ classdef PlotSettingsTest < matlab.unittest.TestCase
             ps.t_label = 't [s]';
             testCase.assertEqual(ps.getTLabel(), 't [s]')
         end
+
+        function testGetEmptyTLabel_char(testCase)
+            import hybrid.*
+            ps = hybrid.PlotSettings();
+            ps.t_label = ''; % Test empty *char*
+            testCase.assertEqual(ps.getTLabel(), '')
+            
+            % Pre-R2016b version don't have string class.
+            if exist('string', 'class') 
+                ps.t_label = string(''); % Test empty *string*
+                testCase.assertEqual(ps.getTLabel(), '')
+            end
+        end       
+
+        function testResetDefaultTLabel(testCase)
+            import hybrid.*
+            ps = hybrid.PlotSettings();
+            ps.t_label = 'Not the default';
+            ps.t_label = [];
+            testCase.assertEqual(ps.getTLabel(), '$t$')
+        end
         
         function testJLabel(testCase)
             import hybrid.*
@@ -308,6 +329,27 @@ classdef PlotSettingsTest < matlab.unittest.TestCase
             
             ps.j_label = 'J';
             testCase.assertEqual(ps.getJLabel(), 'J')
+        end
+
+        function testGetEmptyJLabel(testCase)
+            import hybrid.*
+            ps = hybrid.PlotSettings();
+            ps.j_label = ''; % Test empty char
+            testCase.assertEqual(ps.getJLabel(), '')
+            
+            % Pre-R2016b version don't have string class.
+            if exist('string', 'class') 
+                ps.j_label = string(''); % Test empty string
+                testCase.assertEqual(ps.getJLabel(), '')
+            end
+        end
+
+        function testResetDefaultJLabel(testCase)
+            import hybrid.*
+            ps = hybrid.PlotSettings();
+            ps.j_label = 'Not the default';
+            ps.j_label = [];
+            testCase.assertEqual(ps.getJLabel(), '$j$')
         end
         
         function testXLabelFormat(testCase)

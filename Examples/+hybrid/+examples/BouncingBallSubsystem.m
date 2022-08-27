@@ -1,9 +1,6 @@
 classdef BouncingBallSubsystem < HybridSubsystem
 % A bouncing ball with an input modeled as a HybridSubsystem subclass.
-% 
-% Added in HyEQ Toolbox version 3.0.
 
-% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz (©2022).   
 
     % Define properties of the system that can be modified.
     properties

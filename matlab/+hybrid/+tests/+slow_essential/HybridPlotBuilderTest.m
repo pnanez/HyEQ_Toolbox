@@ -79,7 +79,7 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             pb = HybridPlotBuilder().subplots('on')...
                 .titles('Title 1', 'Title 2', 'Title 3')...
                 .labels('A', 'B', 'C')...
-                .slice([1 3]);
+                .select([1 3]);
             pb.plotFlows(testCase.sol_3);
             function check(testCase, plot_dim)
                 testCase.assertSubplotCount(2)
@@ -101,8 +101,8 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             ruler = get(ax, 'XAxis');
             if ischar(ruler) || ~isprop(ruler, 'LimitsChangedFcn') ...
                     || ~isprop(ruler, 'TickValues')
-                testCase.assumeFail(['On this current of MATLAB, we ', ...
-                    'don''t remove noninteger ticks for the j-axis.']);
+                testCase.assumeFail(['On the current version of MATLAB, we ', ...
+                    'don''t remove noninteger ticks from the j-axis.']);
             end
             function is_all = allInteger(property_name)
                 prop = get(gca(), property_name);
@@ -136,7 +136,7 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             pb = HybridPlotBuilder().subplots('on')...
                 .titles('Title 1', 'Title 2', 'Title 3')...
                 .labels('A', 'B', 'C')...
-                .slice([3 1]);
+                .select([3 1]);
             
             function check(testCase, plot_dim)
                 testCase.assertSubplotCount(2)
@@ -395,7 +395,7 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         function testSetXLabelFormatWithSubplots(testCase)
             HybridPlotBuilder().subplots('on')...
                 .xLabelFormat('$z_{%d}$')...
-                .slice([1 3])...
+                .select([1 3])...
                 .plotFlows(testCase.sol_3);
             testCase.assertSubplotYLabels('$z_{1}$', '$z_{3}$')
         end
@@ -417,6 +417,13 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             pb.last_function_call = []; % To prevent a warning.
         end
         
+        function testWarnMultipleTitlesWhenAutoSubplotsOff(testCase)
+            titles = {'Title 1', 'Title 2'};
+            hpb = HybridPlotBuilder().titles(titles);
+            fh = @() hpb.plotFlows(testCase.sol_2);
+            testCase.verifyWarning(fh, 'Hybrid:ExtraTitles');
+        end
+        
         function testLabelsAsCellArrayWithSubplots(testCase)
             labels{1} = 'Label 1';
             labels{3} = 'Label 3';
@@ -427,9 +434,16 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         end
         
         function testErrorLabelsWithOptions(testCase)
-            labels = {'Title 1', 'Title 2'};
+            labels = {'Label 1', 'Label 2'};
             fh = @() HybridPlotBuilder().labels(labels, 'FontSize', 3);
             testCase.verifyError(fh, 'Hybrid:UnexpectedOptions');
+        end
+        
+        function testNoWarnExtraLabelsInPhasePlot(testCase)
+            labels = {'Label 1', 'Label 2', 'Label 2'};
+            hpb = HybridPlotBuilder().labels(labels).select(1:2);
+            fh = @() hpb.plotPhase(testCase.sol_3);
+            testCase.verifyWarningFree(fh);
         end
         
         function testSingleLegend(testCase)
@@ -495,26 +509,27 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             testCase.assertLegendLabels('Plot 2')
         end
         
-        function testWarnTooManyLegendLabelsInPlotFlows(testCase)
-            pb = HybridPlotBuilder().subplots('on')...
-                .legend('Subplot 1', 'Subplot 2', 'Subplot 3');
-            testCase.verifyWarning(@() pb.plotJumps(testCase.sol_2), 'HybridPlotBuilder:TooManyLegends');
-            testCase.assertLegendLabels('Subplot 1', 'Subplot 2');
-        end
-        
-        function testTooManyLegendLabelsInPhasePlot(testCase)
+        function testExtraLegendLabelsInPhasePlot(testCase)
             pb = HybridPlotBuilder().subplots('on')...
                 .legend('Subplot 1', 'Subplot 2');
             testCase.verifyWarning(@() pb.plotPhase(testCase.sol_2), ...
-                'HybridPlotBuilder:TooManyLegends');
+                'Hybrid:ExtraLegendLabels');
             testCase.assertLegendLabels('Subplot 1')
         end
         
         function testTooFewLegendEntries(testCase)
             pb = HybridPlotBuilder().legend('Subplot 1');
             fh = @() pb.plotJumps(testCase.sol_2);
-            testCase.verifyWarning(fh, 'HybridPlotBuilder:TooFewLegends');
+            testCase.verifyWarning(fh, 'Hybrid:MissingLegendLabels');
             testCase.assertLegendLabels('Subplot 1', '')
+        end
+        
+        function testNoWarnExtraLegendLabelsInPlotFlows(testCase)
+            pb = HybridPlotBuilder().subplots('on')...
+                .legend('Subplot 1', 'Subplot 2', 'Subplot 3');
+            testCase.verifyWarning(@() pb.plotJumps(testCase.sol_2), ...
+                'Hybrid:ExtraLegendLabels');
+            testCase.assertLegendLabels('Subplot 1', 'Subplot 2');
         end
         
         function testAddLegendEntry(testCase)
@@ -545,25 +560,25 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         end
         
         function testPlotConfig(testCase)  
-            slice_ndxs = [1, 3];
-            plt_fnc_callback = @(pb) pb.slice([1, 3]).plotFlows(testCase.sol_3);
+            select_ndxs = [1, 3];
+            plt_fnc_callback = @(pb) pb.select([1, 3]).plotFlows(testCase.sol_3);
             testCase.assertConfigurePlotsCallbackCalls(plt_fnc_callback, ...
-                length(slice_ndxs), num2cell(slice_ndxs))  
+                length(select_ndxs), num2cell(select_ndxs))  
             
-            slice_ndxs = 1:4;
-            plt_fnc_callback = @(pb) pb.slice(slice_ndxs).plotJumps(testCase.sol_4);
+            select_ndxs = 1:4;
+            plt_fnc_callback = @(pb) pb.select(select_ndxs).plotJumps(testCase.sol_4);
             testCase.assertConfigurePlotsCallbackCalls(plt_fnc_callback, ...
-                length(slice_ndxs), num2cell(slice_ndxs))
+                length(select_ndxs), num2cell(select_ndxs))
             
-            slice_ndxs = 2;
-            plt_fnc_callback = @(pb) pb.slice(2).plotHybrid(testCase.sol_3);
+            select_ndxs = 2;
+            plt_fnc_callback = @(pb) pb.select(2).plotHybrid(testCase.sol_3);
             testCase.assertConfigurePlotsCallbackCalls(plt_fnc_callback, ...
-                length(slice_ndxs), num2cell(slice_ndxs))
+                length(select_ndxs), num2cell(select_ndxs))
         end
         
         function testPlotConfigNosubplots(testCase)
             plt_fnc_callback = @(pb) pb.subplots('off')...
-                                        .slice([3, 2])...
+                                        .select([3, 2])...
                                         .plotFlows(testCase.sol_3);
             testCase.assertConfigurePlotsCallbackCalls(plt_fnc_callback, 2, {3, 2})
         end

@@ -10,14 +10,7 @@ parameters.lambda = 0.8;  % restitution coefficent
 
 % Simulation horizon                                                    
 T = 10;                                                                 
-J = 30;                                                                 
-                                                                        
-% Set the behavior of solutions when the state is in the intersection of
-% the flow and jump sets.
-% rule = 1 -> priority for jumps
-% rule = 2 -> priority for flows
-% rule = 3 -> no priority, random selection.
-rule = 1;                                                              
+J = 30;                                                                                                                             
                                                                         
 % Solver tolerances
 RelTol = 1e-8;
