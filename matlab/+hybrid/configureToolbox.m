@@ -11,6 +11,8 @@ function configureToolbox()
 
 % Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz (©2022). 
 
+disp('Configuring the HyEQ Toolbox. This may take a minute to start while Simulink loads...')
+
 hyeqsolver_paths = which('HyEQsolver', '-all');
 if length(hyeqsolver_paths) > 1
 
