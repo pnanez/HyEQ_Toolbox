@@ -47,6 +47,11 @@ else
     nTestsFailed = -1;
 end
 
+% Close all Simulink systems.
+while ~isempty(gcs())
+    close_system(gcs())
+end
+
 if do_publish_docs
     % Publish help files
 
@@ -104,11 +109,10 @@ end
 function publish_to_html(mfile_path)
     assert(isfile(mfile_path));
     
-    if endsWith(mfile_path, 'demo.m')
-        html_file = publish(mfile_path, 'showCode', true);
-    else
-        html_file = publish(mfile_path, 'showCode', false);
-    end
+    html_file = publish(mfile_path, ...
+        'catchError', false, ... % Terminate if there is an error.
+        'showCode', endsWith(mfile_path, 'demo.m')); % Display code in HTML for files with names that end with "demo.m".
+
     fprintf(['Published %s \n' ...
         '       to %s.\n'], mfile_path, html_file)
 end
