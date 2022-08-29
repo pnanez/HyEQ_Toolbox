@@ -66,11 +66,21 @@ close all
 % Open .slx model. A screenshot of the subsystem will be
 % automatically included in the published document.
 model_path = 'hybrid.examples.mobile_robot.mobile_robot';
+block_path = 'mobile_robot/Continuous-time Plant';
 open_system(which(model_path))
+snapnow
+close_system
+
+%% 
+% A Continuous-time Plant block contains user-defined a *flow map* $f$ block and 
+% *flow set* $C$ block.
+load_system(which(model_path))
+open_system(block_path, 'force') % Look under mask.
+snapnow
+close_system 
 
 %%
-% The flow map and flow set functions for the |Continuous-time Plant| block 
-% in this example are included below.
+% The flow map and flow set functions in this example are included below.
 %
 % *flow map* |f| *block*
 % 
@@ -94,9 +104,8 @@ hybrid.examples.mobile_robot.postprocess
 % Clean up. It's important to include an empty line before this comment so it's
 % not included in the HTML. 
 
-% Close the Simulink file.
-close_system 
-warning('on','Simulink:Commands:LoadingOlderModel') % Renable warning.
+% Renable warning
+warning('on','Simulink:Commands:LoadingOlderModel')
 
 % Change to the doc directory so that the example code is correctly included.
 cd(hybrid.getFolderLocation('doc'))

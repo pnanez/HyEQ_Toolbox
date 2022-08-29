@@ -8,8 +8,7 @@
 % |hybrid.examples.network_estimation|:
 % 
 % * <matlab:open('hybrid.examples.network_estimation.initialize') initialize.m> 
-% * <matlab:hybrid.examples.network_estimation.network network.slx> 
-% * <matlab:hybrid.examples.network_estimation.network_with_input.network_with_input.slx> 
+% * <matlab:hybrid.examples.network_estimation.network network.slx>
 % * <matlab:open('hybrid.examples.network_estimation.postprocess') postprocess.m> 
 % 
 % The contents of this package are located in
@@ -205,8 +204,7 @@ open_system(which(model_path))
 %%
 % The Simulink blocks for the hybrid systems in this example are included below.
 %
-%
-% *Continuous Process:*
+% <html><h3>Continuous Process:</h3></html>
 %
 % *flow map* |f| *block*
 % 
@@ -215,48 +213,44 @@ open_system(which(model_path))
 % *flow set* |C| *block*
 % 
 % <include>src/Matlab2tex_CPS_Network/C.m</include>
-%
-% *jump map* |g| *block*
 % 
-% <include>src/Matlab2tex_CPS_Network/g.m</include>
+% For more info about _Continuous-time Plant_ blocks, such as *Continuous
+% Process*, see 
+% <matlab:hybrid.internal.openHelp('CPS_continuous_plant') here>.
 %
-% *jump set* |D| *block*
-% 
-% <include>src/Matlab2tex_CPS_Network/D.m</include>
+% <html><h3>Network:</h3></html>
 %
-% *Network:*
-%
-% *flow map* |f_network| *block*
+% *flow map* |f| *block*
 % 
 % <include>src/Matlab2tex_CPS_Network/f_network.m</include>
 %
-% *flow set* |C_network| *block*
+% *flow set* |C| *block*
 % 
 % <include>src/Matlab2tex_CPS_Network/C_network.m</include>
 %
-% *jump map* |g_network| *block*
+% *jump map* |g| *block*
 % 
 % <include>src/Matlab2tex_CPS_Network/g_network.m</include>
 %
-% *jump set* |D_network| *block*
+% *jump set* |D| *block*
 % 
 % <include>src/Matlab2tex_CPS_Network/D_network.m</include>
 %
-% *Estimator:*
+% <html><h3>Estimator:</h3></html>
 %
-% *flow map* |f_Estimator| *block*
+% *flow map* |f| *block*
 % 
 % <include>src/Matlab2tex_CPS_Network/f_Estimator.m</include>
 %
-% *flow set* |C_Estimator| *block*
+% *flow set* |C| *block*
 % 
 % <include>src/Matlab2tex_CPS_Network/C_Estimator.m</include>
 %
-% *jump map* |g_Estimator| *block*
+% *jump map* |g| *block*
 % 
 % <include>src/Matlab2tex_CPS_Network/g_Estimator.m</include>
 %
-% *jump set* |D_Estimator| *block*
+% *jump set* |D| *block*
 % 
 % <include>src/Matlab2tex_CPS_Network/D_Estimator.m</include>
 %
@@ -266,7 +260,9 @@ open_system(which(model_path))
 % $z(0,0)=[1, 0.1, 1, 0.6]^\top, \hat{z}(0,0)=[-10, 0.5, 0, 0, 0]^\top$, 
 % u(t)=50*sin(0.1*t),and with |T=30|, |J=100|, |rule=1| shows that the estimated
 % state approaches the system's state before $t = T$, with a small error.
+f = figure(1);
 clf
+f.Position = [100 100 740 500]; % Increase width
 hpb = HybridPlotBuilder().subplots('on').color('matlab');
 hpb.legend({'System state $x_1$','System state $x_2$',...
     'System state $x_3$','System state $x_4$'},'Location', 'best')...
