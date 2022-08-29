@@ -42,10 +42,9 @@ classdef HybridSolverConfigTest < matlab.unittest.TestCase
         end
         
         function testMaxStepFromStringInConstructor(testCase)
-            if ~exist('string', 'class')
-                % Pass. Strings are not supported on current version of Matlab'
-                return
-            end
+            % The 'string' class was added in MATLAB R2016b. 
+            hybrid.tests.internal.assumeVersion(testCase, 'R2016b') 
+
             config = HybridSolverConfig(string('MaxStep'), 1e-3); %#ok<STRQUOT>
             expected_options = odeset('MaxStep', 1e-3);
             testCase.assertEqual(config.ode_options, expected_options)
@@ -121,10 +120,9 @@ classdef HybridSolverConfigTest < matlab.unittest.TestCase
         end
         
         function testPopupProgressFromString(testCase)
-            if ~exist('string', 'class')
-                % Pass. Strings are not supported on current version of Matlab'
-                return
-            end
+            % The 'string' class was added in MATLAB R2016b. 
+            hybrid.tests.internal.assumeVersion(testCase, 'R2016b') 
+
             str = string('popup'); %#ok<STRQUOT>
             progress = HybridSolverConfig().progress(str).progressListener;
             testCase.assertInstanceOf(progress, ?hybrid.PopupProgressUpdater)
@@ -136,10 +134,9 @@ classdef HybridSolverConfigTest < matlab.unittest.TestCase
         end
         
         function testSilentProgressFromString(testCase)
-            if ~exist('string', 'class')
-                % Pass. Strings are not supported on current version of Matlab'
-                return
-            end
+            % The 'string' class was added in MATLAB R2016b. 
+            hybrid.tests.internal.assumeVersion(testCase, 'R2016b') 
+            
             str = string('silent'); %#ok<STRQUOT>
             progress = HybridSolverConfig().progress(str).progressListener;
             testCase.assertInstanceOf(progress, ?hybrid.SilentProgressUpdater)

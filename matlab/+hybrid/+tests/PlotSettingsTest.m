@@ -39,10 +39,9 @@ classdef PlotSettingsTest < matlab.unittest.TestCase
         end
         
         function testSetWithStrings(testCase)
-            if ~exist('string', 'class')
-                % Pass. Strings are not supported on current version of Matlab'
-                return
-            end
+            % The 'string' class was added in MATLAB R2016b. 
+            hybrid.tests.internal.assumeVersion(testCase, 'R2016b') 
+
             ps = hybrid.PlotSettings();
             ps.set(...
                 string('label interpreter'), string('tex'), ...
@@ -268,10 +267,9 @@ classdef PlotSettingsTest < matlab.unittest.TestCase
         end
         
         function testSetLegendAsString(testCase)
-            if ~exist('string', 'class')
-                % Pass. Strings are not supported on current version of Matlab'
-                return
-            end
+            % The 'string' class was added in MATLAB R2016b. 
+            hybrid.tests.internal.assumeVersion(testCase, 'R2016b') 
+
             import hybrid.*
             ps = PlotSettings(); 
             ps.component_legend_labels = {string('String 1'), string('String 2')}; %#ok<STRQUOT>
@@ -300,12 +298,15 @@ classdef PlotSettingsTest < matlab.unittest.TestCase
             ps = hybrid.PlotSettings();
             ps.t_label = ''; % Test empty *char*
             testCase.assertEqual(ps.getTLabel(), '')
-            
-            % Pre-R2016b version don't have string class.
-            if exist('string', 'class') 
-                ps.t_label = string(''); % Test empty *string*
-                testCase.assertEqual(ps.getTLabel(), '')
-            end
+        end    
+
+        function testGetEmptyTLabel_string(testCase)
+            % The 'string' class was added in MATLAB R2016b. 
+            hybrid.tests.internal.assumeVersion(testCase, 'R2016b') 
+
+            ps = hybrid.PlotSettings();
+            ps.t_label = string(''); %#ok<STRQUOT> % Test empty *string*
+            testCase.assertEqual(ps.getTLabel(), '')
         end       
 
         function testResetDefaultTLabel(testCase)
@@ -331,17 +332,18 @@ classdef PlotSettingsTest < matlab.unittest.TestCase
             testCase.assertEqual(ps.getJLabel(), 'J')
         end
 
-        function testGetEmptyJLabel(testCase)
-            import hybrid.*
+        function testGetEmptyJLabel_char(testCase)
             ps = hybrid.PlotSettings();
             ps.j_label = ''; % Test empty char
             testCase.assertEqual(ps.getJLabel(), '')
-            
-            % Pre-R2016b version don't have string class.
-            if exist('string', 'class') 
-                ps.j_label = string(''); % Test empty string
-                testCase.assertEqual(ps.getJLabel(), '')
-            end
+        end
+
+        function testGetEmptyJLabel_string(testCase)
+            % The 'string' class was added in MATLAB R2016b.
+            hybrid.tests.internal.assumeVersion(testCase, 'R2016b')
+            ps = hybrid.PlotSettings();
+            ps.j_label = string(''); %#ok<STRQUOT> % Test empty string
+            testCase.assertEqual(ps.getJLabel(), '')
         end
 
         function testResetDefaultJLabel(testCase)

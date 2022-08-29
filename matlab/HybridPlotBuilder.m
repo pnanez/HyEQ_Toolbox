@@ -1007,9 +1007,8 @@ classdef HybridPlotBuilder < handle
                 % the label sizes will be overwritten when we call
                 %   "ax.XAxis.FontSize = ..."
                 % Our method for adjusting tick labels does not work on older
-                % versions of MATLAB (not sure of the first version, so we'll
-                % increase this number as we test each version)
-                if ~verLessThan('matlab', '8.5')
+                % versions of MATLAB.
+                if ~verLessThan('matlab', '9.0') % Only supported on R2016a and later.
                     try
                         for axis_name = {'XAxis', 'YAxis', 'ZAxis'}
                             axes.(axis_name{1}).FontSize = this.settings.tick_label_size;

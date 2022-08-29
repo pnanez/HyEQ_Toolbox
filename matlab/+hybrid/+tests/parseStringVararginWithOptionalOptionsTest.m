@@ -13,10 +13,9 @@ classdef parseStringVararginWithOptionalOptionsTest < matlab.unittest.TestCase
         end
         
         function testStringArgsConvertToCharArrays(testCase)
-            if ~exist('string', 'class')
-                % Pass. Strings are not supported on current version of Matlab'
-                return
-            end
+            % The 'string' class was added in MATLAB R2016b. 
+            hybrid.tests.internal.assumeVersion(testCase, 'R2016b') 
+            
             A = string('Apple'); %#ok<STRQUOT>
             B = string('Bat'); %#ok<STRQUOT>
             strings = hybrid.internal.parseStringVararginWithOptionalOptions(A, B);
