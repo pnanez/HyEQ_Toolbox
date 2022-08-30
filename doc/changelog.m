@@ -92,11 +92,16 @@
 % has been redone to make it easier to access and navigate in MATLAB Help.
 
 %% Changes Between Builds
-%%
+%
+% *3.0.0.56* $\to$ *3.0.0.66*
+% (Built August 30, 2022)
+% 
+% * Fix tests and examples that failed on R2014b, R2015a, R2016a, and R2016b.
+%
 % *3.0.0.50* $\to$ *3.0.0.56*
 % (Built August 25, 2022)
 % 
-% * RENAMED: |HybridArc.slice| to |HybridArc.select| (|HybridArc.slice | will 
+% * RENAMED: |HybridArc.slice| to |HybridArc.select| (|HybridArc.slice| will 
 % print a deprecation warning, if used).
 % * DEPRECATED: |HybridPlotBuilder.slice| (use |HybridArc.select| instead).
 % * Misc. improvements to documentation and warning messages.
@@ -126,7 +131,7 @@
 %   instances are now linked copies of the library version.
 % * Add field datatype hints for fields in mask dialogs.
 % * Add signal size data to hybrid system blocks to help with debugging. 
-%% 
+%
 % *3.0.0.33* $\to$ *3.0.0.40*
 % (Built March 26, 2022)
 %
@@ -137,10 +142,10 @@
 % * Fixed links from examples to documentation
 % * In Simulink example models, made it so initialization and postprocessing 
 % happens automatically.
-%% 
+%
 % *3.0.0.22* $\to$ *3.0.0.33* 
 % (Built February 2, 2022)
-%% 
+%
 % * *In |HybridSolution| and |CompositeHybridSolution|: the behavior of |length| 
 % and |numel| functions changed*. In previous builds, for a |HybridSolution| |sol,| 
 % then |length(sol)| gave the number of time-steps in the solution, and for a 
@@ -155,10 +160,10 @@
 % * Fixed tests that were failing on R2014b.
 % * Removed development files from deployed toolbox package (reduced installation 
 % size by half!)
-%% 
+%
 % *3.0.0.20* $\to$ *3.0.0.22* 
 % (Built November 19, 2021)
-%% 
+%
 % * |HybridSubsystem|: Added support for defining separate output functions 
 % for flows and jumps.
 % * Added functions to |HybridSystem| and |HybridSubsystem| to check that the 
@@ -172,12 +177,12 @@
 % * Added functions for transforming |HybridSolution| objects. See |HybridSolution.transform|, 
 % |HybridSolution.select|, |HybridSolution.restrictT|, and |HybridSolution.restrictJ.|
 % * Reorganized files.
-%% 
+%
 % *3.0.0.13* $\to$ *3.0.0.20* 
 % (Built November 4, 2021)
 % 
 % Changes to |HybridPlotBuilder:|
-%% 
+%
 % * Labels and titles can now be given as cell arrays.
 % * Replaced |HybridPlotBuilder.plot()| function with |HybridPlotBuilder().plotPhase()| 
 % for plotting the trajectory of state values through state space. (Previously, 
@@ -193,32 +198,32 @@
 % calling |plotFlows(sol)|, |plotJumps(sol)|, or |plotHybrid(sol)| (without prefixing 
 % "|HybridPlotBuilder.")| automatically selects whether automatic subplots are 
 % on or off based on the dimension of the system.
-%% 
+%
 % Changes to |HybridSolverConfig:|
-%% 
+%
 % * Added option to set flow or jump priority in |HybridSolverConfig| as |config.priority('flow') 
 % and config.priority('jump'), respectively|.
 % * Removed |HybridSolverConfig.flowPriority| and |HybridSolverConfig.jumpPriority| 
 % methods. Use |HybridSolverConfig.priority('flow')| and |HybridSolverConfig.priority('jump')| 
 % instead
-%% 
+%
 % Changes to |HybridSubsystemSolution| (previously  |HybridSolutionWithInput|)|:|
-%% 
+%
 % * Added output values |y|.
-%% 
+%
 % Miscellaneous Changes
-%% 
+%
 % * Added autocomplete information for |HyEQsolver|, |Hybridsystem|, |CompositeHybridSystem|, 
 % |HybridSolution|, |HybridPlotBuilder|, |HybridSubsystem, HybridSolverConfig,| 
 % and |HybridSystemBuilder.build| (Try it in the MATLAB 2021b code editor!)
 % * Extended compatibility back to MATLAB 2014b.
 % * Removed |HybridSolution.fromLegacy(t, j, x, f, g, C, D, tspan, jspan)| function. 
 % Use |HybridSolution(t, j, x, C, D, tspan, jspan)| instead.
-%% 
+% 
 % *3.0.0.11* $\to$ *3.0.0.13*
 % 
 % In |HybridPlotBuilder:|
-%% 
+%
 % * It is now possible to chain calls to |HybridPlotBuilder| functions, such 
 % as |HybridPlotBuilder().plotflows(sol1).plotflows(sol2)|. This means it is often 
 % unnecessary to save the |HybridPlotBuilder| object to a variable.
@@ -230,9 +235,9 @@
 % The given function is now called in 2D and 3D phase plots, and when automatic 
 % subplots are off, as well as the other plotting functions.
 % * Add default configuration to |HybridPlotBuilder| (Still a work in progress!).
-%% 
+%
 % In |CompositeHybridSystem| (Previously |CompoundHybridSystem|)
-%% 
+%
 % * Renamed |CompoundHybridSystem| to |CompositeHybridSystem.|
 % * subsystems can now be referenced by ordinal number, object reference, or 
 % by name (if given in constructor) when setting inputs and referencing subsystem 
@@ -246,16 +251,16 @@
 % arguments (i.e., unneeded output values from other subsystems). 
 % * The way the dimensions and output of |HybridSubsystem| subclasses are set 
 % has changed.
-%% 
+%
 % Miscellaneous changes
-%% 
+%
 % * Automated toolbox tests can be run by calling |hybrid.tests.run()|.
-%% 
+%
 % *3.0.0.6* $\to$ *3.0.0.11*
 % 
 % Name changes (see the |rename_variables.sh| script for automatic renaming 
 % for all occurances)
-%% 
+%
 % * Renamed all method names to use camelCase naming. That is, we renamed |flow_map| 
 % to |flowMap, jump_map| to |jumpMap|, |plotflows| to |plotFlows| etc. (Functions 
 % from v2.04 are left unchanged for backward compatibility)
@@ -263,31 +268,31 @@
 % * |ControlledHybridSolution| to |HybridSolutionWithInput|
 % * |control_dimension| to |input_dimension| in |HybridSubsystem|
 % * |plotHybridArc| to |plotHybrid| in |HybridPlotBuilder|.
-%% 
+%
 % Changes in |HybridSystem|
-%% 
+%
 % * A |HybridSystem| object can now be created from function handles |@f, @g, 
 % @C, @D| simply by calling |sys = HybridSystem(@f, @g, @C, @D).|
 % * Add checks if the "|this"| argument is missing from |flowMap(this, x, t, 
 % j), jumpMap(this, x, t, j),| etc.
 % * In |solve(), a|dd default values |tspan=[0, 10]| and |jspan=[0, 10].|
-%% 
+%
 % Changes in |HyEQsolver|
-%% 
+%
 % * Rewrote solver algorithm 
 % * Fixed all known bugs!
 % * Fix: close progress bar regardless of how |HyEQsolver| exits.
-%% 
+%
 % Changes in |CompoundHybridSystem| and |HybridSubsystem| (previously |ControlledHybridSystem)|
-%% 
+%
 % * Add output function to |HybridSubsystem| class.
 % * Rewrote |CompoundHybridSystem| to support an arbitrary number of subsystems.
 % * Add |PairHybridSystem| to support faster computations and cleaner code for 
 % systems with only two subsystems.
 % * Renamed |HybridSubsystem| property from "|control_dimension|" to "|input_dimension|"
-%% 
+%
 % Changes in |HybridPlotBuilder|
-%% 
+%
 % * Fix: legends now correctly placed in subplots.
 % * Add padding to top and bottom of plots made with |plotFlows|, and |plotJumps.|
 % * Add |configureSubplots| function to allow the full range of plot customization 
@@ -299,9 +304,9 @@
 % * Improved plotting speed by up to ~200x.
 % * Add |addLegendEntry| function to include plots in the legend that were not 
 % created by |HybridPlotBuilder|. 
-%% 
+%
 % Miscellaneous changes
-%% 
+%
 % * Add ability to set ode solver options such as "AbsTol" and "MaxStep" via 
 % arguments to the |HybridSolverConfig| constructor, as well as "silent" to disable 
 % progress bar.

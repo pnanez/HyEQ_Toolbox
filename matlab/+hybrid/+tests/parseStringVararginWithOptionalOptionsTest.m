@@ -57,11 +57,10 @@ classdef parseStringVararginWithOptionalOptionsTest < matlab.unittest.TestCase
         end
         
         function testStringsInOption(testCase)
+            % The 'string' class was added in MATLAB R2016b. 
+            hybrid.tests.internal.assumeVersion(testCase, 'R2016b') 
+            
             import hybrid.internal.*
-            if ~exist('string', 'class')
-                % Pass. Strings are not supported on current version of Matlab'
-                return
-            end
             strings = {'A', 'B'};
             [~, options] = parseStringVararginWithOptionalOptions(strings, ...
                 string('Option 1'), string('a string'), ...
