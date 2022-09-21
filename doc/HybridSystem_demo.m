@@ -339,6 +339,14 @@ plotFlows(sol.transform(energy_fnc))
 title('Total Energy of Bouncing Ball')
 ylabel('Energy')
 
+%% 
+% You can also construct a |HybridArc| directly from the values of |t|, |j|, and
+% |x| as follows:
+t = linspace(0, 10, 100)'; % Must be a column vector
+j = zeros(100, 1); 
+x = t.^2;
+hybrid_arc = HybridArc(t, j, x)
+
 %%
 % 
 % <html><p id="configuration_options">
