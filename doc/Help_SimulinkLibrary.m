@@ -279,21 +279,37 @@
 % <include>src/Matlab2tex_1_2/postprocess.m</include>
 
 %% Automatically Running Initialization and Postprocessing Scripts
-% The scripts |initialize.m| and |postprocess.m|, described above, can be run in 
-% the MATLAB editor or command window, or (in examples) by
-% double-clicking the blocks labeled "Double Click to..."  
+% The scripts |initialize.m| and |postprocess.m|, described above, can be run
+% manually in the MATLAB editor or command window, but to run them automatically
+% use _model callbacks_. To setup model callbacks, open the Simulink
+% Library Browser and navigate to Hybrid Equations Toolbox > Other.
 % 
-% These scripts can also be run automatically by using
-% _model callbacks_. 
-% To define model callbacks, open the "Modeling" tab in Simulink
-% and select the "Modeling Setup" menu and click "Model Properties". In the
-% Model Properties dialog, select the "Callbacks" tab. Use |InitFcn| to specify
+% <html> 
+% <img src="images/set_callback_blocks.png"  style='width: 100%; max-height: 140px; object-fit: contain'> 
+% </html>
+% 
+% Then, drag the "Set Initialization
+% Script" and "Set Post-Processing Script" blocks to your model and double
+% click on them. A file selection dialog will open that allows you
+% to select a MATLAB .m script file to use in the callback. After a callback
+% script is set, the "Set Initialization
+% Script" and "Set Post-Processing Script" blocks can be deleted from your model.
+% 
+% To define model callbacks manually or remove existing callbacks:
+% 
+% # open the "Modeling" tab in Simulink
+% # open the "Modeling Setup" menu
+% # open "Model Properties" 
+% # open the "Callbacks" tab. 
+% 
+% Use the |InitFcn| callback to specify
 % code to run before the Simulink model starts and |StopFcn| to specify code to
-% run after the model finishes. Typically, the |InitFcn| callback contains 
+% run after the model finishes. Typically, the |InitFcn| callback contains
+% code that calls an initialization script, such as
 % 
 %   initialize;
 % 
-% and the |StopFcn| callback contains
+% and the |StopFcn| callback calls a post-processing script, such as
 % 
 %   postprocess;
 % 

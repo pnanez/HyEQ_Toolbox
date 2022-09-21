@@ -291,5 +291,5 @@
 % such effects can be incorporated if needed. 
 
 %% References
-% [1] R. G. Sangelice. CMPE142 Class Notes - Introduction  to Cyber-Physical
+% [1] R. G. Sanfelice. CMPE142 Class Notes - Introduction  to Cyber-Physical
 % Systems. <https://hybrid.soe.ucsc.edu/cmpe149-249-2016>
