@@ -273,7 +273,7 @@
 %
 % * A |HybridSystem| object can now be created from function handles |@f, @g, 
 % @C, @D| simply by calling |sys = HybridSystem(@f, @g, @C, @D).|
-% * Add checks if the "|this"| argument is missing from |flowMap(this, x, t, 
+% * Add checks if the |"this"| argument is missing from |flowMap(this, x, t, 
 % j), jumpMap(this, x, t, j),| etc.
 % * In |solve(), a|dd default values |tspan=[0, 10]| and |jspan=[0, 10].|
 %
