@@ -54,15 +54,38 @@ classdef HybridSystemTest < matlab.unittest.TestCase
         end
 
         function testCheckFunctions_flowMapWrongSizeOut(testCase)
-            ss = HybridSystemBuilder().flowMap(@(x) [x;x]).build();
+            ss = HybridSystemBuilder().stateDimension(1).flowMap(@(x) [1;1]).build();
             testCase.verifyError(@() ss.checkFunctions(), ...
                                 'HybridSystem:FlowMapWrongSizeOutput');
-            testCase.verifyError(@() ss.checkFunctions([1;2]), ...
+            testCase.verifyError(@() ss.checkFunctions([1]), ...
                                 'HybridSystem:FlowMapWrongSizeOutput');
         end
 
+        function testCheckFunctions_flowMapOutputDoesntMatchInput(testCase)
+            ss = HybridSystemBuilder().flowMap(@(x) [1;1]).build(); % No stateDimension given
+            testCase.verifyError(@() ss.checkFunctions(1), ...
+                                'HybridSystem:FlowMapWrongSizeOutput');
+        end
+
+        function testCheckFunctions_flowMapOutputMatchesInputWithNoStateDim(~)
+            ss = HybridSystemBuilder()...
+                .flowMap(@(x) [1;1])... % 2D output
+                .jumpMap(@(x) [0;0])... % 2D output
+                .build(); % No stateDimension given
+            ss.checkFunctions([2;3]); % 2D input
+        end
+
+        function testCheckFunctions_NoStateDimensionAndNoTestPoint(testCase)
+            ss = HybridSystemBuilder().build(); % No stateDimension given
+            testCase.verifyError(@() ss.checkFunctions(), ...
+                                'HybridSystem:NoStateDimensionAndNoTestPoint');
+        end
+
         function testCheckFunctions_jumpMapWrongSizeOut(testCase)
-            ss = HybridSystemBuilder().jumpMap(@(x) [x;x]).build();
+            ss = HybridSystemBuilder()...
+                .stateDimension(2)...
+                .flowMap(@(x) zeros(2, 1))...
+                .jumpMap(@(x) [x;x]).build();
             testCase.verifyError(@() ss.checkFunctions(), ...
                                 'HybridSystem:JumpMapWrongSizeOutput');
             testCase.verifyError(@() ss.checkFunctions([1;4]), ...
@@ -71,19 +94,19 @@ classdef HybridSystemTest < matlab.unittest.TestCase
 
         function testCheckFunctions_jumpMapNotNumeric(testCase)
             ss = HybridSystemBuilder().jumpMap(@(x) 'hello').build();
-            testCase.verifyError(@() ss.checkFunctions(), 'HybridSystem:JumpMapNotNumeric');
+            testCase.verifyError(@() ss.checkFunctions(1), 'HybridSystem:JumpMapNotNumeric');
         end
 
         function testCheckFunctions_CNotScalar(testCase)
             ss = HybridSystemBuilder().flowSetIndicator(@(x) [x;x]).build();
-            testCase.verifyError(@() ss.checkFunctions(), ....
+            testCase.verifyError(@() ss.checkFunctions(1), ....
                 'HybridSystem:FlowSetIndicatorNonScalar');
         end
 
         function testCheckFunctions_DNotLogical(testCase)
             a_function_handle = @(x) x;
             ss = HybridSystemBuilder().jumpSetIndicator(@(x) a_function_handle).build();
-            testCase.verifyError(@() ss.checkFunctions(), ....
+            testCase.verifyError(@() ss.checkFunctions(0), ....
                 'HybridSystem:JumpSetIndicatorNotLogical');
         end
 
@@ -120,10 +143,10 @@ classdef HybridSystemTest < matlab.unittest.TestCase
 
         function testAssertInD_xtj(testCase)
             ss = HybridSystemBuilder() ...
-                    .jumpSetIndicator(@(x, t, j) x(1) > 0)...
+                    .jumpSetIndicator(@(x, t, j) x > 0)...
                     .build();
             ss.assertInD(1, 1, 2);
-            testCase.verifyError(@() ss.assertInD([-1;4], 1, 2), ...
+            testCase.verifyError(@() ss.assertInD(-1, 1, 2), ...
                 'HybridSystem:AssertInDFailed')
         end
 
@@ -135,6 +158,23 @@ classdef HybridSystemTest < matlab.unittest.TestCase
             ss.assertNotInD(nan, nan, 0);
             testCase.verifyError(@() ss.assertNotInD(nan, nan, 1), ...
                                     'HybridSystem:AssertNotInDFailed')
+        end
+
+        % Check that assertions fail if no 'x' is given or if too many inputs arguments.
+        function testAssertFcnsNarginchk(testCase)
+            ss = HybridSystemBuilder().stateDimension(1).build();
+
+            % Check not enough arguments
+            testCase.verifyError(@() ss.assertInC(), 'MATLAB:narginchk:notEnoughInputs')
+            testCase.verifyError(@() ss.assertNotInC(), 'MATLAB:narginchk:notEnoughInputs')
+            testCase.verifyError(@() ss.assertInD(), 'MATLAB:narginchk:notEnoughInputs')
+            testCase.verifyError(@() ss.assertNotInD(), 'MATLAB:narginchk:notEnoughInputs')
+
+            % Check too many arguments
+            testCase.verifyError(@() ss.assertInC(1, 2, 3, 4), 'MATLAB:narginchk:tooManyInputs')
+            testCase.verifyError(@() ss.assertNotInC(1, 2, 3, 4), 'MATLAB:narginchk:tooManyInputs')
+            testCase.verifyError(@() ss.assertInD(1, 2, 3, 4), 'MATLAB:narginchk:tooManyInputs')
+            testCase.verifyError(@() ss.assertNotInD(1, 2, 3, 4), 'MATLAB:narginchk:tooManyInputs')
         end
 
     end

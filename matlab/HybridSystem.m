@@ -243,6 +243,10 @@ classdef (Abstract) HybridSystem < handle
         function assertInC(this, varargin)
             % Check that a given point is in the flow set. An error is thrown otherwise.
             % See also: flowSetIndicator, assertNotInC, assertInD, assertNotInD.
+                        
+            % Check that at least 'x' is given as an argument and at most 'x', 't', 'j'
+            narginchk(2,4) 
+            
             inC = this.checkPoint('flow', this.flowMap_3args, ...
                                     this.flowSetIndicator_3args, varargin{:});
             if ~inC
@@ -255,6 +259,10 @@ classdef (Abstract) HybridSystem < handle
         function assertNotInC(this, varargin)
             % Check that a given point is in the flow set. An error is thrown otherwise.
             % See also: flowSetIndicator, assertInC, assertInD, assertNotInD.
+                        
+            % Check that at least 'x' is given as an argument and at most 'x', 't', 'j'
+            narginchk(2,4) 
+
             inC = this.checkPoint('flow', [], this.flowSetIndicator_3args, varargin{:});
             if inC
                 str = xtj_arguments_to_string(varargin{:});
@@ -266,6 +274,10 @@ classdef (Abstract) HybridSystem < handle
         function assertInD(this, varargin)
             % Check that a given point is in the jump set. An error is thrown otherwise.
             % See also: jumpSetIndicator, assertInC, assertNotInC, assertNotInD.
+            
+            % Check that at least 'x' is given as an argument and at most 'x', 't', 'j'
+            narginchk(2,4) 
+
             inD = this.checkPoint('jump', this.jumpMap_3args, ...
                                   this.jumpSetIndicator_3args, varargin{:});
             if ~inD
@@ -278,6 +290,10 @@ classdef (Abstract) HybridSystem < handle
         function assertNotInD(this, varargin)
             % Check that a given point is in the jump set. An error is thrown otherwise.
             % See also: jumpSetIndicator, assertInC, assertNotInC, assertInD.
+            
+            % Check that at least 'x' is given as an argument and at most 'x', 't', 'j'
+            narginchk(2,4) 
+
             inD = this.checkPoint('jump', [], this.jumpSetIndicator_3args, varargin{:});
             if inD
                 str = xtj_arguments_to_string(varargin{:});
@@ -314,11 +330,43 @@ classdef (Abstract) HybridSystem < handle
             % Get value for 'x'
             if ~isempty(varargin)
                 test_point_x = varargin{1};
-                assert(isnumeric(test_point_x), 'test_point_x is not numeric')
+
+                % Check that the test point is numeric and the correct size.
+                assert(isnumeric(test_point_x), ...
+                    'Test point ''x'' is not numeric. Instead is %s.', ...
+                    class(test_point_x))
+
                 assert(isempty(test_point_x) || iscolumn(test_point_x), ...
                                         'test_point_x is not a column vector')
-            else % Use default value
+                                 
+                % If the HybridSystem state_dimension property is not set, 
+                % then we use the dimension of test_point_x to get an implicit
+                % state dimension.
+                if isempty(this.state_dimension)
+                    expected_state_size = [numel(test_point_x), 1];
+                else 
+                    expected_state_size = [this.state_dimension, 1];
+                end
+
+                assert(isequal(size(test_point_x), expected_state_size), ...
+                    'Test point ''x'' is wrong size. Expected: %s, actual: %s.', ...
+                    mat2str([this.state_dimension, 1]), ...
+                    mat2str(size(test_point_x)))
+
+            else % No test point given.
+                if isempty(this.state_dimension)
+                    error('HybridSystem:NoStateDimensionAndNoTestPoint', ...
+                           ['Neither the HybridSystem.state_dimension property ' ...
+                           'was set nor a test point ''x'' was given. ' ...
+                           'To use the HybridSystem assertion functions, you ' ...
+                           'must either set the HybridSystem.state_dimension property ' ...
+                           'or pass a test point ''x'' to the assertion function ' ...
+                           '(e.g., sys.assertInC([1; 0])).'])
+                end
+
+                % Use default value
                 test_point_x = zeros(this.state_dimension, 1);
+                expected_state_size = [this.state_dimension, 1];
             end
 
             % Get value for 't'
@@ -348,11 +396,19 @@ classdef (Abstract) HybridSystem < handle
                     error(err_id, 'The %s map return a ''%s'' instead of a numeric value or array.',...
                         flow_or_jump_str, class(x_out));
                 end
-                if ~all(size(x_out) == [this.state_dimension, 1])
+                if ~all(size(x_out) == expected_state_size)
                     err_id = [err_id_base, 'MapWrongSizeOutput'];
-                    error(err_id, 'The %s map return a %dx%d array, but the state dimension is %d.',...
-                        flow_or_jump_str, this.state_dimension, ...
-                        size(x_out, 1), size(x_out, 2));
+
+                    % Change the error message based on whether or not the
+                    % state_dimension property is set.
+                    if isempty(this.state_dimension)
+                        expected_size_str = sprintf('the size of the input was %s', mat2str(expected_state_size));
+                    else
+                        expected_size_str = sprintf('the state dimension is %d', this.state_dimension);
+                    end
+                    error(err_id, 'The %s map returned a %dx%d array, but %s.',...
+                        flow_or_jump_str, ...
+                        size(x_out, 1), size(x_out, 2), expected_size_str);
                 end
             end
 
