@@ -28,6 +28,8 @@ The HyEQ Toolbox can be installed through the MATLAB Add-on Manager.
 6. A license agreement will open. Click "I Accept" to start the installation.
 7. When the installation is complete, a "Getting Started" guide will open in MATLAB. 
 
+If the above steps do not work (e.g., if the Add-On Explorer is unavailable), then you can install the toolbox using the steps described below for installing on MATLAB versions R2014b, R2015a, and R2015b.
+
 ### On MATLAB R2014b, R2015a, and R2015b
 The MATLAB Add-on Manager is not supported on versions of MATLAB before MATLAB R2016a, so for versions R2014b through R2015b, the HyEQ Toolbox must be installed by the following process.
 

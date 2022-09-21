@@ -92,6 +92,13 @@
 % has been redone to make it easier to access and navigate in MATLAB Help.
 
 %% Changes Between Builds
+% *3.0.0.66* $\to$ *3.0.0.68*
+% (Built September 21, 2022)
+% 
+% * Improve HybridSystem assertion functions.
+% * Replace 'Double click to...' blocks in Simulink library with blocks that
+% set model callback functions.
+% * Minor improvements to documentation.
 %
 % *3.0.0.56* $\to$ *3.0.0.66*
 % (Built August 30, 2022)
