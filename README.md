@@ -17,20 +17,20 @@ Before installing version 3.0 of the HyEQ Toolbox, it is necessary to uninstall 
 
 In order to install the HyEQ Toolbox v3.0, MATLAB R2014b or newer is required.
 
-### On MATLAB R2017b and later
-The HyEQ Toolbox can be installed through the MATLAB Add-on Manager.
+### Installing via Add-On Explorer (MATLAB R2017b and later)
+On MATLAB R2017b and later, the HyEQ Toolbox can be installed through the MATLAB Add-on Manager.
 
 1. Open MATLAB
 2. Select the "Home" tab at the top of the window.
 3. Click the "Add-Ons" button to open the [Add-On explorer](https://www.mathworks.com/help/matlab/matlab_env/get-add-ons.html).
 4. Search for "Hybrid Equations Toolbox" and select the entry by Ricardo Sanfelice.
-5. Click the "Add" button to open a dropdown menu and select "Add to MATLAB".
+5. Click the "Add" button to open a drop-down menu and select "Add to MATLAB".
 6. A license agreement will open. Click "I Accept" to start the installation.
-7. When the installation is complete, a "Getting Started" guide will open in MATLAB. 
+7. When the installation is complete, a "Getting Started" guide will open in MATLAB with instructions for next steps. 
 
-If the above steps do not work (e.g., if the Add-On Explorer is unavailable), then you can install the toolbox using the steps described below for installing on MATLAB versions R2014b, R2015a, and R2015b.
+If the above steps do not work because the Add-On Explorer is unavailable, then you can install the toolbox using the steps described below for installing without the Add-On Explorer.
 
-### On MATLAB R2014b through R2017a
+### Installing without Add-On Explorer (MATLAB R2014b through R2017a)
 The MATLAB Add-on Manager is not supported on versions of MATLAB before MATLAB R2017b, so for these versions the HyEQ Toolbox must be installed by the following process.
 
 1. Open the [Hybrid Equations Toolbox](https://www.mathworks.com/matlabcentral/fileexchange/41372-hybrid-equations-toolbox-v2-04) page on the MATLAB Central File Exchange.
