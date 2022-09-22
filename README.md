@@ -9,7 +9,7 @@ Before installing version 3.0 of the HyEQ Toolbox, it is necessary to uninstall 
 	* The toolbox folder can be located by running `which('HyEQsolver')` in the MATLAB command window.
 	* On Windows, the toolbox path is typically `C:\Program Files\Matlab\toolbox\HyEQ_Toolbox_v204`.
     * On Macintosh, the toolbox path is typically `~/matlab/HyEQ_Toolbox_v204`.  
-3. Run the unistall script `tbclean` in the MATLAB command window. This procedure erases all the files in the HyEQ Toolbox folder.
+3. Run the uninstall script `tbclean` in the MATLAB command window. This procedure erases all the files in the HyEQ Toolbox folder.
 4. Restart Matlab.
 5. Check that the HyEQ Toolbox is uninstalled by running `which('HyEQsolver')`. The output should be `'HyEQsolver' not found.`
 
@@ -17,7 +17,7 @@ Before installing version 3.0 of the HyEQ Toolbox, it is necessary to uninstall 
 
 In order to install the HyEQ Toolbox v3.0, MATLAB R2014b or newer is required.
 
-### On MATLAB R2016a and later
+### On MATLAB R2017b and later
 The HyEQ Toolbox can be installed through the MATLAB Add-on Manager.
 
 1. Open MATLAB
@@ -30,16 +30,17 @@ The HyEQ Toolbox can be installed through the MATLAB Add-on Manager.
 
 If the above steps do not work (e.g., if the Add-On Explorer is unavailable), then you can install the toolbox using the steps described below for installing on MATLAB versions R2014b, R2015a, and R2015b.
 
-### On MATLAB R2014b, R2015a, and R2015b
-The MATLAB Add-on Manager is not supported on versions of MATLAB before MATLAB R2016a, so for versions R2014b through R2015b, the HyEQ Toolbox must be installed by the following process.
+### On MATLAB R2014b through R2017a
+The MATLAB Add-on Manager is not supported on versions of MATLAB before MATLAB R2017b, so for these versions the HyEQ Toolbox must be installed by the following process.
 
-1. Open the [Hybrid Equations Toolbox](https://www.mathworks.com/matlabcentral/fileexchange/41372-hybrid-equations-toolbox-v2-04) page the MATLAB Central File Exchange.
+1. Open the [Hybrid Equations Toolbox](https://www.mathworks.com/matlabcentral/fileexchange/41372-hybrid-equations-toolbox-v2-04) page on the MATLAB Central File Exchange.
 2. Click "Download" and select "Toolbox" from the drop-down menu.
 3. Select any convenient location to save the `.mltbx` file.
 4. Open the `.mltbx` file in MATLAB. 
 5. A dialog box will prompt you to install the toolbox. Click "Install". 
-6. Check that the toolbox is installed correctly by running `hybrid.tests.run` in the MATLAB command window. The tests will take a minute or so to complete. If there are no failed tests, then everything is working as expected (there will be several skipped tests for functionality that is not tested on older versions of MATLAB).
+6. To finish setting up the toolbox, run `hybrid.configureToolbox` in the MATLAB command window. This command (1) checks that only one version of the toolbox is installed, (2) upgrades the Simulink library and example model files to the current MATLAB version (this prevents warnings that they were last saved on an old version of Simulink), and (3) opens a prompt to run automated tests (there will be several skipped tests for functionality that is not tested on older versions of MATLAB).
 7. You may delete the `.mltbx` file.
+
 
 ## Troubleshooting
 **Problem**: When I call `HybridSystem.solve()`, after installing v3.0, the following error appears: "`Error using HyEQsolver. Too many input arguments.`" 
@@ -48,6 +49,15 @@ The MATLAB Add-on Manager is not supported on versions of MATLAB before MATLAB R
 
 **Problem**: I just uninstalled v2.40 and installed v3.0 of the Hybrid Equations Toolbox. Now X is not working.
 **Solution**: Try restarting MATLAB.
+
+**Problem**: Trying to open a Simulink example model produces the following error:
+```
+File '<path to toolbox>\Examples\+hybrid\+examples\+<example package>\<model name>.slx' cannot be loaded because it is
+shadowed by another file of the same name higher on the MATLAB path.  For more information see "Avoiding Problems with Shadowed Files" in the Simulink documentation.
+
+The file that is higher on the MATLAB path is: <path to another file>.
+```
+**Solution**: To fix this problem, you need to either rename the example file name or rename the other file (or remove it from the MATLAB Path). After renaming the example file, you can open the model by running `hybrid.examples.<example package>.<new model name>` or by navigating to it in the file browser, but links to open the example from the MALTAB Help browser will no longer work.
 
 **Problem** My Simulink model produces the following error message: 
 	An error occurred while running the simulation and the simulation was terminated
@@ -99,8 +109,8 @@ To create a MATLAB toolbox package for the Toolbox:
 1. Navigate to the root folder of the Toolbox in MATLAB.
 2. Right-click (on Windows) or CMD-click (MAC) on the file `HybridEquationsToolbox.prj`
 and select "Open As Text". 
-3. In `HybridEquationsToolbox.prj`, increment the `<param.version>` as desired and save.
-4. Run 'package_toolbox' in the MATLAB command line to generate a `.mltbx`. This
+3. In `HybridEquationsToolbox.prj`, increment `<param.version>` and save.
+4. Run `package_toolbox` in the MATLAB command line to generate a `.mltbx`. This
 file can then be uploaded to the MATLAB File Exchange. 
 
 ## Editing Documentation
