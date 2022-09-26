@@ -1,0 +1,4 @@
+# Ignore automatically generated files
+*.pdf
+Matlab2tex*/*.tex
+Matlab2tex*/*.m

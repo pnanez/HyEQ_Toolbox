@@ -1,0 +1,19 @@
+% Postprocessing script for analog-to-digital converter example 2.
+
+% Create HybridArc objects.
+sol = HybridArc(t, j, x); %#ok<IJCL> (suppress a warning about 'j)
+sol1 = HybridArc(t1, j1, x1);
+
+% Plot solution
+clf
+hpb = HybridPlotBuilder();
+hpb.subplots('on')...
+    .legend('Ball position', 'Ball velocity')...
+    .flowColor('green')...
+    .jumpColor([0 0.8 0])...
+    .plotFlows(sol1.select([1 2]));
+hold on
+hpb.legend('ADC output', 'ADC output')...
+    .color('blue')...
+    .plotFlows(sol.select([1 2]));
+ 

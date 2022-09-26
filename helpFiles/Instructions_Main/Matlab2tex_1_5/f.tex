@@ -1,31 +1,0 @@
-% This file was automatically created from the m-file 
-% "m2tex.m" written by USL. 
-% The fontencoding in this file is UTF-8. 
-%  
-% You will need to include the following two packages in 
-% your LaTeX-Main-File. 
-%  
-% \usepackage{color} 
-% \usepackage{fancyvrb} 
-%  
-% It is advised to use the following option for Inputenc 
-% \usepackage[utf8]{inputenc} 
-%  
-  
-% definition of matlab colors: 
-\definecolor{mblue}{rgb}{0,0,1} 
-\definecolor{mgreen}{rgb}{0.13333,0.5451,0.13333} 
-\definecolor{mred}{rgb}{0.62745,0.12549,0.94118} 
-\definecolor{mgrey}{rgb}{0.5,0.5,0.5} 
-\definecolor{mdarkgrey}{rgb}{0.25,0.25,0.25} 
-  
-\DefineShortVerb[fontfamily=courier,fontseries=m]{\$} 
-\DefineShortVerb[fontfamily=courier,fontseries=b]{\#} 
-  
-\begin{Verbatim}[commandchars=\$\{\},numbers=left,numbersep=2pt] 
-    $textcolor{mblue}{function} xdot = f(x, u)          $textcolor{mgreen}{%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%}     $textcolor{mgreen}{% Matlab Function  Author: Ricardo Sanfelice}     $textcolor{mgreen}{%}     $textcolor{mgreen}{% Project: Simulation of a hybrid system (Vehicle Traveling on a Track)}     $textcolor{mgreen}{%}     $textcolor{mgreen}{% Name: f.m}     $textcolor{mgreen}{%}     $textcolor{mgreen}{% Description: Flow map}     $textcolor{mgreen}{%}     $textcolor{mgreen}{% Version: 1.0}     $textcolor{mgreen}{% Required files: - }     $textcolor{mgreen}{%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%}          xtemp = zeros(4,1);     xtemp = x;     x = xtemp;          $textcolor{mgreen}{% state}     xi1 = x(1);      $textcolor{mgreen}{%x-position}     xi2 = x(2);      $textcolor{mgreen}{%y-position}     xi3 = x(3);      $textcolor{mgreen}{%orientation angle}     q = x(4);                 $textcolor{mgreen}{% q = 1 --> going left}     $textcolor{mgreen}{% q = 2 --> going right}          $textcolor{mblue}{if} q == 1         r = 3*pi/4;     $textcolor{mblue}{elseif} q == 2         r = pi/4;     $textcolor{mblue}{else}         r = 0;     $textcolor{mblue}{end}          $textcolor{mgreen}{% flow map: xidot=f(xi,u);}     xi1dot = u*cos(xi3);  $textcolor{mgreen}{%tangential velocity in x-direction}     xi2dot = u*sin(xi3);  $textcolor{mgreen}{%tangential velocity in y-direction}     xi3dot = -xi3 + r;      $textcolor{mgreen}{%angular velocity}     qdot = 0;          xdot = [xi1dot;xi2dot;xi3dot;qdot];  
-\end{Verbatim}  
-  
-\UndefineShortVerb{\$} 
-\UndefineShortVerb{\#} 
- 

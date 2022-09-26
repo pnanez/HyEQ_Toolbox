@@ -1,0 +1,242 @@
+\documentclass{article}
+%\usepackage{epstopdf}%
+%\epstopdfsetup{update}
+\include{macros/headEx}
+\newcounter{chapter}
+\setcounter{chapter}{1}
+\newcommand{\chapter}[1]{{\LARGE \center \bf #1 \\ \vspace{0.5in} }}
+\input{macros/macrosbook}
+\input{macros/macrosRGS}
+\input{macros/macrosHCbook}                                          
+%%% RICARDO ADDITIONS
+\usepackage{color}
+\newtheorem{helptheorem}{Theorem}[section]
+
+\newtheorem{helplemma}[helptheorem]{Lemma}
+
+\newtheorem{helpcorollary}[helptheorem]{Corollary}
+
+\newtheorem{helpexample}[helptheorem]{Example}
+
+\newtheorem{helpproposition}[helptheorem]{Proposition}
+
+\newtheorem{helpremark}[helptheorem]{Remark}
+
+\newtheorem{helpdefinition}[helptheorem]{Definition}
+
+\newtheorem{helpassumption}[helptheorem]{Assumption}
+
+\newtheorem{helpstassumption}[helptheorem]{Standing Assumption}
+
+\newcommand{\HyEQfolder}{\mbox{{\ttfamily{ \color{red} TBD }}}}
+\newcommand{\HyEQversion}{\mbox{v3.00}}
+\newcommand{\matlab}{\textsc{Matlab}}
+
+\newcommand{\ricardo}[1]{{\color{blue} #1}}
+\newcommand{\pn}[1]{{\color{red} #1}}
+
+\usepackage[left=1in,top=1in,right=1in,bottom=1in,nohead]{geometry}
+%\usepackage{subfigure}
+\usepackage{psfrag}
+\usepackage{pstool}
+\usepackage{url}
+\geometry{letterpaper}
+\usepackage{fancyvrb} 
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{framed}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% VERSION CONTROL COMMAND
+%%% For Conference, Change to "true"
+%%% For Report, Change to "false"
+\usepackage{ifthen}
+\newboolean{StandAloneExample}
+\setboolean{StandAloneExample}{false}
+%\newcommand{\NotSAE}[1]{\ifthenelse{\boolean{StandAloneExample}}{}{{\color{red}#1}}}
+%\newcommand{\IfSAE}[2]{\ifthenelse{\boolean{StandAloneExample}}{#1}{{\color{blue}#2}}}   
+\newcommand{\NotSAE}[1]{\ifthenelse{\boolean{StandAloneExample}}{}{#1}}
+\newcommand{\IfSAE}[2]{\ifthenelse{\boolean{StandAloneExample}}{#1}{#2}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\thetoolbox}{the Hybrid Equations Toolbox}
+\newcommand{\thetoolboxfile}{the Hybrid Equations Toolbox}
+\newcommand{\needsupdate}[1]{{\color{red} [Needs update:] #1}}
+\newcommand{\todo}[1]{{\color{red} [To do:] #1}}
+
+%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\chapter{Hybrid Equations (HyEQ) Toolbox\\
+{\it For Simulating Hybrid Systems in 
+MATLAB and Simulink$^{\textup{\footnotesize\textregistered}}$}
+}
+\label{app:simulations}
+
+\vspace{-0.4in}
+
+\noindent\makebox[\textwidth][c]{% Make minipage centered.
+\begin{minipage}[t]{1.10\textwidth}
+  \begin{minipage}[t]{0.23\textwidth}
+  \begin{center}
+  Ricardo G. Sanfelice\\%ricardo@ucsc.edu
+  {\it University of California \\ Santa Cruz, CA 95064}\\
+  {\it USA}
+  \end{center}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.23\textwidth}
+  \begin{center}
+  David A. Copp\\%dacopp@engr.ucsb.edu
+  {\it University of California \\ Santa Barbara, CA 93109}\\
+  {\it USA}
+  \end{center}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.23\textwidth}
+  \begin{center}
+  Pablo Nanez\\%pa.nanez49@uniandes.edu.co
+  {\it Universidad de Los Andes}\\
+  {\it Colombia}
+  \end{center}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.23\textwidth}
+  \begin{center}
+  Paul K. Wintz\\
+  {\it University of California \\ Santa Cruz, CA 95064}\\
+  {\it USA}
+  \end{center}
+  \end{minipage}%
+\end{minipage}%
+}
+
+\begin{center}
+{\today}
+\end{center}
+%\bigskip
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{abstract}
+This note describes the Hybrid Equations (HyEQ) Toolbox implemented in 
+\matlab{} and Simulink for the simulation of hybrid dynamical systems. 
+This toolbox is capable of simulating individual and interconnected 
+hybrid systems where multiple hybrid systems are connected and interact 
+such as a bouncing ball on a moving platform, fireflies synchronizing their flashing, and more. 
+The Simulink implementation includes four basic blocks that define the dynamics of a hybrid system. 
+These include a flow map, flow set, jump map, and jump set. The flows and jumps of the system are 
+computed by the integrator system which is comprised of blocks that compute the continuous dynamics 
+of the hybrid system, trigger jumps, update the state of the system and simulation time at jumps, 
+and stop the simulation. 
+
+\section{MATLAB-based Hybrid Equation Simulator}
+\label{sec:litesolver}
+One way to simulate hybrid systems is to use 
+ODE function calls with events in \matlab{}. 
+Such an implementation gives fast simulation of a hybrid system.
+
+\needsupdate{
+In the \matlab{}-based HyEQ solver, four basic functions are 
+used to define the {\em data} of the hybrid system $\HS$
+as in \eqref{eqn:HS} (without inputs):
+\begin{itemize}
+\item The flow map is defined in the \matlab{} function {\tt
+f.m}. The input to this function is a vector with components 
+defining the state of the system $x$. Its output is the value of the flow map $f$.
+\item The flow set is defined in the \matlab{} function {\tt
+C.m}. The input to this function is a vector with components 
+defining the state of the system $x$. Its output is equal to $1$ 
+if the state belongs to the set $C$ or equal to $0$ otherwise.
+\item The jump map is defined in the \matlab{} function {\tt
+g.m}. Its input is a vector with components defining the state of the system $x$. 
+Its output is the value of the jump map $g$.
+\item The jump set is defined in the \matlab{} function {\tt
+D.m}. Its input is a vector with components defining the state of the system $x$. 
+Its output is equal to $1$ if the state belongs to $D$ or equal to $0$ otherwise.
+\end{itemize}
+}
+
+Our \matlab{}-based HyEQ Simulator uses a main function {\tt run.m} to initialize, run, 
+and plot solutions for the simulation, functions {\tt f.m, C.m, g.m,} and {\tt D.m} 
+to implement the data of the hybrid system, and {\tt HyEQsolver.m} 
+which will solve the differential equations by integrating the continuous dynamics, 
+$\dot{x}=f(x)$, and jumping by the update law $x^+ = g(x)$. 
+The ODE solver called in {\tt HyEQsolver.m} initially uses the initial or most recent step size, 
+and after each integration, the algorithms in {\tt HyEQsolver.m} check to see 
+if the solution is in the set $C$, $D$, or neither. 
+Depending on which set the solution is in, 
+the simulation is accordingly reset following the dynamics given in $f$ or $g$, 
+or the simulation is stopped. 
+This implementation is fast because it also does not store variables to the workspace 
+and only uses built-in ODE function calls.
+
+Time and jump horizons are set for the simulation using {\tt TSPAN = [TSTART TFINAL]} 
+as the time interval of the simulation and {\tt JSPAN = [JSTART JSTOP]} 
+as the interval for the number of discrete jumps allowed. 
+The simulation stops when either the time or jump horizon, 
+i.e., the final value of either interval, 
+is reached.
+
+\input{input_ex_1_2}
+
+%% ADDED DETAILS OF \matlab{}-based CODE
+\subsection{Solver Function}
+
+%\ricardo{Perhaps add some text here to briefly describe what the functions implement?}
+
+The solver function {\tt HyEQsolver} solves the hybrid system using 
+three different functions as shown below. 
+First, the flows are calculated using the built-in ODE solver function {\tt ODE45} in \matlab{}. 
+If the solution leaves the flow set {\tt C}, the discrete event is detected using 
+the function {\tt zeroevents} as shown in Section \ref{sec:eventsdetection}. When the state jumps, 
+the next value of the state is calculated via the jump map {\tt g} using the function {\tt jump} 
+as shown in Section \ref{sec:jumpmap}.\\
+
+\codeLocation{Matlab2tex} 
+% \code{HyEQsolver\_inst.m}
+% % \input{Matlab2tex/HyEQsolver_inst.tex}
+% \label{scr:HyEQsolver}
+
+% \subsubsection{Events Detection}
+% \label{sec:eventsdetection}
+
+% \code{zeroevents\_inst.m}
+% % \input{Matlab2tex/zeroevents_inst.tex}
+% \label{scr:zeroevents}
+
+% \subsubsection{Jump Map}
+% \label{sec:jumpmap}
+
+% \code{jump\_inst.m}
+% % \input{Matlab2tex/jump_inst.tex}
+% \label{scr:jump}
+
+% \subsubsection{Function Wrapper}
+% \label{sec:funwrapp}
+
+% \code{fun\_wrap\_inst.m}
+% % \input{Matlab2tex/fun_wrap_inst.tex}
+% \label{scr:funwrapp}
+
+
+\section{Acknowledgments}
+\label{sec:acknowledgments}
+
+We would like to thank Giampiero Campa for his thoughtful feedback 
+and advice as well as Torstein Ingebrigtsen Bo for his comments 
+and initial version of the \matlab{}-based simulator code, 
+and the following list of people who have helped to test this toolbox:
+
+\begin{itemize}
+\item Cenk Oguz Saglam - University of California, Santa Barbara
+\item Bharani Malladi - The University of Arizona
+\end{itemize}
+
+\bibliographystyle{unsrt} 
+\bibliography{biblio}\label{sec:refs}
+
+\include{foot}
+
+\end{document}

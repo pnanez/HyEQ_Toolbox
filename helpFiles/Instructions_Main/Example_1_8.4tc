@@ -1,5 +1,0 @@
-\expandafter\ifx\csname doTocEntry\endcsname\relax \expandafter\endinput\fi
-\doTocEntry\tocsection{1}{\csname a:TocLink\endcsname{1}{x1-10001}{QQ2-1-1}{Examples}}{1}\relax 
-\doTocEntry\toclof{1}{\csname a:TocLink\endcsname{1}{x1-10051}{}{\ignorespaces Solution of Example\nobreakspace  {}1.8\hbox {}}}{figure}\relax 
-\doTocEntry\toclof{2}{\csname a:TocLink\endcsname{1}{x1-10092}{}{\ignorespaces Solution of Example\nobreakspace  {}1.8\hbox {}}}{figure}\relax 
-\doTocEntry\toclof{3}{\csname a:TocLink\endcsname{1}{x1-10133}{}{\ignorespaces Solution of Example\nobreakspace  {}1.8\hbox {} with premature stopping.}}{figure}\relax 

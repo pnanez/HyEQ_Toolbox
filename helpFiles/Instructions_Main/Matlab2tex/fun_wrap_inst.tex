@@ -1,31 +1,0 @@
-% This file was automatically created from the m-file 
-% "m2tex.m" written by USL. 
-% The fontencoding in this file is UTF-8. 
-%  
-% You will need to include the following two packages in 
-% your LaTeX-Main-File. 
-%  
-% \usepackage{color} 
-% \usepackage{fancyvrb} 
-%  
-% It is advised to use the following option for Inputenc 
-% \usepackage[utf8]{inputenc} 
-%  
-  
-% definition of matlab colors: 
-\definecolor{mblue}{rgb}{0,0,1} 
-\definecolor{mgreen}{rgb}{0.13333,0.5451,0.13333} 
-\definecolor{mred}{rgb}{0.62745,0.12549,0.94118} 
-\definecolor{mgrey}{rgb}{0.5,0.5,0.5} 
-\definecolor{mdarkgrey}{rgb}{0.25,0.25,0.25} 
-  
-\DefineShortVerb[fontfamily=courier,fontseries=m]{\$} 
-\DefineShortVerb[fontfamily=courier,fontseries=b]{\#} 
-  
-\begin{Verbatim}[commandchars=\$\{\},numbers=left,numbersep=2pt] 
-    $textcolor{mblue}{function} xdelta = fun_wrap(x,t,j,h,nargfun)     $textcolor{mgreen}{%fun_wrap   Variable input arguments function (easy use for users).}     $textcolor{mgreen}{%   fun_wrap(x,t,j,h,nargfun) depending on the function h written by the}     $textcolor{mgreen}{%   user, this script selects how the HyEQ solver should call that}     $textcolor{mgreen}{%   function.}     $textcolor{mgreen}{%    x: state}     $textcolor{mgreen}{%    t: time}     $textcolor{mgreen}{%    j: discrete time}     $textcolor{mgreen}{%    h: function handle}     $textcolor{mgreen}{%    nargfun: number of input arguments of function h    }     $textcolor{mgreen}{%--------------------------------------------------------------------------}     $textcolor{mgreen}{% Matlab M-file Project: HyEQ Toolbox @  Hybrid Systems Laboratory (HSL), }     $textcolor{mgreen}{% https://hybrid.soe.ucsc.edu/software}     $textcolor{mgreen}{% http://hybridsimulator.wordpress.com/}     $textcolor{mgreen}{% Filename: fun_wrap.m}     $textcolor{mgreen}{%--------------------------------------------------------------------------}     $textcolor{mgreen}{%   See also HYEQSOLVER, PLOTARC, PLOTARC3, PLOTFLOWS, PLOTHARC,}     $textcolor{mgreen}{%   PLOTHARCCOLOR, PLOTHARCCOLOR3D, PLOTHYBRIDARC, PLOTJUMPS.}     $textcolor{mgreen}{%   Copyright @ Hybrid Systems Laboratory (HSL),}     $textcolor{mgreen}{%   Revision: 0.0.0.3 Date: 01/28/2016 5:12:00}               $textcolor{mblue}{switch} nargfun         $textcolor{mblue}{case} 1             xdelta = h(x);         $textcolor{mblue}{case} 2             xdelta = h(x,t);         $textcolor{mblue}{case} 3             xdelta = h(x,t,j);             $textcolor{mblue}{end}     $textcolor{mblue}{end}  
-\end{Verbatim}  
-  
-\UndefineShortVerb{\$} 
-\UndefineShortVerb{\#} 
- 

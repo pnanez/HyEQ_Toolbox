@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding="utf-8"?>
+<toc version="2.0">
+    <tocitem target="html/TOC.html">Hybrid Equation Toolbox
+        <tocitem target="html/intro_to_hybrid_systems.html">Introduction to Hybrid Systems</tocitem>
+        <tocitem target="html/TOC_matlab.html">The HyEQ MATLAB Library
+            <tocitem target="html/HybridSystem_demo.html">Creating and Simulating Hybrid Systems</tocitem>
+            <tocitem target="html/HybridPlotBuilder_demo.html">Plotting Hybrid Arcs</tocitem>
+            <tocitem target="html/CompositeHybridSystem_demo.html">Composite Hybrid Systems</tocitem>
+            <tocitem target="html/ConvertingLegacyCodeToVersion3_demo.html">Updating Code Designed for v2.04 to Use v3.0 Features.</tocitem>
+            <tocitem target="html/MATLAB_ZOH_example_demo.html">Example: CompositeHybridSystem with ZOH</tocitem>
+            <tocitem target="html/MATLAB_switched_system_example_demo.html">Example: CompositeHybridSystem with Switching</tocitem>
+        </tocitem>
+        <tocitem target="html/TOC_simulink.html">The HyEQ Simulink Library
+            <tocitem target="html/Help_SimulinkLibrary.html">Introduction to Simulink-based Solver</tocitem>
+            <tocitem target="html/Help_bouncing_ball.html">Example Using External Functions</tocitem>
+            <tocitem target="html/Help_bouncing_ball_with_input.html">Example Using Embedded Functions</tocitem>
+            <tocitem target="html/Help_coupled_subsystems.html">Composing Multiple Hybrid Subsystems</tocitem>
+            <tocitem target="html/Help_behavior_in_C_intersection_D.html">Behavior in the Intersection of C and D</tocitem>
+            <tocitem target="html/Help_integrator_system.html">The Integrator System</tocitem>
+            <tocitem target="html/TOC_cps.html">CPS Components
+                <tocitem target="html/CPS_Components.html">Intro to CPS Simulink blocks</tocitem>
+                <tocitem target="html/CPS_continuous_plant.html">Continuous-time Plant</tocitem>
+                <tocitem target="html/CPS_zero_order_hold.html">Zero-Order Hold</tocitem>
+                <tocitem target="html/CPS_analog_to_digital_converter.html">Analog-to-Digital Converter</tocitem>
+                <tocitem target="html/CPS_finite_state_machine.html">Finite State Machine</tocitem>
+            </tocitem>
+        </tocitem>
+        <tocitem target="html/TOC_examples.html">Example Applications
+            <tocitem target="html/Example_vehicle_on_path.html">Example 1: Vehicle Following a Track</tocitem>
+            <tocitem target="html/Example_fireflies.html">Example 2: Fireflies</tocitem>
+            <tocitem target="html/Example_zoh_feedback_control.html">Example 3: Sample-and-hold Feedback Control</tocitem>
+            <tocitem target="html/Example_network_estimation.html">Example 4: Estimation over a Network</tocitem>
+        </tocitem>
+        <tocitem target="html/MATLAB_packages.html">Package Namespaces</tocitem>
+        <tocitem target="html/changelog.html">Version Change Log</tocitem>
+        <tocitem target="html/acknowledgements.html">Acknowledgements</tocitem>
+    </tocitem>
+    <!--<tocitem target="html/Example_4_0.html">Example 4.0: Simple mathematical model of a physical component</tocitem>-->
+</toc>

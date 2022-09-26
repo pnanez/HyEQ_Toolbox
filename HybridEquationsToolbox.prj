@@ -1,0 +1,261 @@
+<deployment-project plugin="plugin.toolbox" plugin-version="1.0">
+  <configuration build-checksum="3943893848" file="C:\Users\pwintz\code\hybrid-toolbox\HybridEquationsToolbox.prj" location="C:\Users\pwintz\code\hybrid-toolbox" name="HybridEquationsToolbox" target="target.toolbox" target-name="Package Toolbox">
+    <param.appname>Hybrid Equations Toolbox</param.appname>
+    <param.authnamewatermark>Paul Wintz</param.authnamewatermark>
+    <param.email>pwintz@ucsc.edu</param.email>
+    <param.company>Hybrid System Laboratory; UC, Santa Cruz</param.company>
+    <param.summary />
+    <param.description />
+    <param.screenshot />
+    <param.version>3.0.0.68</param.version>
+    <param.output>${PROJECT_ROOT}\Hybrid Equations Toolbox.mltbx</param.output>
+    <param.products.name />
+    <param.products.id />
+    <param.products.version />
+    <param.platforms />
+    <param.guid>65a20ccf-a3d3-4384-b713-5c73c49e2af1</param.guid>
+    <param.exclude.filters>% List files contained in your toolbox folder that you would like to exclude
+% from packaging.  Excludes should be listed relative to the toolbox folder.
+% Some examples of how to specify excludes are provided below:
+%
+% A single file in the toolbox folder:
+% .svn
+package_toolbox.m
+temp.m
+readme.rtf
+configure_development_path.m
+rename_variables.sh
+doc/src
+*_temp.*
+.git*
+% A single file in a subfolder of the toolbox folder:
+% example/.svn
+%
+% All files in a subfolder of the toolbox folder:
+% example/*
+.git/*
+% All files of a certain name in all subfolders of the toolbox folder:
+% **/.svn
+**/.DS_Store
+**/.gitignore
+**/.gitattributes
+%
+% All files matching a pattern in all subfolders of the toolbox folder:
+% **/*.bak
+**/*.tex
+**/*.asv
+**/*.slxc
+**/*.mexw64
+**/slprj
+**/*temp.m
+**/temp_*.m
+% We exclude matlab/functionSignatures.json because it is not supported on older 
+% versions of MATLAB. Instead, we include functionSignatures_disabled.json, which 
+% we then move to "functionSignatures.json", if supported, at the end of installation.
+**/functionSignatures.json
+% Auxiliary LaTeX tiles
+**/*.aux
+**/*.lof
+**/*.log
+**/*.lot
+**/*.fls
+**/*.out
+**/*.toc
+**/*.fmt
+**/*.fot
+**/*.cb
+**/*.cb2
+**/.*.lb</param.exclude.filters>
+    <param.exclude.pcodedmfiles>true</param.exclude.pcodedmfiles>
+    <param.examples>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;examples&gt;
+   &lt;exampleCategory name="doc"&gt;
+      &lt;example name="CompositeHybridSystem_demo" type="html"&gt;
+         &lt;file type="source"&gt;/doc/html/CompositeHybridSystem_demo.html&lt;/file&gt;
+         &lt;file type="main"&gt;/doc/CompositeHybridSystem_demo.m&lt;/file&gt;
+         &lt;file type="thumbnail"&gt;/doc/html/CompositeHybridSystem_demo.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/CompositeHybridSystem_demo_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/CompositeHybridSystem_demo_02.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/CompositeHybridSystem_demo_03.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/CompositeHybridSystem_demo_04.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/CompositeHybridSystem_demo_05.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/CompositeHybridSystem_demo_06.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/CompositeHybridSystem_demo_07.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/CompositeHybridSystem_demo_08.png&lt;/file&gt;
+      &lt;/example&gt;
+      &lt;example name="HybridPlotBuilder_demo" type="html"&gt;
+         &lt;file type="source"&gt;/doc/html/HybridPlotBuilder_demo.html&lt;/file&gt;
+         &lt;file type="main"&gt;/doc/HybridPlotBuilder_demo.m&lt;/file&gt;
+         &lt;file type="thumbnail"&gt;/doc/html/HybridPlotBuilder_demo.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_02.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_03.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_04.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_05.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_06.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_07.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_08.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_09.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_10.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_11.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_12.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_13.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_14.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_15.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_16.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_17.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_18.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_19.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_20.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_21.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_22.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_23.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_24.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_25.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_26.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_27.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_28.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_29.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_30.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_31.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_32.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_33.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_34.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_35.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_36.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_37.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_38.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_39.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_40.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_41.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_42.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridPlotBuilder_demo_43.png&lt;/file&gt;
+      &lt;/example&gt;
+      &lt;example name="HybridSystem_demo" type="html"&gt;
+         &lt;file type="source"&gt;/doc/html/HybridSystem_demo.html&lt;/file&gt;
+         &lt;file type="main"&gt;/doc/HybridSystem_demo.m&lt;/file&gt;
+         &lt;file type="thumbnail"&gt;/doc/html/HybridSystem_demo.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridSystem_demo_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridSystem_demo_02.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridSystem_demo_03.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/HybridSystem_demo_04.png&lt;/file&gt;
+      &lt;/example&gt;
+      &lt;example name="demos_TOC" type="html"&gt;
+         &lt;file type="source"&gt;/doc/html/demos_TOC.html&lt;/file&gt;
+         &lt;file type="main"&gt;/doc/demos_TOC.m&lt;/file&gt;
+         &lt;file type="thumbnail"/&gt;
+      &lt;/example&gt;
+      &lt;example name="examples_TOC" type="html"&gt;
+         &lt;file type="source"&gt;/doc/html/examples_TOC.html&lt;/file&gt;
+         &lt;file type="main"&gt;/doc/examples_TOC.m&lt;/file&gt;
+         &lt;file type="thumbnail"/&gt;
+      &lt;/example&gt;
+      &lt;example name="GettingStarted" type="html"&gt;
+         &lt;file type="source"&gt;/doc/html/GettingStarted.html&lt;/file&gt;
+         &lt;file type="main"&gt;/doc/GettingStarted.mlx&lt;/file&gt;
+         &lt;file type="thumbnail"&gt;/doc/html/GettingStarted.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/GettingStarted_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/doc/html/GettingStarted_02.png&lt;/file&gt;
+      &lt;/example&gt;
+   &lt;/exampleCategory&gt;
+&lt;/examples&gt;</param.examples>
+    <param.demosxml />
+    <param.apps />
+    <param.registered.apps />
+    <param.docs>${PROJECT_ROOT}\info.xml</param.docs>
+    <param.getting.started.guide>${PROJECT_ROOT}\doc\GettingStarted.mlx</param.getting.started.guide>
+    <param.matlabpath.excludes />
+    <param.javaclasspath.excludes />
+    <param.exported.on.package>false</param.exported.on.package>
+    <param.required.addons />
+    <param.matlab.project.id />
+    <param.matlab.project.name />
+    <param.release.start>R2014b</param.release.start>
+    <param.release.end>latest</param.release.end>
+    <param.release.current.only>false</param.release.current.only>
+    <param.compatiblity.windows>true</param.compatiblity.windows>
+    <param.compatiblity.macos>true</param.compatiblity.macos>
+    <param.compatiblity.linux>true</param.compatiblity.linux>
+    <param.compatiblity.matlabonline>true</param.compatiblity.matlabonline>
+    <param.installation.map />
+    <param.additional.sw.names />
+    <param.additional.sw.licenses />
+    <param.additional.sw.win.url />
+    <param.additional.sw.mac.url />
+    <param.additional.sw.linux.url />
+    <unset>
+      <param.email />
+      <param.summary />
+      <param.description />
+      <param.screenshot />
+      <param.output />
+      <param.products.name />
+      <param.products.id />
+      <param.products.version />
+      <param.platforms />
+      <param.exclude.pcodedmfiles />
+      <param.demosxml />
+      <param.apps />
+      <param.registered.apps />
+      <param.matlabpath.excludes />
+      <param.javaclasspath.excludes />
+      <param.exported.on.package />
+      <param.required.addons />
+      <param.matlab.project.id />
+      <param.matlab.project.name />
+      <param.release.current.only />
+      <param.compatiblity.windows />
+      <param.compatiblity.macos />
+      <param.compatiblity.linux />
+      <param.compatiblity.matlabonline />
+      <param.installation.map />
+      <param.additional.sw.names />
+      <param.additional.sw.licenses />
+      <param.additional.sw.win.url />
+      <param.additional.sw.mac.url />
+      <param.additional.sw.linux.url />
+    </unset>
+    <fileset.rootdir>
+      <file>${PROJECT_ROOT}</file>
+    </fileset.rootdir>
+    <fileset.rootfiles>
+      <file>${PROJECT_ROOT}\buildsearchdb.m</file>
+      <file>${PROJECT_ROOT}\demos.xml</file>
+      <file>${PROJECT_ROOT}\doc</file>
+      <file>${PROJECT_ROOT}\Examples</file>
+      <file>${PROJECT_ROOT}\info.xml</file>
+      <file>${PROJECT_ROOT}\LICENSE.txt</file>
+      <file>${PROJECT_ROOT}\matlab</file>
+      <file>${PROJECT_ROOT}\README.md</file>
+      <file>${PROJECT_ROOT}\simulink</file>
+    </fileset.rootfiles>
+    <fileset.depfun.included />
+    <fileset.depfun.excluded>
+      <file>${MATLAB_ROOT}\toolbox\local\userpath.m</file>
+    </fileset.depfun.excluded>
+    <fileset.package />
+    <build-deliverables>
+      <file location="${PROJECT_ROOT}" name="Hybrid Equations Toolbox.mltbx" optional="false">C:\Users\pwintz\code\hybrid-toolbox\Hybrid Equations Toolbox.mltbx</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>C:\Program Files\MATLAB\R2021b</root>
+      <toolboxes />
+    </matlab>
+    <platform>
+      <unix>false</unix>
+      <mac>false</mac>
+      <windows>true</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>false</linux>
+      <solaris>false</solaris>
+      <osver>10.0</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>win64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>

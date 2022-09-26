@@ -1,0 +1,176 @@
+\begin{example}{Sample-and-hold Feedback Control}
+\label{ex:S&Hcontrol}
+Consider a physical process modeled as in \IfSAE{Example 5.7}{Example~\ref{ex:LTIplant}}
+and a state feedback interconnection.
+The algorithm (static gain) uses measurements of its
+output and controls the input of the physical process with the goal of steering its state to zero. 
+Suppose the sampling device is ideal and that the signals are connected to the plant via a DAC modeled as 
+\IfSAE
+{
+follows.
+The digital signals in the cyber components need to be converted
+to analog signals for their use in the physical world.
+Digital-to-analog converters (DACs) perform such a task 
+by converging digital signals into analog equivalents.
+One of the most common models for a DAC
+is the zero-order hold model (ZOH). In simple terms, a ZOH converts
+a digital signal at its input into an analog signal 
+at its output.  
+Its output is updated at discrete time instants, typically periodically,
+and held constant in between updates, until new information is available at the
+next sampling time. We will model DACs as ZOH devices with similar dynamics. Let
+$\tau_h\in\realsgeq$ be the timer state, $m_h \in \reals^{r_C}$ be the
+sample state (note that the value of $h$ indicates the number of DACs
+in the interface), and $v_h \in \reals^{r_C}$ be the inputs of the DAC.
+Its operation is as follows. When $\tau_h \leq 0$, the timer state
+is reset to $\tau_r$ and the sample state is updated with $v_h$ (usually
+the output of the embedded computer), where $\tau_r\in[T^{\mbox{min}},T^{\mbox{max}}]$ is a random variable that models the time in-between communication instants and $T^{\mbox{min}}\leq T^{\mbox{max}}$.  A model that captures this
+mechanism is given by 
+\begin{eqnarray}\label{eqn:DACmodel-a}
+\left.
+\begin{array}{l}
+\dot{\tau}_h =\ -1,   \ \
+\dot{m}_h  =\ 0
+\end{array}
+\right. & \mbox{ when }& \tau_h \in [T^{\mbox{min}},T^{\mbox{max}}] \\ \label{eqn:DACmodel-b}
+\left.
+\begin{array}{ll}
+\tau_h^+  =\ \tau_r,  \ \
+m_h^+ =\ v_h
+\end{array}
+\right. & \mbox{ when }& \tau_h \leq T^{\mbox{min}}
+\end{eqnarray}
+}
+{in \eqref{eqn:DACmodel-a}-\eqref{eqn:DACmodel-b}.}
+
+
+The interconnection between the models of the physical process, the sampling device, the finite state 
+machine, and the DAC has the feedback topology shown in Figure~\ref{fig:S&Hcontrol}.  In particular, the output of the DAC is connected to the input $\up$ of the physical process by a matrix gain $K$, while the input $\uc$ of the finite state machine is equal to the output $\yp$ of the physical process
+at every sampling instant. 
+\begin{itemize}
+\item Physical process:
+\begin{eqnarray}
+\fp(\xp, u):= A\xp + Bu,\ 
+   \Cp : = \Re^{2}\times\Re^{2},\\
+\gp(\xp, u):= \xp,\ 
+    \Dp: =\emptyset,\ 
+\yp = h(\xp) : =x
+\end{eqnarray}
+where $A = \begin{bmatrix}0 & 1 \\ 0 & -b/m\end{bmatrix}$, $B = \begin{bmatrix}1 & 1/m\end{bmatrix}$, and $x=(x_1,x_2)\in\Re^{2}$.
+
+\item Analog-to-Digital Converter (ADC):
+\begin{eqnarray}
+f(x, u):= \begin{bmatrix}0\\0\\1\end{bmatrix},\ 
+   C : = \defset{(x,u)}{ \tau_s \in [0,T^*_s] },\\
+g(x, u):= \begin{bmatrix} u\\ 0\end{bmatrix},\ 
+    D: =\defset{(x,u)}{ \tau_s \geq T^*_s },\ 
+y = h(x) : =x
+\end{eqnarray}
+where $x=(m_s,\tau_s)\in\Re\times\Re^{2}$, and $u\in\Re^{2}$.
+
+\item Zero-Order Hold (ZOH):
+\begin{eqnarray}
+f(x, u):= \begin{bmatrix}0\\0\\1\end{bmatrix},\ 
+   C : = \defset{(x,u)}{ \tau_s \in [0,T^*_s] },\\
+g(x, u):= \begin{bmatrix} u\\ 0\end{bmatrix},\ 
+    D: =\defset{(x,u)}{ \tau_s \geq T^*_s },\ 
+y = h(x) : =x
+\end{eqnarray}
+where $x=(m_s,\tau_s)\in\Re\times\Re^{2}$, and $u\in\Re^{2}$.
+
+\end{itemize}
+
+The feedback gain is given by $K = \begin{bmatrix}k_1\\k_2\end{bmatrix}$. 
+%\begin{eqnarray}
+%f(x, u):= ,\ 
+%   C : = \defset{(x,u)}{ },\\
+%g(x, u):= ,\ 
+%    D: =\defset{(x,u)}{ },\ 
+%y = h(x) : =x
+%\end{eqnarray}
+
+
+\begin{figure}[ht!]
+  \begin{center}
+    {\includegraphics[width=0.8\textwidth]{figures/Simulink/SampleandHoldExample.eps}}
+   \caption{Sample and hold feedback interconnection for Example~\ref{ex:S&Hcontrol}}
+\label{fig:S&Hcontrol}
+  \end{center}
+\end{figure}
+
+For each hybrid system in Figure~\ref{fig:S&Hcontrol} (HSu, ADC, and ZOH) we have the following Matlab embedded functions that describe the sets $C$ and $D$ and functions $f$ and $g$.
+Figure~\ref{fig:ZOH_exampleResults} presents a numerical simulation of the interconnected system.
+
+\begin{figure}%[ht]
+  \begin{center}
+    \includegraphics[width=0.8\textwidth]{figures/Simulink/ZOH_exampleResults.eps}
+   \caption{Measuread states and inputs.}
+\label{fig:ZOH_exampleResults}
+  \end{center}
+\end{figure}
+
+% Set the location for MATLAB files included via the "\code" command.
+\codeLocation{Matlab2tex_CPS_ContinuousPlant}
+
+\begin{itemize}
+\item Continuous process:
+
+\code{f.m}
+\code{C.m}
+\code{g.m}
+\code{D.m}
+
+% Flow map
+% %\scriptsize
+% \input{Matlab2tex_CPS_ContinuousPlant/f.tex}\label{scr:f}
+% %\normalsize
+
+% Flow set
+% %\scriptsize
+% \input{Matlab2tex_CPS_ContinuousPlant/C.tex}\label{scr:C}
+% %\normalsize
+
+% Jump map
+% %\scriptsize
+% \input{Matlab2tex_CPS_ContinuousPlant/g.tex}\label{scr:g}
+% %\normalsize
+
+% Jump set
+% %\scriptsize
+% \input{Matlab2tex_CPS_ContinuousPlant/D.tex}\label{scr:D}
+% %\normalsize
+\item ADC and ZOH:
+
+\code{f\_ADC.m}
+\code{C\_ADC.m}
+\code{g\_ADC.m}
+\code{D\_ADC.m}
+
+% Flow map
+% %\scriptsize
+% \input{Matlab2tex_CPS_ContinuousPlant/f_ADC.tex}\label{scr:f}
+% %\normalsize
+
+% Flow set
+% %\scriptsize
+% \input{Matlab2tex_CPS_ContinuousPlant/C_ADC.tex}\label{scr:C}
+% %\normalsize
+
+% Jump map
+% %\scriptsize
+% \input{Matlab2tex_CPS_ContinuousPlant/g_ADC.tex}\label{scr:g}
+% %\normalsize
+
+% Jump set
+% %\scriptsize
+% \input{Matlab2tex_CPS_ContinuousPlant/D_ADC.tex}\label{scr:D}
+% %\normalsize
+\end{itemize}
+
+There are numerous practical examples of systems that can be modeled 
+within the general model for sample-and-hold feedback control defined above.
+For example, one ``classical'' example is the control of the temperature of a room 
+by turning on and off a heater so as to keep the temperature within a desired range\NotSAE{; see the model in \eqref{eqn:TemperatureModel}}.
+Another widely known example is the control of the level of a water tank.
+
+\end{example}
