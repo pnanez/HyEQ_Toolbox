@@ -67,7 +67,7 @@ classdef ExamplesTest < matlab.unittest.TestCase
             checkExample('mobile_robot')
         end
 
-        function test_network_estimation1(~)
+        function test_network_estimation(~)
             checkExample('network_estimation','network')
         end
 
