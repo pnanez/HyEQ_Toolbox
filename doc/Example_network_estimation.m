@@ -8,7 +8,7 @@
 % |hybrid.examples.network_estimation|:
 % 
 % * <matlab:open('hybrid.examples.network_estimation.initialize') initialize.m> 
-% * <matlab:hybrid.examples.network_estimation.network network.slx>
+% * <matlab:hybrid.examples.network_estimation.network_est network_est.slx>
 % * <matlab:open('hybrid.examples.network_estimation.postprocess') postprocess.m> 
 % 
 % The contents of this package are located in
@@ -163,10 +163,10 @@
 
 %% Steps to Run Model
 % 
-% The following procedure is used to simulate the example using the model in the file |network.slx|:
+% The following procedure is used to simulate the example using the model in the file |network_est.slx|:
 % 
 % * Open
-% <matlab:hybrid.examples.network_estimation.network |network.slx|> 
+% <matlab:hybrid.examples.network_estimation.network_est |network_est.slx|> 
 % in Simulink.   
 % * Double-click the block labeled _Double Click to Initialize_.
 % * To start the simulation, click the _run_ button or select |Simulation>Run|.
@@ -181,7 +181,7 @@ rng(2)
 
 % Run the Simulink model.
 warning('off','Simulink:Commands:LoadingOlderModel')
-simulink_model_path = which('hybrid.examples.network_estimation.network');
+simulink_model_path = which('hybrid.examples.network_estimation.network_est');
 sim(simulink_model_path)
 close_system
 close all
@@ -198,7 +198,7 @@ solhatz = HybridArc(thatz, jhatz, hatz);
 
 % Open .slx model. A screenshot of the subsystem will be
 % automatically included in the published document.
-model_path = 'hybrid.examples.network_estimation.network';
+model_path = 'hybrid.examples.network_estimation.network_est';
 open_system(which(model_path))
  
 %%

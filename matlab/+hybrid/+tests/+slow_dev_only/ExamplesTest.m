@@ -68,7 +68,7 @@ classdef ExamplesTest < matlab.unittest.TestCase
         end
 
         function test_network_estimation(~)
-            checkExample('network_estimation','network')
+            checkExample('network_estimation','network_est')
         end
 
         function test_vehicle_on_constrained_path(~)

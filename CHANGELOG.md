@@ -17,7 +17,7 @@ components throughout the Toolbox. This section describes changes between v2.04 
  
  **Interconnected Hybrid Systems.** It is now possible in MATLAB to define 
  several hybrid subsystem systems with inputs and outputs, such as a plant and 
- a controller, then then link them together to form a composite hybrid system. 
+ a controller, then link them together to form a composite hybrid system. 
  Solutions to the composite system can be computed like any other system.
  
  **More Informative Solutions.** The new `HybridSolution` class includes additional 
