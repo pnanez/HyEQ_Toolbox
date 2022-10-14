@@ -6,7 +6,7 @@
     <param.company>Hybrid System Laboratory; UC, Santa Cruz</param.company>
     <param.summary />
     <param.description />
-    <param.screenshot />
+    <param.screenshot>${PROJECT_ROOT}\hybrid_toolbox_icon.png</param.screenshot>
     <param.version>3.0.0.69</param.version>
     <param.output>${PROJECT_ROOT}\Hybrid Equations Toolbox.mltbx</param.output>
     <param.products.name />
@@ -24,6 +24,7 @@ package_toolbox.m
 temp.m
 readme.rtf
 configure_development_path.m
+generate_toolbox_icon.m
 rename_variables.sh
 doc/src
 *_temp.*
