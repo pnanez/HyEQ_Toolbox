@@ -85,7 +85,7 @@ save_simulink_model_on_current_version('hybrid.examples.coupled_subsystems.coupl
 save_simulink_model_on_current_version('hybrid.examples.finite_state_machine.fsm')
 save_simulink_model_on_current_version('hybrid.examples.fireflies.fireflies')
 save_simulink_model_on_current_version('hybrid.examples.mobile_robot.mobile_robot')
-save_simulink_model_on_current_version('hybrid.examples.network_estimation.network')
+save_simulink_model_on_current_version('hybrid.examples.network_estimation.network_est')
 save_simulink_model_on_current_version('hybrid.examples.vehicle_on_constrained_path.vehicle_on_path')
 save_simulink_model_on_current_version('hybrid.examples.zero_order_hold.zoh')
 save_simulink_model_on_current_version('hybrid.examples.zoh_feedback_control.zoh_feedback')
