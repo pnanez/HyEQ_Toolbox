@@ -95,6 +95,12 @@ if ~verLessThan('matlab','9.10')
     enable_enhanced_autocomplete(hyeqsolver_paths)
 end
 
+%% Build a search index that allows searching for information within the HyEQ Toolbox help files in the MATLAB Help Browser. 
+% Note that on R2021b, MATLAB must be restarted before searching within the
+% HyEQ Toolbox documentation works.
+docFolder = hybrid.getFolderLocation('doc');
+builddocsearchdb(docFolder)
+
 %% Prompt to run automated tests.
 promptMessage = sprintf(['Do you want to run automated tests?\n' ...
                     'The tests will take less than a minute.']);
