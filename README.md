@@ -14,22 +14,22 @@ This toolbox officially supports the following combinations of operating system 
 - Mac (MATLAB+Simulink): R2016a-R2022b
 - Linux: R2021a-R2022b
 
-MATLAB versions R2014b through R2015b are not supported on recent versions of macOS, such as Monterey. See MATLAB and Simulink's [system requirements](https://www.mathworks.com/support/requirements/previous-releases.html) to find a compatible OS/software version pair.
+MATLAB versions R2014b through R2015b are not compatible with recent versions of macOS, such as macOS Monterey. See MATLAB and Simulink's [system requirements](https://www.mathworks.com/support/requirements/previous-releases.html) to find a compatible OS/software version pair.
 
-When we tested the Toolbox on Linux in MATLAB R2014b, having Simulink installed caused _all_ HyEQ Toolbox tests to fail. Manual testing indicates that the HyEQ MATLAB library might work, but use at your own risk. For a MATLAB version tested with Linux, use R2021a or later (earlier versions than 2021a may work but were not tested).
+When the Toolbox was tested on Linux in MATLAB R2014b, Simulink caused the automated test runner to crash. Manual testing indicates that the HyEQ MATLAB library might work, but use at your own risk. For a MATLAB version tested with Linux, use R2021a or later (earlier versions than 2021a may work but were not tested).
 
 ## How to Install the HyEQ Toolbox version 3.0
 
-Before installing version 3.0 of the HyEQ Toolbox, it is necessary to manually uninstall any installed earlier versions. Once version 3.0 or later is installed, it is not necessary to manually uninstall the toolbox before updating to a newer version. 
+Before installing version 3.0 of the HyEQ Toolbox, it is necessary to manually uninstall any installed earlier versions (v2.04 or earlier). Subsequently, it is not necessary to manually uninstall the HyEQ Toolbox (v3.0 or later) before updating to a newer version. 
 
 ### Uninstalling HyEQ Toolbox Version 2.04. 
-The process for uninstalling v2.04 is as follows.
+The process for uninstalling v2.04 is as follows (earlier versions are similar).
 
 1. Open Matlab.
-2. Navigate to the HyEQ Toolbox folder. The toolbox folder can be located by running `which('HyEQsolver')` in the MATLAB command window.
-	* On Windows, the toolbox path is typically `C:\Program Files\Matlab\toolbox\HyEQ_Toolbox_v204`.
-    * On Macintosh, the toolbox path is typically `~/matlab/HyEQ_Toolbox_v204`.  
-3. Within the HyEQ Toolbox folder, run the uninstallation script `tbclean` in the MATLAB command window. This script deletes all the files in the HyEQ Toolbox folder.
+2. Navigate to the HyEQ Toolbox folder. The toolbox folder can be located by running `which('HyEQsolver')` in the MATLAB command window (note that `HyEQsolver` is in a subdirectory of the HyEQ Toolbox folder).
+	* On Windows, the HyEQ Toolbox folder path is typically `C:\Program Files\Matlab\toolbox\HyEQ_Toolbox_v204`.
+    * On Macintosh, the HyEQ Toolbox folder path is typically `~/matlab/HyEQ_Toolbox_v204`.  
+3. While in the HyEQ Toolbox folder, run the uninstallation script `tbclean` in the MATLAB command window. **This script deletes all the files in the HyEQ Toolbox folder!**
 4. Restart Matlab.
 5. Check that the HyEQ Toolbox is uninstalled by running `which('HyEQsolver')`. The output should be `'HyEQsolver' not found`.
 
@@ -53,31 +53,25 @@ The MATLAB Add-on Manager is not supported on versions of MATLAB before MATLAB R
 2. Click “Download” and select “Toolbox” from the drop-down menu.
 3. Select any convenient location to save the `.mltbx` file.
 4. Open the `.mltbx` file in MATLAB. 
-5. A dialog box will prompt you to install the toolbox. Click “Install”. 
+5. A dialog box will prompt you to install the toolbox. Click “Install.” 
 6. To finish setting up the toolbox, run `hybrid.configureToolbox` in the MATLAB command window. This command 
 	1. checks that only one version of the toolbox is installed, 
 	2. upgrades the Simulink library and example model files to the current MATLAB version (this prevents warnings that they were last saved on an old version of Simulink), and 
 	3. opens a prompt to run automated tests (there will be several skipped tests for functionality that is not tested on older versions of MATLAB).
-7. You may delete the `.mltbx` file.
+7. You may delete the `.mltbx` file at this point.
 
-# Help with the Toolbox
+# Help Using the Toolbox
 
 To access the HyEQ Toolbox documentation, open MATLAB Help (F1) and navigate to Supplemental Software>Hybrid Equations Toolbox.
 
-To report a problem, request a feature, or ask for help, please [submit an issue](https://github.com/pnanez/HyEQ_Toolbox/issues/new/choose) on [GitHub](https://github.com/pnanez/HyEQ_Toolbox).
+To ask for help, report a problem, or request a feature, please [submit an issue](https://github.com/pnanez/HyEQ_Toolbox/issues/new/choose) on [GitHub](https://github.com/pnanez/HyEQ_Toolbox).
 
-## Troubleshooting and Known Issues
+## Troubleshooting
 **Problem**: When I call `HybridSystem.solve()`, after installing v3.0, the following error appears: “`Error using HyEQsolver. Too many input arguments.`” 
 
-**Cause**: A previous version of the toolbox still installed. 
+**Cause**: A previous version of the toolbox is still installed. 
 
 **Solution**: Uninstall the previous hybrid toolbox version by following the [steps above](#uninstalling-hyeq-toolbox-version-204).
-
----
-
-**Problem**: After installing v3.0 of the Hybrid Equations Toolbox, something is not working.
-
-**Solution**: Try restarting MATLAB.
 
 ---
 
@@ -89,7 +83,7 @@ shadowed by another file of the same name higher on the MATLAB path.  For more i
 The file that is higher on the MATLAB path is: <path to another file>.
 ```
 
-**Solution**: To fix this problem, you need to either rename the example file name or rename the other file (or remove it from the MATLAB Path). After renaming the example file, you can open the model by running `hybrid.examples.<example package>.<new model name>` or by navigating to it in the file browser, but links to open the example from the MATLAB Help browser will no longer work.
+**Solution**: Either rename the example file name or rename the file that is shadowing it (or remove it from the MATLAB Path). After renaming the example file to `<new model name>`, you can open the model to by running `hybrid.examples.<example package>.<new model name>` or by navigating to it in the file browser. Links to open the example from the MATLAB Help browser will no longer work.
 
 ---
 
@@ -99,19 +93,9 @@ An error occurred while running the simulation and the simulation was terminated
 Simulink cannot solve the algebraic loop containing '<model name>/Integrator System/ICx' at time 0.0 using the TrustRegion-based algorithm due to one of the following reasons: the model is ill-defined i.e., the system equations do not have a solution; or the nonlinear equation solver failed to converge due to numerical issues.
 ```
 
-**Cause**: The Simulink model contains a closed-loop consisting of one or more blocks and Simulink is therefore unable to propagate the dynamics of the system.
+**Cause**: The Simulink model contains an [algebraic loop](https://www.mathworks.com/help/simulink/ug/algebraic-loops.html) (a closed signal loop that contains only direct feedthrough blocks) that is preventing Simulink from propagating the dynamics of the system.
 
-**Solution**: For one of the HyEQ blocks in the loop, use the “x-” output instead of the “x” output to pass the output to the next block in the loop. This introduces a one time step delay to the output signal that breaks the algebraic loop.
-
----
-**Problem**: Running Simulink in MATLAB R2014b (and other early versions) does not work on modern versions of Linux and the macOS.
-
-**Solution**: Install MATLAB R2021b or later. The HyEQ Toolbox was not tested on any pre-R2021b versions of Simulink on Linux. The MATLAB library was tested in R2014b on macOS Monterey and worked, but Simulink R2014b is not compatible with this OS and would not open.
-
-## See Also
-* [Hybrid Systems Laboratory](https://hybrid.soe.ucsc.edu/) at [UC, Santa Cruz](https://engineering.ucsc.edu/)
-* [Previous versions of the HyEQ Toolbox](https://hybrid.soe.ucsc.edu/software)
-* [Examples of Hybrid Systems](http://hybridsimulator.wordpress.com/) (WordPress blog)
+**Solution**: For one of the HyEQ blocks in the loop, use the “x-” output instead of the “x” output to pass the output to the next block in the loop. This introduces a one time-step delay to the output signal in order to break the algebraic loop.
 
 # Credits 
 ## Version 2.04 
@@ -122,3 +106,9 @@ Ricardo G. Sanfelice, David A. Copp, and Pablo Nanez.
 Version 3.0 of the HyEQ Toolbox was developed by Paul Wintz.
 
 See **Credits and Acknowledgements** within the HyEQ Toolbox documentation for further acknowledgements 
+
+
+# See Also
+* [Hybrid Systems Laboratory](https://hybrid.soe.ucsc.edu/) at [UC, Santa Cruz](https://engineering.ucsc.edu/)
+* [Previous versions of the HyEQ Toolbox](https://hybrid.soe.ucsc.edu/software)
+* [Examples of Hybrid Systems](http://hybridsimulator.wordpress.com/) (blog)
