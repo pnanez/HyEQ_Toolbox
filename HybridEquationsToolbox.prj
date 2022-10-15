@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration build-checksum="3943893848" file="C:\Users\pwintz\code\hybrid-toolbox\HybridEquationsToolbox.prj" location="C:\Users\pwintz\code\hybrid-toolbox" name="HybridEquationsToolbox" target="target.toolbox" target-name="Package Toolbox">
+  <configuration build-checksum="3943893859" file="C:\Users\pwintz\code\hybrid-toolbox-fork-temp\HybridEquationsToolbox.prj" location="C:\Users\pwintz\code\hybrid-toolbox-fork-temp" name="HybridEquationsToolbox" target="target.toolbox" target-name="Package Toolbox">
     <param.appname>Hybrid Equations Toolbox</param.appname>
     <param.authnamewatermark>Paul Wintz</param.authnamewatermark>
     <param.email>pwintz@ucsc.edu</param.email>
@@ -7,13 +7,13 @@
     <param.summary />
     <param.description />
     <param.screenshot>${PROJECT_ROOT}\hybrid_toolbox_icon.png</param.screenshot>
-    <param.version>3.0.0.69</param.version>
+    <param.version>3.0.0.76</param.version>
     <param.output>${PROJECT_ROOT}\Hybrid Equations Toolbox.mltbx</param.output>
     <param.products.name />
     <param.products.id />
     <param.products.version />
     <param.platforms />
-    <param.guid>65a20ccf-a3d3-4384-b713-5c73c49e2af1</param.guid>
+    <param.guid>eb6db701-dc05-4b21-aad2-50e14301f1a4</param.guid>
     <param.exclude.filters>% List files contained in your toolbox folder that you would like to exclude
 % from packaging.  Excludes should be listed relative to the toolbox folder.
 % Some examples of how to specify excludes are provided below:
@@ -35,6 +35,7 @@ doc/src
 % All files in a subfolder of the toolbox folder:
 % example/*
 .git/*
+experimental/*
 % All files of a certain name in all subfolders of the toolbox folder:
 % **/.svn
 **/.DS_Store
@@ -185,6 +186,7 @@ doc/src
     <param.additional.sw.mac.url />
     <param.additional.sw.linux.url />
     <unset>
+      <param.email />
       <param.summary />
       <param.description />
       <param.output />
@@ -219,6 +221,7 @@ doc/src
     </fileset.rootdir>
     <fileset.rootfiles>
       <file>${PROJECT_ROOT}\buildsearchdb.m</file>
+      <file>${PROJECT_ROOT}\CHANGELOG.md</file>
       <file>${PROJECT_ROOT}\demos.xml</file>
       <file>${PROJECT_ROOT}\doc</file>
       <file>${PROJECT_ROOT}\Examples</file>
