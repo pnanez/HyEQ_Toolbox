@@ -56,7 +56,7 @@ Version 3.0 is compatible with MATLAB versions back to R2014b.
  - customizable default settings
  - plotting hybrid arcs with many jumps is up to 200x faster than in v2.04.
  
- **Error Checking and Code Correctness.** New error checking features help you catch programming mistakes earlier when using the toolbox. Over 350 automated tests verify the correctness of the toolbox's code. 
+ **Error Checking and Code Correctness.** New error-checking features help you catch programming mistakes earlier when using the toolbox. Over 350 automated tests verify the correctness of the toolbox's code.
  
 A bug in `HyEQsolver` was fixed (in v2.04, `HyEQsolver` would sometimes generate solutions that erroneously flowed outside of the flow set **C**).
  
@@ -70,12 +70,12 @@ A bug in `HyEQsolver` was fixed (in v2.04, `HyEQsolver` would sometimes generate
  allows for a hybrid system with inputs to be defined using plain-text `.m` 
  MATLAB function files to specify the hybrid system.
  
- **Block Parameters.** HyEQ blocks now allow you to set block parameters without modifing
+ **Block Parameters.** HyEQ blocks now allow you to set block parameters without modifying
  anything inside the block. Parameters are set in a popup dialog that opens when each block is clicked.
  
- **Signal Sizes.** HyEQ blocks now explicitly sets the signal sizes for inputs and outputs based on user-provided values. This eliminates cryptic errors and cumbersome workarounds due to Simulink's automatic (and unreliable) calculations of signal sizes.
+ **Signal Sizes.** HyEQ blocks now explicitly set the signal sizes for inputs and outputs based on user-provided values. This eliminates cryptic errors and cumbersome workarounds due to Simulink's automatic (and unreliable) calculations of signal sizes.
 
- **"Set <Callback> Script" Blocks** Two new HyEQ blocks named *Set Initialization Script* and *Set Post-Processing Script* allow you to select scripts that automatically run each time before and after your Simulink model is executed.
+ **"Set <Callback> Script" Blocks** Two new HyEQ blocks named *Set Initialization Script* and *Set Post-Processing Script* allow you to select scripts that automatically run each time before and after the Simulink model is executed.
 
  **Block Instructions.** Each block in the HyEQ Simulink library
  now includes instructions how to use it that can be viewed in the popup dialog that opens when the block is
