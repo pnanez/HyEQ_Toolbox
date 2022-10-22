@@ -34,8 +34,8 @@
 %   x_{2} \leq 0\}
 % \end{array}\right.$$
 % 
-% where $\gamma >0$ is the gravity constant, $u$ is the height of the platform
-% given as an input, and $\lambda \in [0,1)$ is the restitution coefficient.
+% where $\gamma >0$ is the acceleration due to gravity, $u$ is the height of the platform
+% given as an input, and $\lambda \in [0,1)$ is the coefficient of restitution.
 
 %% Steps to Run Model
 % 

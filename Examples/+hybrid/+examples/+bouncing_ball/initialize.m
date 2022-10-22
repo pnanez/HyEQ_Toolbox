@@ -5,8 +5,8 @@ x0 = [1; 0];
           
 % Physical variables
 parameters = struct();
-parameters.gamma = -9.81;  % gravity constant
-parameters.lambda = 0.9; % restitution coefficent
+parameters.gamma = -9.81; % Acceleration due to gravity.
+parameters.lambda = 0.9;  % Coefficient of restitution.
 
 % Simulation horizon
 T = 10;

@@ -3,8 +3,8 @@ classdef BouncingBall < HybridSystem
 
     % Define variable properties that can be modified.
     properties
-        gamma = 9.8; % Acceleration due to gravity.
-        lambda = 0.9; % Coefficient of bounce restitution.
+        gamma = 9.8;  % Acceleration due to gravity.
+        lambda = 0.9; % Coefficient of restitution.
     end
 
     % Define constant properties that cannot be modified (i.e., "immutable").

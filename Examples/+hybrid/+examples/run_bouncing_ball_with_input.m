@@ -33,8 +33,8 @@ f = @(x) [0; 1];
 % timer was more or less than the target period.
 g = @(x, u) [max(0, x(p_ndx) + target_period-x(tau_ndx)); 0];
 
- hsb = HybridSubsystemBuilder();
- controller_subsys = hsb.stateDimension(2)... % state: p and \tau
+hsb = HybridSubsystemBuilder();
+controller_subsys = hsb.stateDimension(2)... % state: p and \tau
                     .inputDimension(1)... % input: u=1 if ball should bounce and 0 otherwise.
                     .outputDimension(1)... % output: impulse p
                     .flowMap(f)...
