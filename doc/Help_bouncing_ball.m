@@ -36,8 +36,8 @@
 %    & D := \{x \in \mathbf{R}^2 \times \mathbf{R} \mid x_1 \leq 0,\ x_2 \leq 0\}
 % \end{array}$$
 % 
-% where $\gamma > 0$ is the gravity constant
-% and $\lambda \in [0,1)$ is the restitution coefficient.
+% where $\gamma > 0$ is the acceleration due to gravity
+% and $\lambda \in [0,1)$ is the coefficient of restitution.
 % For this example, we consider a ball bouncing on a floor at zero height.
 
 %% Simulink Model

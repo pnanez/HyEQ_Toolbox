@@ -10,8 +10,8 @@
 sys = hybrid.examples.BouncingBall();
 
 % Modify the values of properties
-sys.gamma = 3.72; % gravity constant
-sys.lambda = 0.8; % coefficient of restitution
+sys.gamma = 3.72; % Acceleration due to gravity.
+sys.lambda = 0.8; % Coefficient of restitution.
 
 %% Check that C and D are correct.
 % Check a point above above ground.
@@ -20,7 +20,7 @@ sys.assertInC(x_ball_above_ground);
 sys.assertNotInD(x_ball_above_ground);
 
 % Check a point at the ground (and stationary).
-x_ball_at_ground    = [0; 0]; % 
+x_ball_at_ground = [0; 0];
 sys.assertInC(x_ball_at_ground); 
 sys.assertInD(x_ball_at_ground);
 

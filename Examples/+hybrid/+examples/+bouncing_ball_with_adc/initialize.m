@@ -12,8 +12,8 @@ Ts = 0.1;
 
 % physical variables (bouncing ball)
 parameters = struct();
-parameters.gamma = -9.81;  % gravity constant
-parameters.lambda = 0.8;   % restitution coefficent
+parameters.gamma = -9.81; % Acceleration due to gravity.
+parameters.lambda = 0.8;  % Coefficient of restitution.
 
 % simulation horizon                                                    
 T = 10;                                                                 
