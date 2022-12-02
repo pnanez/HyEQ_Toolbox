@@ -1,0 +1,434 @@
+function [t, j, x] = HyEQsolver_new_fast(f,g,C,D,x0,TSPAN,JSPAN,rule,options,solver,E,progress)
+% Solves hybrid equations.
+%   Syntax: [t j x] = HyEQsolver(f,g,C,D,x0,TSPAN,JSPAN,rule,options,solver,E)
+%   computes solutions to the hybrid equations
+%
+%   \dot{x} = f(x,t,j)  x \in C x^+ = g(x,t,j)  x \in D
+%
+%   where x is the state, f is the flow map, g is the jump map, C is the
+%   flow set, and D is the jump set. It outputs the state trajectory (t,j)
+%   -> x(t,j), where t is the flow time parameter and j is the jump
+%   parameter.
+%
+%   x0 defines the initial condition for the state.
+%
+%   TSPAN = [TSTART TFINAL] is the time interval. 
+%   JSPAN = [JSTART JSTOP] is the interval for discrete jumps. 
+%       The algorithm stop when the first stop condition is reached.
+%
+%   rule (optional parameter) - rule for jumps
+%       rule = 1 (default) -> priority for jumps rule = 2 -> priority for
+%       flows
+%
+%   options (optional parameter) - options for the solver see odeset f.ex.
+%       options = odeset('RelTol',1e-6);
+%       options = odeset('InitialStep',eps);
+%
+%   solver (optional parameter. String) - selection of the desired ode
+%       solver. All ode solvers are suported, exept for ode15i.  See help
+%       odeset for detailed information.
+%
+%   E (optional parameter) - Mass matrix [constant matrix | function_handle]
+%       For problems: 
+%       E*\dot{x} = f(x) x \in C 
+%       x^+ = g(x)  x \in D
+%       set this property to the value of the constant mass matrix. For
+%       problems with time- or state-dependent mass matrices, set this
+%       property to a function that evaluates the mass matrix. See help
+%       odeset for detailed information.
+%
+%         Example: Bouncing ball with Lite HyEQ Solver
+%
+%         % Consider the hybrid system model for the bouncing ball.
+%         % For this example, we consider the ball to be bouncing on a
+%         % floor at zero height. The constants for the bouncing ball system are
+%         % \gamma=9.81 and \lambda=0.8. The following procedure is used to
+%         % simulate this example in the Lite HyEQ Solver:
+%
+%         % * Inside the MATLAB script run_ex1_2.m, initial conditions, simulation
+%         % horizons, a rule for jumps, ode solver options, and a step size
+%         % coefficient are defined. The function HYEQSOLVER.m is called in order to
+%         % run the simulation, and a script for plotting solutions is included.
+%         % * Then the MATLAB functions f_ex1_2.m, C_ex1_2.m, g_ex1_2.m, D_ex1_2.m
+%         % are edited according to the data given below.
+%         % * Finally, the simulation is run by clicking the run button in
+%         % run_ex1_2.m or by calling run_ex1_2.m in the MATLAB command window.
+%
+%         % Define initial conditions
+%         x1_0 = 1;
+%         x2_0 = 0;
+%         x0   = [x1_0; x2_0];
+%
+%         % Set simulation horizon
+%         TSPAN = [0 10];
+%         JSPAN = [0 20];
+%
+%         % Set rule for jumps and ODE solver options
+%         %
+%         % rule = 1 -> priority for jumps
+%         %
+%         % rule = 2 -> priority for flows
+%         %
+%         % set the maximum step length. At each run of the
+%         % integrator the option 'MaxStep' is set to
+%         % (time length of last integration)*maxStepCoefficient.
+%         %  Default value = 0.1
+%
+%         rule               = 1;
+%
+%         options            = odeset('RelTol',1e-6,'MaxStep',.1);
+%
+%         % Simulate using the HYEQSOLVER script
+%         % Given the matlab functions that models the flow map, jump map,
+%         % flow set and jump set (f_ex1_2, g_ex1_2, C_ex1_2, and D_ex1_2
+%         % respectively)
+%
+%         [t j x] = HYEQSOLVER( @f_ex1_2,@g_ex1_2,@C_ex1_2,@D_ex1_2,...
+%             x0,TSPAN,JSPAN,rule,options,'ode45');
+%
+%         % plot solution
+%
+%         figure(1) % position
+%         clf
+%         subplot(2,1,1),plotflows(t,j,x(:,1))
+%         grid on
+%         ylabel('x1')
+%
+%         subplot(2,1,2),plotjumps(t,j,x(:,1))
+%         grid on
+%         ylabel('x1')
+%
+%         figure(2) % velocity
+%         clf
+%         subplot(2,1,1),plotflows(t,j,x(:,2))
+%         grid on
+%         ylabel('x2')
+%
+%         subplot(2,1,2),plotjumps(t,j,x(:,2))
+%         grid on
+%         ylabel('x2')
+%
+%         % plot hybrid arc
+%         
+%         figure(3)
+%         plotHybridArc(t,j,x)
+%         xlabel('j')
+%         ylabel('t')
+%         zlabel('x1')
+%
+%         % plot solution using plotHarc and plotHarcColor
+%
+%         figure(4) % position
+%         clf
+%         subplot(2,1,1), plotHarc(t,j,x(:,1));
+%         grid on
+%         ylabel('x_1 position')
+%         subplot(2,1,2), plotHarc(t,j,x(:,2));
+%         grid on
+%         ylabel('x_2 velocity')
+%
+%
+%         % plot a phase plane
+%         figure(5) % position
+%         clf
+%         plotHarcColor(x(:,1),j,x(:,2),t);
+%         xlabel('x_1')
+%         ylabel('x_2')
+%         grid on
+%
+%--------------------------------------------------------------------------
+% Matlab M-file Project: HyEQ Toolbox @ Hybrid Systems Laboratory (HSL),
+% https://hybrid.soe.ucsc.edu/software
+% http://hybridsimulator.wordpress.com/
+% Filename: HyEQsolver.m
+%   Copyright @ Hybrid Systems Laboratory (HSL),
+%   Revision: 3.0.0 Date: 08/14/2021
+%--------------------------------------------------------------------------
+% See also HybridSystem, HybridPlotBuilder, 
+% <a href="matlab:hybrid.internal.openHelp('HybridSystem_demo')">Demo: How to Implement and Solve a Hybrid System</a>.
+% 
+% Added prior to HyEQ Toolbox version 2.04. Major revision in v3.0.
+
+
+if ~exist('rule','var')
+    rule = 1;
+end
+
+if ~exist('options','var')
+    options = odeset();
+end
+if exist('E','var') && ~exist('solver','var')
+    solver = 'ode15s';
+end
+if ~exist('solver','var') || isempty(solver)
+    solver = 'ode45';
+end
+if ~exist('E','var')
+    E = [];
+end
+if ~exist('progress', 'var')
+    progress = hybrid.PopupProgressUpdater();
+elseif strcmp(progress, 'silent')
+    progress = hybrid.SilentProgressUpdater();
+end
+% mass matrix (if existent)
+isDAE = false;
+if ~isempty(E)
+    isDAE = true;
+    switch isa(E,'function_handle')
+        case true % Function E(x)
+            M = E;
+            options = odeset(options,'Mass',M,'Stats','off',...
+                'MassSingular','maybe','MStateDependence','strong',...
+                'InitialSlope',f_hdae(x0,TSPAN(1))); 
+        case false % Constant double matrix
+            M = double(E);
+            options = odeset(options,'Mass',M,'Stats','off',...
+                'MassSingular','maybe','MStateDependence','none');
+    end
+end
+
+options = odeset(options, 'OutputFcn', @ODE_callback);
+
+odeX = str2func(solver);
+f = wrap_with_3args(f);
+g = wrap_with_3args(g);
+C = wrap_with_3args(C);
+D = wrap_with_3args(D);
+
+% simulation horizon
+tstart = TSPAN(1);
+tfinal = TSPAN(end);
+
+% Preallocate memory to speed up simulations
+prealloc_size = 1e6;
+index_last = 1;
+
+j_total = zeros(prealloc_size, 1);
+j_total(index_last, 1) = JSPAN(1);
+j = JSPAN(1);
+
+% simulate
+t_total = zeros(prealloc_size, 1);
+t_total(index_last, 1) = tstart;
+
+[rx,cx] = size(x0);
+
+if rx == 1
+    x_total = zeros(prealloc_size, cx);
+    x_total(index_last, :) = x0;
+elseif cx == 1
+    x_total = zeros(prealloc_size, rx);
+    x_total(index_last, :) = x0.';
+else
+    error('Error, x0 does not have the proper size')
+end
+
+progress.init(TSPAN, JSPAN);
+function stop = ODE_callback(t, ~, flag)
+    if isempty(flag) % Only update if not 'init' or 'done'   
+        progress.setT(t);
+    end
+    stop = progress.is_cancel_solver;     
+end
+
+% Configure the progress bar to automatically close when the 'cleanup'
+% object is destroyed (e.g., when the function exits, throws an error, etc.)
+cleanup = onCleanup(@progress.done);
+
+while (j < JSPAN(end) && t_total(index_last, 1) < TSPAN(end) < TSPAN(end) && ~progress.is_cancel_solver)
+    options = odeset(options,'Events',@(t,x) zeroevents(x,t,j,C,D,rule));
+    
+    % Check if it is possible to flow from current position
+    insideC = C(x_total(index_last,:).',t_total(index_last),j);
+    insideD = D(x_total(index_last,:).',t_total(index_last),j);
+    if ~insideC && ~insideD
+        break
+    end
+    doFlow = insideC && (rule == 2 || (rule == 1 && ~insideD));
+    doJump = insideD && (rule == 1 || (rule == 2 && ~insideC));
+    assert(~(doFlow && doJump), 'Cannot do both flow and jump')
+    assert(doFlow || doJump, 'Must either jump or flow')
+    if doFlow
+        if isDAE
+            options = odeset(options,'InitialSlope',f(x_total(index_last,:).',t_total(index_last)));
+        end
+        [t_flow,x_flow] = odeX(@(t,x) f(x,t,j),[t_total(index_last,:) tfinal],x_total(index_last,:).', options);
+        
+        if length(t_flow) == 1
+            % Handle the case where the ode solver doesn't step forward in time.
+            % This is ony known to happen when the solution is blowing up to
+            % infinity. 
+            warning(horzcat('The hybrid solver is not progressing at t=%.4g, j=%d, ', ...
+                'possibly due to |f(x, t, j)|=%0.3g being very large.\n', ...
+                'Aborting solver and setting final value of x to NaN.'), ...
+                t_flow, j, norm(f(x_flow', t_flow, j)))
+            
+            % We check if we have preallocated enough memory
+            if (index_last + 1 > size(t_total, 1))
+                x_total = [x_total; zeros(1, cx)];
+                t_total = [t_total; 0];
+                j_total = [j_total; 0];
+            end     
+
+            x_total(index_last + 1, :) = NaN(size(x_flow));
+            t_total(index_last + 1, :) = t_flow;
+            j_total(index_last + 1, :) = j;
+            index_last = index_last + 1;
+            
+            break
+        end
+        
+        % Matlab ODE solvers miss events if they occur at the second time
+        % step (such as the case as if the state in the boundary of a
+        % closed set). To correct for this, we manually check if the second
+        % state entry is at a point where flowing is allowed. If it is,
+        % then we simply append the solution from the ODE solver to the
+        % output. But if it's not, then we try time steps from the initial
+        % point to find the longest time step that takes us out of C (or
+        % into D, if using jump priority). The next state value is then
+        % calculated using linear interpolation and appended to the output.
+        second_state_in_C = C(x_flow(2, :)',t_flow(2),j);
+        second_state_in_D = D(x_flow(2, :)',t_flow(2),j);
+        will_second_state_flow = second_state_in_C && ~(second_state_in_D && rule == 1);
+        if will_second_state_flow || length(t_flow) == 2
+            nt = length(t_flow);
+            
+            % We add the new interval of flow to the solution--omitting the
+            % first entry because it duplicates the previous entry in the
+            % solution.
+            
+            % We check if we have preallocated enough memory, and if not,
+            % we add additional entries.
+            while (index_last + nt - 1 > size(t_total, 1))
+                x_total = [x_total; zeros(prealloc_size, cx)];
+                t_total = [t_total; zeros(prealloc_size, 1)];
+                j_total = [j_total; zeros(prealloc_size, 1)];
+            end
+            
+            x_total(index_last + 1 : index_last + nt - 1, :) = x_flow(2:end,:); 
+            t_total(index_last + 1 : index_last + nt - 1, :) = t_flow(2:end); 
+            j_total(index_last + 1 : index_last + nt - 1, :) = j*ones(nt-1, 1); 
+            index_last = index_last + nt - 1;
+            
+        else 
+            % If the second state in the flow should not flow, then this
+            % indicates that the flow started in the flow set then
+            % immediately left it. In this case, we calculate the next step
+            % using the Euler forward method with a very small time step
+            % to take us out of the flow set.
+            delta_t_from_ode = t_flow(2) - tout(end); 
+            for delta_t = 10.^(-9:9) % Iterate through 1e-9, 1e-8, etc.
+                if delta_t_from_ode <= delta_t
+                    % If delta_t is larger than the step used by the ODE
+                    % solver, then larger steps sizes won't improve our
+                    % solution and might cause use to miss the desired
+                    % step, so we simply use the ODE solution.
+                    t_next = t_flow(2);
+                    x_next = x_flow(2,:)';
+                    break;
+                end
+                x_now = x_total(index_last, :)';
+                t_next = t_total(index_last) + delta_t;
+                x_next = x_now + delta_t * f(x_now,t_total(index_last),j);
+                next_in_C = C(x_next,t_next,j);
+                next_in_D = D(x_next,t_next,j);
+                next_will_not_flow = ~next_in_C || (rule == 1 && next_in_D);
+                if next_will_not_flow
+                    break;
+                end
+            end
+            
+            if (index_last + 1 > size(t_total, 1))
+                x_total = [x_total; zeros(1, cx)];
+                t_total = [t_total; 0];
+                j_total = [j_total; 0];
+            end     
+
+            x_total(index_last + 1 : index_last + nt, :) = x_flow;
+            t_total(index_last + 1 : index_last + nt, :) = t_flow;
+            j_total(index_last + 1 : index_last + nt, :) = j*ones(nt, 1);
+            index_last = index_last + nt;
+
+        end
+    elseif doJump
+        [j, t_total, j_total, x_total, index_last] = jump(g,j, ...
+         t_total,j_total,x_total,index_last, prealloc_size);
+        progress.setJ(j);
+    end
+end
+
+t = t_total(1 : index_last, :);
+x = x_total(1 : index_last, :);
+j = j_total(1 : index_last, :);
+
+progress.done();
+
+end
+
+function [value,isterminal,direction] = zeroevents(x,t,j,C,D,rule)
+% ZEROEVENTS Creates an event to terminate the ode solver when the state leaves C or enters D (if rule == 1).
+
+insideC = C(x,t,j);
+insideD = D(x,t,j);
+switch rule
+    case 1 % -> priority for jumps
+        % For jump priority, we terminate flows whenever (1) the solution 
+        % leaves C, or (2) the solution enters D. 
+        stop = ~insideC || insideD;
+    case 2 % -> priority for flows
+        % For flow priority, we terminate flows whenever the solution 
+        % leaves C.
+        stop = ~insideC;
+end
+if any(isnan(x)) || any(isinf(x))
+    stop = 1;
+end
+isterminal = 1;
+value = 1 - stop;
+direction = -1;
+
+end
+
+function [j,tout,jout,xout,index_last] = jump(g,j,tout,jout,xout,index_last,prealloc_size)
+% Jump
+j = j+1;
+n = size(xout, 2);
+y = g(xout(index_last,:).',tout(index_last),jout(index_last)); 
+assert(size(y, 1) == n, 'Output of jump map was expected to be %d but instead was %d', n, size(y, 1))
+% Save results
+
+if (index_last + 1 > size(tout, 1))
+    xout = [xout; zeros(prealloc_size, size(xout, 2))];
+    tout = [tout; zeros(prealloc_size, 1)];
+    jout = [jout; zeros(prealloc_size, 1)];
+end
+
+tout(index_last + 1, 1) = tout(index_last, 1);
+xout(index_last + 1, :) = y';
+jout(index_last + 1, 1) = j;
+index_last = index_last  + 1;
+end
+
+function fh_out = wrap_with_3args(fh_in)
+%wrap_with_3args Convert variable input function to take three arguments (x, t, j).
+%   Given a function handle fh_in of 1, 2, or 3 input arguments,
+%   wrap_with_3args(fh_in) converts fh_in to a function that takes exactly
+%   three arguments, namely x, t, and j. 
+%    x: state
+%    t: time
+%    j: discrete time
+
+switch nargin(fh_in)
+    case 1
+        fh_out = @(x, t, j) fh_in(x);
+    case 2
+        fh_out = @(x, t, j) fh_in(x,t);
+    case 3
+        fh_out = fh_in;    
+    otherwise
+        error('The function handle ''%s'' must have 1, 2, or 3 input arguments. Instead it had %d.',...
+            func2str(fh_in), nargin(fh_in))
+end
+end
+
