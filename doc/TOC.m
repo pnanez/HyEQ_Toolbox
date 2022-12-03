@@ -6,7 +6,7 @@
 % Depending on your prior experience one of the following pages would be a good
 % place to start learning how to use the HyEQ Toolbox.
 % 
-% * If you are unfamliar with hybrid systems, read
+% * If you are unfamiliar with hybrid systems, read
 % <matlab:hybrid.internal.openHelp('intro_to_hybrid_systems') 
 %   Introduction to Hybrid Systems> 
 % for a brief introduction to the mathematical modeling of hybrid systems. 
