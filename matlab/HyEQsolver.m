@@ -171,7 +171,40 @@ if ~exist('progress', 'var')
 elseif strcmp(progress, 'silent')
     progress = hybrid.SilentProgressUpdater();
 end
-% mass matrix (if existent)
+
+% Preallocate memory for arrays to speed up simulations. Options for the size of
+% the preallocations can be added to the 'options' struct. If they are not
+% present, default values are used.
+if isfield(options, 'prealloc_size')
+    prealloc_size = options.prealloc_size;
+    assert(prealloc_size >= 1, ...
+        'prealloc_size=%f must not be smaller than 1.', ...
+        prealloc_size)
+else
+    % Use default value.
+    prealloc_size = 1e3;
+end
+if isfield(options, 'max_prealloc_size')
+    max_prealloc_size = options.max_prealloc_size;
+    assert(max_prealloc_size >= 1, ...
+        'max_prealloc_size=%f must not be smaller than 1.', ...
+        max_prealloc_size)
+else
+    % Use default value.
+    max_prealloc_size = 1e7;
+end
+if isfield(options, 'prealloc_growth_factor')
+    prealloc_growth_factor = options.prealloc_growth_factor;
+    assert(prealloc_growth_factor >= 1, ...
+        'prealloc_growth_factor=%f must not be smaller than 1.', ...
+        prealloc_growth_factor)
+else
+    % Use default value.
+    prealloc_growth_factor = 1e7;
+end
+last_ndx = 1;
+
+% Mass matrix (if existent)
 isDAE = false;
 if ~isempty(E)
     isDAE = true;
@@ -199,19 +232,23 @@ D = wrap_with_3args(D);
 % simulation horizon
 tstart = TSPAN(1);
 tfinal = TSPAN(end);
-jout = JSPAN(1);
-j = jout(end);
+tout = zeros(prealloc_size, 1);
+tout(last_ndx) = tstart; % Set initial t-value.
+
+jout = zeros(prealloc_size, 1);
+jout(last_ndx) = JSPAN(1); % Set initial j-value.
+j = JSPAN(1);
 
 % simulate
-tout = tstart;
-[rx,cx] = size(x0);
-if rx == 1
-    xout = x0;
-elseif cx == 1
-    xout = x0.';
-else
-    error('Error, x0 does not have the proper size')
+if isrow(x0)
+    x0 = x0';
+elseif ~isvector(x0)
+    error('x0 was expected to be a vector')
 end
+n = size(x0, 1);
+
+xout = zeros(prealloc_size, n);
+xout(last_ndx, :) = x0; % Set initial x-value.
 
 progress.init(TSPAN, JSPAN);
 function stop = ODE_callback(t, ~, flag)
@@ -225,25 +262,43 @@ end
 % object is destroyed (e.g., when the function exits, throws an error, etc.)
 cleanup = onCleanup(@progress.done);
 
-while (j < JSPAN(end) && tout(end) < TSPAN(end) && ~progress.is_cancel_solver)
+% Begin simulation loop
+while (j < JSPAN(end) && tout(last_ndx) < TSPAN(end) && ~progress.is_cancel_solver)
     options = odeset(options,'Events',@(t,x) zeroevents(x,t,j,C,D,rule));
     
     % Check if it is possible to flow from current position
-    insideC = C(xout(end,:).',tout(end),j);
-    insideD = D(xout(end,:).',tout(end),j);
+    insideC = C(xout(last_ndx, :)', tout(last_ndx), j);
+    insideD = D(xout(last_ndx, :)', tout(last_ndx), j);
     if ~insideC && ~insideD
-        break
+        break % Exit simulation loop
     end
+
+    % Check if we need to increase the size of the preallocated array.
+    is_preallocated_array_full = last_ndx + 1 > length(tout);
+    if is_preallocated_array_full
+        % Grow the arrays.
+        xout = [xout; zeros(prealloc_size, n)]; %#ok<AGROW> 
+        tout = [tout; zeros(prealloc_size, 1)]; %#ok<AGROW> 
+        jout = [jout; zeros(prealloc_size, 1)]; %#ok<AGROW> 
+
+        % Increase the prealloc size by the prealloc_growth_factor so that
+        % preallocation happens less often.
+        prealloc_size = prealloc_growth_factor*prealloc_size;
+        % Make sure the prealloc_size is an integer and not too large.
+        prealloc_size = round(min(prealloc_size, max_prealloc_size));
+    end
+
     doFlow = insideC && (rule == 2 || (rule == 1 && ~insideD));
     doJump = insideD && (rule == 1 || (rule == 2 && ~insideC));
     assert(~(doFlow && doJump), 'Cannot do both flow and jump')
     assert(doFlow || doJump, 'Must either jump or flow')
     if doFlow
         if isDAE
-            options = odeset(options,'InitialSlope',f(xout(end,:).',tout(end)));
+            options = odeset(options, 'InitialSlope', f(xout(last_ndx, :)', tout(last_ndx)));
         end
-        [t_flow,x_flow] = odeX(@(t,x) f(x,t,j),[tout(end) tfinal],xout(end,:).', options);
-        
+        [t_flow, x_flow] = odeX(@(t,x) f(x,t,j), [tout(last_ndx) tfinal], xout(last_ndx, :)', options);
+        n_timesteps = length(t_flow);
+
         if length(t_flow) == 1
             % Handle the case where the ode solver doesn't step forward in time.
             % This is ony known to happen when the solution is blowing up to
@@ -252,10 +307,15 @@ while (j < JSPAN(end) && tout(end) < TSPAN(end) && ~progress.is_cancel_solver)
                 'possibly due to |f(x, t, j)|=%0.3g being very large.\n', ...
                 'Aborting solver and setting final value of x to NaN.'), ...
                 t_flow, j, norm(f(x_flow', t_flow, j)))
-            tout = [tout; t_flow]; %#ok<AGROW>
-            xout = [xout; NaN(size(x_flow))]; %#ok<AGROW>
-            jout = [jout; j]; %#ok<AGROW>
-            break
+            
+            % It is possible that we haven't preallocated enough memory, here,
+            % but the arrays will grow as needed. This can only happen once, 
+            % so performance degregation should be insignificant. 
+            xout(last_ndx + 1, :) = NaN(size(x_flow));
+            tout(last_ndx + 1) = t_flow;
+            jout(last_ndx + 1) = j;
+            last_ndx = last_ndx + 1;
+            break % Exit simulation loop
         end
         
         % Matlab ODE solvers miss events if they occur at the second time
@@ -267,62 +327,86 @@ while (j < JSPAN(end) && tout(end) < TSPAN(end) && ~progress.is_cancel_solver)
         % point to find the longest time step that takes us out of C (or
         % into D, if using jump priority). The next state value is then
         % calculated using linear interpolation and appended to the output.
-        second_state_in_C = C(x_flow(2, :)',t_flow(2),j);
-        second_state_in_D = D(x_flow(2, :)',t_flow(2),j);
+        second_state_in_C = C(x_flow(2, :)', t_flow(2), j);
+        second_state_in_D = D(x_flow(2, :)', t_flow(2), j);
         will_second_state_flow = second_state_in_C && ~(second_state_in_D && rule == 1);
-        if will_second_state_flow || length(t_flow) == 2
-            nt = length(t_flow);
-            
+        if will_second_state_flow || length(t_flow) == 2            
             % We add the new interval of flow to the solution--omitting the
             % first entry because it duplicates the previous entry in the
-            % solution.
-            tout = [tout; t_flow(2:end)]; %#ok<AGROW>
-            xout = [xout; x_flow(2:end,:)]; %#ok<AGROW>
-            jout = [jout; j*ones(1,nt-1)']; %#ok<AGROW>
-        else 
+            % solution.            
+            first_ndx = last_ndx + 1;
+            last_ndx = last_ndx + n_timesteps - 1;
+            xout(first_ndx:last_ndx, :) = x_flow(2:end, :); 
+            tout(first_ndx:last_ndx) = t_flow(2:end); 
+            jout(first_ndx:last_ndx) = j*ones(n_timesteps-1, 1);
+        else % => (second state will not flow) and (length(t_flow) >= 2) 
             % If the second state in the flow should not flow, then this
             % indicates that the flow started in the flow set then
-            % immediately left it. In this case, we calculate the next step
-            % using the Euler forward method with a very small time step
-            % to take us out of the flow set.
-            delta_t_from_ode = t_flow(2) - tout(end); 
+            % immediately left it. If length(t_flow) >= 2, the ODE solver
+            % returned a solution that is erroneously flowing outside the flow
+            % set, so will manually calculate the next step
+            % using the Euler forward method to take us out of the flow set.
+            % We start with a very small time step and increase until we reach
+            % the time step used by the ODE solver.
+            timestep_from_ode = t_flow(2) - t_flow(1); 
             for delta_t = 10.^(-9:9) % Iterate through 1e-9, 1e-8, etc.
-                if delta_t_from_ode <= delta_t
+                if timestep_from_ode <= delta_t
                     % If delta_t is larger than the step used by the ODE
                     % solver, then larger steps sizes won't improve our
                     % solution and might cause use to miss the desired
                     % step, so we simply use the ODE solution.
                     t_next = t_flow(2);
                     x_next = x_flow(2,:)';
-                    break;
+                    break; % Exit inner loop
                 end
-                x_now = xout(end, :)';
-                t_next = tout(end) + delta_t;
-                x_next = x_now + delta_t * f(x_now,tout(end),j);
+                x_now = xout(last_ndx, :)';
+                t_next = tout(last_ndx) + delta_t;
+                x_next = x_now + delta_t * f(x_now, tout(last_ndx), j);
                 next_in_C = C(x_next,t_next,j);
                 next_in_D = D(x_next,t_next,j);
                 next_will_not_flow = ~next_in_C || (rule == 1 && next_in_D);
                 if next_will_not_flow
-                    break;
+                    break; % Exit inner loop
                 end
-            end
-            
-            tout = [tout; t_next]; %#ok<AGROW>
-            xout = [xout; x_next']; %#ok<AGROW>
-            jout = [jout; j]; %#ok<AGROW>
+            end   
+
+            % It is possible that we haven't preallocated enough memory, here,
+            % but the arrays will grow as needed. In that case, the next time the
+            % size of the preallocation is checked, it will be full so the
+            % preallocation  will be increased. 
+            % The total number of times that the arrays change sizes will be 
+            % no more than twice as many as if we updated the 
+            % preallocation size here.
+            xout(last_ndx + 1, :) = x_next;
+            tout(last_ndx + 1)    = t_next;
+            jout(last_ndx + 1)    = j;
+            last_ndx = last_ndx + 1;
         end
     elseif doJump
-        [j, tout, jout, xout] = jump(g,j,tout,jout,xout);
+        % Jump
+        % WARNING: Placing the jump code into a local function produces
+        % signification performance degregation. 
+
+        % Compute update.
+        xplus = g(xout(last_ndx, :)', tout(last_ndx), jout(last_ndx));
+        assert(size(xplus, 1) == n, 'Output of jump map was expected to be %d but instead was %d', n, size(xplus, 1))
+        
+        % Save results
+        tout(last_ndx + 1) = tout(last_ndx, 1);
+        xout(last_ndx + 1, :) = xplus';
+        jout(last_ndx + 1) = j + 1;
+        last_ndx = last_ndx + 1;
+        j = j+1;
         progress.setJ(j);
     end
 end
 
-t = tout;
-x = xout;
-j = jout;
+% Trim the preallocated arrays to the entries that were populated.
+x = xout(1 : last_ndx, :);
+t = tout(1 : last_ndx);
+j = jout(1 : last_ndx);
 
 progress.done();
-
 end
 
 function [value,isterminal,direction] = zeroevents(x,t,j,C,D,rule)
@@ -349,20 +433,8 @@ direction = -1;
 
 end
 
-function [j, tout, jout, xout] = jump(g,j,tout,jout,xout)
-% Jump
-j = j+1;
-n = size(xout, 2);
-y = g(xout(end,:).',tout(end),jout(end)); 
-assert(size(y, 1) == n, 'Output of jump map was expected to be %d but instead was %d', n, size(y, 1))
-% Save results
-tout = [tout; tout(end)];
-xout = [xout; y.'];
-jout = [jout; j];
-end
-
 function fh_out = wrap_with_3args(fh_in)
-%wrap_with_3args Convert variable input function to take three arguments (x, t, j).
+% Convert variable input function to take three arguments (x, t, j).
 %   Given a function handle fh_in of 1, 2, or 3 input arguments,
 %   wrap_with_3args(fh_in) converts fh_in to a function that takes exactly
 %   three arguments, namely x, t, and j. 
