@@ -383,7 +383,6 @@ while (j < JSPAN(end) && tout(last_ndx) < TSPAN(end) && ~progress.is_cancel_solv
             last_ndx = last_ndx + 1;
         end
     elseif doJump
-        % Jump
         % WARNING: Placing the jump code into a local function produces
         % signification performance degregation. 
 
