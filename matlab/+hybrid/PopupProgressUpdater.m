@@ -67,7 +67,7 @@ classdef PopupProgressUpdater < hybrid.ProgressUpdater
             
             if show_update
                 this.openWaitbar()
-                msg_fmt = strcat('Solving Hybrid Sysytem. t=%.', num2str(this.t_decimal_places), 'f, j=%d');
+                msg_fmt = strcat('Solving Hybrid System. t=%.', num2str(this.t_decimal_places), 'f, j=%d');
                 msg = sprintf(msg_fmt, this.t, this.j);
                 waitbar(pct, this.progressbar, msg)
                 this.last_update_t = round_t;
