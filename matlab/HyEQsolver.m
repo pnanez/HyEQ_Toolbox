@@ -127,32 +127,31 @@ end
 % present, default values are used.
 if isfield(options, 'prealloc_size')
     prealloc_size = options.prealloc_size;
-    assert(prealloc_size >= 1, ...
-        'prealloc_size=%f must not be smaller than 1.', ...
-        prealloc_size)
 else
     % Use default value.
     prealloc_size = 1e3;
 end
 if isfield(options, 'max_prealloc_size')
     max_prealloc_size = options.max_prealloc_size;
-    assert(max_prealloc_size >= 1, ...
-        'max_prealloc_size=%f must not be smaller than 1.', ...
-        max_prealloc_size)
 else
     % Use default value.
-    max_prealloc_size = 1e7;
+    max_prealloc_size = 1e5;
 end
+% Enforce maximum prealloc size
+prealloc_size = min(prealloc_size, max_prealloc_size);
+
 if isfield(options, 'prealloc_growth_factor')
     prealloc_growth_factor = options.prealloc_growth_factor;
-    assert(prealloc_growth_factor >= 1, ...
-        'prealloc_growth_factor=%f must not be smaller than 1.', ...
-        prealloc_growth_factor)
 else
     % Use default value.
-    prealloc_growth_factor = 1e7;
+    prealloc_growth_factor = 2;
 end
 last_ndx = 1;
+
+% Check the prealloc values.
+assert(max_prealloc_size >= 1, 'max_prealloc_size=%f must be >= 1.', max_prealloc_size)
+assert(prealloc_growth_factor >= 1, 'prealloc_growth_factor=%f must be >= 1.', prealloc_growth_factor)
+assert(prealloc_size >= 1, 'prealloc_size=%f  must be >= 1.', prealloc_size)
 
 % Mass matrix (if existent)
 isDAE = false;
@@ -323,7 +322,7 @@ while (j < JSPAN(end) && tout(last_ndx) < TSPAN(end) && ~progress.is_cancel_solv
             % It is possible that we haven't preallocated enough memory, here,
             % but the arrays will grow as needed. In that case, the next time the
             % size of the preallocation is checked, it will be full so the
-            % preallocation  will be increased. 
+            % preallocation will be increased. 
             % The total number of times that the arrays change sizes will be 
             % no more than twice as many as if we updated the 
             % preallocation size here.
@@ -333,12 +332,17 @@ while (j < JSPAN(end) && tout(last_ndx) < TSPAN(end) && ~progress.is_cancel_solv
             last_ndx = last_ndx + 1;
         end
     elseif doJump
-        % WARNING: Placing the jump code into a local function produces
+        % WARNING: Placing the doJump code into a local function produces
         % signification performance degregation. 
 
         % Compute update.
         xplus = g(xout(last_ndx, :)', tout(last_ndx), jout(last_ndx));
-        assert(size(xplus, 1) == n, 'Output of jump map was expected to be %d but instead was %d', n, size(xplus, 1))
+        assert(size(xplus, 2) == 1, ...
+            'Output of jump map was expected to have one column instead had %d', ...
+            size(xplus, 2))
+        assert(size(xplus, 1) == n, ...
+            'Output of jump map was expected to be %dx1 but instead was %dx1', ...
+            n, size(xplus, 1))
         
         % Save results
         tout(last_ndx + 1) = tout(last_ndx, 1);
