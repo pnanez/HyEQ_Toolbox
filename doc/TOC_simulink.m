@@ -11,7 +11,7 @@
 % * <matlab:hybrid.internal.openHelp('Help_coupled_subsystems') 
 %       Example: Composing Multiple Hybrid Subsystems (Bouncing Ball on Moving Platform)>
 % * <matlab:hybrid.internal.openHelp('Help_behavior_in_C_intersection_D')
-%       Defining Behavior in the Intersection of |C| and |D|>
+%       Defining Behavior in the Intersection of C and D>
 % * <matlab:hybrid.internal.openHelp('help_integrator_system') 
 %       The Integrator System>
 % 

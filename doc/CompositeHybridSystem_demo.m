@@ -456,6 +456,7 @@ title('Plant Output')
 % The |CompositeHybridSystem| class can also be used with a single subsystem
 % for cases where you want to be able to modify the feedback functions
 % without modifying the code for the system. 
+close() % Close figure
 sys_1 = CompositeHybridSystem(ball_subsys);
 sys_1.setFlowInput(1, @(y1, t, j) -5);   
 sys_1.setJumpInput(1, @(y1, t, j) 0);   

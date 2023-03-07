@@ -86,56 +86,6 @@ function [t, j, x] = HyEQsolver(f,g,C,D,x0,TSPAN,JSPAN,rule,options,solver,E,pro
 %         [t j x] = HYEQSOLVER( @f_ex1_2,@g_ex1_2,@C_ex1_2,@D_ex1_2,...
 %             x0,TSPAN,JSPAN,rule,options,'ode45');
 %
-%         % plot solution
-%
-%         figure(1) % position
-%         clf
-%         subplot(2,1,1),plotflows(t,j,x(:,1))
-%         grid on
-%         ylabel('x1')
-%
-%         subplot(2,1,2),plotjumps(t,j,x(:,1))
-%         grid on
-%         ylabel('x1')
-%
-%         figure(2) % velocity
-%         clf
-%         subplot(2,1,1),plotflows(t,j,x(:,2))
-%         grid on
-%         ylabel('x2')
-%
-%         subplot(2,1,2),plotjumps(t,j,x(:,2))
-%         grid on
-%         ylabel('x2')
-%
-%         % plot hybrid arc
-%         
-%         figure(3)
-%         plotHybridArc(t,j,x)
-%         xlabel('j')
-%         ylabel('t')
-%         zlabel('x1')
-%
-%         % plot solution using plotHarc and plotHarcColor
-%
-%         figure(4) % position
-%         clf
-%         subplot(2,1,1), plotHarc(t,j,x(:,1));
-%         grid on
-%         ylabel('x_1 position')
-%         subplot(2,1,2), plotHarc(t,j,x(:,2));
-%         grid on
-%         ylabel('x_2 velocity')
-%
-%
-%         % plot a phase plane
-%         figure(5) % position
-%         clf
-%         plotHarcColor(x(:,1),j,x(:,2),t);
-%         xlabel('x_1')
-%         ylabel('x_2')
-%         grid on
-%
 %--------------------------------------------------------------------------
 % Matlab M-file Project: HyEQ Toolbox @ Hybrid Systems Laboratory (HSL),
 % https://hybrid.soe.ucsc.edu/software

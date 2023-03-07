@@ -6,9 +6,9 @@
 % The files for this example are found in the <matlab:hybrid.internal.openHelp('MATLAB_packages') package>
 % |hybrid.examples.vehicle_on_constrained_path|:
 % 
-% * <matlab:open('hybrid.examples.vehicle_on_constrained_path.initialize') initialize.m> 
-% * <matlab:hybrid.examples.vehicle_on_constrained_path.vehicle_on_path vehicle_on_path.slx> 
-% * <matlab:open('hybrid.examples.vehicle_on_constrained_path.postprocess') postprocess.m> 
+% * <matlab:open('hybrid.examples.vehicle_on_constrained_path.initialize') |initialize.m|> 
+% * <matlab:hybrid.examples.vehicle_on_constrained_path.vehicle_on_path |vehicle_on_path.slx|> 
+% * <matlab:open('hybrid.examples.vehicle_on_constrained_path.postprocess') |postprocess.m|> 
 % 
 % The contents of this package are located in
 % <matlab:cd(hybrid.getFolderLocation('Examples','+hybrid','+examples','+vehicle_on_constrained_path')) |Examples\+hybrid\+examples\vehicle_on_constrained_path|>

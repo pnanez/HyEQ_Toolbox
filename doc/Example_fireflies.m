@@ -6,9 +6,9 @@
 % The files for this example are found in the <matlab:hybrid.internal.openHelp('MATLAB_packages') package>
 % |hybrid.examples.fireflies|:
 % 
-% * <matlab:open('hybrid.examples.fireflies.initialize') initialize.m> 
-% * <matlab:hybrid.examples.fireflies.fireflies fireflies.slx> 
-% * <matlab:open('hybrid.examples.fireflies.postprocess') postprocess.m> 
+% * <matlab:open('hybrid.examples.fireflies.initialize') |initialize.m|> 
+% * <matlab:hybrid.examples.fireflies.fireflies |fireflies.slx|> 
+% * <matlab:open('hybrid.examples.fireflies.postprocess') |postprocess.m|> 
 % 
 % The contents of this package are located in
 % <matlab:cd(hybrid.getFolderLocation('Examples','+hybrid','+examples','+fireflies')) |Examples\+hybrid\+examples\fireflies|>

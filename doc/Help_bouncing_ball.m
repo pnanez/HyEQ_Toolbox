@@ -28,12 +28,12 @@
 %       x_{2} \\
 %     -\gamma
 %  \end{array}\right],
-%    & C := \{ x \in \mathbf{R}^{2} \times \mathbf{R} \mid x_{1} \geq 0 \} 
+%    & C := \{ x \in \mathbf{R}^{2} \mid x_{1} \geq 0 \} 
 % \\ \\
 % g(x) := \left[ \begin{array}{c} 
 %              0 \\ -\lambda x_{2}
 %         \end{array}\right],
-%    & D := \{x \in \mathbf{R}^2 \times \mathbf{R} \mid x_1 \leq 0,\ x_2 \leq 0\}
+%    & D := \{x \in \mathbf{R}^2 \mid x_1 \leq 0,\ x_2 \leq 0\}
 % \end{array}$$
 % 
 % where $\gamma > 0$ is the acceleration due to gravity

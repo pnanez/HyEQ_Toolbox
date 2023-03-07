@@ -7,9 +7,9 @@
 % The files for this example are found in the <matlab:hybrid.internal.openHelp('MATLAB_packages') package>
 % |hybrid.examples.network_estimation|:
 % 
-% * <matlab:open('hybrid.examples.network_estimation.initialize') initialize.m> 
-% * <matlab:hybrid.examples.network_estimation.network_est network_est.slx>
-% * <matlab:open('hybrid.examples.network_estimation.postprocess') postprocess.m> 
+% * <matlab:open('hybrid.examples.network_estimation.initialize') |initialize.m|> 
+% * <matlab:hybrid.examples.network_estimation.network_est |network_est.slx|>
+% * <matlab:open('hybrid.examples.network_estimation.postprocess') |postprocess.m|> 
 % 
 % The contents of this package are located in
 % <matlab:cd(hybrid.getFolderLocation('Examples','+hybrid','+examples','+network_estimation')) |Examples\+hybrid\+examples\network_estimation|>

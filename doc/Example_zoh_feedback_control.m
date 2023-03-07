@@ -5,9 +5,9 @@
 % The files for this example are found in the <matlab:hybrid.internal.openHelp('MATLAB_packages') package>
 % |hybrid.examples.zoh_feedback_control|:
 % 
-% * <matlab:open('hybrid.examples.zoh_feedback_control.initialize') initialize.m> 
-% * <matlab:hybrid.examples.zoh_feedback_control.zoh_feedback zoh_feedback.slx> 
-% * <matlab:open('hybrid.examples.zoh_feedback_control.postprocess') postprocess.m> 
+% * <matlab:open('hybrid.examples.zoh_feedback_control.initialize') |initialize.m|> 
+% * <matlab:hybrid.examples.zoh_feedback_control.zoh_feedback |zoh_feedback.slx|> 
+% * <matlab:open('hybrid.examples.zoh_feedback_control.postprocess') |postprocess.m|> 
 % 
 % The contents of this package are located in
 % <matlab:cd(hybrid.getFolderLocation('Examples','+hybrid','+examples','+zoh_feedback_control')) |Examples\+hybrid\+examples\zoh_feedback_control|>
