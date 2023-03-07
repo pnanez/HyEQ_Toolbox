@@ -99,46 +99,15 @@ open_system(which(model_path))
 
 %% Example Output
 % A solution to the interconnection of hybrid systems $\mathcal{H}_1$ and
-% $\mathcal{H}_2$ with |T=15, J=15, rule = 1|, $\varepsilon=0.3$ is depicted in
-% Figure~\ref{fig:fireflyH1H2}. Both the projection onto $t$ and $j$ are shown.
-% A solution to the hybrid system $\mathcal{H}_1$ is depicted in
-% Figure~\ref{fig:fireflyH1}. A solution to the hybrid system $\mathcal{H}_2$ is
-% depicted in Figure~\ref{fig:fireflyH2}.    
+% $\mathcal{H}_2$ with |T=15, J=15, rule = 1|, $\varepsilon=0.3$ is shown below. 
+% The projection onto $t$ is shown in the top subplot and the projection 
+% onto $j$ is shown on the bottom. 
 % 
-% These simulations reflect the expected behavior of the interconnected hybrid
-% systems. The fireflies initially flash out of phase with one another and then
-% synchronize to flash in the same phase.  
-
-% Individual plots 
-figure(1) % H1 Flows and Jumps        
-clf                                   
-subplot(2,1,1)   
-hpb = HybridPlotBuilder();
-hpb.color([0 0.447 0.741]).label('$\tau_1$').title('Firefly 1 (Flows)');
-hpb.plotFlows(sol_1)
-grid on                         
-                                      
-subplot(2,1,2)
-hpb.title('Firefly 1 (Jumps)');
-hpb.plotJumps(sol_1)     
-grid on                                 
-               
-%%
-figure(2) % H2 Flows and Jumps        
-clf                            
-subplot(2,1,1)   
-hpb = HybridPlotBuilder();
-hpb.color([0.85 0.325 0.098]).label('$\tau_2$').title('Firefly 2 (Flows)');
-hpb.plotFlows(sol_2)
-grid on                         
-                                      
-subplot(2,1,2)
-hpb.title('Firefly 2 (Jumps)');
-hpb.plotJumps(sol_2)     
-grid on                                 
-                                      
-%%                                  
-figure(3) % H1 and H2, Flows and Jumps
+% This simulation reflects the expected behavior of the interconnected hybrid
+% systems. Initially, the fireflies flash out of phase with one another but
+% eventually synchronize to flash in sync.  
+                                  
+figure(1) % H1 and H2, Flows and Jumps
 clf                  
                                 
 subplot(2,1,1)   
@@ -154,6 +123,40 @@ hpb.legend('Firefly 1 ($\tau_1$)').plotJumps(sol_1)
 hold on
 hpb.legend('Firefly 2 ($\tau_2)$').plotJumps(sol_2)   
 xlim([0, 7])
+                             
+               
+%%
+% The isolated solutions to the hybrid subsystems $\mathcal{H}_1$ and $\mathcal{H}_2$ are
+% are shown below.    
+
+% Individual plots 
+figure(2) % H1 Flows and Jumps        
+clf                                   
+subplot(2,1,1)   
+hpb = HybridPlotBuilder();
+hpb.color([0 0.447 0.741]).label('$\tau_1$').title('Firefly 1 (Flows)');
+hpb.plotFlows(sol_1)
+grid on                         
+                                      
+subplot(2,1,2)
+hpb.title('Firefly 1 (Jumps)');
+hpb.plotJumps(sol_1)     
+grid on
+
+figure(3) % H2 Flows and Jumps        
+clf                            
+subplot(2,1,1)   
+hpb = HybridPlotBuilder();
+hpb.color([0.85 0.325 0.098]).label('$\tau_2$').title('Firefly 2 (Flows)');
+hpb.plotFlows(sol_2)
+grid on                         
+                                      
+subplot(2,1,2)
+hpb.title('Firefly 2 (Jumps)');
+hpb.plotJumps(sol_2)     
+grid on                                 
+                                      
+
 
 %% 
 
