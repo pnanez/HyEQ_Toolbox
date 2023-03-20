@@ -25,6 +25,8 @@ classdef PlotSettings < matlab.mixin.Copyable
         flow_color
         flow_line_width
         flow_line_style
+        flow_marker
+        flow_marker_size
         
         % Jumps
         jump_color
@@ -79,6 +81,8 @@ classdef PlotSettings < matlab.mixin.Copyable
         DEFAULT_FLOW_COLOR = 'blue';
         DEFAULT_FLOW_LINE_WIDTH = 0.5;
         DEFAULT_FLOW_LINE_STYLE = '-'
+        DEFAULT_FLOW_MARKER = 'none'
+        DEFAULT_FLOW_MARKER_SIZE = 6
         
         % Jumps
         DEFAULT_JUMP_COLOR = 'red';
@@ -188,7 +192,10 @@ classdef PlotSettings < matlab.mixin.Copyable
             end
             val = {'Color', color, ...
                     'LineStyle', this.flow_line_style, ...
-                    'LineWidth', this.flow_line_width};
+                    'LineWidth', this.flow_line_width, ...
+                    'MarkerEdgeColor', color, ...
+                    'Marker', this.flow_marker, ...
+                    'MarkerSize', this.flow_marker_size};
         end
     
         function args = jumpArguments(this)
@@ -273,6 +280,18 @@ classdef PlotSettings < matlab.mixin.Copyable
             assert(isnumeric(width), 'Line width must be numeric')
             assert(width > 0, 'Line width must be positive')
             this.flow_line_width = width;
+        end
+        
+        function set.flow_marker(this, marker)
+            marker = convert_empty_arg_to_none_string(marker);
+            assert_ischar_or_isstring(marker);
+            this.flow_marker = char(marker);
+        end
+        
+        function set.flow_marker_size(this, size)
+            assert(isnumeric(size), 'Marker size must be numeric')
+            assert(size > 0, 'Marker size must be positive')
+            this.flow_marker_size = size;
         end
         
         function set.jump_color(this, color)

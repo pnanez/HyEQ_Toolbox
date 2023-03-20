@@ -5,7 +5,7 @@
 %% Setup
 % First, we create several |HybridArc| solution objects to use as examples
 import hybrid.examples.*
-config = HybridSolverConfig('Refine', 15); % 'Refine' option makes the plots smoother.
+config = HybridSolverConfig('Refine', 8); % 'Refine' option makes the plots smoother.
 system = BouncingBall();
 system_3D = Example3DHybridSystem();
 sol    = system.solve([10, 0], [0 30], [0 30], config);
@@ -142,6 +142,7 @@ height = sol.x(:, 1); % Extract height component
 HybridPlotBuilder().plotFlows(sol, -height) % Plot negative height
 title('Negative Height')
 ylabel('$x_1$')
+ylim padded
 
 %% 
 % Alternatively, a function handle can be evaluated and plotted at each time
@@ -163,6 +164,15 @@ HybridPlotBuilder()...
     .flowLineWidth(2)...
     .flowLineStyle(':')...
     .plotFlows(sol.select(1))
+ylim padded 
+
+%% 
+% Markers can be added to flows as follows:
+HybridPlotBuilder()...
+    .flowMarker('.')...   % Add dots
+    .flowMarkerSize(7)... % Adjust size
+    .plotFlows(sol.select(1))
+ylim padded
 
 %% 
 % Similarly, we can change the appearance of jumps.
@@ -175,6 +185,7 @@ HybridPlotBuilder()...
     .jumpEndMarker('o')...
     .jumpEndMarkerSize(10)...
     .plotPhase(sol_3D.select(1:2))
+axis padded
 
 %% 
 % To configure the the jump markers on _both_ sides of jumps with a single
@@ -526,10 +537,11 @@ HybridPlotBuilder().subplots('on')...
 clf
 system_with_modes = hybrid.examples.ExampleModesHybridSystem();
 
+
 % Create initial condition and solve.
 z0 = [-7; 7];
 q0 = 0;
-sol_modes = system_with_modes.solve([z0; q0], [0, 10], [0, 10], 'silent');
+sol_modes = system_with_modes.solve([z0; q0], [0, 10], [0, 10], config);
 
 % Extract values for q-component.
 q = sol_modes.x(:, 3);

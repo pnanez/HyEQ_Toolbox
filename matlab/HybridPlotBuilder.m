@@ -312,6 +312,7 @@ classdef HybridPlotBuilder < handle
             %                        'NumColumns', 2)...
             %         .plotPhase(sol.select(1:2))
             %
+            % Added in HyEQ Toolbox version 3.1.
             %
             % See also: legend addLegendEntry reorderLegendEntries
             % circshiftLegendEntries  labelInterpreter
@@ -373,6 +374,8 @@ classdef HybridPlotBuilder < handle
             % |addLegendEntry|, then there is not a corresponding
             % legend entry so the number of legend entries is one less than it
             % would be otherwise.
+            %
+            % Added in HyEQ Toolbox version 3.1.
             %
             % See also: circshiftLegendEntries legend addLegendEntry
 
@@ -438,6 +441,8 @@ classdef HybridPlotBuilder < handle
             %   circshiftLegendEntries(1);
             % Example: To move the first entry to the end, use 
             %   circshiftLegendEntries(-1);
+            %
+            % Added in HyEQ Toolbox version 3.1.
             %
             % See also: circshift reorderLegendEntries legend addLegendEntry
         
@@ -529,6 +534,57 @@ classdef HybridPlotBuilder < handle
             % See also: flowColor, flowLineStyle.
             this.settings.flow_line_width = width;
             this.last_function_call = 'flowLineWidth';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
+            end
+        end
+
+        function this = flowMarker(this, marker)
+            % Set markers for each sample point during flows.
+            %
+            % Options are 
+            % 'none' - Default
+            % 'o' (circle) 
+            % '+' (plus sign) 
+            % '*' (asterisk) 
+            % '.' (point)
+            % 'x' (cross) 
+            % '_' (horizontal line) 
+            % '|' (vertical line) 
+            % 's' (square) 
+            % 'd' (diamond) 
+            % '^' (upward-pointing triangle) 
+            % 'v' (downward-pointing triangle) 
+            % '>' (right-pointing triangle)
+            % '<' (left-pointing triangle) 
+            % 'p' (pentagram) or 
+            % 'h' (hexagram).
+            %
+            % Added in HyEQ Toolbox version 3.1.
+            %
+            % See also: flowMarkerSize
+            this.settings.flow_marker = marker;
+            this.last_function_call = 'flowMarker';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a semicolon.
+                clearvars this
+            end
+        end
+
+        function this = flowMarkerSize(this, size)
+            % Set the marker size for flows.
+            %
+            % Default: 6. 
+            %
+            % Added in HyEQ Toolbox version 3.1.
+            %
+            % See also: flowMarker.
+
+            this.settings.flow_marker_size = size;
+            this.last_function_call = 'flowMarkerSize';
 
             if nargout == 0
                 % Prevent output if function is not terminated with a semicolon.
@@ -647,6 +703,8 @@ classdef HybridPlotBuilder < handle
         function this = jumpMarkerSize(this, size)
             % Set the marker size for both the start and end of jumps.
             %
+            % Default: 6. 
+            %
             % See also: jumpMarker, jumpStartMarkerSize, jumpEndMarkerSize.
             this.jumpStartMarkerSize(size);
             this.jumpEndMarkerSize(size);
@@ -662,21 +720,21 @@ classdef HybridPlotBuilder < handle
             % Set the marker for the starting point of each jump.
             %
             % Options are 
-            % 'none', 
-            % 'o' (circle), 
-            % '+' (plus sign), 
-            % '*' (asterisk), 
-            % '.' (point)
-            % 'x' (cross), 
-            % '_' (horizontal line), 
-            % '|' (vertical line), 
-            % 's' (square), 
-            % 'd' (diamond), 
-            % '^' (upward-pointing triangle), 
-            % 'v' (downward-pointing triangle), 
-            % '>' (right-pointing triangle),
-            % '<' (left-pointing triangle), 
-            % 'p' (pentagram), or 
+            % 'none' 
+            % 'o' (circle) 
+            % '+' (plus sign) 
+            % '*' (asterisk) 
+            % '.' (point) - Default
+            % 'x' (cross) 
+            % '_' (horizontal line) 
+            % '|' (vertical line) 
+            % 's' (square) 
+            % 'd' (diamond) 
+            % '^' (upward-pointing triangle) 
+            % 'v' (downward-pointing triangle) 
+            % '>' (right-pointing triangle)
+            % '<' (left-pointing triangle) 
+            % 'p' (pentagram) or 
             % 'h' (hexagram).
             %
             % See also: jumpStartMarkerSize, jumpEndMarker, jumpMarker
@@ -692,6 +750,8 @@ classdef HybridPlotBuilder < handle
         function this = jumpStartMarkerSize(this, size)
             % Set the marker size for the starting point of each jump.
             %
+            % Default: 6. 
+            %
             % See also: jumpMarkerSize, jumpEndMarkerSize, jumpStartMarker.
             this.settings.jump_start_marker_size = size;
             this.last_function_call = 'jumpStartMarkerSize';
@@ -706,21 +766,21 @@ classdef HybridPlotBuilder < handle
             % Set the marker for the end point of each jump.
             %
             % Options are 
-            % 'none', 
-            % 'o' (circle), 
-            % '+' (plus sign), 
-            % '*' (asterisk), 
+            % 'none'
+            % 'o' (circle)
+            % '+' (plus sign) 
+            % '*' (asterisk) - Default
             % '.' (point)
-            % 'x' (cross), 
-            % '_' (horizontal line), 
-            % '|' (vertical line), 
-            % 's' (square), 
-            % 'd' (diamond), 
-            % '^' (upward-pointing triangle), 
-            % 'v' (downward-pointing triangle), 
-            % '>' (right-pointing triangle),
-            % '<' (left-pointing triangle), 
-            % 'p' (pentagram), or 
+            % 'x' (cross) 
+            % '_' (horizontal line) 
+            % '|' (vertical line) 
+            % 's' (square) 
+            % 'd' (diamond) 
+            % '^' (upward-pointing triangle) 
+            % 'v' (downward-pointing triangle) 
+            % '>' (right-pointing triangle)
+            % '<' (left-pointing triangle) 
+            % 'p' (pentagram) or 
             % 'h' (hexagram).
             %
             % See also: jumpEndMarkerSize, jumpStartMarker, jumpMarker
@@ -735,6 +795,8 @@ classdef HybridPlotBuilder < handle
 
         function this = jumpEndMarkerSize(this, size)
             % Set the marker size for the end point of each jump.
+            %
+            % Default: 6. 
             %
             % See also: jumpMarkerSize, jumpStartMarkerSize, jumpEndMarker.
             this.settings.jump_end_marker_size = size;
