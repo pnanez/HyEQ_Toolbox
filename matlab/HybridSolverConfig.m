@@ -33,7 +33,11 @@ classdef HybridSolverConfig < handle
     methods
         function this = HybridSolverConfig(varargin)
             % HybridSolverConfig constructor.
-            this.ode_options = odeset();
+
+            % Using refine > 1 adds interpolated points which can make it  
+            % appear (deceptively) that the hybrid arc was or was not in C or D.
+            % Thus, we set refine to 1 by deault.
+            this.ode_options = odeset('refine', 1); 
             
             % Check if the first argument is "silent". If it is, set the
             % progress listener and remove the first argument from
