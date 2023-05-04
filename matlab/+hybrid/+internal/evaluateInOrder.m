@@ -72,7 +72,14 @@ assert(isscalar(t), 't is not a scalar')
 assert(isscalar(j), 'j is not a scalar')
 switch nargin(h)
     case 1
-        u = h(x);
+        try
+            u = h(x);
+        catch e
+            error(append('Could not evaluate output function @(x). ', ...
+                'Did you intend to include an input, such as @(x, u)? ', ...
+                'Original Error message: "' , e.message, '"'))
+        end
+
     case 2
         u = h(x, u);
     case 3

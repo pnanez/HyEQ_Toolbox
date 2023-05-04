@@ -251,7 +251,7 @@ classdef (Abstract) HybridSubsystem < handle
                                     this.flows_output_fnc, varargin{:});
             if ~inC
                 error('HybridSubsystem:AssertInCFailed', ... 
-                      'Point was expected to be inside C but was not.');
+                      [class(this), ': Point was expected to be inside C but was not.']);
             end
         end
 
@@ -261,7 +261,7 @@ classdef (Abstract) HybridSubsystem < handle
             inC = this.checkPoint('flow', [], @this.flowSetIndicator, [], varargin{:});
             if inC
                 error('HybridSubsystem:AssertNotInCFailed', ...
-                    'Point was expected to not be inside C but actually was.');
+                    [class(this), ': Point was expected to not be inside C but actually was.']);
             end
         end
 
@@ -272,7 +272,7 @@ classdef (Abstract) HybridSubsystem < handle
                                     this.jumps_output_fnc, varargin{:});
             if ~inD
                 error('HybridSubsystem:AssertInDFailed', ... 
-                      'Point was expected to be inside D but was not.');
+                      [class(this), ': Point was expected to be inside D but was not.']);
             end
         end
 
@@ -316,9 +316,9 @@ classdef (Abstract) HybridSubsystem < handle
             % Get value for 'x'
             if ~isempty(varargin)
                 test_point_x = varargin{1};
-                assert(isnumeric(test_point_x), 'test_point_x is not numeric')
+                assert(isnumeric(test_point_x), [class(this), ': test_point_x is not numeric'])
                 assert(isempty(test_point_x) || iscolumn(test_point_x), ...
-                                        'test_point_x is not a column vector')
+                                        [class(this), ': test_point_x is not a column vector'])
             else % Use default value
                 test_point_x = zeros(this.state_dimension, 1);
             end
@@ -326,9 +326,9 @@ classdef (Abstract) HybridSubsystem < handle
             % Get value for 'u'
             if length(varargin) >= 2
                 test_point_u = varargin{2};
-                assert(isnumeric(test_point_u), 'test_point_u is not numeric')
+                assert(isnumeric(test_point_u), [class(this), ': test_point_u is not numeric'])
                 assert(isempty(test_point_u) || iscolumn(test_point_u), ...
-                                        'test_point_u is not a column vector')
+                                        [class(this), ': test_point_u is not a column vector'])
             else % Use default value
                 test_point_u = zeros(this.input_dimension, 1);
             end
@@ -336,8 +336,8 @@ classdef (Abstract) HybridSubsystem < handle
             % Get value for 't'
             if length(varargin) >= 3
                 test_t = varargin{3};
-                assert(isnumeric(test_t), 'test_t is not numeric')
-                assert(isscalar(test_t), 'test_t is not a scalar')
+                assert(isnumeric(test_t), [class(this), ': test_t is not numeric'])
+                assert(isscalar(test_t), [class(this), ': test_t is not a scalar'])
             else % Use default value
                 test_t = 0;
             end
@@ -345,8 +345,8 @@ classdef (Abstract) HybridSubsystem < handle
             % Get value for 'j'
             if length(varargin) >= 4
                 test_j = varargin{4};
-                assert(isnumeric(test_j), 'test_j is not numeric')
-                assert(isscalar(test_j), 'test_j is not a scalar')
+                assert(isnumeric(test_j), [class(this), ': test_j is not numeric'])
+                assert(isscalar(test_j), [class(this), ': test_j is not a scalar'])
             else % Use default value
                 test_j = 0;
             end
@@ -357,14 +357,15 @@ classdef (Abstract) HybridSubsystem < handle
                 x_out = f_or_g(args{:});
                 if ~isnumeric(x_out)
                     err_id = [err_id_base, 'MapNotNumeric'];
-                    error(err_id, 'The %s map return a ''%s'' instead of a numeric value or array.',...
+                    error(err_id, [class(this), ': The %s map return a ''%s'' ' ...
+                        'instead of a numeric value or array.'],...
                         flow_or_jump_str, class(x_out));
                 end
                 if ~all(size(x_out) == [this.state_dimension, 1])
                     err_id = [err_id_base, 'MapWrongSizeOutput'];
-                    error(err_id, 'The %s map return a %dx%d array, but the state dimension is %d.',...
-                        flow_or_jump_str, this.state_dimension, ...
-                        size(x_out, 1), size(x_out, 2));
+                    error(err_id, [class(this), ': The %s map return a %dx%d array, ' ...
+                        'but the state dimension is %d.'],...
+                        flow_or_jump_str, size(x_out, 1), size(x_out, 2), this.state_dimension);
                 end
             end
 
@@ -393,7 +394,7 @@ classdef (Abstract) HybridSubsystem < handle
                 if ~all(size(y) == [this.output_dimension, 1])
                     err_id = [err_id_base, 'OutputWrongSize'];
                     e = MException(err_id, ...
-                        ['The output dimension is %d but the %s output function ' ...
+                        [class(this), ': The output dimension is %d but the %s output function ' ...
                         'return a %dx%d array.'],...
                         this.output_dimension, flow_or_jump_str, ...
                         size(y, 1), size(y, 2));

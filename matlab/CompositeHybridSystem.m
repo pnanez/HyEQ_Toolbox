@@ -322,7 +322,7 @@ classdef CompositeHybridSystem < HybridSystem
 
     methods
         
-        function sol = solve(this, xs_0, tspan, jspan, varargin)
+        function sol = solve(this, x0_cells, tspan, jspan, varargin)
             % Compute the solution to the composite system with the
             % initial states of each subsystem given in a cell array {x0_1,
             % x0_2, ..., x0_N}. See documentation of HybridSystem.solve for 
@@ -334,32 +334,49 @@ classdef CompositeHybridSystem < HybridSystem
             % the composite state. (The subsystems can jump at separate times, 
             % so track the jumps for each in the last components of the 
             % composite state).
-            if ~iscell(xs_0)
+            if ~iscell(x0_cells)
                 e = MException('CompositeHybridSystem:InitialStateNotCell', ...
                     'Initial states xs_0 was a %s instead of a cell array.', ...
-                    class(xs_0));
+                    class(x0_cells));
                 throwAsCaller(e);
             end
             
-            if length(xs_0) ~= this.subsys_count
+            if length(x0_cells) ~= this.subsys_count
                 e = MException('CompositeHybridSystem:WrongNumberOfInitialStates', ...
                     'Wrong number of initial states. Expected=%d, actual=%d', ...
-                    this.subsys_count, length(xs_0));
+                    this.subsys_count, length(x0_cells));
                 throwAsCaller(e);
             end
+
+            % Check the initial condition for each subsystem.
             for i=1:this.subsys_count
+                % Check dimension
                 ss_dim = this.subsystems.get(i).state_dimension;
-                if any((size(xs_0{i}) ~= [ss_dim, 1])) && ~(ss_dim == 0 && size(xs_0{i}, 1) == 0)
+                if any((size(x0_cells{i}) ~= [ss_dim, 1])) && ~(ss_dim == 0 && size(x0_cells{i}, 1) == 0)
                     e = MException('CompositeHybridSystem:WrongNumberOfInitialStates', '%s',...
                         sprintf('Mismatched initial state size. System %d has state dimension %d ', i, ss_dim), ...
-                        sprintf('but the initial value had shape %s.', mat2str(size(xs_0{i}))));
+                        sprintf('but the initial value had shape %s.', mat2str(size(x0_cells{i}))));
                     throwAsCaller(e);
                 end
+
+                % Check not infinity
+                if any(isinf(x0_cells{i}))
+                    e = MException('CompositeHybridSystem:WrongNumberOfInitialStates', ...
+                        'Initial state for system %d has a infinite value: %s.', i, mat2str(x0_cells{i}));
+                    throwAsCaller(e);
+                end 
+
+                % Check not NaN
+                if any(isnan(x0_cells{i}))
+                    e = MException('CompositeHybridSystem:WrongNumberOfInitialStates', ...
+                        'Initial state for system %d has a NaN value: %s.', i, mat2str(x0_cells{i}));
+                    throwAsCaller(e);
+                end 
             end
-            xs_0 = cat(1, xs_0{:});
+            x0_cells = cat(1, x0_cells{:});
             js_0 = jspan(1)*ones(length(this.subsystems), 1);
             
-            x0 = [xs_0; js_0];
+            x0 = [x0_cells; js_0];
                    
             % Update the evaluation order in case any inputs have been changed
             % since this was constructed or the last time 'solve' was called.
@@ -532,7 +549,7 @@ end
 function assert_control_length(u_length, subsys_input_dimension, sys_ndx)
 if ~(u_length == subsys_input_dimension)
     err_id = 'CompositeHybridSystem:DoesNotMatchInputDimension';
-    msg = sprintf('Vector does not match input dimension for system %d. Expected=%d, actual=%d.', ...
+    msg = sprintf('Input vector ''u'' does not match input dimension for system %d. Expected=%d, actual=%d.', ...
         sys_ndx, subsys_input_dimension, u_length);
     throwAsCaller(MException(err_id,msg))
 end
@@ -541,7 +558,7 @@ end
 function assert_state_length(x_length, subsys_state_dimension, sys_ndx)
 if ~(x_length == subsys_state_dimension)
     err_id = 'CompositeHybridSystem:DoesNotMatchStateDimension';
-    msg = sprintf('Vector does not match state dimension for system %d. Expected=%d, actual=%d.', ...
+    msg = sprintf('State vector ''x'' does not match state dimension for system %d. Expected=%d, actual=%d.', ...
         sys_ndx, subsys_state_dimension, x_length);
     throwAsCaller(MException(err_id,msg))    
 end

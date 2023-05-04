@@ -193,6 +193,8 @@ if isrow(x0)
     x0 = x0';
 elseif ~isvector(x0)
     error('x0 was expected to be a vector')
+elseif any(isnan(x0))
+    error('x0 included a nan value: %s', mat2str(x0))
 end
 n = size(x0, 1);
 
