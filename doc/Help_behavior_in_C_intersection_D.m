@@ -27,17 +27,21 @@
 % 
 % The sets $C$ and $D$ are visualized here:
 %
-% $$\begin{array}{cccccccccccc}
-% C: &   & [ &   & ] &   & [ &   &   &   & ] \\
-% D: & * &   & [ &   &   &   & ] & * &   & \\
-% \hline
-% x: &     0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9
+% $$\begin{array}{cccccccccccc} 
+%    C: &   & [ &   & ] &   & [ &   &   &   & ]
+% \\ D: & * &   & [ &   &   &   & ] & * &   & 
+% \\ \hline
+%    x: &     0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9
 % \end{array}$$
 % 
 % Solutions to this model are not unique because solutions are allowed to
 % both flow or jump everywhere in $[2, 3) \cup [5, 6] \cup \{7\}.$ (Note that
 % despite $3$ being in $C\cap D$, it is not possible to flow because the
 % trajectory would immediately leave $C$.) 
+
+% The unconventional placement of "\\" at the start the new lines instead of the
+% the end of the previous line is a workaround to ensure that the equations are
+% rendered correctly on GitHub.
 
 %% Priority Rules for Intersection of C and D
 % When solving hybrid systems, the HyEQ Toolbox only computes a single solution,
@@ -58,10 +62,10 @@
 % $C$ as shown here:
 % 
 % $$\begin{array}{rccccccccccc}
-% C \textrm{ (effective)}: &   & [ & ) &   &   &   & ( &\circ&   & ] \\
-% D:                       & * &   & [ &   &   &   & ] &  *  &   &   \\
-% \hline
-% x:                       & 0 & 1 & 2 & 3 & 4 & 5 & 6 &  7  & 8 & 9
+%  C \textrm{ (effective)}: &   & [ & ) &   &   &   & ( &\circ&   & ]
+% \\ D:                     & * &   & [ &   &   &   & ] &  *  &   &  
+% \\ \hline
+%  x:                       & 0 & 1 & 2 & 3 & 4 & 5 & 6 &  7  & 8 & 9
 % \end{array}$$
 %  
 % The following plot shows a solution from $x0=0$ with jump priority (|rule=1|).
@@ -85,10 +89,10 @@ close_system
 % $C$ as shown here:
 % 
 % $$\begin{array}{rccccccccccc}
-% C:                       &   & [ &   & ] &   & [ &   &   &   & ] \\
-% D \textrm{ (effective)}: & * &   &   & ( &   & ) &   &   &   &   \\
-% \hline
-% x:                       & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9
+%    C:                       &   & [ &   & ] &   & [ &   &   &   & ] 
+% \\ D \textrm{ (effective)}: & * &   &   & ( &   & ) &   &   &   & 
+% \\ \hline
+%    x:                       & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9
 % \end{array}$$
 %  
 % The following plot shows a solution from $x0=0$ with flow priority (|rule=2|).
@@ -123,8 +127,8 @@ close_system
 % numerical solutions.
 % 
 % $$\begin{array}{cccccccccccc}
-% C \cap D: &   &   & [ & ] &   & [ & ] & * &   & \\
-% \hline
+% C \cap D: &   &   & [ & ] &   & [ & ] & * &   &
+% \\ \hline
 % x:        & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9
 % \end{array}$$
 % 

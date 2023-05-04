@@ -1,4 +1,11 @@
 %% Credits and Acknowledgements for the HyEQ Toolbox
+% 
+% <html><!-- This block sets metadata that is used by the GitHub pages
+% site.--><meta 
+%   id="github pages info"
+%   permalink="credits.html" 
+%   category=""
+% /></html>
 %% Version 2.04
 % The Hybrid Equations Toolbox was created by 
 % Ricardo G. Sanfelice, David A. Copp, and Pablo Nanez. 

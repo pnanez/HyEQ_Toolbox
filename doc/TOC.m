@@ -2,6 +2,12 @@
 % The Hybrid Equation (HyEQ) Toolbox provides methods in MATLAB and Simulink 
 % for computing and plotting numerical solutions to hybrid dynamical systems. 
 % 
+% <html><!-- This block sets metadata that is used by the GitHub pages
+% site.--><meta 
+%   id="github pages info"
+%   permalink="index.html" 
+%   category=""
+% /></html>
 %% Where to Start
 % Depending on your prior experience one of the following pages would be a good
 % place to start learning how to use the HyEQ Toolbox.

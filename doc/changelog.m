@@ -1,4 +1,10 @@
 %% Change Log for the Hybrid Equations Toolbox
+% <html><!-- This block sets metadata that is used by the GitHub pages
+% site.--><meta 
+%   id="github pages info"
+%   permalink="changelog.html" 
+%   category=""
+% /></html>
 %% Version 3.1
 % Changes in version 3.1.
 % 
