@@ -524,12 +524,234 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             testCase.assertLegendLabels('Subplot 1', '')
         end
         
-        function testNoWarnExtraLegendLabelsInPlotFlows(testCase)
+        function testWarnExtraLegendLabelsInPlotFlows(testCase)
             pb = HybridPlotBuilder().subplots('on')...
                 .legend('Subplot 1', 'Subplot 2', 'Subplot 3');
             testCase.verifyWarning(@() pb.plotJumps(testCase.sol_2), ...
                 'Hybrid:ExtraLegendLabels');
             testCase.assertLegendLabels('Subplot 1', 'Subplot 2');
+        end
+
+        function testExistingLegendIsOverwritten(testCase)
+            % Make a legend with non-default settings.
+            plot(1, 1)
+            legend({'A plot'}, 'Location', 'south', 'NumColumns', 2)
+            hold on
+            
+            % Create a plot with a legend using HPB. 
+            pb = HybridPlotBuilder().subplots('off');
+            pb.legend('Legend 1')...
+                .plotFlows(testCase.sol_1);
+
+            % The default legend options are used despite the existing legend,
+            % which had non-default settings.
+            testCase.assertEqual(gca().Legend.Location, 'northeast');
+            testCase.assertEqual(gca().Legend.NumColumns, 1);
+
+            % The legend entry added without the HPB is not included in the
+            % final legend.
+            testCase.assertLegendLabels('Legend 1')
+        end
+
+        function testLegendWithOptionsMultipleSubplots(testCase)
+            pb = HybridPlotBuilder().subplots('on');
+            pb.legend({'Legend 1', 'Legend 2'}, 'Location', 'best', 'NumColumns', 3)...
+                .plotFlows(testCase.sol_2);
+
+            plt_1 = subplot(2, 1, 1);
+            testCase.assertEqual(plt_1.Legend.NumColumns, 3);
+            testCase.assertEqual(plt_1.Legend.Location, 'best');
+            
+            plt_2 = subplot(2, 1, 2);
+            testCase.assertEqual(plt_2.Legend.NumColumns, 3);
+            testCase.assertEqual(plt_2.Legend.Location, 'best');
+        end
+
+        function testLegendOptions(testCase)
+            pb = HybridPlotBuilder().subplots('on');
+
+            % Call legend without options.
+            pb.legend('Legend 1', 'Legend 2')...
+                .plotFlows(testCase.sol_2);
+
+            % Check that the defaults are used.
+            plt_1 = subplot(2, 1, 1);
+            testCase.assertEqual(plt_1.Legend.NumColumns, 1);
+            testCase.assertEqual(plt_1.Legend.Location, 'northeast');
+            
+            plt_2 = subplot(2, 1, 2);
+            testCase.assertEqual(plt_2.Legend.NumColumns, 1);
+            testCase.assertEqual(plt_2.Legend.Location, 'northeast');
+
+            % Call legendOptions.
+            pb.legendOptions('Location', 'best', 'NumColumns', 3)
+
+            % Check that the given options are used.
+            plt_1 = subplot(2, 1, 1);
+            testCase.assertEqual(plt_1.Legend.NumColumns, 3);
+            testCase.assertEqual(plt_1.Legend.Location, 'best');
+            
+            plt_2 = subplot(2, 1, 2);
+            testCase.assertEqual(plt_2.Legend.NumColumns, 3);
+            testCase.assertEqual(plt_2.Legend.Location, 'best');
+
+            % Call legend with options.
+            pb.legend({'Legend 1', 'Legend 2'}, 'Location', 'south', 'NumColumns', 2)...
+                .plotFlows(testCase.sol_2);
+
+            % Check that the given options are used.
+            plt_1 = subplot(2, 1, 1);
+            testCase.assertEqual(plt_1.Legend.NumColumns, 2);
+            testCase.assertEqual(plt_1.Legend.Location, 'south');
+            
+            plt_2 = subplot(2, 1, 2);
+            testCase.assertEqual(plt_2.Legend.NumColumns, 2);
+            testCase.assertEqual(plt_2.Legend.Location, 'south');
+
+            % Call legend without options.
+            pb.legend('Legend 1', 'Legend 2')...
+                .plotFlows(testCase.sol_2);
+
+            % Check that the default options are used.
+            plt_1 = subplot(2, 1, 1);
+            testCase.assertEqual(plt_1.Legend.NumColumns, 1);
+            testCase.assertEqual(plt_1.Legend.Location, 'northeast');
+            
+            plt_2 = subplot(2, 1, 2);
+            testCase.assertEqual(plt_2.Legend.NumColumns, 1);
+            testCase.assertEqual(plt_2.Legend.Location, 'northeast');
+        end
+
+        function testReorderLegendEntriesSingleSubplot(testCase)
+            % Generate plot.
+            pb = HybridPlotBuilder().subplots('off');
+            pb.legend('Legend 1', 'Legend 2', 'Legend 3')...
+                .plotFlows(testCase.sol_3);
+
+            % Apply reordering.
+            pb.reorderLegendEntries([3 1 2])
+
+            % Check the reordering.
+            testCase.assertLegendLabels({'Legend 3', 'Legend 1', 'Legend 2'});
+        end
+
+        % The behavior in this test case is a bit weird, but the amount of
+        % effort would not be worth the benefit. 
+        function testReorderLegendEntriesSingleSubplotWhenAnEntryIsBlank(testCase)
+            % Generate plot.
+            pb = HybridPlotBuilder().subplots('off');
+            pb.legend('Legend 1', '', 'Legend 3')...
+                .plotFlows(testCase.sol_3);
+
+            % Apply reordering. Only two indices are given because the blank
+            % label does not generate a legend entry.
+            pb.reorderLegendEntries([2 1])
+
+            % Check the reordering.
+            testCase.assertLegendLabels({'Legend 3', 'Legend 1'});
+        end
+
+        function testReorderLegendEntriesOmitEntryInSingleSubplot(testCase)
+            % Generate plot.
+            pb = HybridPlotBuilder().subplots('off');
+            pb.legend('Legend 1', 'Legend 2', 'Legend 3')...
+                .plotFlows(testCase.sol_3);
+
+            % Apply reordering.
+            pb.reorderLegendEntries([3 2])
+
+            % Check the reordering.
+            testCase.assertLegendLabels({'Legend 3', 'Legend 2'});
+        end
+
+        function testReorderLegendEntriesMultipleSubplots(testCase)
+            % Generate plot.
+            pb = HybridPlotBuilder().subplots('on');
+            pb.legend('Legend 1', 'Legend 1')...
+                .plotFlows(testCase.sol_2);
+            hold on
+            
+            pb.legend('Legend 2', 'Legend 2')...
+                .plotFlows(testCase.sol_2);
+
+            pb.legend('Legend 3', 'Legend 3')...
+                .plotFlows(testCase.sol_2);
+
+            % Apply reordering.
+            pb.reorderLegendEntries([3 1 2])
+
+            % Check the reordering.
+            expected_legends = {'Legend 3', 'Legend 1', 'Legend 2'};
+            testCase.assertLegendLabels(expected_legends, expected_legends);
+        end
+
+        function testReorderLegendEntriesOmitEntryMultipleSubplots(testCase)
+            % Generate plot.
+            pb = HybridPlotBuilder().subplots('on');
+            pb.legend('Legend 1', 'Legend 1')...
+                .plotFlows(testCase.sol_2);
+            hold on
+            
+            pb.legend('Legend 2', 'Legend 2')...
+                .plotFlows(testCase.sol_2);
+
+            pb.legend('Legend 3', 'Legend 3')...
+                .plotFlows(testCase.sol_2);
+
+            % Apply reordering.
+            pb.reorderLegendEntries([1 2])
+
+            % Check the reordering.
+            expected_legends = {'Legend 1', 'Legend 2'};
+            testCase.assertLegendLabels(expected_legends, expected_legends);
+        end
+
+        function testCircshiftLegendEntriesSingleSubplot(testCase)
+            % Generate plot.
+            pb = HybridPlotBuilder().subplots('off');
+            pb.legend('Legend 1', 'Legend 2', 'Legend 3')...
+                .plotFlows(testCase.sol_3);
+
+            % Apply positive shift.
+            pb.circshiftLegendEntries(1)
+
+            % Check the reordering.
+            testCase.assertLegendLabels({'Legend 3', 'Legend 1', 'Legend 2'});
+
+            % Apply negative shift.
+            pb.circshiftLegendEntries(-2)
+
+            % Check the reordering.
+            testCase.assertLegendLabels({'Legend 2', 'Legend 3', 'Legend 1'});
+        end
+
+
+        function testCircshiftLegendEntriesMultipleSubplots(testCase)
+            % Generate plot.
+            pb = HybridPlotBuilder().subplots('on');
+            pb.legend('Legend 1', 'Legend 1')...
+                .plotFlows(testCase.sol_2);
+            hold on
+            
+            pb.legend('Legend 2', 'Legend 2')...
+                .plotFlows(testCase.sol_2);
+
+            pb.legend('Legend 3', 'Legend 3')...
+                .plotFlows(testCase.sol_2);
+
+            % Apply negative shift.
+            pb.circshiftLegendEntries(-1)
+
+            % Check the reordering.
+            expected_legends = {'Legend 2', 'Legend 3', 'Legend 1'};
+            testCase.assertLegendLabels(expected_legends, expected_legends);
+
+            % Apply positive shift.
+            pb.circshiftLegendEntries(2)
+
+            % Check the reordering.
+            expected_legends = { 'Legend 3', 'Legend 1', 'Legend 2'};
+            testCase.assertLegendLabels(expected_legends, expected_legends);
         end
         
         function testAddLegendEntry(testCase)
@@ -546,7 +768,8 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         
         function testLegendsInMultipleFigures(testCase)
             % A single |HybridPlotBuilder| object can be used to add plots and legends to
-            % multiple figures.
+            % multiple figures. Each legend entry should only appear in the
+            % figure that the associated plot is in.
             pb = HybridPlotBuilder()...
                 .legend('First Figure')...
                 .plotFlows(testCase.sol_1); % Ignored in second figure

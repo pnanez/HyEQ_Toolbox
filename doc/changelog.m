@@ -1,5 +1,15 @@
 %% Change Log for the Hybrid Equations Toolbox
-%% New Features in Version 3.0
+%% Version 3.1
+% Changes in version 3.1.
+% 
+% * Added |HybridPlotBuilder.reorderLegendEntries|,
+% |HybridPlotBuilder.circshiftLegendEntries|, |HybridPlotBuilder.legendOptions|. 
+% * Changed behavior of |HybridPlotBuilder| legend options so that the default
+% options are used regardless of options used in current legend. *This means
+% that legend options must be set in the last call to |HybridPlotBuilder.legend|
+% or by calling |HybridPlotBuilder.legendOptions| after all legends are added.*
+
+%% Version 3.0
 % Version 3.0 of the Hybrid Equations Toolbox is a substantial update to 
 % components throughout the toolbox. 
 % 

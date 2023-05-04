@@ -102,6 +102,7 @@ HybridPlotBuilder().subplots('off').plotFlows(sol_8D)
 subplot(2, 1, 2)
 HybridPlotBuilder().subplots('off').plotPhase(sol)
 axis padded
+axis equal
 
 %%
 % At this point, if we call a plotting function with auto-subplots |'on'|, then
@@ -347,19 +348,60 @@ plt_handle = plot(10*cos(theta), 10*sin(theta), 'black');
 pb.addLegendEntry(plt_handle, 'Circle');
 
 %%
-% To set legend properties, such as location and orientation, pass the legend
+% To set legend properties, such as location and number of columns, pass the legend
 % labels to |HybridPlotBuilder.legend| as a cell array (enclosed with braces
 % '{}') and pass name/value pairs in subsequent arguments. 
+% Only the options from the last time |HybridPlotBuilder.legend| is called are used. 
+% If no options are passed, then the default options for the builtin |legend| 
+% function are used. 
 % See <matlab:doc('legend') |doc('legend')|> for a description of legend properties.
 clf
 HybridPlotBuilder().subplots('on')...
     .legend({'h', 'v'}, 'Location', 'eastoutside')...
     .plotFlows(sol);
 
+%% 
+% Alternatively, legend options can be set using
+% |legendOptions|, which is useful in conjunction with |addLegendEntry|.
+clf
+pb = HybridPlotBuilder();
+
+% Plot a circle and add legend entry.
+theta = linspace(0, 2*pi);
+plt_handle = plot(10*cos(theta), 10*sin(theta), 'black');
+pb.addLegendEntry(plt_handle, 'Circle');    
+axis equal
+ylim padded
+
+% Change the location of the legend.
+pb.legendOptions('Location', 'west');
+
 %%
-% The above method applies the same settings to the legends in all subplots. 
+% Setting the legend options via the methods above applies the same settings to
+% the legends in all subplots.  
 % To modify legend options separately for each subplot, use the |configurePlots|
 % function described below.
+
+%% 
+% In some cases, you may wish to display the legend entries in a different order
+% than the plots were added to the figure, or remove a entry from the legend. 
+% This can be accomplished with |reorderLegendEntries| and
+% |circshiftLegendEntries|.
+clf
+pb = HybridPlotBuilder();
+
+% Plot state trajectory.
+pb.legend('$x(t)$').plotPhase(sol);
+hold on
+xlim padded
+
+% Plot the initial condition last, so that it is displayed on top of state
+% trajectory.
+x0_plt = plot(sol.x0(1), sol.x0(2), 'o');
+pb.addLegendEntry(x0_plt, '$x_0$')
+
+% Reorder legend entries
+pb.reorderLegendEntries([2 1])  
 
 %% 
 % 

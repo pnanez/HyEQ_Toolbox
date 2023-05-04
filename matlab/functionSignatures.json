@@ -417,16 +417,49 @@
     { "inputs":
      [{"name":"this"},
       {"name":"label", "kind":"required", 
-       "type":"cell", "purpose":"State component label"},
+       "type":"cell", "purpose":"Cell array of legend labels."},
       {"name":"Location",  "kind":"namevalue",
        "type":"choices={'north', 'south', 'east', 'west', 'northeast','northwest','southeast','southwest','northoutside','southoutside','eastoutside','westoutside', 'best'}",
        "purpose":"Location of legend"},
       {"name":"NumColumns",  "kind":"namevalue",
        "type":"choices={1, 2, 3}",
-       "purpose":"Maximum number of columns in legend."},
-      {"name":"ornt",  "kind":"namevalue",
-       "type":"choices={'vertical', 'horizontal'}",
-       "purpose":"Entry layout orientation."}
+       "purpose":"Maximum number of columns."}
+     ], 
+     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
+    },
+"HybridPlotBuilder.addLegendEntry": 
+    { "inputs":
+     [{"name":"this"},
+      {"name":"graphic_obj_handle", "kind":"required", "purpose":"Graphic object."},
+      {"name":"label", "kind":"required", "purpose":"Legend label."}
+      ], 
+     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
+    },
+"HybridPlotBuilder.legendOptions": 
+    { "inputs":
+     [{"name":"this"},
+      {"name":"Location",  "kind":"namevalue",
+       "type":"choices={'north', 'south', 'east', 'west', 'northeast','northwest','southeast','southwest','northoutside','southoutside','eastoutside','westoutside', 'best'}",
+       "purpose":"Location of legend"},
+      {"name":"NumColumns",  "kind":"namevalue",
+       "type":"choices={1, 2, 3}",
+       "purpose":"Maximum number of columns."}
+     ], 
+     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
+    },
+"HybridPlotBuilder.reorderLegendEntries": 
+    { "inputs":
+     [{"name":"this"},
+      {"name":"permutation_indices", 
+       "kind":"required", "type":["integer", "positive", "vector"], 
+       "purpose":"Permutation Array. Examples: '[3 1 2]', '4:-1:1', '[2 3]'."}
+     ],  
+     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
+    },
+"HybridPlotBuilder.circshiftLegendEntries": 
+    { "inputs":
+     [{"name":"this"},
+      {"name":"offset", "kind":"required", "type":[["choices={1, 2, -1}"], ["integer", "scalar"]], "purpose":"Circular Shift Offset."}
      ], 
      "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
     },
@@ -674,14 +707,6 @@
         ]}
     ], 
      "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]},
-"HybridPlotBuilder.addLegendEntry": 
-    { "inputs":
-     [{"name":"this"},
-      {"name":"graphic_obj_handle", "kind":"required", "purpose":"Graphic object."},
-      {"name":"label", "kind":"required", "purpose":"Legend entry label."}
-      ], 
-     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
-    },
 
 "_comment": "================================================================",
 "_comment": "================================================================",
