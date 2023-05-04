@@ -826,13 +826,6 @@ classdef HybridPlotBuilder < handle
             end          
         end
 
-        function plot(~, varargin)
-            % This function has been removed. Please use plotFlows or plotPhase
-            % explicitly.
-            error(['This function has been removed. Please use ' ...
-                'plotFlows or plotPhase explicitly.'])                     
-        end
-
         function this = addLegendEntry(this, graphic_obj_handle, label)
             % Add a graphic object to the legend. 
             % 
@@ -860,6 +853,17 @@ classdef HybridPlotBuilder < handle
                 clearvars this
             end
         end
+    end
+
+    methods(Hidden)
+
+        function plot(~, varargin)
+            % This function has been removed. Please use plotFlows or plotPhase
+            % explicitly.
+            error(['This function has been removed. Please use ' ...
+                'plotFlows or plotPhase explicitly.'])                     
+        end
+
     end
 
     methods(Hidden) % Legacy-named plot functions
