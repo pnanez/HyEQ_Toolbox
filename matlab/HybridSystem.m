@@ -496,7 +496,7 @@ classdef (Abstract) HybridSystem < handle
                     % includes "this" in the first argument.a
                     func_lambda = @(x, t, j) func_handle(x, t, j);
                 otherwise
-                    error(['Functions must have 2,3, or 4 arguments ' ...
+                    error(['Functions must have 2, 3, or 4 arguments ' ...
                           '(including ''this''). Instead the function had %d.'], nargs) 
             end
         end

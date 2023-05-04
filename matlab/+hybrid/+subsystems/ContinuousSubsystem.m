@@ -7,7 +7,7 @@ classdef (Abstract) ContinuousSubsystem < HybridSubsystem
     methods(Abstract) 
         xdot = flowMap(this, x, u, t, j)  
     end
-    
+
     methods(Sealed)
         % The system does not jump.
         function xplus = jumpMap(this, x, u, t, j)   %#ok<INUSD,INUSL>

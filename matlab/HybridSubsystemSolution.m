@@ -34,10 +34,14 @@ classdef HybridSubsystemSolution < HybridSolution
             % 'time_indices', if provided). Each row of the output array
             % contains the vector returned by 'func_hand' at the
             % corresponding entry in this HybridSolution.
-            % 
+            %
             % The argument 'func_hand' must be a function handle
-            % that has the input arguments '(x)', '(x, u)', '(x, t)', or '(x, t, j)', and
-            % returns a column vector of fixed length.
+            % with input arguments 
+            %   '(x)', 
+            %   '(x, u)', 
+            %   '(x, u, t)', or 
+            %   '(x, u, t, j)'
+            % and output argument that is a column vector of fixed length and type 'double'.
             %
             % The argument 'time_indices' is optional. If supplied, the
             % function is evaluated only at the indices specificed and the

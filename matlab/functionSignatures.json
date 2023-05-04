@@ -1217,7 +1217,7 @@
         ],
      "outputs":
         [
-            {"name": "sys", "type":"HybridSystem"}
+            {"name": "hybrid_system", "type":"HybridSystem"}
           ]
     },
 "HybridSystemBuilder.flowMap": 
@@ -1246,7 +1246,7 @@
     { "inputs":
         [
             {"name":"this"},
-            {"name":"flowMap", "kind":"required", "type":"function_handle"}
+            {"name":"jumpMap", "kind":"required", "type":"function_handle"}
         ],
      "outputs":
         [
@@ -1257,7 +1257,7 @@
     { "inputs":
         [
             {"name":"this"},
-            {"name":"flowMap", "kind":"required", "type":"function_handle"}
+            {"name":"jumpMap", "kind":"required", "type":"function_handle"}
         ],
      "outputs":
         [
@@ -1268,7 +1268,7 @@
     { "inputs":
         [
             {"name":"this"},
-            {"name":"flowMap", "kind":"required", "type":"function_handle"}
+            {"name":"flowSetIndicator", "kind":"required", "type":"function_handle"}
         ],
      "outputs":
         [
@@ -1279,7 +1279,7 @@
     { "inputs":
         [
             {"name":"this"},
-            {"name":"flowMap", "kind":"required", "type":"function_handle"}
+            {"name":"flowSetIndicator", "kind":"required", "type":"function_handle"}
         ],
      "outputs":
         [
@@ -1290,7 +1290,7 @@
     { "inputs":
         [
             {"name":"this"},
-            {"name":"flowMap", "kind":"required", "type":"function_handle"}
+            {"name":"jumpSetIndicator", "kind":"required", "type":"function_handle"}
         ],
      "outputs":
         [
@@ -1301,7 +1301,7 @@
     { "inputs":
         [
             {"name":"this"},
-            {"name":"flowMap", "kind":"required", "type":"function_handle"}
+            {"name":"jumpSetIndicator", "kind":"required", "type":"function_handle"}
         ],
      "outputs":
         [

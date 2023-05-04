@@ -10,8 +10,7 @@ function [us, ys] = evaluateInOrder(order, inputs, outputs, xs, t, js)
 % * they appear is the order they are evaluated. 
 % * See hybrid.internal.sortInputAndOutputFunctionNames() for how to generate this array.
 % inputs (cell array of function handles): Contains function handles for each
-% * input function. Each function must have the signature required by
-% * CompositeHybridSystem.
+% * input function. Each function must have the signature required by CompositeHybridSystem.
 % outputs (cell array of function handles): Contains function handles for each
 % * output function. Each function must have the signature required by
 % * CompositeHybridSystem.
