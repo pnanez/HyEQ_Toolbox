@@ -4,8 +4,8 @@
 %        for the Jekyll website.-->
 %  <meta 
 %    id="github_pages"
-%    permalink="cps/continuous-time-plant" 
-%    category="simulink"
+%    permalink="continuous-time-plant" 
+%    category="simulink/CPS"
 %   />
 % </html>
 %

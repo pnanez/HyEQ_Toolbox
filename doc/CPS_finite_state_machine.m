@@ -4,8 +4,8 @@
 %        for the Jekyll website.-->
 %  <meta 
 %    id="github_pages"
-%    permalink="cps/finite-state-machine" 
-%    category="simulink"
+%    permalink="finite-state-machine" 
+%    category="simulink/CPS"
 %   />
 % </html>
 %

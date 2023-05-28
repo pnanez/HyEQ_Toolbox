@@ -4,8 +4,8 @@
 %        for the Jekyll website.-->
 %  <meta 
 %    id="github_pages"
-%    permalink="cps/analog-to-digital-converter" 
-%    category="simulink"
+%    permalink="analog-to-digital-converter" 
+%    category="simulink/CPS"
 %   />
 % </html>
 %

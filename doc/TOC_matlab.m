@@ -4,7 +4,7 @@
 %          for the Jekyll website.-->
 %   <meta 
 %     id="github_pages"
-%     permalink="matlab/" 
+%     permalink="matlab" 
 %     category=""
 %   />
 % </html>

@@ -4,8 +4,8 @@
 %        for the Jekyll website.-->
 %  <meta 
 %    id="github_pages"
-%    permalink="cps/intro" 
-%    category="simulink"
+%    permalink="intro" 
+%    category="simulink/CPS"
 %   />
 % </html>
 %

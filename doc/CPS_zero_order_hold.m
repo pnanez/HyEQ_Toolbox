@@ -4,8 +4,8 @@
 %        for the Jekyll website.-->
 %  <meta 
 %    id="github_pages"
-%    permalink="cps/zero-order-hold" 
-%    category="simulink"
+%    permalink="zero-order-hold" 
+%    category="simulink/CPS"
 % />
 % </html>
 %

@@ -56,7 +56,8 @@ sys.setInput(plant, @(~, ~, ~, u_switched) u_switched);
 % Compute a solution. Note that the MemorylessSubsystems have no state, so empty
 % arrays are given in |x0| for the corresponding subsystems.
 x0 = {[10; 0], [], [], 1};
-sol = sys.solve(x0, [0, 100], [0, 100])
+config = HybridSolverConfig('Refine', 8); % 'Refine' option makes the plots smoother.
+sol = sys.solve(x0, [0, 100], [0, 100], config)
 
 %% 
 % Plot the solution, using different colors when $q=0$ and $q=1$.

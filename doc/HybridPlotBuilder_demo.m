@@ -538,7 +538,7 @@ HybridPlotBuilder().subplots('on')...
 % 
 % Filtering is useful for plotting systems where an integer-value
 % component indicates the mode of the system. 
-% Here, we create a 3D system with a continuous variable $z \in \bf{R}^2$
+% Here, we create a 3D system with a continuous variable $z \in \mathbf{R}^2$
 % and a discrete variable $q \in \{0, 1\}$. Points in the solution where 
 % $q = 0$ are plotted in blue, and points where $q = 1$ are plotted in
 % black. The same |HybridPlotBuilder| object is used for both plots by saving it 

@@ -2,9 +2,10 @@
 % <html>
 %   <!-- This meta block sets metadata that is used to generate the front matter 
 %          for the Jekyll website.-->
+%   <!-- The presence of the hide_from_website attribute hides this page. The actual value is not used.-->
 %   <meta 
-%     id="github_pages" 
-%     omit="true" <!-- Don't put example on website. -->
+%     id="github_pages"
+%     hide_from_website="true" 
 %   />
 % </html>
 % 
