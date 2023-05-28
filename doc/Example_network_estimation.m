@@ -100,21 +100,20 @@
 %    &C_P := \mathbf{R}^{n_p}\times\mathbf{R}, \\
 % G_P(x, u):= x, \quad
 %     &D_P := \emptyset,\\ 
-% y = h(x) : =Mx
+% y = h(x) := Mx
 % \end{array}$$
 %
 % where 
 %
 % $$\begin{array}{l@{}l}
-% A = 
-% \left[\begin{tabular}{cccc} 
-% 0&1&0&0\\
-% -1&0&0&0\\
-% -2&1&-1&0\\
-% 2&-2&0&-2
-% \end{tabular}\right],\quad
-% B = \left[\begin{tabular}{c} 0\\0\\1\\0 \end{tabular}\right],\quad
-% M = \left[\begin{tabular}{cccc}1&0&0&0\end{tabular}\right],
+% A=\left[\begin{array}{cccc}
+% 0 & 1 & 0 & 0 \\
+% -1 & 0 & 0 & 0 \\
+% -2 & 1 & -1 & 0 \\
+% 2 & -2 & 0 & -2
+% \end{array}\right],\quad
+% B = \left[\begin{array}{c} 0\\0\\1\\0 \end{array}\right],\quad
+% M = \left[\begin{array}{cccc}1&0&0&0\end{array}\right],
 % \end{array}$$
 %
 % $n_p=4$, $r_p=1$, $x \in\mathbf{R}^{n_p}$, $y\in\mathbf{R}^{r_p}$, and $u\in\mathbf{R}$.
@@ -122,13 +121,13 @@
 % *Network:* 
 % 
 % $$\begin{array}{l@{}l}
-% f(x_N, u_N):= \left[\begin{tabular}{c}
+% f(x_N, u_N):= \left[\begin{array}{c}
 % 0\\0\\-1
-% \end{tabular}\right],\quad 
+% \end{array}\right],\quad 
 %    &C := \{(x_N,u_N)\mid \tau_N \geq 0 \},\\
-% g(x_N, u_N):= \left[\begin{tabular}{c}
-% $u_N$ \\ $j_N +1$ \\  $\tau_r$ 
-% \end{tabular}\right],\quad 
+% g(x_N, u_N):= \left[\begin{array}{c}
+% u_N \\ j_N + 1 \\ \tau_r 
+% \end{array}\right],\quad 
 %     &D :=\{(x_N,u_N)\mid \tau_N \leq 0 \},\\
 % y_N = h(x_N) : =x_N
 % \end{array}$$
@@ -141,25 +140,26 @@
 %
 % $$\begin{array}{ll}
 % f(x_E, u_E):= 
-% \left[\begin{tabular}{cc}
-% $A$ &0 \\ 0 & 0
-% \end{tabular}\right]x_E + \left[\begin{tabular}{c}
-% $B$\\0
-% \end{tabular}\right]v,\quad
-%    &C := \{(x_E,u_E) \mid j_E = j_N \},\\ 
-% g((\hat{x},j_E), u_E):= \left[\begin{tabular}{c}
-% $\hat{x} + L(m_N-M\hat{x})$\\
-% $j_N$
-% \end{tabular}\right],\quad
+% \left[\begin{array}{cc}
+% A & 0 \\ 
+% 0 & 0
+% \end{array}\right]x_E + \left[\begin{array}{c}
+% B \\ 0
+% \end{array}\right]v,\quad
+%    & C := \{(x_E,u_E) \mid j_E = j_N \},\\ 
+% g((\hat{x},j_E), u_E):= \left[\begin{array}{c}
+% \hat{x} + L(m_N-M\hat{x}) \\
+% j_N
+% \end{array}\right],\quad
 %     &D :=\{(x,u) \mid j_E\in\mathbf{N}\setminus j_N\},
 % \end{array}$$
 %
 % where $L$, which is designed as in [1], is given by
 %
 % $$\begin{array}{l}
-% L := \left[\begin{tabular}{c} 
+% L := \left[\begin{array}{c} 
 % 1 \\ -0.9433\\ -0.6773\\1.6274
-% \end{tabular}\right],
+% \end{array}\right],
 % \end{array}$$
 %
 % the input and the state are given by $u_E = (x_N,v) = ((m_N,j_N,\tau_N),v)\in\mathbf{R}\times\mathbf{R}\times\mathbf{R}\times\mathbf{R}$, 
