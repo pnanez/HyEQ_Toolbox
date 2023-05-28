@@ -1,10 +1,13 @@
 %% Change Log for the Hybrid Equations Toolbox
-% <html><!-- This block sets metadata that is used by the GitHub pages
-% site.--><meta 
-%   id="github pages info"
-%   permalink="changelog.html" 
-%   category=""
-% /></html>
+% <html>
+%   <!-- This block sets metadata that is used to generate the front matter 
+%        for the Jekyll website.-->
+%  <meta 
+%    id="github_pages"
+%    permalink="changelog" 
+%    category=""
+%   />
+% </html>
 %% Version 3.1
 % Changes in version 3.1.
 % 

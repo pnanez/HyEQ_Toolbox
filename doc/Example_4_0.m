@@ -1,4 +1,13 @@
 %% Example 4.0: 
+% <html>
+%   <!-- This meta block sets metadata that is used to generate the front matter 
+%          for the Jekyll website.-->
+%   <meta 
+%     id="github_pages" 
+%     omit="true" <!-- Don't put example on website. -->
+%   />
+% </html>
+% 
 % Following the model of a physical component 
 % 
 % $$\begin{array}{ll}

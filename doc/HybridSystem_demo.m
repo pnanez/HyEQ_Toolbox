@@ -1,4 +1,14 @@
 %% Creating and Simulating Hybrid Systems
+% <html>
+%   <!-- This block sets metadata that is used to generate the front matter 
+%        for the Jekyll website.-->
+%  <meta 
+%    id="github_pages"
+%    permalink="creating-and-simulating-hybrid-systems" 
+%    category="matlab"
+%   />
+% </html>
+% 
 % In this tutorial, we show how to create and solve a hybrid system 
 % using the |HybridSystem| class. For a brief introduction to hybrid systems, 
 % see 

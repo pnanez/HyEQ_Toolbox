@@ -1,4 +1,14 @@
-%% Using the Hybrid Equations MATLAB Library
+%% Hybrid Equations MATLAB Library
+% <html>
+%   <!-- This meta block sets metadata that is used to generate the front matter 
+%          for the Jekyll website.-->
+%   <meta 
+%     id="github_pages"
+%     permalink="matlab/" 
+%     category=""
+%   />
+% </html>
+% 
 % The following pages contain introductory guides for how to use the
 % MATLAB-based portion of the Hybrid Equations Toolbox.
 % 

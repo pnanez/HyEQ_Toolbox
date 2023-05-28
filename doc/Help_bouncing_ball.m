@@ -1,4 +1,14 @@
 %% Example Hybrid System with External Functions (Bouncing Ball)
+% <html>
+%   <!-- This block sets metadata that is used to generate the front matter 
+%        for the Jekyll website.-->
+%  <meta 
+%    id="github_pages"
+%    permalink="bouncing-ball" 
+%    category="simulink"
+%   />
+% </html>
+%
 % In this example, a bouncing ball is modeled in Simulink as a hybrid system.
 %% 
 % The files for this example are found in the <matlab:hybrid.internal.openHelp('MATLAB_packages') package>

@@ -1,4 +1,14 @@
-%% Using the Hybrid Equations Simulink Library
+%% Hybrid Equations Simulink Library
+% <html>
+%   <!-- This meta block sets metadata that is used to generate the front matter 
+%          for the Jekyll website.-->
+%   <meta 
+%     id="github_pages"
+%     permalink="simulink" 
+%     category=""
+%   />
+% </html>
+% 
 % The following pages describe how to use the
 % Simulink-based portion of the Hybrid Equations Toolbox.
 % 

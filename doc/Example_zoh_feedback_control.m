@@ -1,4 +1,14 @@
 %% Example 3: Sample-and-hold Feedback Control for a Continuous-time Plant
+% <html>
+%   <!-- This block sets metadata that is used to generate the front matter 
+%        for the Jekyll website.-->
+%  <meta 
+%    id="github_pages"
+%    permalink="sample-and-hold-feedback" 
+%    category="examples"
+%   />
+% </html>
+%
 % In this example, a continuous-time plant is controlled by a digital controller using
 % sample-and-hold digital-to-analog converter.
 %% 

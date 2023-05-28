@@ -1,4 +1,14 @@
 %% Example Hybrid System with Embedded Functions (Bouncing Ball with Input)
+% <html>
+%   <!-- This block sets metadata that is used to generate the front matter 
+%        for the Jekyll website.-->
+%  <meta 
+%    id="github_pages"
+%    permalink="bouncing-ball-with-input" 
+%    category="simulink"
+%   />
+% </html>
+% 
 % In this example, a ball bouncing on a moving platform is 
 % modeled in Simulink as a hybrid system with an input, where the input
 % determines the height of the platform.

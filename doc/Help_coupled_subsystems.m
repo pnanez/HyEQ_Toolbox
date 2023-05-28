@@ -1,4 +1,14 @@
 %% Composing Multiple Hybrid Subsystems (Bouncing Ball on Moving Platform)
+% <html>
+%   <!-- This block sets metadata that is used to generate the front matter 
+%        for the Jekyll website.-->
+%  <meta 
+%    id="github_pages"
+%    permalink="ball-on-platform" 
+%    category="simulink"
+%   />
+% </html>
+% 
 % In this example, a ball bouncing on a moving platform is modeled in Simulink
 % as a pair of interconnected hybrid systems with inputs.  
  

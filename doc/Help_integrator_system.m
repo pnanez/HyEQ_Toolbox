@@ -1,5 +1,15 @@
-%% The Integrator System
-% In this page we discuss the internals of the _Integrator System_: 
+%% The Integrator System Block
+% <html>
+%   <!-- This block sets metadata that is used to generate the front matter 
+%        for the Jekyll website.-->
+%  <meta 
+%    id="github_pages"
+%    permalink="integrator-system" 
+%    category="simulink"
+%   />
+% </html>
+% 
+% In this page we discuss the internals of the _Integrator System_ block: 
 % 
 % <html> 
 % <img src="images/Integrator.png"  style='width: 100%; max-height: 350px; object-fit: contain'> 

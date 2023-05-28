@@ -1,4 +1,14 @@
 %% CPS Component: Continuous-time Plant (Mobile Robot)
+% <html>
+%   <!-- This block sets metadata that is used to generate the front matter 
+%        for the Jekyll website.-->
+%  <meta 
+%    id="github_pages"
+%    permalink="cps/continuous-time-plant" 
+%    category="simulink"
+%   />
+% </html>
+%
 % In this example a unicycle type mobile robot is simulated using the hybrid
 % system toolbox. It is assumed that the forward 
 % velocity can be either 1 or 0, and the control command is $u\in\mathbf{R}$.

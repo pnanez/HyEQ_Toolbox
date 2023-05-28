@@ -1,13 +1,16 @@
 %% Hybrid Equations Toolbox Help
+% <html>
+%   <!-- This meta block sets metadata that is used to generate the front matter 
+%          for the Jekyll website.-->
+%   <meta 
+%     id="github_pages"
+%     permalink="index" 
+%     category=""
+%   />
+% </html>
+% 
 % The Hybrid Equation (HyEQ) Toolbox provides methods in MATLAB and Simulink 
 % for computing and plotting numerical solutions to hybrid dynamical systems. 
-% 
-% <html><!-- This block sets metadata that is used by the GitHub pages
-% site.--><meta 
-%   id="github pages info"
-%   permalink="index.html" 
-%   category=""
-% /></html>
 %% Where to Start
 % Depending on your prior experience one of the following pages would be a good
 % place to start learning how to use the HyEQ Toolbox.
@@ -115,7 +118,7 @@
 % 
 % * <matlab:hybrid.internal.openHelp('MATLAB_packages') Package Namespaces in the HyEQ Toolbox>
 % * <matlab:hybrid.internal.openHelp('changelog') Change Log>
-% * <matlab:hybrid.internal.openHelp('acknowledgements') Credits and Acknowledgements>
+% * <matlab:hybrid.internal.openHelp('credits') Credits and Acknowledgements>
 
 
 % DEVELOPEMENT NOTES (leave an empty line before this section so that it is

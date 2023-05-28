@@ -105,7 +105,7 @@ Ricardo G. Sanfelice, David A. Copp, and Pablo Nanez.
 ## Version 3.0
 Version 3.0 of the HyEQ Toolbox was developed by Paul Wintz.
 
-See **Credits and Acknowledgements** within the HyEQ Toolbox documentation for further acknowledgements 
+See **Credits and Acknowledgments** within the HyEQ Toolbox documentation for further acknowledgments 
 
 
 # See Also

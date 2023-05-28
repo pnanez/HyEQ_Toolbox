@@ -1,4 +1,14 @@
 %% CPS Component: Zero-Order Hold (ZOH)
+% <html>
+%   <!-- This block sets metadata that is used to generate the front matter 
+%        for the Jekyll website.-->
+%  <meta 
+%    id="github_pages"
+%    permalink="cps/zero-order-hold" 
+%    category="simulink"
+% />
+% </html>
+%
 % A zero-order hold (ZOH) converts a digital signal at its input into an analog signal at
 % its output. Its output is updated at discrete time instants, typically
 % periodically, and held constant in between updates, until new information

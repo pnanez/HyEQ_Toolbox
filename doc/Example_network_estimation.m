@@ -1,4 +1,14 @@
 %% Example 4: Estimation Over a Network
+% <html>
+%   <!-- This block sets metadata that is used to generate the front matter 
+%        for the Jekyll website.-->
+%  <meta 
+%    id="github_pages"
+%    permalink="estimation-over-network" 
+%    category="examples"
+%   />
+% </html>
+%
 % In this example, a physical plant, its output digitally transmitted 
 % through a network, and a state estimator are 
 % modeled in Simulink as a hybrid system.

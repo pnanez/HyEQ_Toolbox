@@ -1,4 +1,14 @@
 %% Package Namespaces in the HyEQ Toolbox
+% <html>
+%   <!-- This meta block sets metadata that is used to generate the front matter 
+%          for the Jekyll website.-->
+%   <meta 
+%     id="github_pages"
+%     permalink="package-namespaces" 
+%     category=""
+%   />
+% </html>
+% 
 % In MATLAB, _package namespaces_ (or simply _packages_) are used to 
 % distinguish between functions, scripts, and classes
 % that otherwise have the same name. 

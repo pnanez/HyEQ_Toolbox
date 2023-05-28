@@ -1,4 +1,13 @@
 %% Cyber-physical System (CPS) Components
+% <html>
+%   <!-- This meta block sets metadata that is used to generate the front matter 
+%          for the Jekyll website.-->
+%   <meta 
+%     id="github_pages"
+%     permalink="cps" 
+%     category="simulink"
+%   />
+% </html>
 % 
 % * <matlab:hybrid.internal.openHelp('CPS_Components') 
 %       Introduction to Cyber-physical Component Blocks> 

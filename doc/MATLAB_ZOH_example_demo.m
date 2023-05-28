@@ -1,4 +1,14 @@
 %% Example: Composite Hybrid System with Zero-order Hold Subsystem
+% <html>
+%   <!-- This meta block sets metadata that is used to generate the front matter 
+%          for the Jekyll website.-->
+%   <meta 
+%     id="github_pages"
+%     permalink="example-composite-hybrid-system-with-zoh" 
+%     category="matlab"
+%   />
+% </html>
+% 
 % In the following example we create a composite system that consists of three 
 % subsystems: 
 % 

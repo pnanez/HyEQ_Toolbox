@@ -1,4 +1,14 @@
 %% Example 2: Synchronization of Two Fireflies
+% <html>
+%   <!-- This block sets metadata that is used to generate the front matter 
+%        for the Jekyll website.-->
+%  <meta 
+%    id="github_pages"
+%    permalink="fireflies" 
+%    category="examples"
+%   />
+% </html>
+%
 % In this example, two hybrid subsystems in Simulink are used to model a pair of fireflies
 % that exhibit synchronization of their flashes.
 

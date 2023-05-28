@@ -1,4 +1,14 @@
 %% Example: Composite Hybrid System with Switched Subsystem
+% <html>
+%   <!-- This meta block sets metadata that is used to generate the front matter 
+%          for the Jekyll website.-->
+%   <meta 
+%     id="github_pages"
+%     permalink="example-composite-hybrid-system-with-switch" 
+%     category="matlab"
+%   />
+% </html>
+% 
 % We create a composite system that consists of a plant, two controllers, and a
 % switch that toggles between the controllers based on some criteria. 
 A = [0, 1; 0, 0];

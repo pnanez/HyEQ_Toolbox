@@ -1,4 +1,16 @@
-%% Applications of Hybrid Systems
+%% Examples of Hybrid Systems
+% <html>
+%   <!-- This meta block sets metadata that is used to generate the front matter 
+%          for the Jekyll website.-->
+%   <meta 
+%     id="github_pages"
+%     permalink="examples" 
+%     category=""
+%   />
+% </html>
+% 
+% This page contains several examples of hybrid systems modeled using the HyEQ
+% Toolbox. 
 % 
 % * <matlab:hybrid.internal.openHelp('Example_vehicle_on_path') Example 1: 
 %       A Vehicle Following a Path>

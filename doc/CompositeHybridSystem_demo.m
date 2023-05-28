@@ -1,13 +1,17 @@
 %% Creating and Simulating Multiple Interlinked Hybrid Systems
+% <html>
+%   <!-- This block sets metadata that is used to generate the front matter 
+%        for the Jekyll website.-->
+%  <meta 
+%    id="github_pages"
+%    permalink="composite-hybrid-systems" 
+%    category="matlab"
+%   />
+% </html>
+%
 % In this document, we demonstrate how to simulate multiple interlinked hybrid systems
 % using the <matlab:doc('CompositeHybridSystem') |CompositeHybridSystem|> class. 
-% 
-% <html><!-- This block sets metadata that is used by the GitHub pages
-% site.--><meta 
-%   id="github pages info"
-%   permalink="composite-hybrid-systems.html" 
-%   category="matlab"
-% /></html>
+
 %% Mathematical Formulation
 % Consider the controlled hybrid systems $\mathcal H_1$ and $\mathcal H_2$ with 
 % data $(f_1, g_1, C_1, D_1)$ and $(f_2, g_2, C_2, D_2)$ and state spaces 

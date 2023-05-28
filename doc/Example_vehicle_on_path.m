@@ -1,4 +1,14 @@
 %% Example 1: Vehicle on Path with Boundaries
+% <html>
+%   <!-- This block sets metadata that is used to generate the front matter 
+%        for the Jekyll website.-->
+%  <meta 
+%    id="github_pages"
+%    permalink="vehicle-on-path" 
+%    category="examples"
+%   />
+% </html>
+%
 % In this example, a vehicle is controlled such that it moves along
 % a path. 
 

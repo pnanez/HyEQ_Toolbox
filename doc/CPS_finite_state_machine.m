@@ -1,4 +1,14 @@
 %% CPS Component: Finite State Machine
+% <html>
+%   <!-- This block sets metadata that is used to generate the front matter 
+%        for the Jekyll website.-->
+%  <meta 
+%    id="github_pages"
+%    permalink="cps/finite-state-machine" 
+%    category="simulink"
+%   />
+% </html>
+%
 % In this example, a finite state machine (FSM) is 
 % modeled in Simulink as a hybrid system with an input, where the input
 % triggers the discrete transitions (or jumps).

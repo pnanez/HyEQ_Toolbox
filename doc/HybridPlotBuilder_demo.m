@@ -1,4 +1,14 @@
 %% Plotting Hybrid Arcs
+% <html>
+%   <!-- This block sets metadata that is used to generate the front matter 
+%        for the Jekyll website.-->
+%  <meta 
+%    id="github_pages"
+%    permalink="plotting-hybrid-arcs" 
+%    category="matlab"
+%   />
+% </html>
+%
 % In this document, we describe how to generate plots of |HybridArc| objects
 % using |HybridPlotBuilder|. 
 

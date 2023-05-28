@@ -1,4 +1,14 @@
 %% Introduction to Hybrid Systems
+% <html>
+%   <!-- This meta block sets metadata that is used to generate the front matter 
+%          for the Jekyll website.-->
+%   <meta 
+%     id="github_pages"
+%     permalink="intro-to-hybrid-systems" 
+%     category=""
+%   />
+% </html>
+% 
 % This document gives a brief introduction to the mathematical modeling of
 % hybrid systems and their solutions.
 % A hybrid system $\mathcal{H}$ with state $x\in \mathbf{R}^n$ 

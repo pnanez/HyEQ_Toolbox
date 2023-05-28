@@ -1,4 +1,14 @@
 %% CPS Component: Analog-to-Digital Converter (ADC)
+% <html>
+%   <!-- This block sets metadata that is used to generate the front matter 
+%        for the Jekyll website.-->
+%  <meta 
+%    id="github_pages"
+%    permalink="cps/analog-to-digital-converter" 
+%    category="simulink"
+%   />
+% </html>
+%
 % In this example, an analog-to-digital converter (ADC) is 
 % modeled in Simulink as a hybrid system with an input, where the input
 % is sampled periodically by the ADC.

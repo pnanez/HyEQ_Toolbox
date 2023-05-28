@@ -1,4 +1,14 @@
 %% Updating Code That Was Designed for HyEQ Toolbox v2.04 to Use HyEQ Toolbox v3.0.
+% <html>
+%   <!-- This block sets metadata that is used to generate the front matter 
+%        for the Jekyll website.-->
+%  <meta 
+%    id="github_pages"
+%    permalink="updating-to-v3" 
+%    category="matlab"
+%   />
+% </html>
+%
 % Version 3.0 of the Hybrid Equation Toolbox includes substantial improvements
 % to most aspects of the MATLAB-based solver and plotting functions. All code
 % written using v2.04 should continue to work on v3.0, but will need to be to

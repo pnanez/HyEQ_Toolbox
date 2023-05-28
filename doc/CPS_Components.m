@@ -1,4 +1,14 @@
 %% Introduction to Cyber-physical Component Blocks
+% <html>
+%   <!-- This block sets metadata that is used to generate the front matter 
+%        for the Jekyll website.-->
+%  <meta 
+%    id="github_pages"
+%    permalink="cps/intro" 
+%    category="simulink"
+%   />
+% </html>
+%
 % The HyEQ Toolbox includes a series of blocks that model elements 
 % of a cyber-physical system (CPS). Those models are special instances 
 % of the hybrid systems blocks described in the

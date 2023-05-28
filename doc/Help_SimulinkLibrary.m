@@ -1,4 +1,14 @@
 %% Introduction to the Simulink-based Hybrid Equation Simulator
+% <html>
+%   <!-- This block sets metadata that is used to generate the front matter 
+%        for the Jekyll website.-->
+%  <meta 
+%    id="github_pages"
+%    permalink="intro-to-simulink" 
+%    category="simulink"
+%   />
+% </html>
+% 
 % This document describes the Simulink-based hybrid
 % equation simulator from the Hybrid Equations Toolbox, including an introduction
 % to the primary components. 
