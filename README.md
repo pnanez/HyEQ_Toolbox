@@ -2,7 +2,7 @@
 
 [![View Hybrid Equations Toolbox on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://www.mathworks.com/matlabcentral/fileexchange/41372-hybrid-equations-toolbox)
 
-The Hybrid Equation (HyEQ) Toolbox provides MATLAB and Simulink libraries for the simulation of hybrid dynamical systems. The Toolbox supports definitions of hybrid systems with inputs, allowing for the creation of interconnected hybrid systems in modular configurations. The hybrid arcs output by simulations can be transformed and plotted with a suite of tools that allow easy customization. Detailed documentation and numerous examples are provided in the MATLAB Help browser.
+The Hybrid Equation (HyEQ) Toolbox provides MATLAB and Simulink libraries for the simulation of hybrid dynamical systems. The Toolbox supports definitions of hybrid systems with inputs, allowing for the creation of interconnected hybrid systems in modular configurations. The hybrid arcs output by simulations can be transformed and plotted with a suite of tools that allow easy customization. Detailed documentation and numerous examples are provided in the MATLAB Help browser or at [hyeq.github.io](https://hyeq.github.io/).
 
 ## Requirements
 
@@ -63,6 +63,7 @@ The MATLAB Add-on Manager is not supported on versions of MATLAB before MATLAB R
 # Help Using the Toolbox
 
 To access the HyEQ Toolbox documentation, open MATLAB Help (F1) and navigate to Supplemental Software>Hybrid Equations Toolbox.
+The documentation is also available online at [hyeq.github.io](https://hyeq.github.io/).
 
 To ask for help, report a problem, or request a feature, please [submit an issue](https://github.com/pnanez/HyEQ_Toolbox/issues/new/choose) on [GitHub](https://github.com/pnanez/HyEQ_Toolbox).
 
@@ -105,10 +106,11 @@ Ricardo G. Sanfelice, David A. Copp, and Pablo Nanez.
 ## Version 3.0
 Version 3.0 of the HyEQ Toolbox was developed by Paul Wintz.
 
-See **Credits and Acknowledgements** within the HyEQ Toolbox documentation for further acknowledgements 
+See [**Credits and Acknowledgments**](https://hyeq.github.io/credits) in the HyEQ Toolbox documentation for further acknowledgments.
 
 
 # See Also
+* [Web-based Documentation](https://hyeq.github.io)
 * [Hybrid Systems Laboratory](https://hybrid.soe.ucsc.edu/) at [UC, Santa Cruz](https://engineering.ucsc.edu/)
 * [Previous versions of the HyEQ Toolbox](https://hybrid.soe.ucsc.edu/software)
 * [Examples of Hybrid Systems](http://hybridsimulator.wordpress.com/) (blog)
