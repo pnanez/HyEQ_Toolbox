@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding="utf-8"?>
 <toc version="2.0">
-    <tocitem target="html/TOC.html">Hybrid Equation Toolbox
+    <tocitem target="html/index.html">Hybrid Equation Toolbox
         <tocitem target="html/intro_to_hybrid_systems.html">Introduction to Hybrid Systems</tocitem>
         <tocitem target="html/TOC_matlab.html">HyEQ MATLAB Library
             <tocitem target="html/HybridSystem_demo.html">Creating and Simulating Hybrid Systems</tocitem>
