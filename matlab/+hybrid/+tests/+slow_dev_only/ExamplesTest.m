@@ -27,59 +27,73 @@ classdef ExamplesTest < matlab.unittest.TestCase
 
         % ===== Test Simulink Examples =====
 
-        function test_analog_to_digital_converter(~)
+        function test_analog_to_digital_converter(testCase)
+            testCase.assumeNotEmpty(ver('SIMULINK'), 'Simulink is not installed')
             checkExample('analog_to_digital_converter', 'adc')
         end
 
-        function test_behavior_in_C_intersection_D(~)
+        function test_behavior_in_C_intersection_D(testCase)             
+            testCase.assumeNotEmpty(ver('SIMULINK'), 'Simulink is not installed')
             checkExample('behavior_in_C_intersection_D', 'hybrid_priority')
         end
 
-        function test_bouncing_ball(~)
+        function test_bouncing_ball(testCase)             
+            testCase.assumeNotEmpty(ver('SIMULINK'), 'Simulink is not installed')
             checkExample('bouncing_ball')
         end
 
-        function test_bouncing_ball_with_adc(~)
+        function test_bouncing_ball_with_adc(testCase)             
+            testCase.assumeNotEmpty(ver('SIMULINK'), 'Simulink is not installed')
             checkExample('bouncing_ball_with_adc', 'ball_with_adc')
         end
 
-        function test_bouncing_ball_with_input(~)
+        function test_bouncing_ball_with_input(testCase)             
+            testCase.assumeNotEmpty(ver('SIMULINK'), 'Simulink is not installed')
             checkExample('bouncing_ball_with_input', 'ball_with_input')
         end
 
-        function test_bouncing_ball_with_input_alternative(~)
+        function test_bouncing_ball_with_input_alternative(testCase)             
+            testCase.assumeNotEmpty(ver('SIMULINK'), 'Simulink is not installed')
             checkExample('bouncing_ball_with_input', 'ball_with_input2')
         end
 
-        function test_coupled_subsystems(~)
+        function test_coupled_subsystems(testCase)             
+            testCase.assumeNotEmpty(ver('SIMULINK'), 'Simulink is not installed')
             checkExample('coupled_subsystems', 'coupled')
         end
 
-        function test_finite_state_machine(~)
+        function test_finite_state_machine(testCase)             
+            testCase.assumeNotEmpty(ver('SIMULINK'), 'Simulink is not installed')
             checkExample('finite_state_machine', 'fsm')
         end
 
-        function test_fireflies(~)
+        function test_fireflies(testCase)             
+            testCase.assumeNotEmpty(ver('SIMULINK'), 'Simulink is not installed')
             checkExample('fireflies')
         end
 
-        function test_mobile_robot(~)
+        function test_mobile_robot(testCase)             
+            testCase.assumeNotEmpty(ver('SIMULINK'), 'Simulink is not installed')
             checkExample('mobile_robot')
         end
 
-        function test_network_estimation(~)
+        function test_network_estimation(testCase)             
+            testCase.assumeNotEmpty(ver('SIMULINK'), 'Simulink is not installed')
             checkExample('network_estimation','network_est')
         end
 
-        function test_vehicle_on_constrained_path(~)
+        function test_vehicle_on_constrained_path(testCase)             
+            testCase.assumeNotEmpty(ver('SIMULINK'), 'Simulink is not installed')
             checkExample('vehicle_on_constrained_path', 'vehicle_on_path')
         end
 
-        function test_zero_order_hold(~)
+        function test_zero_order_hold(testCase)             
+            testCase.assumeNotEmpty(ver('SIMULINK'), 'Simulink is not installed')
             checkExample('zero_order_hold', 'zoh')
         end
 
-        function test_zoh_feedback_control(~)
+        function test_zoh_feedback_control(testCase)             
+            testCase.assumeNotEmpty(ver('SIMULINK'), 'Simulink is not installed')
             checkExample('zoh_feedback_control', 'zoh_feedback')
         end
     end

@@ -18,9 +18,9 @@ elseif strcmpi(filter, 'fast')
     test_packages = {'hybrid.tests'};
 end
 
-
+is_simulink_installed = ~isempty(ver('SIMULINK'));
 % Close all Simulink systems.
-while ~isempty(gcs())
+while is_simulink_installed && ~isempty(gcs())
     close_system(gcs());
 end
 

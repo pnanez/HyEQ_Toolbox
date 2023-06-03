@@ -49,46 +49,54 @@ end
 
 %% Open and save the Simulink Library on the current version.
 
-% Temporarily disable saving a backup of the old Simulink models when saving on
-% a new version of Simulink.
-set_param(0,'AutoSaveOptions', struct('SaveBackupOnVersionUpgrade', false))
-cleanup_obj_backup_setting = onCleanup( ...
-    @() set_param(0,'AutoSaveOptions', struct('SaveBackupOnVersionUpgrade', false)));
-
-% Temporarily disable a warning when loading an old Simulink model.
-warning('off', 'Simulink:Commands:LoadingOlderModel')
-cleanup_obj_warning = onCleanup( ...
-    @() warning('off', 'Simulink:Commands:LoadingOlderModel'));
-
-% Close all open systems.
-while ~isempty(gcs)
-    try
-        close_system(gcs())
-    catch e
-        if strcmp(e.identifier, 'Simulink:Commands:InvModelDirty')
-            warning(['The open Simulink model "', gcs(), '" has been modified ' ...
-                'and cannot be closed automatically. Please manually close ' ...
-                'all models and run hybrid.configureToolbox() again.'])
-            rethrow(e)
+is_simulink_installed = ~isempty(ver('SIMULINK'));
+if is_simulink_installed
+    % Temporarily disable saving a backup of the old Simulink models when saving on
+    % a new version of Simulink.
+    set_param(0,'AutoSaveOptions', struct('SaveBackupOnVersionUpgrade', false))
+    cleanup_obj_backup_setting = onCleanup( ...
+        @() set_param(0,'AutoSaveOptions', struct('SaveBackupOnVersionUpgrade', false)));
+    
+    % Temporarily disable a warning when loading an old Simulink model.
+    warning('off', 'Simulink:Commands:LoadingOlderModel')
+    cleanup_obj_warning = onCleanup( ...
+        @() warning('off', 'Simulink:Commands:LoadingOlderModel'));
+    
+    % Close all open systems.
+    while ~isempty(gcs)
+        try
+            close_system(gcs())
+        catch e
+            if strcmp(e.identifier, 'Simulink:Commands:InvModelDirty')
+                warning(['The open Simulink model "', gcs(), '" has been modified ' ...
+                    'and cannot be closed automatically. Please manually close ' ...
+                    'all models and run hybrid.configureToolbox() again.'])
+                rethrow(e)
+            end
         end
     end
+    
+    save_simulink_model_on_current_version('HyEQ_Library')
+    save_simulink_model_on_current_version('hybrid.examples.analog_to_digital_converter.adc')
+    save_simulink_model_on_current_version('hybrid.examples.behavior_in_C_intersection_D.hybrid_priority')
+    save_simulink_model_on_current_version('hybrid.examples.bouncing_ball.bouncing_ball')
+    save_simulink_model_on_current_version('hybrid.examples.bouncing_ball_with_adc.ball_with_adc')
+    save_simulink_model_on_current_version('hybrid.examples.bouncing_ball_with_input.ball_with_input')
+    save_simulink_model_on_current_version('hybrid.examples.bouncing_ball_with_input.ball_with_input2')
+    save_simulink_model_on_current_version('hybrid.examples.coupled_subsystems.coupled')
+    save_simulink_model_on_current_version('hybrid.examples.finite_state_machine.fsm')
+    save_simulink_model_on_current_version('hybrid.examples.fireflies.fireflies')
+    save_simulink_model_on_current_version('hybrid.examples.mobile_robot.mobile_robot')
+    save_simulink_model_on_current_version('hybrid.examples.network_estimation.network_est')
+    save_simulink_model_on_current_version('hybrid.examples.vehicle_on_constrained_path.vehicle_on_path')
+    save_simulink_model_on_current_version('hybrid.examples.zero_order_hold.zoh')
+    save_simulink_model_on_current_version('hybrid.examples.zoh_feedback_control.zoh_feedback')
+else
+    warning('HYBRID:CONFIGURE_TOOLBOX', ['hybrid.configureToolbox(): Simulink is not installed. ' ...
+        'Simulink-specific configuration will be skipped. ' ...
+        'If you install Simulink at a later time, ' ...
+        'rerun hybrid.configureToolbox() to finish the toolbox setup.'])
 end
-
-save_simulink_model_on_current_version('HyEQ_Library')
-save_simulink_model_on_current_version('hybrid.examples.analog_to_digital_converter.adc')
-save_simulink_model_on_current_version('hybrid.examples.behavior_in_C_intersection_D.hybrid_priority')
-save_simulink_model_on_current_version('hybrid.examples.bouncing_ball.bouncing_ball')
-save_simulink_model_on_current_version('hybrid.examples.bouncing_ball_with_adc.ball_with_adc')
-save_simulink_model_on_current_version('hybrid.examples.bouncing_ball_with_input.ball_with_input')
-save_simulink_model_on_current_version('hybrid.examples.bouncing_ball_with_input.ball_with_input2')
-save_simulink_model_on_current_version('hybrid.examples.coupled_subsystems.coupled')
-save_simulink_model_on_current_version('hybrid.examples.finite_state_machine.fsm')
-save_simulink_model_on_current_version('hybrid.examples.fireflies.fireflies')
-save_simulink_model_on_current_version('hybrid.examples.mobile_robot.mobile_robot')
-save_simulink_model_on_current_version('hybrid.examples.network_estimation.network_est')
-save_simulink_model_on_current_version('hybrid.examples.vehicle_on_constrained_path.vehicle_on_path')
-save_simulink_model_on_current_version('hybrid.examples.zero_order_hold.zoh')
-save_simulink_model_on_current_version('hybrid.examples.zoh_feedback_control.zoh_feedback')
 
 %% Enable Autocomplete information (if supported)
 if ~verLessThan('matlab','9.10')
