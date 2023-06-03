@@ -1,17 +1,20 @@
 classdef HybridSolverConfigTest < matlab.unittest.TestCase
     
+    properties (MethodSetupParameter)
+        default_options = odeset("refine", 1);
+    end
+
     methods (Test) % Test Method Block
         
         function testUseDefaultsWhenNoConstructorArgsIn(testCase)
            options = HybridSolverConfig().ode_options;
-           default_options = odeset();
-           testCase.assertEqual(options, default_options)
+           testCase.assertEqual(options, testCase.default_options)
         end
         
         function testRelTolInConstructor(testCase)
            options = HybridSolverConfig('RelTol', 1e-4).ode_options;
-           default_options = odeset('RelTol', 1e-4);
-           testCase.assertEqual(options, default_options)
+           expected_options = odeset(testCase.default_options, 'RelTol', 1e-4);
+           testCase.assertEqual(options, expected_options)
         end
         
         function testInvalidRelTolInConstructor(testCase)
@@ -21,8 +24,8 @@ classdef HybridSolverConfigTest < matlab.unittest.TestCase
         
         function testAbsTolInConstructor(testCase)
            options = HybridSolverConfig('AbsTol', 1e-4).ode_options;
-           default_options = odeset('AbsTol', 1e-4);
-           testCase.assertEqual(options, default_options)
+           expected_options = odeset(testCase.default_options, 'AbsTol', 1e-4);
+           testCase.assertEqual(options, expected_options)
         end
         
         function testInvalidAbsTolInConstructor(testCase)
@@ -32,8 +35,8 @@ classdef HybridSolverConfigTest < matlab.unittest.TestCase
         
         function testMaxStepInConstructor(testCase)
            options = HybridSolverConfig('MaxStep', 1e-4).ode_options;
-           default_options = odeset('MaxStep', 1e-4);
-           testCase.assertEqual(options, default_options)
+           expected_options = odeset(testCase.default_options, 'MaxStep', 1e-4);
+           testCase.assertEqual(options, expected_options)
         end
         
         function testInvalidMaxStepInConstructor(testCase)
@@ -46,7 +49,7 @@ classdef HybridSolverConfigTest < matlab.unittest.TestCase
             hybrid.tests.internal.assumeVersion(testCase, 'R2016b') 
 
             config = HybridSolverConfig(string('MaxStep'), 1e-3); %#ok<STRQUOT>
-            expected_options = odeset('MaxStep', 1e-3);
+            expected_options = odeset(testCase.default_options, 'MaxStep', 1e-3);
             testCase.assertEqual(config.ode_options, expected_options)
         end
         
@@ -55,7 +58,7 @@ classdef HybridSolverConfigTest < matlab.unittest.TestCase
         function testRefine(testCase)
             config = HybridSolverConfig();
             config.Refine(14);
-            expected_options = odeset('Refine', 14);
+            expected_options = odeset(testCase.default_options, 'Refine', 14);
             testCase.assertEqual(config.ode_options, expected_options)
         end
         
@@ -67,14 +70,14 @@ classdef HybridSolverConfigTest < matlab.unittest.TestCase
         
         function testRefineInConstructor(testCase)
             config = HybridSolverConfig('Refine', 12);
-            expected_options = odeset('Refine', 12);
+            expected_options = odeset(testCase.default_options, 'Refine', 12);
             testCase.assertEqual(config.ode_options, expected_options)
         end
         
         function testOtherOdeOptions(testCase)
             config = HybridSolverConfig();
             config.odeOption('JConstant', true);
-            expected_options = odeset('JConstant', true);
+            expected_options = odeset(testCase.default_options, 'JConstant', true);
             testCase.assertEqual(config.ode_options, expected_options)
         end
         
