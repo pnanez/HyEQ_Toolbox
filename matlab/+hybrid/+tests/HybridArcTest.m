@@ -82,7 +82,7 @@ classdef HybridArcTest < matlab.unittest.TestCase
             testCase.assertEqual(transformed_sol.x, [x(:, 1), -x(:, 2)])
         end
 
-        function testSlice(testCase)
+        function testSelect(testCase)
             t = linspace(0, 10)';
             j = zeros(100, 1);
             x = rand(100, 3);
@@ -92,6 +92,117 @@ classdef HybridArcTest < matlab.unittest.TestCase
             testCase.assertEqual(selected_sol.t, t)
             testCase.assertEqual(selected_sol.j, j)
             testCase.assertEqual(selected_sol.x, [x(:, 1), x(:, 3)])
+        end
+
+        function testInterpolationConstantxNoJumps(testCase)
+            x = ones(10, 1);
+            t = linspace(0, 9, 10)';
+            j = zeros(10, 1);
+            sol = HybridArc(t, j, x);
+
+            n_interp = 100;
+            t_grid = linspace(0, 9, n_interp);
+            interpolated_array = sol.interpolateToArray(t_grid);
+            
+            testCase.assertEqual(interpolated_array, ones(n_interp, 1))
+        end
+
+        function testInterpolationConstantxNoJumps2D(testCase)
+            x = [ones(10, 1), 2*ones(10, 1)];
+            t = linspace(0, 9, 10)';
+            j = zeros(10, 1);
+            sol = HybridArc(t, j, x);
+
+            n_interp = 100;
+            t_grid = linspace(0, 9, n_interp)'; % Test using column vector.
+            interpolated_array = sol.interpolateToArray(t_grid);
+            
+            expected_array = [ones(n_interp, 1), 2*ones(n_interp, 1)];
+            testCase.assertEqual(interpolated_array, expected_array)
+        end
+
+        function testInterpolationConstantxOneJump(testCase)
+            x = ones(10,1);
+            t = [0; 1; 2; 3; 4; 4; 5; 6; 7; 8]; % jump at t=4
+            j = [0; 0; 0; 0; 0; 1; 1; 1; 1; 1];
+            sol = HybridArc(t,j,x);
+
+            t_grid = linspace(0,8);
+            interpolated_sol = sol.interpolateToArray(t_grid);
+
+            testCase.assertEqual(interpolated_sol, ones(size(interpolated_sol)))
+        end
+
+        function testInterpolation_LinearX_NoJump_1D(testCase)
+            t = linspace(0, 50, 51)';
+            j = zeros(51, 1);
+            x = 2*t;
+            sol = HybridArc(t, j, x);
+            
+            t_grid = linspace(t(1), t(end), 123)';
+            interpolated_sol = sol.interpolateToArray(t_grid);
+
+            testCase.assertEqual(interpolated_sol, 2*t_grid) % slope of 2
+        end
+
+        function testInterpolation_LinearX_OneJump_1D(testCase)
+            t_jump = 12.56; t_end = 34; % Jump and end times.
+            n_before = 26; n_after = 10; % Time steps before and after jump.
+            t = [linspace(     0, t_jump, n_before)'; 
+                 linspace(t_jump,  t_end, n_after)'];
+            j = [zeros(n_before, 1); 
+                  ones(n_after, 1)];
+            x = [2*linspace(     0, t_jump, n_before)'; 
+                  -linspace(t_jump,  t_end, n_after)'];
+            sol = HybridArc(t, j, x);
+
+            t_grid = linspace(0, t_end, 18)';
+            interpolated_sol = sol.interpolateToArray(t_grid);
+            ndxs_before_jump = t_grid < t_jump;
+            ndxs_after_jump = t_grid > t_jump;
+
+            testCase.assertEqual(interpolated_sol(ndxs_before_jump), 2*t_grid(ndxs_before_jump))
+            testCase.assertEqual(interpolated_sol(ndxs_after_jump),   -t_grid(ndxs_after_jump))
+        end
+        
+        function testInterpolation_JumpAtInterpolationPoint(testCase)
+            t_jump = 12.56; t_end = 34; % Jump and end times.
+            n_before = 26; n_after = 10; % Time steps before and after jump.
+            t = [linspace(     0, t_jump, n_before)'; 
+                 linspace(t_jump,  t_end, n_after)'];
+            j = [zeros(n_before, 1); 
+                  ones(n_after, 1)];
+            x = [2*linspace(     0, t_jump, n_before)'; 
+                  -linspace(t_jump,  t_end, n_after)'];
+            sol = HybridArc(t, j, x);
+
+            t_grid = [0; t_jump; t_end];
+            [x_interp, t_interp] =sol.interpolateToArray(t_grid);
+
+            testCase.assertSize(x_interp, [3 1])
+            testCase.assertSize(t_interp, [3 1])
+            % TODO:
+            % testCase.assertEqual(interpolated_sol, ...)
+        end
+        
+        function testInterpolation_JumpAtInterpolationPoint_2D(testCase)
+            t_jump = 12.56; t_end = 34; % Jump and end times.
+            n_before = 26; n_after = 10; % Time steps before and after jump.
+            t = [linspace(     0, t_jump, n_before)'; 
+                 linspace(t_jump,  t_end, n_after)'];
+            j = [zeros(n_before, 1); 
+                  ones(n_after, 1)];
+            x = [2*linspace(     0, t_jump, n_before)', -linspace(     0, t_jump, n_before)'; 
+                  -linspace(t_jump,  t_end, n_after)', 2*linspace(t_jump,  t_end, n_after)'];
+            sol = HybridArc(t, j, x);
+
+            t_grid = [0; t_jump; t_end];
+            [x_interp, t_interp] = sol.interpolateToArray(t_grid);
+
+            testCase.assertSize(x_interp, [3 2])
+            testCase.assertSize(t_interp, [3 1])
+            % TODO:
+            % testCase.assertEqual(interpolated_sol, ...)
         end
 
         function testRestrictT(testCase)

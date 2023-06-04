@@ -4,8 +4,15 @@ classdef HybridArc
 % See also: HybridSolution, <a href="matlab: showdemo HybridSystem_demo">Demo: How to Implement and Solve a Hybrid System</a>.
 
 % Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
-% © 2021. 
-
+% © 2021-2023. 
+% 
+% Tests for this class can be opened with the command 
+%   open('hybrid.tests.HybridArcTest')
+% and run with the command 
+%   runtests('hybrid.tests.HybridArcTest')
+% 
+% See also: open('hybrid.tests.HybridSolutionTest')
+    
     properties(SetAccess = immutable)
         % A column vector containing the continuous time value for each entry in the solution.
         t % double (:, 1)
@@ -215,23 +222,242 @@ classdef HybridArc
             this.plotByFnc('plotTimeDomain', varargin{:})
         end
 
-        function interpolated_x = interpolate(this, t_grid)
-          % Interpolate a function at each point along the solution.
-          % 't_grid' is a list of times for interpolation.
-          % Returns a display of the interpolated x-values at t_grid times.
-          interpolated_x = NaN(1, length(t_grid));
-          counter = 1;
-          for jump = 0:this.jump_count % for each jump
-            t_in_jump = this.t(this.j == jump); % column vector of all timesteps in jump
-            x_in_jump = this.x(this.j == jump, :); % array of all x in jump
-            t_grid_in_jump = t_grid((t_grid >= t_in_jump(1,1)) & (t_grid <= t_in_jump(length(t_in_jump), 1))); % column vector of all t_grid in jump
-            interp_x_in_jump = interp1(t_in_jump, x_in_jump, t_grid_in_jump, 'spline'); % array of interpolated x in jump
-            interpolated_x(:,counter:counter + length(interp_x_in_jump) - 1) = interp_x_in_jump;
-            counter = counter + length(interp_x_in_jump);
-          end
+
+        function [x_interp, t_interp] = interpolateToArray(this, t_interp, varargin)
+            %       % Interpolate a function at each point along the solution.
+            %       % 't_grid' is a list of times for interpolation.
+            %       % Returns a display of the interpolated x-values at t_grid times.
+
+            % TODO: Add documentation
+            % TODO: Add autocomplete signiture.
+            ip = inputParser;
+            ip.FunctionName = 'HybridArc.interpolateToArray';
+            addOptional(ip, 'InterpMethod', 'spline');
+
+            % 'X_and_gX' is a matrix containing---in each column---the value immediately
+            % before the jump, and the values immediately after (one or more)
+            % jumps.
+            addOptional(ip, 'ValueAtJumpFnc', @(X_and_gX) mean(X_and_gX, 2));
+            parse(ip, varargin{:});
+            interp_method = ip.Results.InterpMethod;
+            value_at_jump_fnc = ip.Results.ValueAtJumpFnc;
+
+            % TODO: Move t_interp preprocessing into a local function.
+            if ~isnumeric(t_interp)
+                error('t_interp must be numeric. Instead, its type was "%s".', class(t_interp))
+            end
+
+            if ~isvector(t_interp)
+                error(['t_interp must be a vector. ' ...
+                    'Instead its shape was %s'], mat2str(size(t_interp)))
+            end
+
+            % If t_interp is a single value, then we interpret it as the number
+            % of evenly spaced interpolation points.
+            if isscalar(t_interp)
+                assert(round(t_interp) == t_interp, ...
+                    ['If a scalar value is given for ''t_interp'', ' ...
+                    'it must be an integer greater than or equal to 2.'])
+                assert(t_interp >= 2, ...
+                    ['If a scalar value is given for ''t_interp'', ' ...
+                    'it must be greater than or equal to 2.'])
+                interp_steps = t_interp;
+                t_interp = linspace(this.t(1), this.t(end), interp_steps)';
+            elseif isrow(t_interp)
+                % Make sure t_interp is a column vector.
+                t_interp = t_interp';
+            end
+
+            assert(iscolumn(t_interp), 't_interp needs to be a column after preprocessing.')
+            
+            % Cell array that contains in each entry, a row array of the t-entries during
+            % the corresponding interval of flow.
+            t_iofs_cell = {};
+            
+            % Cell array that contains in each entry, an array of the x-entries during
+            % the corresponding interval of flow, which each column containing the vector
+            % 'x' at the correpsonding time step.
+            x_iofs_cell = {};
+            
+            % % To improve efficiency, preallocate cells.
+            % t_iofs_cell = cell(1, hybrid_arc.jump_count);
+            % x_iofs_cell = cell(1, hybrid_arc.jump_count);
+            for j_iof = unique(this.j)'
+                % Indices that are in the jth interval of flow.
+                iof_indices = this.j == j_iof;
+            
+                t_iof = this.t(iof_indices);
+                x_iof = this.x(iof_indices, :);% 'x' in rows (each row is a time-step).
+
+                t_grid_in_iof = t_interp(t_interp >= t_iof(1) & t_interp <= t_iof(end));
+                x_interp_iof = interp1(t_iof, x_iof, t_grid_in_iof, interp_method);% 'x' in rows (each row is a time-step).
+
+                % If this is not an interval of flow (i.e., has zero length in
+                % t), then we skip it. Instead, we process all sequential
+                % jumps together at one time.
+                is_first_t_grid_in_iof_a_jump_time = t_iof(1) == t_grid_in_iof(1);
+                is_first_t_start_of_domain = t_iof(1) == this.t(1);
+                if is_first_t_grid_in_iof_a_jump_time && ~is_first_t_start_of_domain
+                    t_grid_in_iof = t_grid_in_iof(2:end);
+                    x_interp_iof = x_interp_iof(2:end, :);% 'x' in rows (each row is a time-step).
+                end
+
+                is_last_t_grid_in_iof_a_jump_time = t_grid_in_iof(end) == t_iof(end);
+                is_last_t_end_of_domain = t_grid_in_iof(end) == this.t(end);
+                if is_last_t_grid_in_iof_a_jump_time && ~is_last_t_end_of_domain
+                    % Trim off last point
+                    t_grid_in_iof = t_grid_in_iof(1:(end-1));
+                    x_interp_iof = x_interp_iof(1:(end-1), :);
+
+                    % Get the value of x before and after (one or more) jumps.
+                    X = x_iof(end, :)';% Each column is a time-step.
+                    j_next = j_iof + 1;
+                    while true 
+                        j_next_indices = j_next == this.j;
+                        first_ndx = find(j_next_indices, 1);
+                        x_next = this.x(first_ndx, :)'; % Column vector.
+                        assert(iscolumn(x_next), 'x_next should be a column vector.')
+                        X(:, end+1) = x_next;
+
+                        % We continue the 'while' loop until j_next corresponds
+                        % to an interval of flow or nothing (i.e., the end of
+                        % the hybrid arc).
+                        if sum(j_next_indices) ~= 1
+                            break
+                        end
+
+                        % Update j_next
+                        j_next = j_next + 1;
+                    end
+                    values_at_jump = value_at_jump_fnc(X)'; % x in rows
+                    if size(values_at_jump, 2) ~= size(this.x, 2)
+                        % TODO: Clean up and add test.
+                        error('Output of value_at_jump_fnc function is wrong size.')
+                    end
+                    n_values_at_jump = size(values_at_jump, 1);
+                    x_interp_iof = [x_interp_iof; values_at_jump]; % x in rows
+                    t_grid_in_iof = [t_grid_in_iof; t_iof(end)*ones(n_values_at_jump, 1)];
+                end
+                
+                t_iofs_cell{end+1} = t_grid_in_iof'; %#ok<AGROW> % Time-steps in columns
+                x_iofs_cell{end+1} = x_interp_iof'; %#ok<AGROW> % 'x' in columns (so that we can use cell-expansion).
+            end
+            t_interp = [t_iofs_cell{:}]';
+            x_interp = [x_iofs_cell{:}]'; % Transpose so time-steps are in rows.
+            
         end
 
+        function hybrid_arc = interpolateToHybridArc(this, t_interp, varargin)
+            % TODO: Add documentation
+            % TODO: Add autocomplete signiture.
+            % Tests to write: 
+            %   * Interpolation works when interpolation grid aligns with jump
+            %   times (e.g., a interpolation time is at the start or end of an
+            %   IOF).
+            %   * Works even if there are two sequential jumps.
+            %   * Works even if IOF has only two samples (or less?)
+            %   * Works even if no interpolation points occur in IOF
+            %   * Works for 1D and 2D arcs.
+            %   * t-values outside of given range are not included.
+            %   * Test if t-values don't extend to entire domain.
+            ip = inputParser;
+            ip.FunctionName = 'HybridArc.interpolateToHybridArc';
+            addOptional(ip, 'InterpMethod', 'spline');
+            parse(ip, varargin{:});
+            interp_method = ip.Results.InterpMethod;
 
+            % TODO: Move t_interp preprocessing into a local function.
+            if ~isnumeric(t_interp)
+                error('t_interp must be numeric. Instead, its type was "%s".', class(t_interp))
+            end
+
+            if ~isvector(t_interp)
+                error(['t_interp must be a vector. ' ...
+                    'Instead its shape was %s'], mat2str(size(t_interp)))
+            end
+
+            % If t_interp is a single value, then we interpret it as the number
+            % of evenly spaced interpolation points.
+            if isscalar(t_interp)
+                assert(round(t_interp) == t_interp, ...
+                    ['If a scalar value is given for ''t_interp'', ' ...
+                    'it must be an integer greater than or equal to 2.'])
+                assert(t_interp >= 2, ...
+                    ['If a scalar value is given for ''t_interp'', ' ...
+                    'it must be greater than or equal to 2.'])
+                interp_steps = t_interp;
+                t_interp = linspace(this.t(1), this.t(end), interp_steps)';
+            elseif isrow(t_interp)
+                % Make sure t_interp is a column vector.
+                t_interp = t_interp';
+            end
+
+            assert(iscolumn(t_interp), 't_interp needs to be a column after preprocessing.')
+
+            if ~exist('interp_method', 'var')
+                interp_method = 'spline';
+            end
+            
+            % Cell array that contains in each entry, a row array of the t-entries during
+            % the corresponding interval of flow.
+            t_iofs_cell = {};
+
+            j_iofs_cell = {};
+            
+            % Cell array that contains in each entry, an array of the x-entries during
+            % the corresponding interval of flow, which each column containing the vector
+            % 'x' at the correpsonding time step.
+            x_iofs_cell = {};
+            
+            figure(1); clf
+            % t_iofs_cell = cell(1, hybrid_arc.jump_count);
+            % x_iofs_cell = cell(1, hybrid_arc.jump_count);
+            for j_iof = unique(this.j)'
+                % Indices that are in the jth interval of flow.
+                iof_indices = this.j == j_iof;
+                % is_iof = numel(iof_indices) > 1;
+            
+                t_iof = this.t(iof_indices);
+                x_iof = this.x(iof_indices, :);
+
+                t_grid_in_iof = t_interp(t_interp >= t_iof(1) & t_interp <= t_iof(end));
+
+                % If the start time of the interval of flow is not in
+                % t_grid_in_iof, then we add it.
+                if isempty(t_grid_in_iof) || t_iof(1) < t_grid_in_iof(1)
+                    t_grid_in_iof = [t_iof(1); t_grid_in_iof];
+                end
+
+                % If the end time of the interval of flow is not in
+                % t_grid_in_iof, then we add it.
+                if isempty(t_grid_in_iof) || t_iof(end) > t_grid_in_iof(end)
+                    t_grid_in_iof = [t_grid_in_iof; t_iof(end)];
+                end
+
+                if numel(t_iof) == 1
+                    % If there is only one element in t_iof, then we cannot
+                    % interpolate, so we just use the (single vector) value in
+                    % x_iof.
+                    x_interp_iof = x_iof;
+                else
+                    x_interp_iof = interp1(t_iof, x_iof, t_grid_in_iof, interp_method);
+                end
+
+                % Sanity check:
+                assert(size(x_interp_iof, 1) == numel(t_grid_in_iof), ...
+                    'The number of rows in x should match the number elements in t.')
+                
+                t_iofs_cell{end+1} = t_grid_in_iof'; %#ok<AGROW>
+                j_iofs_cell{end+1} = j_iof*ones(size(t_grid_in_iof))'; %#ok<AGROW>
+                x_iofs_cell{end+1} = x_interp_iof'; %#ok<AGROW> % Store time-step as a column.
+                
+            end
+            
+            t_interp = [t_iofs_cell{:}]'; % Transpose so time-steps are in rows.
+            j_interp = [j_iofs_cell{:}]'; % Transpose so time-steps are in rows.
+            x_interp = [x_iofs_cell{:}]'; % Transpose so time-steps are in rows.
+            hybrid_arc = HybridArc(t_interp, j_interp, x_interp);
+        end
     end
 
     methods(Access = private)
