@@ -14,7 +14,12 @@ classdef HybridSolution < HybridArc
 % 
 % Added in HyEQ Toolbox version 3.0.
 
-% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz (©2022). 
+% Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz (©2022).
+% 
+% Tests for this class can be opened with the command 
+%   open('hybrid.tests.HybridArcTest')
+% and run with the command 
+%   runtests('hybrid.tests.HybridArcTest')
     
     properties(SetAccess = immutable)        
         % Initial state vector (column vector).

@@ -51,9 +51,7 @@ classdef HybridArc
             % vector at that time step.
             
             checkVectorSizes(t, j, x);
-            assert(isnumeric(t))
-            assert(isnumeric(j))
-            assert(isnumeric(x))
+
             this.t = t;
             this.j = j;
             this.x = x;
@@ -134,8 +132,17 @@ classdef HybridArc
             % 'tspan' must be a 2x1 array of real numbers. 
             % 
             % See also: HybridArc/restrictJ
-            assert(isnumeric(tspan), 'tspan must be numeric')
-            assert(all(size(tspan) == [1 2]), 'tspan must be a 1x2 array.')
+            if ~isnumeric(tspan)
+                throwAsCaller(MException('HybridArc:NonNumericArgument', ...
+                    ['Error in HybridArc.restrictT: "tspan" argument must be numeric.' ...
+                    ' Instead it had type "%s".'], class(tspan)))
+            end
+            if ~all(size(tspan) == [1 2])
+                throwAsCaller(MException('HybridArc:WrongShapeArgument', ...
+                    ['Error in HybridArc.restrictT: "tspan" argument be a 1x2 array. ' ...
+                    'Instead its shape was %s.'], mat2str(size(tspan))))
+            end
+            
             ndxs_in_span = this.t >= tspan(1) & this.t <= tspan(2);
 
             restricted_sol = HybridArc(this.t(ndxs_in_span), ...
@@ -148,11 +155,19 @@ classdef HybridArc
             % 'jspan' must be either a 2x1 array of integers or a single integer. 
             % 
             % See also: HybridArc/restrictT
-            assert(isnumeric(jspan), 'jspan must be numeric')
+            if ~isnumeric(jspan)
+                throwAsCaller(MException('HybridArc:NonNumericArgument', ...
+                    ['Error in HybridArc.restrictJ: "jspan" argument must be numeric.' ...
+                    ' Instead it had type "%s".'], class(jspan)))
+            end
             if isscalar(jspan)
                 jspan = [jspan jspan];
             end
-            assert(all(size(jspan) == [1 2]), 'jspan must be a 1x2 array.')
+            if ~all(size(jspan) == [1 2])
+                throwAsCaller(MException('HybridArc:WrongShapeArgument', ...
+                    ['Error in HybridArc.restrictJ: "jspan" argument be a 1x2 array. ' ...
+                    'Instead its shape was %s.'], mat2str(size(jspan))))
+            end
             ndxs_in_span = this.j >= jspan(1) & this.j <= jspan(2);
 
             restricted_sol = HybridArc(this.t(ndxs_in_span), ...
@@ -307,6 +322,23 @@ end
 end
 
 function checkVectorSizes(t, j, x)
+    
+    if ~isnumeric(t)
+        throwAsCaller(MException('HybridArc:NonNumericArgument', ...
+            ['Error in HybridArc: "t" argument must be numeric.' ...
+            ' Instead it had type "%s".'], class(t)))
+    end
+    if ~isnumeric(j)
+        throwAsCaller(MException('HybridArc:NonNumericArgument', ...
+            ['Error in HybridArc: "j" argument must be numeric.' ...
+            ' Instead it had type "%s".'], class(j)))
+    end
+    if ~isnumeric(x)
+        throwAsCaller(MException('HybridArc:NonNumericArgument', ...
+            ['Error in HybridArc: "x" argument must be numeric.' ...
+            ' Instead it had type "%s".'], class(x)))
+    end
+
     if size(t, 2) ~= 1
         e = MException('HybridArc:WrongShape', ...
             'The vector t (first argument) must be a column vector. Instead its shape was %s.', ...

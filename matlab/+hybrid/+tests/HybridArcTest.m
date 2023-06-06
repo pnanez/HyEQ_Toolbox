@@ -49,6 +49,17 @@ classdef HybridArcTest < matlab.unittest.TestCase
             testCase.verifyError(@() HybridArc(x, t, j), 'HybridArc:WrongShape')
         end
 
+        function testHybridArcArgumentsNotNumeric(testCase)
+            % Construct test data.
+            t = linspace(0, 12, 3)';
+            j = zeros(3, 1);
+            x = zeros(3, 2);
+
+            testCase.verifyError(@() HybridArc('hello', j, x), 'HybridArc:NonNumericArgument')
+            testCase.verifyError(@() HybridArc(t, 'hello', x), 'HybridArc:NonNumericArgument')
+            testCase.verifyError(@() HybridArc(t, j, 'hello'), 'HybridArc:NonNumericArgument')
+        end
+
         % Test Hybrid Arc Transformations.
         function testTransform(testCase)
             t = linspace(0, 10)';
@@ -61,7 +72,6 @@ classdef HybridArcTest < matlab.unittest.TestCase
             testCase.assertEqual(transformed_sol.j, j)
             testCase.assertEqual(transformed_sol.x, [x(:, 1), -x(:, 2)])
         end
-
 
         function testSlice(testCase)
             t = linspace(0, 10)';
@@ -123,6 +133,24 @@ classdef HybridArcTest < matlab.unittest.TestCase
             testCase.assertEqual(restricted_sol.t, [2; 3])
             testCase.assertEqual(restricted_sol.j, [2; 2])
             testCase.assertEqual(restricted_sol.x, x(5:6, :))
+        end
+
+        function testRestrictTJ_errorNotNumeric(testCase)
+            t = [0; 1; 1; 2; 2; 3; 3];
+            j = [0; 0; 1; 1; 2; 2; 3];
+            x = rand(length(t), 2);
+            sol = HybridArc(t, j, x);
+            testCase.verifyError(@() sol.restrictT('hello'), 'HybridArc:NonNumericArgument')
+            testCase.verifyError(@() sol.restrictJ('hello'), 'HybridArc:NonNumericArgument')
+        end
+
+        function testRestrictTJ_errorWrongShape(testCase)
+            t = [0; 1; 1; 2; 2; 3; 3];
+            j = [0; 0; 1; 1; 2; 2; 3];
+            x = rand(length(t), 2);
+            sol = HybridArc(t, j, x);
+            testCase.verifyError(@() sol.restrictT([1 2 3]), 'HybridArc:WrongShapeArgument')
+            testCase.verifyError(@() sol.restrictJ([1 2 3]), 'HybridArc:WrongShapeArgument')
         end
     end
 
