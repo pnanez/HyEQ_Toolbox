@@ -90,14 +90,15 @@
 %   [t j x] = HyEQsolver(@f, @g, @C, @D, x0, TSPAN, JSPAN, rule, options);
 % 
 % For v3.0, the above process is split into two steps. First, you define a
-% hybrid system, as we did for |sys|, above. Then call the |sys.solve| to comput
-% the solution. The function |sys.solve| function takes as arguments |x0|,
+% hybrid system, as we did for |sys|, above. Then, call the function |sys.solve| 
+% to compute a solution. 
+% The function |sys.solve| function takes as arguments |x0|,
 % |tspan|, and |jspan|, similar to |HyEQsolver|. Where it differs is in the
 % (optional) fourth argument |config|, which is a |HybridSolverConfig| object
 % used to define the jump/flow priorty and ODE solver options, as well as
 % controlling how progress updates are displayed. 
-% To use the ODE option given above, simply pass change 
-% |options = odeset('RelTol',1e-6, 'MaxStep', 0.1);| to 
+% To use the ODE option |options = odeset('RelTol',1e-6, 'MaxStep', 0.1);|, 
+% given above, define
 % 
 %   config = HybridSolverConfig('RelTol',1e-6, 'MaxStep', 0.1);
 % 
@@ -120,7 +121,7 @@
 % that the data you want to plot is contained in a |HybridArc| object (or a
 % |HybridSolution| object). If you are still using |HyEQsolver| to compute
 % solutions, then your data is in the form of three variables, |t, j, x|.
-% Thankfully, you can generate a |HybridArc| from this data by simply calling 
+% You can generate a |HybridArc| from this data by calling 
 % 
 %   sol = HybridArc(t, j, x);
 % 
