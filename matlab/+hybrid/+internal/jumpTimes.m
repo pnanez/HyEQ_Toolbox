@@ -17,11 +17,11 @@ if length(t) == 1 % Handle the case of a trivial solution.
     jump_t = [];
     jump_start_j = [];
     jump_start_indices = [];
-    is_jump_start = 0;
+    is_jump_start = [];
     return;
 end
 
-is_jump_start = [diff(j) > 0; 0];
+is_jump_start = [diff(j) > 0; false];
 jump_start_indices = find(is_jump_start);
 jump_t = t(jump_start_indices);
 jump_start_j = j(jump_start_indices);

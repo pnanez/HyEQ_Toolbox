@@ -11,7 +11,7 @@ classdef HybridArcTest < matlab.unittest.TestCase
             x = NaN(5, 1); % Not important
             sol = HybridArc(t, j, x);
             testCase.assertEqual(sol.jump_times, hybrid.internal.jumpTimes(t, j))
-            testCase.assertEqual(sol.is_jump_start, [1; 0; 0; 1; 0])
+            testCase.assertEqual(sol.is_jump_start, logical([1; 0; 0; 1; 0]))
         end
 
         function testFlowLengths(testCase)
@@ -67,6 +67,100 @@ classdef HybridArcTest < matlab.unittest.TestCase
             testCase.verifyError(@() HybridArc('hello', j, x), 'HybridArc:NonNumericArgument')
             testCase.verifyError(@() HybridArc(t, 'hello', x), 'HybridArc:NonNumericArgument')
             testCase.verifyError(@() HybridArc(t, j, 'hello'), 'HybridArc:NonNumericArgument')
+        end
+
+        %%%%%%%%%%%% Test is_{jump_start,jump_end} %%%%%%%%%%%%%
+
+        function testIsJumpStartJumpEnd_noJump(testCase)
+            t = [0; 1; 2];
+            j = [0; 0; 0];
+            x = nan(numel(t), 1);
+            harc = HybridArc(t, j, x);
+
+            testCase.assertEqual(harc.is_jump_start, logical([0; 0; 0]))
+            testCase.assertEqual(harc.is_jump_end, logical([0; 0; 0]))
+        end
+
+        function testIsJumpStartJumpEnd_jumpInMiddle(testCase)
+            t = [0; 1; 1; 2];
+            j = [0; 0; 1; 1];
+            x = nan(numel(t), 1);
+            harc = HybridArc(t, j, x);
+
+            testCase.assertEqual(harc.is_jump_start, logical([0; 1; 0; 0]))
+            testCase.assertEqual(harc.is_jump_end, logical([0; 0; 1; 0]))
+        end
+
+        function testIsJumpStartJumpEnd_jumpAtStart(testCase)
+            t = [0; 0; 1; 2];
+            j = [0; 1; 1; 1];
+            x = nan(numel(t), 1);
+            harc = HybridArc(t, j, x);
+
+            testCase.assertEqual(harc.is_jump_start, logical([1; 0; 0; 0]))
+            testCase.assertEqual(harc.is_jump_end, logical([0; 1; 0; 0]))
+        end
+
+        function testIsJumpStartJumpEnd_jumpAtEnd(testCase)
+            t = [0; 1; 1];
+            j = [0; 0; 1];
+            x = nan(numel(t), 1);
+            harc = HybridArc(t, j, x);
+
+            testCase.assertEqual(harc.is_jump_start, logical([0; 1; 0]))
+            testCase.assertEqual(harc.is_jump_end, logical([0; 0; 1]))
+        end
+
+        %%%%%%%%%%%% Test {jump_start,jump_end}_indices %%%%%%%%%%%%%
+
+        function testJumpStartJumpEndIndices_noJump(testCase)
+            t = [0; 1; 2];
+            j = [0; 0; 0];
+            x = nan(numel(t), 1);
+            harc = HybridArc(t, j, x);
+
+            testCase.assertEqual(harc.jump_start_indices, double.empty(0, 1))
+            testCase.assertEqual(harc.jump_end_indices, double.empty(0, 1))
+        end
+
+        function testJumpStartJumpEndIndices_jumpInMiddle(testCase)
+            t = [0; 1; 1; 2];
+            j = [0; 0; 1; 1];
+            x = nan(numel(t), 1);
+            harc = HybridArc(t, j, x);
+
+            testCase.assertEqual(harc.jump_start_indices, 2)
+            testCase.assertEqual(harc.jump_end_indices, 3)
+        end
+
+        function testJumpStartJumpEndIndices_jumpAtStart(testCase)
+            t = [0; 0; 1; 2];
+            j = [0; 1; 1; 1];
+            x = nan(numel(t), 1);
+            harc = HybridArc(t, j, x);
+
+            testCase.assertEqual(harc.jump_start_indices, 1)
+            testCase.assertEqual(harc.jump_end_indices, 2)
+        end
+
+        function testJumpStartJumpEndIndices_twoJumps(testCase)
+            t = [0; 1; 1; 2; 2];
+            j = [0; 0; 1; 1; 2];
+            x = nan(numel(t), 1);
+            harc = HybridArc(t, j, x);
+
+            testCase.assertEqual(harc.jump_start_indices, [2; 4])
+            testCase.assertEqual(harc.jump_end_indices, [3; 5])
+        end
+
+        function testJumpStartJumpEndIndices_twoJumpsSequentially(testCase)
+            t = [0; 1; 1; 2];
+            j = [0; 0; 1; 2];
+            x = nan(numel(t), 1);
+            harc = HybridArc(t, j, x);
+
+            testCase.assertEqual(harc.jump_start_indices, [2; 3])
+            testCase.assertEqual(harc.jump_end_indices, [3; 4])
         end
 
         % Test Hybrid Arc Transformations.

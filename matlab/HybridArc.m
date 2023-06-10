@@ -39,17 +39,28 @@ classdef HybridArc
 
         % The number of jumps in the solution.
         jump_count % integer
-    end
 
-    properties(SetAccess = immutable, Hidden)
         % Column vector containing a 1 at each entry where a jump starts and 0 otherwise.
         is_jump_start
-        jump_indices % DEPRECATE.
+
+        % Column vector containing a 1 at each entry where a jump end and 0 otherwise.
+        is_jump_end
+
+        % Column vector containing each index in t, j, and x arrays 
+        % where a jump starts (that is, the index immediately before a jump).
         jump_start_indices
+
+        % Column vector containing each index in t, j, and x arrays 
+        % where a jump ends (that is, the index immediately after a jump).
         jump_end_indices
     end
 
+    properties(SetAccess = immutable, Hidden)
+        jump_indices % Deprecated.
+    end
+
     methods
+
         function this = HybridArc(t, j, x)
             % Construct a HybridArc object.
             %
@@ -67,16 +78,23 @@ classdef HybridArc
             if isempty(t)
                 this.jump_times = [];
                 this.is_jump_start = [];
+                this.is_jump_end = [];
+                this.jump_start_indices = [];
+                this.jump_end_indices = [];
+                this.jump_indices = [];% Deprecated.
                 this.total_flow_length = 0;
                 this.jump_count = 0;
                 this.flow_lengths = [];
                 this.shortest_flow_length = 0;
             else
-                [this.jump_times, ~, this.jump_indices, this.is_jump_start] ...
+                [this.jump_times, ~, this.jump_start_indices, this.is_jump_start] ...
                                             = hybrid.internal.jumpTimes(t, j);
-                this.jump_start_indices = this.jump_indices;
-                this.jump_end_indices = this.jump_start_indices + 1;
-                assert(all(this.jump_end_indices) <= size(this.j, 1), 'One of the jump_end_indices was larger than the size of this.j');
+
+                this.is_jump_end = [false; this.is_jump_start(1:(end-1))];
+                this.jump_end_indices = find(this.is_jump_end);
+
+                this.jump_indices = this.jump_start_indices;% For backward compatibility.
+
                 this.total_flow_length = t(end) - t(1);
                 this.jump_count = length(this.jump_times);
                 this.flow_lengths = hybrid.internal.flowLengths(t, j);
