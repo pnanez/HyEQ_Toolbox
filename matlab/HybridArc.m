@@ -202,6 +202,13 @@ classdef HybridArc
             % See also: HybridPlotBuilder.plotPhase.
             this.plotByFnc('plotPhase', varargin{:})
         end
+        
+        function plotTimeDomain(this, varargin)
+            % Shortcut for HybridPlotBuilder.plotTimeDomain function.
+            %
+            % See also: HybridPlotBuilder.plotTimeDomain.
+            this.plotByFnc('plotTimeDomain', varargin{:})
+        end
 
     end
 

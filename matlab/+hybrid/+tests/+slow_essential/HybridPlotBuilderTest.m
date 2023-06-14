@@ -130,6 +130,10 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             testCase.assertFalse(allInteger('XTick'))
             testCase.assertFalse(allInteger('YTick'))
             testCase.assertFalse(allInteger('ZTick'))
+
+            plotTimeDomain(sol3);
+            testCase.assertFalse(allInteger('XTick'))
+            testCase.assertTrue(allInteger('YTick'))% j-axis
         end
         
         function testSliceSwitchedOrderWithSubplots(testCase)
@@ -338,42 +342,44 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         end
         
         function testDefaultTextSize(testCase)
-            scale = 2.5;
+            SCALE = 2.5;
+            LABEL_SIZE = 14;
+            TITLE_SIZE = 17;
+            TICK_LABEL_SIZE = 3;
             HybridPlotBuilder.defaults.set(...
-                'label Size ', 14, ...
-                'title_size', 17, ...
-                'tick label size', 3, ...
-                'text_scale', scale);
+                'label Size ', LABEL_SIZE, ...
+                'title_size', TITLE_SIZE, ...
+                'tick label size', TICK_LABEL_SIZE, ...
+                'text_scale', SCALE);
 
             pb = HybridPlotBuilder();
-            testCase.assertEqual(pb.settings.label_size, scale*14);
-            testCase.assertEqual(pb.settings.title_size, scale*17);
-            testCase.assertEqual(pb.settings.tick_label_size, scale*3);
+            testCase.assertEqual(pb.settings.label_size, SCALE*LABEL_SIZE);
+            testCase.assertEqual(pb.settings.title_size, SCALE*TITLE_SIZE);
+            testCase.assertEqual(pb.settings.tick_label_size, SCALE*TICK_LABEL_SIZE);
         end
         
         function testDefaultLineSizes(testCase)
-            scale = 6;
+            SCALE = 6;
             HybridPlotBuilder.defaults.set(...
                 'Flow line width', 2, ...
                 'jump_line_width', 7, ...
-                'line_scale', scale);
-%             HybridPlotBuilder.setDefault('marker_scale', 4.0);
+                'line_scale', SCALE);
 
             pb = HybridPlotBuilder();
-            testCase.assertEqual(pb.settings.flow_line_width, scale*2);
-            testCase.assertEqual(pb.settings.jump_line_width, scale*7); 
+            testCase.assertEqual(pb.settings.flow_line_width, SCALE*2);
+            testCase.assertEqual(pb.settings.jump_line_width, SCALE*7); 
         end
         
         function testDefaultMarkerSizes(testCase)
-            scale = 2;
+            SCALE = 2;
             HybridPlotBuilder.defaults.set(...
                 'jump start marker size', 3, ...
                 'jump end marker size', 4, ...
-                'marker_scale', scale);
+                'marker_scale', SCALE);
 
             pb = HybridPlotBuilder();
-            testCase.assertEqual(pb.settings.jump_start_marker_size, scale*3);
-            testCase.assertEqual(pb.settings.jump_end_marker_size, scale*4); 
+            testCase.assertEqual(pb.settings.jump_start_marker_size, SCALE*3);
+            testCase.assertEqual(pb.settings.jump_end_marker_size, SCALE*4); 
         end
         
         function testDefaultColors(testCase)
@@ -486,10 +492,10 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         function testTwoLegendsInOneSubplot(testCase)
             pb = HybridPlotBuilder().subplots('on');
             pb.legend('Legend 1')...
-                .plotFlows(testCase.sol_1);
+                .plotTimeDomain(testCase.sol_1);
             hold on
             pb.legend('Legend 2')...
-                .plotFlows(testCase.sol_1);
+                .plotTimeDomain(testCase.sol_1);
             testCase.assertLegendLabels({'Legend 1', 'Legend 2'})
         end
         
@@ -534,6 +540,14 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             testCase.verifyWarning(@() pb.plotJumps(testCase.sol_2), ...
                 'Hybrid:ExtraLegendLabels');
             testCase.assertLegendLabels('Subplot 1', 'Subplot 2');
+        end
+        
+        function testWarnExtraLegendLabelsInPlotTimeDomain(testCase)
+            pb = HybridPlotBuilder()...
+                .legend('Legend 1', 'Legend 2');
+            testCase.verifyWarning(@() pb.plotTimeDomain(testCase.sol_2), ...
+                'Hybrid:ExtraLegendLabels');
+            testCase.assertLegendLabels('Legend 1');
         end
 
         function testExistingLegendIsOverwritten(testCase)

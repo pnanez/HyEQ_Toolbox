@@ -26,8 +26,8 @@ classdef makeAxisIdsTest < matlab.unittest.TestCase
         function testXSymbolReplacedMultiplePlots(testCase)
             import hybrid.internal.*
             x_ndxs = [1; 2];
-            axis_ids = makeAxisIds(x_ndxs, {'x'});
-            testCase.assertEqual(axis_ids, {1; 2});
+            axis_ids = makeAxisIds(x_ndxs, {'t', 'x'});
+            testCase.assertEqual(axis_ids, {'t', 1; 't', 2});
         end
 
         function testXSymbolReplacedSinglePlotMultipleIndices(testCase)
@@ -44,6 +44,13 @@ classdef makeAxisIdsTest < matlab.unittest.TestCase
             expected = {'t', 'j', 1; 
                         't', 'j', 2};
             testCase.assertEqual(axis_ids, expected);
+        end
+
+        function testTJOnly(testCase)
+            import hybrid.internal.*
+            x_ndxs = [];
+            axis_ids = makeAxisIds(x_ndxs, {'t', 'j'});
+            testCase.assertEqual(axis_ids, {'t', 'j'});
         end
 
     end

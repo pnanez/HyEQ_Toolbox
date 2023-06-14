@@ -33,6 +33,11 @@ plotJumps(sol); % x vs. j
 plotHybrid(sol); % x vs. (t, j)
 
 %%
+% The |plotTimeDomain| function plots $t$ vs. $j$ for $(t, j)$ in the hybrid
+% time domain of |sol|.
+plotTimeDomain(sol); % j vs. t.
+
+%%
 % The |plotPhase| function plots a 2D or 3D solution vector |x| in phase space.
 plotPhase(sol); % x1 vs. x2
 title('2D Phase Plot')

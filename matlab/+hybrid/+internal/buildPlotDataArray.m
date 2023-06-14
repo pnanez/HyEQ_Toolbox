@@ -13,8 +13,11 @@ function plot_data_array = buildPlotDataArray(axis_symbols, x_label_ndxs, hybrid
 % If it's more than one, then the plot is a phase plot.
 n_state_axes = sum(strcmp(axis_symbols, 'x'));
 is_phase_plot = n_state_axes > 1;
+is_time_domain_plot = n_state_axes == 0;
 
-if is_phase_plot
+if is_time_domain_plot
+    n_plts = 1;
+elseif is_phase_plot
     n_plts = 1;
 else
     n_plts = numel(x_label_ndxs);
@@ -29,10 +32,12 @@ assert(is2D || is3D, 'plot dimension must be 2 or 3, instead was %d', plt_dimens
 % x_values_ndxs: numeric array containing the state component indices to use for
 %               the values to plot. Each row gives, in each column, the indices 
 %               for a single curve.
-x_values_ndxs = 1:(size(hybrid_sol.x, 2));
+x_values_ndxs = 1:numel(x_label_ndxs);
 
-assert(isequal(size(x_label_ndxs), size(x_values_ndxs)))
-if ~is_phase_plot
+assert(isequal(numel(x_label_ndxs), numel(x_values_ndxs)), ...
+    'numel(x_label_ndxs)=%d ~= numel(x_values_ndxs)=%d', ...
+    numel(x_label_ndxs), numel(x_values_ndxs))
+if ~is_phase_plot && ~is_time_domain_plot
     % When not making a phase plot, each entry in x_label_ndxs and x_values_ndxs
     % represents a separate curve to plot. This is denoted by making them column
     % vectors instead of row vectors.
@@ -55,18 +60,21 @@ for i = 1:n_plts
     plot_data_array(i).addAxisLimits(labels_axis_ids(i, :))
     plot_data_array(i).addPlotValues(hybrid_sol, values_axis_ids(i, :), plot_settings.timesteps_filter)
 
-    state_ndx = x_label_ndxs(i,:);
-    plot_data_array(i).state_ndx = state_ndx;
-
-    is_phase_plot = ~isscalar(state_ndx);
-    if is_phase_plot
+    if size(x_label_ndxs, 1) >= i
+        i_state_ndx = x_label_ndxs(i,:);
+        plot_data_array(i).state_ndx = i_state_ndx;
+    else
+        i_state_ndx = [];
+    end
+    
+    if is_time_domain_plot || is_phase_plot
         plot_data_array(i).legend_label = plot_settings.createLegendLabel('single');
     else
-        plot_data_array(i).legend_label = plot_settings.createLegendLabel(state_ndx);
+        plot_data_array(i).legend_label = plot_settings.createLegendLabel(i_state_ndx);
     end
 
-    if plot_settings.auto_subplots
-        plot_data_array(i).title = plot_settings.getTitle(state_ndx);
+    if plot_settings.auto_subplots && ~is_time_domain_plot
+        plot_data_array(i).title = plot_settings.getTitle(i_state_ndx);
         plot_data_array(i).subplot_ndx = i;
     else
         plot_data_array(i).title = plot_settings.getTitle('single');
@@ -112,6 +120,7 @@ end
 
 lgd_count = length(lgd_labels);
 is_phase_plot =  size(state_ndxs, 2) > 1;
+is_time_domain_plot = isempty(state_ndxs);
 
 if is_phase_plot
     % In a phase plot, only one legend entry is added.
@@ -122,6 +131,17 @@ if is_phase_plot
     end
     return
 end
+
+if is_time_domain_plot
+    % In a time domain plot, only one legend entry is added.
+    if lgd_count > 1
+       warning('Hybrid:ExtraLegendLabels', ['Multiple (%d) legend labels were given ' ...
+           'but only the first (at index=1) was used because the plot is a time domain plot.'], ...
+           lgd_count)
+    end
+    return
+end
+
 expected_count = max(state_ndxs);
 
 if expected_count == lgd_count
@@ -132,6 +152,8 @@ if expected_count < lgd_count
     id = 'Hybrid:ExtraLegendLabels';
 elseif expected_count > lgd_count
     id = 'Hybrid:MissingLegendLabels';
+else
+    error('Unexpected case.')
 end
 warning(id, warning_msg, expected_count, lgd_count)
 end

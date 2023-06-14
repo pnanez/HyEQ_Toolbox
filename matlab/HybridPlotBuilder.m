@@ -1077,6 +1077,31 @@ classdef HybridPlotBuilder < handle
                 clear this
             end          
         end
+
+        function this = plotTimeDomain(this, varargin)
+            % Plot continuous-time t vs and discrete-time j.
+            %
+            % Let 'sol' be a HybridSolution object with N time steps (that is,
+            % N = length(sol.t)). Then, the input arguments for plotHybrid must
+            % take one of the following forms: 
+            % 'plotTimeDomain(sol)', 
+            % 'plotTimeDomain(t, j)', 
+            % where
+            % 't' and 'j' are Nx1 column vectors.
+            % 
+            % See also: plotFlows, plotJumps, plotPhase, plotHybrid.
+            [hybrid_sol, ~] = hybrid.internal.convert_varargin_to_solution_obj(varargin, this.settings.component_indices);
+            
+            plot_struct = this.createPlotDataArray(hybrid_sol, [], {'t', 'j'});
+            this.plot_from_plot_data_array(plot_struct)
+            this.last_function_call = [];
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a
+                % semicolon.
+                clear this
+            end
+        end
     end
 
     methods(Hidden)
