@@ -87,7 +87,7 @@ classdef PlotSettings < matlab.mixin.Copyable
         % Jumps
         DEFAULT_JUMP_COLOR = 'red';
         DEFAULT_JUMP_LINE_WIDTH = 0.5;
-        DEFAULT_JUMP_LINE_STYLE = '--';
+        DEFAULT_JUMP_LINE_STYLE = ':';
         DEFAULT_JUMP_START_MARKER = '.';
         DEFAULT_JUMP_START_MARKER_SIZE = 6;
         DEFAULT_JUMP_END_MARKER = '*';

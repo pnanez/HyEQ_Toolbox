@@ -1363,14 +1363,20 @@ classdef HybridPlotBuilder < handle
                 % of the arrays to match so that Matlab does not print a
                 % (rather unhelpful) warning.
                 plots_in_axes = plots_for_this_legend(axes_for_this_legend == ax);
+                data_in_axes = data_for_this_legend(axes_for_this_legend == ax);
                 
                 if isvalid(ax) % Check that figure hasn't been closed.
                     % lgd = legend(ax, plots_in_axes);
+
                     [lgd, icons, ~, text]  = legend(ax, plots_in_axes, this.settings.legendArguments{:});
                     n_lgd_entries = numel(text);
 
-                    for k = 1:numel(data_for_this_legend)
-                        data = data_for_this_legend{k};
+                    % Adjust the width of the legend. See here: https://undocumentedmatlab.com/articles/plot-legend-customization
+                    % min_icon_width=140; x2=0; % x2 doesn't seem to have any effect.
+                    % lgd.ItemTokenSize = [min_icon_width, x2];
+
+                    for k = 1:numel(data_in_axes)
+                        data = data_in_axes{k};
                         if isempty(data)
                             % Skip when data was not give, as when
                             % 'addLegendEntry' is used.
@@ -1403,15 +1409,19 @@ classdef HybridPlotBuilder < handle
                         icon_y = jump_line_and_end_jump_icon.YData(1);
                         icon_x_range = flow_line_and_start_jump_icon.XData;
                         x_start = icon_x_range(1);
-                        x_mid = (1-0.45)*icon_x_range(1)+0.45*icon_x_range(2);
-                        x_end = (1-0.9)*icon_x_range(1)+0.9*icon_x_range(2);
-                        line_x = [x_start, x_mid];
-                        jump_x = [x_mid, x_end];
+
+                        x_end = icon_x_range(2);
+                        % x_mid = (1-mid_frac)*icon_x_range(1)+mid_frac*icon_x_range(2);
+                        x = linspace(x_start, x_end, 5);
+                        x = x([1 2 4 5]);
+                        line_x = [x(1), x(2), nan, x(3), x(4)];
+                        jump_x = [x(2), x(3)];
                         flow_line_and_start_jump_icon.XData = line_x; 
+                        flow_line_and_start_jump_icon.YData = icon_y*ones(size(line_x));
 
                         % Only plot marker for second index because we are plotting the end of jump marker.
                         flow_line_and_start_jump_icon.MarkerIndices = 2;
-                        jump_line_and_end_jump_icon.YData = [icon_y icon_y];
+                        jump_line_and_end_jump_icon.YData = icon_y*ones(size(jump_x));
                         jump_line_and_end_jump_icon.XData = jump_x;
                         
                         % Only plot marker for second index because we are plotting the end of jump marker.
