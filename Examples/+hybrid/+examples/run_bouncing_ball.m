@@ -41,7 +41,7 @@ jspan = [0, 30];
 config = HybridSolverConfig( ...
     'AbsTol', 1e-3, ... % Set the absolute error tolerance
     'RelTol', 1e-7, ... % Set the relative error tolerance
-    'Refine', 16);  % Refine the solution after computing to make plots smooth.
+    'Refine', 16);  % Refine the solution after computing to make plots smoother.
 
 % Compute solution
 sol = sys.solve(x0, tspan, jspan, config);
