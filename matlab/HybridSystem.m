@@ -4,6 +4,11 @@ classdef (Abstract) HybridSystem < handle
 % Added in HyEQ Toolbox version 3.0.
 
 % Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz (©2022).
+% 
+% Tests for this class can be opened with the command 
+%   open('hybrid.tests.HybridSystemTest')
+% and run with the command 
+%   runtests('hybrid.tests.HybridSystemTest')
 
     properties% (SetAccess = immutable) Making state_dimension immutable breaks the CompositeHybridSystem constructor.
         % Dimension of the state space (optional).
@@ -127,7 +132,7 @@ classdef (Abstract) HybridSystem < handle
                     'size(x0)=%d does not match the dimension of the system=%d',...
                     length(x0), this.state_dimension)
             end
-            this.assert_functions_can_be_evaluated_at_point(x0, tspan(1), jspan(1));           
+            this.assert_functions_can_be_evaluated_at_initial_point(x0, tspan(1), jspan(1));           
 
             % Compute solution
             [t, j, x] = HyEQsolver(this.flowMap_3args, ...
@@ -317,7 +322,7 @@ classdef (Abstract) HybridSystem < handle
             %     indicator (cannot be empty).
             %   * varargin: arguments for each function in the form (x),
             %     (x, t), or (x, t, j). If empty, then functions are
-            %     tested with zero vectors of the appropriate sizes.
+            %     tested with 'x' equal to a zero vector of the appropriate size.
 
             switch flow_or_jump_str
                 case 'flow'
@@ -501,11 +506,47 @@ classdef (Abstract) HybridSystem < handle
             end
         end
 
-        function assert_functions_can_be_evaluated_at_point(this, x, t, j)
-            assert_function_can_be_evaluated(this.flowMap_3args, x, t, j, 'flowMap')
-            assert_function_can_be_evaluated(this.jumpMap_3args, x, t, j, 'jumpMap')
+        function assert_functions_can_be_evaluated_at_initial_point(this, x, t, j)
+            % The flow and jump set indicator functions must evaluatable
+            % everywhere
+
+            % Check flow set indicator
             assert_function_can_be_evaluated(this.flowSetIndicator_3args, x, t, j, 'flowSetIndicator')
+            
+            % Check flow map
+            inC = this.flowSetIndicator_3args(x, t, j);
+            if inC
+                assert_function_can_be_evaluated(this.flowMap_3args, x, t, j, 'flowMap')
+            else
+                try 
+                    assert_function_can_be_evaluated(this.flowMap_3args, x, t, j, 'flowMap')
+                catch err 
+                    warning('HybridSystem:FlowMapErrorOutsideFlowSet', ...
+                        ['Evaluating the flow map at the initial point ' ...
+                        '\n\tx=%s, \n\tt=%f, \n\tj=%d failed, ' ...
+                        'but the point is not in the flow set, so this might be OK. ' ...
+                        '\nThe error message was:\n"%s"'], mat2str(x), t, j, err.message)
+                end
+            end
+
+            % Check jump set indicator
             assert_function_can_be_evaluated(this.jumpSetIndicator_3args, x, t, j, 'jumpSetIndicator')
+            
+            % Check jump map
+            inD = this.jumpSetIndicator_3args(x, t, j);
+            if inD
+                assert_function_can_be_evaluated(this.jumpMap_3args, x, t, j, 'jumpMap')
+            else
+                try 
+                    assert_function_can_be_evaluated(this.jumpMap_3args, x, t, j, 'jumpMap')
+                catch err
+                    warning('HybridSystem:JumpMapErrorOutsideJumpSet', ...
+                        ['Evaluating the jump map at the initial point ' ...
+                        '\n\tx=%s, \n\tt=%f, \n\tj=%d failed, ' ...
+                        'but the point is not in the jump set, so this might be OK. ' ...
+                        '\nThe error message was:\n"%s"'], mat2str(x), t, j, err.message)
+                end
+            end
         end
 
         function nargs = implementated_nargs(this, function_name)

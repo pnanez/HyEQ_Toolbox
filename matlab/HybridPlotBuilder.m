@@ -7,9 +7,7 @@ classdef HybridPlotBuilder < handle
 
 % Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz (©2022).
 % 
-% Tests for this class are located in 
-%   matlab\+hybrid\+tests\+slow_essential\HybridPlotBuilderTest.m
-% which can be opened with the command 
+% Tests for this class can be opened with the command 
 %   open('hybrid.tests.slow_essential.HybridPlotBuilderTest')
 % and run with the command 
 %   runtests('hybrid.tests.slow_essential.HybridPlotBuilderTest')

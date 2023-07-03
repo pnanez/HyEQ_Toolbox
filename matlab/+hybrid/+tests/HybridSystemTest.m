@@ -25,7 +25,10 @@ classdef HybridSystemTest < matlab.unittest.TestCase
 
         function testBouncingBall(testCase)
             system = hybrid.examples.BouncingBall();
-            sol = system.solve([1; 0], [0, 1], [0, 10], 'silent');
+            x0 = [1; 0];
+            tspan = [0, 30];
+            jspan = [0, 60];
+            sol = system.solve(x0, tspan, jspan, 'silent');
             
             testCase.assertGreaterThan(sol.x(:,1), -1e-2);
         end
@@ -51,6 +54,66 @@ classdef HybridSystemTest < matlab.unittest.TestCase
                     .stateDimension(2) ...
                     .build();
             ss.checkFunctions([1; 2], 0, 1);
+        end
+        
+        function testSolve_WarnIfJumpMapErrorAtInitialPointAndNotInJumpSet(testCase)
+            f = @(x, t, j) 2;
+            g = @(x, t, j) error('Not in jump set.');
+            C_indicator = @(x, t, j) 1;
+            D_indicator = @(x, t, j) 0;
+            system = HybridSystem(f, g, C_indicator, D_indicator);
+            testCase.assertWarning(@() system.solve(0, [0, 1], [0, 10], 'silent'), ...
+                'HybridSystem:JumpMapErrorOutsideJumpSet');
+        end
+        
+        function testSolve_WarnIfFlowMapErrorAtInitialPointAndNotInFlowSet(testCase)
+            f = @(x, t, j) error('Not in jump set.');
+            g = @(x, t, j) x;
+            C_indicator = @(x, t, j) 0;
+            D_indicator = @(x, t, j) 1;
+            system = HybridSystem(f, g, C_indicator, D_indicator);
+            testCase.assertWarning(@() system.solve(0, [0, 1], [0, 10], 'silent'), ...
+                'HybridSystem:FlowMapErrorOutsideFlowSet');
+        end
+        
+        function testSolve_ErrorIf_f_CannotBeEvaluatedAtInitialPoint(testCase)
+            f = @(x, t, j) throwErrorWithAnOutputVariable('Test:Error');
+            g = @(x, t, j) x;
+            C_indicator = @(x, t, j) 1;
+            D_indicator = @(x, t, j) 1;
+            system = HybridSystem(f, g, C_indicator, D_indicator);
+            testCase.assertError(@() system.solve(0, [0, 1], [0, 10], 'silent'), ...
+                'Test:Error');
+        end
+        
+        function testSolve_ErrorIf_g_CannotBeEvaluatedAtInitialPoint(testCase)
+            f = @(x, t, j) x;
+            g = @(x, t, j) throwErrorWithAnOutputVariable('Test:Error');
+            C_indicator = @(x, t, j) 1;
+            D_indicator = @(x, t, j) 1;
+            system = HybridSystem(f, g, C_indicator, D_indicator);
+            testCase.assertError(@() system.solve(0, [0, 1], [0, 10], 'silent'), ...
+                'Test:Error');
+        end
+        
+        function testSolve_ErrorIf_C_CannotBeEvaluatedAtInitialPoint(testCase)
+            f = @(x, t, j) x;
+            g = @(x, t, j) x;
+            C_indicator = @(x, t, j) throwErrorWithAnOutputVariable('Test:Error');
+            D_indicator = @(x, t, j) 1;
+            system = HybridSystem(f, g, C_indicator, D_indicator);
+            testCase.assertError(@() system.solve(0, [0, 1], [0, 10], 'silent'), ...
+                'Test:Error');
+        end
+        
+        function testSolve_ErrorIf_D_CannotBeEvaluatedAtInitialPoint(testCase)
+            f = @(x, t, j) x;
+            g = @(x, t, j) x;
+            C_indicator = @(x, t, j) 1;
+            D_indicator = @(x, t, j) throwErrorWithAnOutputVariable('Test:Error');
+            system = HybridSystem(f, g, C_indicator, D_indicator);
+            testCase.assertError(@() system.solve(0, [0, 1], [0, 10], 'silent'), ...
+                'Test:Error');
         end
 
         function testCheckFunctions_flowMapWrongSizeOut(testCase)
@@ -179,4 +242,8 @@ classdef HybridSystemTest < matlab.unittest.TestCase
 
     end
 
+end
+
+function x_out = throwErrorWithAnOutputVariable(error_id) %#ok<STOUT>
+    error(error_id, 'dummy message')
 end
