@@ -43,11 +43,17 @@ for i = 1:length(results)
 end
 nSkipped = length(results) - nPassed - nFailed;
 
+if nFailed > 0
+    error('Several HyEQ Tests Failed: %d passed, %d failed, %d skipped.\n', ...
+       nPassed, nFailed, nSkipped)
+end
+
 if nargout == 0
    fprintf('\nFinished: %d passed, %d failed, %d skipped.\n', ...
        nPassed, nFailed, nSkipped)
    clear nFailed;
    clear nIncomplete;
 end
+
 
 end
