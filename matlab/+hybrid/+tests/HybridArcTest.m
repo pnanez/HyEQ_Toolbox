@@ -334,20 +334,23 @@ classdef HybridArcTest < matlab.unittest.TestCase
 
             % Time steps before and after jump.
             N_BEFORE = 26; N_AFTER = 10; 
+
+            % Size of 'x'
+            x_DIM = 3;
             
             t = [linspace(     0, T_JUMP, N_BEFORE)'; 
                  linspace(T_JUMP,  T_END, N_AFTER)'];
             j = [zeros(N_BEFORE, 1); 
                   ones(N_AFTER, 1)];
-            x = [23*ones(N_BEFORE,1); 
-                 12*ones(N_AFTER,1)];
+            x = [23*ones(N_BEFORE, x_DIM); 
+                 12*ones(N_AFTER, x_DIM)];
             sol = HybridArc(t, j, x);
 
             n_t_interp = 123; % Number of interpolation points.
             [x_interp, t_interp] = sol.interpolateToArray(n_t_interp);
 
             % Check the shapes are correct.
-            testCase.assertSize(x_interp, [n_t_interp 2])
+            testCase.assertSize(x_interp, [n_t_interp x_DIM])
             testCase.assertSize(t_interp, [n_t_interp 1])
         end
         
@@ -402,6 +405,47 @@ classdef HybridArcTest < matlab.unittest.TestCase
             testCase.assertEqual(x_interp, x_interp_expected)
         end
 
+        function testInterpolateToArray_InterpolationGridReversed(testCase)
+            % End times.
+            T_END = 34;
+
+            % Time steps
+            N_STEPS = 26; 
+            
+            % Create HybridArc
+            t = linspace(0, T_END, N_STEPS)';
+            j = zeros(N_STEPS, 1);
+            x = rand(N_STEPS, 1);
+            sol = HybridArc(t, j, x);
+
+            % Compute interpolation
+            t_interp = linspace(T_END, 0, N_STEPS); % Reversed time
+            x_interp = sol.interpolateToArray(t_interp);
+
+            % Check result
+            x_reversed = x(end:-1:1);
+            testCase.assertEqual(round(x_interp, 9), round(x_reversed, 9))
+            testCase.assertEqual(round(x_interp(1), 8), round(x(end), 8))
+            testCase.assertEqual(round(x_interp(end), 8), round(x(1), 8))
+        end
+
+        function testInterpolateToArray_ErrorIfInterpolationPointOutsideOfTSpan(testCase)
+            % Time steps
+            N_STEPS = 26; 
+            
+            t = linspace(0, 10, N_STEPS)';
+            j = zeros(N_STEPS, 1);
+            x = rand(N_STEPS, 1);
+            sol = HybridArc(t, j, x);
+
+            testCase.assertError(@() sol.interpolateToArray(linspace(t(1)-0.1, t(end))), ...
+                    'HybridArc:InterpolationPointOutsideOfTSpan');
+            testCase.assertError(@() sol.interpolateToArray(linspace(t(1), t(end)+0.1)), ...
+                    'HybridArc:InterpolationPointOutsideOfTSpan');
+            testCase.assertError(@() sol.interpolateToArray(linspace(t(1)-0.1, t(end)+0.1)), ...
+                    'HybridArc:InterpolationPointOutsideOfTSpan');
+        end
+
         function testInterpolateToArray_ValueAtJumpFnc_WrongSizeOutputFromFH(testCase)
             % Jump and end times.
             T_JUMP = 12.56; T_END = 34;
@@ -432,19 +476,37 @@ classdef HybridArcTest < matlab.unittest.TestCase
             x = ones(10, 1);
             t = linspace(0, 9, 10)';
             j = zeros(10, 1);
-            sol = HybridArc(t, j, x);
+            harc = HybridArc(t, j, x);
 
             n_interp = 100;
             t_grid = linspace(0, 9, n_interp);
-            interpolated_array = sol.interpolateToHybridArc(t_grid);
+            interp_harc = harc.interpolateToHybridArc(t_grid);
             
             % Check sizes
-            testCase.assertSize(interpolated_array.x, [n_interp, 1])
-            testCase.assertSize(interpolated_array.t, [n_interp, 1])
-            testCase.assertSize(interpolated_array.j, [n_interp, 1])
+            testCase.assertSize(interp_harc.x, [n_interp, 1])
+            testCase.assertSize(interp_harc.t, [n_interp, 1])
+            testCase.assertSize(interp_harc.j, [n_interp, 1])
 
             % Check values
-            testCase.assertEqual(interpolated_array.x, ones(n_interp, 1))
+            testCase.assertEqual(interp_harc.x, ones(n_interp, 1))
+        end
+        
+        function testInterpolateToHybridArc_ConstantX_InterpGridGivenAsScalar(testCase)
+            x = ones(10, 1);
+            t = linspace(0, 9, 10)';
+            j = zeros(10, 1);
+            harc = HybridArc(t, j, x);
+
+            n_interp = 100;
+            interp_harc = harc.interpolateToHybridArc(n_interp);
+            
+            % Check sizes
+            testCase.assertSize(interp_harc.x, [n_interp, 1])
+            testCase.assertSize(interp_harc.t, [n_interp, 1])
+            testCase.assertSize(interp_harc.j, [n_interp, 1])
+
+            % Check values
+            testCase.assertEqual(interp_harc.x, ones(n_interp, 1))
         end
 
         %%% Test restrictT and restrictJ %%%

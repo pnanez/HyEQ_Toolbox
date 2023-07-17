@@ -109,6 +109,69 @@
             {"name": "out", "type":["real", "vector"]}
         ]
     },
+"HybridArc.plotFlows":
+    { "inputs": [
+        {"name":"hybrid_arc"}
+    ]},
+"HybridArc.plotFlows":
+    { "inputs": [
+        {"name":"hybrid_arc"},
+        {"mutuallyExclusiveGroup": [
+            {"name":"values", "kind":"ordered", "type":"numeric", "purpose":"Values to plot along solution's domain"},
+            {"name":"f(x), f(x, t), or f(x, t, j)", "kind":"ordered", "type":"function_handle", "purpose":"Function of solution state vector"}
+        ]}
+    ]},
+"HybridArc.plotJumps":
+    { "inputs": [
+        {"name":"hybrid_arc"}
+    ]},
+"HybridArc.plotJumps":
+    { "inputs": [
+        {"name":"hybrid_arc"},
+        {"mutuallyExclusiveGroup": [
+            {"name":"values", "kind":"ordered", "type":"numeric", "purpose":"Values to plot along solution's domain"},
+            {"name":"f(x), f(x, t), or f(x, t, j)", "kind":"ordered", "type":"function_handle", "purpose":"Function of solution state vector"}
+        ]}
+    ]},
+"HybridArc.plotHybrid":
+    { "inputs": [
+        {"name":"hybrid_arc"}
+    ]},
+"HybridArc.plotHybrid":
+    { "inputs": [
+        {"name":"hybrid_arc"},
+        {"name":"sol", "kind":"required", "type":"HybridSolution", "purpose":"Solution to plot (or use as hybrid time domain)"},
+        {"mutuallyExclusiveGroup": [
+            {"name":"values", "kind":"ordered", "type":"numeric", "purpose":"Values to plot along solution's domain"},
+            {"name":"f(x), f(x, t), or f(x, t, j)", "kind":"ordered", "type":"function_handle", "purpose":"Function of solution state vector"}
+        ]}
+    ]},
+"HybridArc.plotHybrid":
+    { "inputs": [
+        {"name":"hybrid_arc"},
+        {"name":"t", "kind":"required", "type":["real", "column"],"purpose":"Continuous component of hybrid time domain"},
+        {"name":"j", "kind":"required", "type":"numeric", "purpose":"Discrete component of hybrid time domain"},
+        {"mutuallyExclusiveGroup": [
+            {"name":"values", "kind":"required", "type":"numeric", "purpose":"Values to plot along solution's domain"},
+            {"name":"f(x), f(x, t), or f(x, t, j)", "kind":"required", "type":"function_handle", "purpose":"Function of solution state vector"}
+        ]}
+    ]},
+"HybridArc.plotPhase":
+    { "inputs": [
+        {"name":"hybrid_arc"}
+    ]},
+"HybridArc.plotPhase":
+    { "inputs": [
+        {"name":"hybrid_arc"},
+        {"mutuallyExclusiveGroup": [
+            {"name":"values", "kind":"ordered", "type":"numeric", "purpose":"Values to plot along solution's domain"},
+            {"name":"f(x), f(x, t), or f(x, t, j)", "kind":"ordered", "type":"function_handle", "purpose":"Function of solution state vector"}
+        ]}
+    ]},
+"HybridArc.plotTimeDomain":
+    { "inputs": [
+        {"name":"hybrid_arc"}
+    ]},
 
 "_comment": "=================================================================",
 "_comment": "=================================================================",
@@ -627,7 +690,7 @@
         {"name":"sol", "kind":"required", "type":"HybridSolution", "purpose":"Solution to plot (or use as hybrid time domain)"},
         {"mutuallyExclusiveGroup": [
             {"name":"values", "kind":"ordered", "type":"numeric", "purpose":"Values to plot along solution's domain"},
-            {"name":"f(x)", "kind":"ordered", "type":"function_handle", "purpose":"Function of solution state vector"}
+            {"name":"f(x), f(x, t), or f(x, t, j)", "kind":"ordered", "type":"function_handle", "purpose":"Function of solution state vector"}
         ]}
     ], 
      "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]},
@@ -638,7 +701,7 @@
         {"name":"j", "kind":"required", "type":"numeric", "purpose":"Discrete component of hybrid time domain"},
         {"mutuallyExclusiveGroup": [
             {"name":"values", "kind":"required", "type":"numeric", "purpose":"Values to plot along solution's domain"},
-            {"name":"f(x)", "kind":"required", "type":"function_handle", "purpose":"Function of solution state vector"}
+            {"name":"f(x), f(x, t), or f(x, t, j)", "kind":"required", "type":"function_handle", "purpose":"Function of solution state vector"}
         ]}
     ], 
      "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]},
@@ -646,14 +709,15 @@
     { "inputs": [
         {"name":"this"},
         {"name":"sol", "kind":"required", "type":"HybridSolution", "purpose":"Solution to plot (or use as hybrid time domain)"}
-    ]},
+    ], 
+     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]},
 "HybridPlotBuilder.plotJumps":
     { "inputs": [
         {"name":"this"},
         {"name":"sol", "kind":"required", "type":"HybridSolution", "purpose":"Solution to plot (or use as hybrid time domain)"},
         {"mutuallyExclusiveGroup": [
             {"name":"values", "kind":"ordered", "type":"numeric", "purpose":"Values to plot along solution's domain"},
-            {"name":"f(x)", "kind":"ordered", "type":"function_handle", "purpose":"Function of solution state vector"}
+            {"name":"f(x), f(x, t), or f(x, t, j)", "kind":"ordered", "type":"function_handle", "purpose":"Function of solution state vector"}
         ]}
     ], 
      "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]},
@@ -664,7 +728,7 @@
         {"name":"j", "kind":"required", "type":"numeric", "purpose":"Discrete component of hybrid time domain"},
         {"mutuallyExclusiveGroup": [
             {"name":"values", "kind":"required", "type":"numeric", "purpose":"Values to plot along solution's domain"},
-            {"name":"f(x)", "kind":"required", "type":"function_handle", "purpose":"Function of solution state vector"}
+            {"name":"f(x), f(x, t), or f(x, t, j)", "kind":"required", "type":"function_handle", "purpose":"Function of solution state vector"}
         ]}
     ], 
      "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]},
@@ -680,7 +744,7 @@
         {"name":"sol", "kind":"required", "type":"HybridSolution", "purpose":"Solution to plot (or use as hybrid time domain)"},
         {"mutuallyExclusiveGroup": [
             {"name":"values", "kind":"ordered", "type":"numeric", "purpose":"Values to plot along solution's domain"},
-            {"name":"f(x)", "kind":"ordered", "type":"function_handle", "purpose":"Function of solution state vector"}
+            {"name":"f(x), f(x, t), or f(x, t, j)", "kind":"ordered", "type":"function_handle", "purpose":"Function of solution state vector"}
         ]}
     ], 
      "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]},
@@ -691,7 +755,7 @@
         {"name":"j", "kind":"required", "type":"numeric", "purpose":"Discrete component of hybrid time domain"},
         {"mutuallyExclusiveGroup": [
             {"name":"values", "kind":"required", "type":"numeric", "purpose":"Values to plot along solution's domain"},
-            {"name":"f(x)", "kind":"required", "type":"function_handle", "purpose":"Function of solution state vector"}
+            {"name":"f(x), f(x, t), or f(x, t, j)", "kind":"required", "type":"function_handle", "purpose":"Function of solution state vector"}
         ]}
     ], 
      "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]},
@@ -707,7 +771,7 @@
         {"name":"sol", "kind":"required", "type":"HybridSolution", "purpose":"Solution to plot (or use as hybrid time domain)"},
         {"mutuallyExclusiveGroup": [
             {"name":"values", "kind":"ordered", "type":"numeric", "purpose":"Values to plot along solution's domain"},
-            {"name":"f(x)", "kind":"ordered", "type":"function_handle", "purpose":"Function of solution state vector"}
+            {"name":"f(x), f(x, t), or f(x, t, j)", "kind":"ordered", "type":"function_handle", "purpose":"Function of solution state vector"}
         ]}
     ], 
      "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]},
@@ -718,8 +782,27 @@
         {"name":"j", "kind":"required", "type":"numeric", "purpose":"Discrete component of hybrid time domain"},
         {"mutuallyExclusiveGroup": [
             {"name":"values", "kind":"required", "type":"numeric", "purpose":"Values to plot along solution's domain"},
-            {"name":"f(x)", "kind":"required", "type":"function_handle", "purpose":"Function of solution state vector"}
+            {"name":"f(x), f(x, t), or f(x, t, j)", "kind":"required", "type":"function_handle", "purpose":"Function of solution state vector"}
         ]}
+    ], 
+     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]},
+"HybridPlotBuilder.plotPhase":
+    { "inputs": [
+        {"name":"this"},
+        {"name":"sol", "kind":"required", "type":"HybridSolution", "purpose":"Solution to plot (or use as hybrid time domain)"}
+    ], 
+     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]},
+"HybridPlotBuilder.plotTimeDomain":
+    { "inputs": [
+        {"name":"this"},
+        {"name":"sol", "kind":"required", "type":"HybridSolution", "purpose":"Solution to provide hybrid time domain."}
+    ], 
+     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]},
+"HybridPlotBuilder.plotTimeDomain":
+    { "inputs": [
+        {"name":"this"},
+        {"name":"t", "kind":"required", "type":["real", "column"],"purpose":"Continuous component of hybrid time domain"},
+        {"name":"j", "kind":"required", "type":"numeric", "purpose":"Discrete component of hybrid time domain"}
     ], 
      "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]},
 

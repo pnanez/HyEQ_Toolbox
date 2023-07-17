@@ -260,33 +260,11 @@ classdef HybridArc
             interp_method = ip.Results.InterpMethod;
             value_at_jump_fnc = ip.Results.ValueAtJumpFnc;
 
-            % TODO: Move t_interp preprocessing into a local function.
-            if ~isnumeric(t_interp)
-                error('t_interp must be numeric. Instead, its type was "%s".', class(t_interp))
-            end
+            % Check that the input t_interp for interpolateToArray and
+            % interpolateToHybridArc is well-formed. If it is, then transform it
+            % into a standard form, namely a column vector. 
+            t_interp = this.preprocess_t_interp(t_interp);
 
-            if ~isvector(t_interp)
-                error(['t_interp must be a vector. ' ...
-                    'Instead its shape was %s'], mat2str(size(t_interp)))
-            end
-
-            % If t_interp is a single value, then we interpret it as the number
-            % of evenly spaced interpolation points.
-            if isscalar(t_interp)
-                assert(round(t_interp) == t_interp && t_interp >= 2, ...
-                    ['If a scalar value is given for ''t_interp'', ' ...
-                    'it must be an integer greater than or equal to 2, ' ...
-                    'which is interpreted as the number of evenly spaced ' ...
-                    'interpolation points.'])
-                interp_steps = t_interp;
-                t_interp = linspace(this.t(1), this.t(end), interp_steps)';
-            elseif isrow(t_interp)
-                % Make sure t_interp is a column vector.
-                t_interp = t_interp';
-            end
-
-            assert(iscolumn(t_interp), 't_interp needs to be a column after preprocessing.')
-            
             % Cell array that contains in each entry, a row array of the t-entries during
             % the corresponding interval of flow.
             t_iofs_cell = {};
@@ -369,6 +347,8 @@ classdef HybridArc
         end
 
         function hybrid_arc = interpolateToHybridArc(this, t_interp, varargin)
+            % Generate a new HybridArc object with timesteps at the interpolation points given in t_interp.
+
             % TODO: Add documentation
             % TODO: Add autocomplete signiture.
             % Tests to write: 
@@ -387,34 +367,11 @@ classdef HybridArc
             parse(ip, varargin{:});
             interp_method = ip.Results.InterpMethod;
 
-            % TODO: Move t_interp preprocessing into a local function.
-            if ~isnumeric(t_interp)
-                error('t_interp must be numeric. Instead, its type was "%s".', class(t_interp))
-            end
-
-            if ~isvector(t_interp)
-                error(['t_interp must be a vector. ' ...
-                    'Instead its shape was %s'], mat2str(size(t_interp)))
-            end
-
-            % If t_interp is a single value, then we interpret it as the number
-            % of evenly spaced interpolation points.
-            if isscalar(t_interp)
-                assert(round(t_interp) == t_interp, ...
-                    ['If a scalar value is given for ''t_interp'', ' ...
-                    'it must be an integer greater than or equal to 2.'])
-                assert(t_interp >= 2, ...
-                    ['If a scalar value is given for ''t_interp'', ' ...
-                    'it must be greater than or equal to 2.'])
-                interp_steps = t_interp;
-                t_interp = linspace(this.t(1), this.t(end), interp_steps)';
-            elseif isrow(t_interp)
-                % Make sure t_interp is a column vector.
-                t_interp = t_interp';
-            end
-
-            assert(iscolumn(t_interp), 't_interp needs to be a column after preprocessing.')
-
+            % Check that the input t_interp for interpolateToArray and
+            % interpolateToHybridArc is well-formed. If it is, then transform it
+            % into a standard form, namely a column vector. 
+            t_interp = this.preprocess_t_interp(t_interp);
+            
             if ~exist('interp_method', 'var')
                 interp_method = 'spline';
             end
@@ -498,6 +455,47 @@ classdef HybridArc
                     .color('matlab')...
                     .legend(legend_labels)...
                     .(plt_fnc)(this, varargin{:});
+            end
+        end
+
+        function t_interp = preprocess_t_interp(this, t_interp)
+            % Check that the input t_interp for interpolateToArray and
+            % interpolateToHybridArc is well-formed. If it is, then transform it
+            % into a standard form, namely a column vector. 
+
+            if ~isnumeric(t_interp)
+                error('t_interp must be numeric. Instead, its type was "%s".', class(t_interp))
+            end
+
+            if ~isvector(t_interp)
+                error(['t_interp must be a vector. ' ...
+                    'Instead its shape was %s'], mat2str(size(t_interp)))
+            end
+
+            % If t_interp is a single value, then we interpret it as the number
+            % of evenly spaced interpolation points.
+            if isscalar(t_interp)
+                assert(round(t_interp) == t_interp && t_interp >= 2, ...
+                    ['If a scalar value is given for ''t_interp'', ' ...
+                    'it must be an integer greater than or equal to 2, ' ...
+                    'which is interpreted as the number of evenly spaced ' ...
+                    'interpolation points.'])
+                interp_steps = t_interp;
+                t_interp = linspace(this.t(1), this.t(end), interp_steps)';
+            elseif isrow(t_interp)
+                % Make sure t_interp is a column vector.
+                t_interp = t_interp';
+            end
+
+            assert(iscolumn(t_interp), 't_interp needs to be a column after preprocessing.')
+            
+            % Check that all of the t_interp values are inside TSPAN.
+            is_outside_tspan = t_interp < this.t(1) | t_interp > this.t(end);
+            if any(is_outside_tspan)
+                error('HybridArc:InterpolationPointOutsideOfTSpan', ...
+                    'The following values in t_interp are outside of tspan=%s: \n\t%s.', ...
+                    mat2str([this.t(1), this.t(end)]), ...
+                    mat2str(t_interp(is_outside_tspan)))
             end
         end
     end
