@@ -188,13 +188,16 @@ jout = zeros(prealloc_size, 1);
 jout(last_ndx) = JSPAN(1); % Set initial j-value.
 j = JSPAN(1);
 
-% simulate
+% Ensure that x0 is the right size 
+if ~isnumeric(x0)
+    error('HyEQsolver:x0NotNumeric', 'x0 was expected to be numeric but instead had type "%s"', class(x0))
+elseif ~isvector(x0)
+    error('HyEQsolver:x0NotAVector', 'x0 was expected to be a vector but instead had shape %s', mat2str(size(x0)))
+elseif any(isnan(x0))
+    error('HyEQsolver:x0isNaN', 'x0 included a nan value: %s', mat2str(x0))
+end
 if isrow(x0)
     x0 = x0';
-elseif ~isvector(x0)
-    error('x0 was expected to be a vector')
-elseif any(isnan(x0))
-    error('x0 included a nan value: %s', mat2str(x0))
 end
 n = size(x0, 1);
 
@@ -292,10 +295,10 @@ while (j < JSPAN(end) && tout(last_ndx) < TSPAN(end) && ~progress.is_cancel_solv
             jout(first_ndx:last_ndx) = j*ones(n_timesteps-1, 1);
         else % => (second state will not flow) and (length(t_flow) >= 2) 
             % If the second state in the flow should not flow, then this
-            % indicates that the flow started in the flow set then
+            % indicates that the flow started in the flow set, then
             % immediately left it. If length(t_flow) >= 2, the ODE solver
             % returned a solution that is erroneously flowing outside the flow
-            % set, so will manually calculate the next step
+            % set, so we manually calculate the next step
             % using the Euler forward method to take us out of the flow set.
             % We start with a very small time step and increase until we reach
             % the time step used by the ODE solver.
@@ -304,7 +307,7 @@ while (j < JSPAN(end) && tout(last_ndx) < TSPAN(end) && ~progress.is_cancel_solv
                 if timestep_from_ode <= delta_t
                     % If delta_t is larger than the step used by the ODE
                     % solver, then larger steps sizes won't improve our
-                    % solution and might cause use to miss the desired
+                    % solution and might cause us to miss the desired
                     % step, so we simply use the ODE solution.
                     t_next = t_flow(2);
                     x_next = x_flow(2,:)';

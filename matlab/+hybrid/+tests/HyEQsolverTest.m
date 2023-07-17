@@ -191,6 +191,33 @@ classdef HyEQsolverTest < matlab.unittest.TestCase
             testCase.assertEqual(sol.termination_cause, ...
                 hybrid.TerminationCause.STATE_IS_NAN);
         end
+        
+        function testErrorIfX0NotValid(testCase)
+            f = @(x, t) x - t;
+            g = @(x, t, j) 0.1*x + sin(j)*cos(t);
+            C = @(x) norm(x) <= 2;
+            D = @(x, t) t * norm(x) >= 2;
+            tspan = [0, 10];
+            jspan = [0, 10];
+
+            % Test "not numeric"
+            x0 = struct('This',' is not numeric');
+            testCase.assertError( ...
+                @() HyEQsolver(f, g, C, D, x0, tspan, jspan), ...
+                'HyEQsolver:x0NotNumeric')
+
+            % Test "not a vector"
+            x0 = ones(2, 2);
+            testCase.assertError( ...
+                @() HyEQsolver(f, g, C, D, x0, tspan, jspan), ...
+                'HyEQsolver:x0NotAVector')
+
+            % Test "is NaN"
+            x0 = NaN(2, 1);
+            testCase.assertError( ...
+                @() HyEQsolver(f, g, C, D, x0, tspan, jspan), ...
+                'HyEQsolver:x0isNaN')
+        end
     end
 end
 
