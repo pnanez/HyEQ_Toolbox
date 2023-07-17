@@ -188,7 +188,11 @@ classdef HybridArcTest < matlab.unittest.TestCase
             testCase.assertEqual(selected_sol.x, [x(:, 1), x(:, 3)])
         end
 
-        %%% Test interpolateToArray %%%
+        %%% Test interpolateToArray %%%        
+        
+        % Missing test cases for HybridArc/interpolateToArray:
+        % 1. Test when multiple jumps happen at a single interpolation time.
+        % 2. Test when a jump occurs at the first or final interpolation times.
 
         function testInterpolateToArray_ConstantX_NoJumps(testCase)
             x = ones(10, 1);
@@ -213,6 +217,7 @@ classdef HybridArcTest < matlab.unittest.TestCase
             t_grid = linspace(0, 9, n_interp)'; % Test using column vector.
             interpolated_array = sol.interpolateToArray(t_grid);
             
+            % Check values
             expected_array = [ones(n_interp, 1), 2*ones(n_interp, 1)];
             testCase.assertEqual(interpolated_array, expected_array)
         end
@@ -226,6 +231,7 @@ classdef HybridArcTest < matlab.unittest.TestCase
             t_grid = linspace(0,8);
             interpolated_sol = sol.interpolateToArray(t_grid);
 
+            % Check values
             testCase.assertEqual(interpolated_sol, ones(size(interpolated_sol)))
         end
 
@@ -238,6 +244,7 @@ classdef HybridArcTest < matlab.unittest.TestCase
             t_grid = linspace(t(1), t(end), 123)';
             interpolated_sol = sol.interpolateToArray(t_grid);
 
+            % Check values
             testCase.assertEqual(interpolated_sol, 2*t_grid) % slope of 2
         end
 
@@ -257,49 +264,190 @@ classdef HybridArcTest < matlab.unittest.TestCase
             ndxs_before_jump = t_grid < t_jump;
             ndxs_after_jump = t_grid > t_jump;
 
+            % Check values
             testCase.assertEqual(interpolated_sol(ndxs_before_jump), 2*t_grid(ndxs_before_jump))
             testCase.assertEqual(interpolated_sol(ndxs_after_jump),   -t_grid(ndxs_after_jump))
         end
         
-        function testInterpolateToArray_JumpAtInterpolationPoint(testCase)
-            t_jump = 12.56; t_end = 34; % Jump and end times.
-            n_before = 26; n_after = 10; % Time steps before and after jump.
-            t = [linspace(     0, t_jump, n_before)'; 
-                 linspace(t_jump,  t_end, n_after)'];
-            j = [zeros(n_before, 1); 
-                  ones(n_after, 1)];
-            x = [2*linspace(     0, t_jump, n_before)'; 
-                  -linspace(t_jump,  t_end, n_after)'];
+        function testInterpolateToArray_JumpAtInterpolationPoint_1D(testCase)
+            % Jump time and end time.
+            T_JUMP = 12.56; T_END = 34;
+
+            % Time steps before and after jump.
+            N_BEFORE = 26; N_AFTER = 10; 
+
+            % (Constant) x-values before and after jump.
+            X_BEFORE = 0; X_AFTER = 1;
+
+            t = [linspace(     0, T_JUMP, N_BEFORE)'; 
+                 linspace(T_JUMP,  T_END, N_AFTER)'];
+            j = [zeros(N_BEFORE, 1); 
+                  ones(N_AFTER, 1)];
+            x = [X_BEFORE*ones(N_BEFORE, 1); 
+                 X_AFTER*ones(N_AFTER, 1)];
             sol = HybridArc(t, j, x);
 
-            t_grid = [0; t_jump; t_end];
-            [x_interp, t_interp] =sol.interpolateToArray(t_grid);
+            t_grid = [0; T_JUMP; T_END];
+            [x_interp, t_interp] = sol.interpolateToArray(t_grid);
 
+            % Check sizes
             testCase.assertSize(x_interp, [3 1])
             testCase.assertSize(t_interp, [3 1])
-            % TODO:
-            % testCase.assertEqual(interpolated_sol, ...)
+
+            % Check values
+            x_interp_expected = [X_BEFORE; mean([X_BEFORE, X_AFTER]); X_AFTER];
+            testCase.assertEqual(x_interp, x_interp_expected)
         end
         
         function testInterpolateToArray_JumpAtInterpolationPoint_2D(testCase)
-            t_jump = 12.56; t_end = 34; % Jump and end times.
-            n_before = 26; n_after = 10; % Time steps before and after jump.
-            t = [linspace(     0, t_jump, n_before)'; 
-                 linspace(t_jump,  t_end, n_after)'];
-            j = [zeros(n_before, 1); 
-                  ones(n_after, 1)];
-            x = [2*linspace(     0, t_jump, n_before)', -linspace(     0, t_jump, n_before)'; 
-                  -linspace(t_jump,  t_end, n_after)', 2*linspace(t_jump,  t_end, n_after)'];
+            % Jump and end times.
+            T_JUMP = 12.56; T_END = 34;
+
+            % Time steps before and after jump.
+            N_BEFORE = 26; N_AFTER = 10; 
+
+            % (Constant) x-values before and after jump.
+            X_BEFORE = [-2 2]; X_AFTER = [0 10];
+            
+            t = [linspace(     0, T_JUMP, N_BEFORE)'; 
+                 linspace(T_JUMP,  T_END, N_AFTER)'];
+            j = [zeros(N_BEFORE, 1); 
+                  ones(N_AFTER, 1)];
+            x = [ones(N_BEFORE,1)*X_BEFORE; 
+                 ones(N_AFTER,1)*X_AFTER];
             sol = HybridArc(t, j, x);
 
-            t_grid = [0; t_jump; t_end];
+            t_grid = [0; T_JUMP; T_END];
             [x_interp, t_interp] = sol.interpolateToArray(t_grid);
 
             testCase.assertSize(x_interp, [3 2])
             testCase.assertSize(t_interp, [3 1])
-            % TODO:
-            % testCase.assertEqual(interpolated_sol, ...)
+
+            % Check values
+            x_interp_expected = [X_BEFORE; mean([X_BEFORE; X_AFTER]); X_AFTER];
+            testCase.assertEqual(x_interp, x_interp_expected)
         end
+        
+        function testInterpolateToArray_ScalarTGrid(testCase)
+            % Jump and end times.
+            T_JUMP = 12.56; T_END = 34;
+
+            % Time steps before and after jump.
+            N_BEFORE = 26; N_AFTER = 10; 
+            
+            t = [linspace(     0, T_JUMP, N_BEFORE)'; 
+                 linspace(T_JUMP,  T_END, N_AFTER)'];
+            j = [zeros(N_BEFORE, 1); 
+                  ones(N_AFTER, 1)];
+            x = [23*ones(N_BEFORE,1); 
+                 12*ones(N_AFTER,1)];
+            sol = HybridArc(t, j, x);
+
+            n_t_interp = 123; % Number of interpolation points.
+            [x_interp, t_interp] = sol.interpolateToArray(n_t_interp);
+
+            % Check the shapes are correct.
+            testCase.assertSize(x_interp, [n_t_interp 2])
+            testCase.assertSize(t_interp, [n_t_interp 1])
+        end
+        
+        function testInterpolateToArray_InterpMethod_Previous(testCase)
+            % x-values
+            x1=[-2 2]; x2=[0 10]; x3=[20, 0];
+            
+            t = [ 0;  1;  2];
+            j = [ 0;  0;  0];
+            x = [x1; x2; x3];
+            sol = HybridArc(t, j, x);
+
+            t_grid = [0; 0.5; 1; 1.5; 2];
+            [x_interp, t_interp] = sol.interpolateToArray(t_grid, 'InterpMethod', 'previous');
+
+            testCase.assertSize(x_interp, [numel(t_grid) 2])
+            testCase.assertSize(t_interp, [numel(t_grid) 1])
+
+            % Check values
+            x_interp_expected = [x1; x1; x2; x2; x3];
+            testCase.assertEqual(x_interp, x_interp_expected)
+        end
+        
+        function testInterpolateToArray_ValueAtJumpFnc_NaN(testCase)
+            % Jump and end times.
+            T_JUMP = 12.56; T_END = 34;
+
+            % Time steps before and after jump.
+            N_BEFORE = 26; N_AFTER = 10; 
+
+            % (Constant) x-values before and after jump.
+            X_BEFORE = [-2 2]; X_AFTER = [0 10];
+            
+            t = [linspace(     0, T_JUMP, N_BEFORE)'; 
+                 linspace(T_JUMP,  T_END, N_AFTER)'];
+            j = [zeros(N_BEFORE, 1); 
+                  ones(N_AFTER, 1)];
+            x = [ones(N_BEFORE,1)*X_BEFORE; 
+                 ones(N_AFTER,1)*X_AFTER];
+            sol = HybridArc(t, j, x);
+
+            t_grid = [0; T_JUMP; T_END];
+
+            value_at_jump_fh = @(x_and_gx) NaN(size(x_and_gx, 1), 1);
+            [x_interp, t_interp] = sol.interpolateToArray(t_grid, 'ValueAtJumpFnc', value_at_jump_fh);
+
+            testCase.assertSize(x_interp, [3 2])
+            testCase.assertSize(t_interp, [3 1])
+
+            % Check values
+            x_interp_expected = [X_BEFORE; [NaN NaN]; X_AFTER];
+            testCase.assertEqual(x_interp, x_interp_expected)
+        end
+
+        function testInterpolateToArray_ValueAtJumpFnc_WrongSizeOutputFromFH(testCase)
+            % Jump and end times.
+            T_JUMP = 12.56; T_END = 34;
+
+            % Time steps before and after jump.
+            N_BEFORE = 26; N_AFTER = 10; 
+
+            % (Constant) x-values before and after jump.
+            X_BEFORE = [-2 2]; X_AFTER = [0 10];
+            
+            t = [linspace(     0, T_JUMP, N_BEFORE)'; 
+                 linspace(T_JUMP,  T_END, N_AFTER)'];
+            j = [zeros(N_BEFORE, 1); 
+                  ones(N_AFTER, 1)];
+            x = [ones(N_BEFORE,1)*X_BEFORE; 
+                 ones(N_AFTER,1)*X_AFTER];
+            sol = HybridArc(t, j, x);
+
+            t_grid = [0 T_JUMP];
+            value_at_jump_fh = @(x_and_gx) ones(1, 5);
+            call_fh = @() sol.interpolateToArray(t_grid, 'ValueAtJumpFnc', value_at_jump_fh);
+            testCase.assertError(call_fh, 'HybridArc:WrongFunctionHandleOutputSize');
+        end
+
+        %%% Test interpolateToHybridArc %%%
+
+        function testInterpolateToHybridArc_ConstantX_NoJumps(testCase)
+            x = ones(10, 1);
+            t = linspace(0, 9, 10)';
+            j = zeros(10, 1);
+            sol = HybridArc(t, j, x);
+
+            n_interp = 100;
+            t_grid = linspace(0, 9, n_interp);
+            interpolated_array = sol.interpolateToHybridArc(t_grid);
+            
+            % Check sizes
+            testCase.assertSize(interpolated_array.x, [n_interp, 1])
+            testCase.assertSize(interpolated_array.t, [n_interp, 1])
+            testCase.assertSize(interpolated_array.j, [n_interp, 1])
+
+            % Check values
+            testCase.assertEqual(interpolated_array.x, ones(n_interp, 1))
+        end
+
+        %%% Test restrictT and restrictJ %%%
 
         function testRestrictT(testCase)
             t = [0; 1; 2; 2];

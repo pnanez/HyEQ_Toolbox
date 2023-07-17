@@ -83,6 +83,21 @@
             {"name": "restricted_sol", "type":"HybridArc"}
           ]
     },
+"HybridArc.interpolateToArray": 
+    { "inputs":
+     [{"name":"hybrid_arc"}, 
+      {"name":"t_interp", "kind":"required", 
+       "type":["real", "vector"], "purpose":"Interpolation time grid."},
+      {"name":"InterpMethod", "kind":"namevalue",
+       "type":"choices={'linear', 'nearest', 'next', 'previous', 'pchip','cubic','makima','spline'}",
+       "purpose":"Interpolation method. Default='linear'."},
+      {"name":"ValueAtJumpFnc",  "kind":"namevalue",
+       "type":["function_handle"],
+       "purpose":"Function for generating interpolated values at jumps."}
+     ], 
+     "outputs": [{"name": "x_interp", "type":["real", "array"]}, 
+                 {"name": "t_interp", "type":["real", "vector"]}]
+    },
 "HybridArc.evaluateFunction": 
     { "inputs":
         [

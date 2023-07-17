@@ -273,12 +273,11 @@ classdef HybridArc
             % If t_interp is a single value, then we interpret it as the number
             % of evenly spaced interpolation points.
             if isscalar(t_interp)
-                assert(round(t_interp) == t_interp, ...
+                assert(round(t_interp) == t_interp && t_interp >= 2, ...
                     ['If a scalar value is given for ''t_interp'', ' ...
-                    'it must be an integer greater than or equal to 2.'])
-                assert(t_interp >= 2, ...
-                    ['If a scalar value is given for ''t_interp'', ' ...
-                    'it must be greater than or equal to 2.'])
+                    'it must be an integer greater than or equal to 2, ' ...
+                    'which is interpreted as the number of evenly spaced ' ...
+                    'interpolation points.'])
                 interp_steps = t_interp;
                 t_interp = linspace(this.t(1), this.t(end), interp_steps)';
             elseif isrow(t_interp)
@@ -348,9 +347,13 @@ classdef HybridArc
                         j_next = j_next + 1;
                     end
                     values_at_jump = value_at_jump_fnc(X)'; % x in rows
-                    if size(values_at_jump, 2) ~= size(this.x, 2)
+                    x_dim = size(values_at_jump, 2);
+                    if x_dim ~= size(this.x, 2)
                         % TODO: Clean up and add test.
-                        error('Output of value_at_jump_fnc function is wrong size.')
+                        error('HybridArc:WrongFunctionHandleOutputSize', ...
+                            ['Output of value_at_jump_fnc function is wrong size. ' ...
+                            'Expected %d rows, instead the shape was %s'], ...
+                            x_dim, mat2str(size(values_at_jump')))
                     end
                     n_values_at_jump = size(values_at_jump, 1);
                     x_interp_iof = [x_interp_iof; values_at_jump]; % x in rows
@@ -480,7 +483,7 @@ classdef HybridArc
 
     methods(Access = private)
         function plotByFnc(this, plt_fnc, varargin)
-            % Shortcut for HybridPlotBuilder.plot function.
+            % Shortcut for HybridPlotBuilder.plot* functions.
             [~, x_ndxs] = hybrid.internal.convert_varargin_to_solution_obj([{this}, varargin(:)']);
             MAX_COMPONENTS_FOR_SUBPLOTS = 4;
             if length(x_ndxs) <= MAX_COMPONENTS_FOR_SUBPLOTS
