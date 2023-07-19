@@ -9,7 +9,7 @@ classdef jumpTimesTest < matlab.unittest.TestCase
             testCase.assertEmpty(jump_t);
             testCase.assertEmpty(jump_j);
             testCase.assertEmpty(jump_indices);
-            testCase.assertEqual(is_jump, 0);
+            testCase.assertEqual(is_jump, false);
         end
 
         function testNoJumps(testCase)
@@ -20,7 +20,7 @@ classdef jumpTimesTest < matlab.unittest.TestCase
             testCase.assertEmpty(jump_t);
             testCase.assertEmpty(jump_j);
             testCase.assertEmpty(jump_indices);
-            testCase.assertEqual(is_jump, zeros(n, 1));
+            testCase.assertEqual(is_jump, false(n, 1));
         end
 
         function testOneJump(testCase)
@@ -30,7 +30,7 @@ classdef jumpTimesTest < matlab.unittest.TestCase
             testCase.assertEqual(jump_t, 0.1);
             testCase.assertEqual(jump_j, 1); % The value of j before the jump.
             testCase.assertEqual(jump_indices, 2);
-            testCase.assertEqual(is_jump, [0; 1; 0; 0]);
+            testCase.assertEqual(is_jump, logical([0; 1; 0; 0]));
         end
 
         function testTwoJumps(testCase)
@@ -40,7 +40,7 @@ classdef jumpTimesTest < matlab.unittest.TestCase
             testCase.assertEqual(jump_t, [2.17; 3.14]);
             testCase.assertEqual(jump_j, [0; 1]); % The values of j after the jumps.
             testCase.assertEqual(jump_indices, [2; 4]);
-            testCase.assertEqual(is_jump, [0; 1; 0; 1; 0]);
+            testCase.assertEqual(is_jump, logical([0; 1; 0; 1; 0]));
         end
 
     end

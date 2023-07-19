@@ -17,7 +17,7 @@ if length(t) == 1 % Handle the case of a trivial solution.
     jump_t = [];
     jump_start_j = [];
     jump_start_indices = [];
-    is_jump_start = [];
+    is_jump_start = false;
     return;
 end
 
