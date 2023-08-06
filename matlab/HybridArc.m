@@ -398,19 +398,13 @@ classdef HybridArc
 
         function hybrid_arc = interpolateToHybridArc(this, t_interp, varargin)
             % Generate a new HybridArc object with time steps at the interpolation points given in t_interp.
+            % t_interp must be a nondecreaing vector of values that within the
+            % interval [this.t(1), this.t(end)].
+            % There is an optional name-value argument: 
+            % * "InterpMethod" with possible values...
 
             % TODO: Add documentation
-            % TODO: Add autocomplete signiture.
-            % Tests to write:
-            %   * Interpolation works when interpolation grid aligns with jump
-            %   times (e.g., a interpolation time is at the start or end of an
-            %   IOF).
-            %   * Works even if there are two sequential jumps.
-            %   * Works even if IOF has only two samples (or less?)
-            %   * Works even if no interpolation points occur in IOF
-            %   * Works for 1D and 2D arcs.
-            %   * t-values outside of given range are not included.
-            %   * Test if t-values don't extend to entire domain.
+            % DONE: Add autocomplete signiture.
             ip = inputParser;
             ip.FunctionName = 'HybridArc.interpolateToHybridArc';
             addOptional(ip, 'InterpMethod', 'spline');
@@ -424,7 +418,7 @@ classdef HybridArc
             % Check that the input t_interp for interpolateToArray and
             % interpolateToHybridArc is well-formed. If it is, then transform it
             % into a standard form, namely a column vector. 
-            t_interp = this.preprocess_t_interp(t_interp);
+            t_interp = this.preprocess_t_interp(t_interp, true);
 
             % Add jump times to t_interp that were not already there.
             t_interp = this.ensure_before_and_after_jump_times_are_in_array(t_interp);
@@ -435,11 +429,20 @@ classdef HybridArc
             for j_iof = unique(j_interp')
                 interp_iof_ndxs = find(j_interp == j_iof);
                 % is_this_iof = ;
-                t_iof = t_interp(interp_iof_ndxs);
+                t_interp_iof = t_interp(interp_iof_ndxs);
+                t_iof = this.t(this.j == j_iof);
+                x_iof = this.x(this.j == j_iof, :);
+                if numel(t_iof) == 1
+                    assert(numel(t_interp_iof) == 1)
+                    assert(t_interp_iof == t_iof)
+                    x_interp(interp_iof_ndxs, :) = x_iof;
+                    continue
+                end
+
                 x_interp(interp_iof_ndxs, :) = interp1( ...
-                    this.t(this.j == j_iof), ... Select the t values from this interval of flow
-                    this.x(this.j == j_iof, :), ... Select the x values from this interval of flow
-                    t_iof, ...% Give the interpolation grid in this interval of flow.
+                    t_iof, ... Select the t values from this interval of flow
+                    x_iof, ... Select the x values from this interval of flow
+                    t_interp_iof, ... Give the interpolation grid in this interval of flow.
                     interp_method); 
             end
 
@@ -468,10 +471,14 @@ classdef HybridArc
             end
         end
 
-        function t_interp = preprocess_t_interp(this, t_interp)
+        function t_interp = preprocess_t_interp(this, t_interp, ensure_sorted)
             % Check that the input t_interp for interpolateToArray and
             % interpolateToHybridArc is well-formed. If it is, then transform it
             % into a standard form, namely a column vector. 
+
+            if ~exist('ensure_sorted', 'var')
+                ensure_sorted = false;
+            end
 
             if ~isnumeric(t_interp)
                 error('t_interp must be numeric. Instead, its type was "%s".', class(t_interp))
@@ -495,6 +502,11 @@ classdef HybridArc
             elseif isrow(t_interp)
                 % Make sure t_interp is a column vector.
                 t_interp = t_interp';
+            end
+
+            if ensure_sorted && ~issorted(t_interp)
+                error('HybridArc:ArgumentNotSorted', ...
+                    'The argument ''t_interp'' is not sorted in increasing order.')
             end
 
             assert(iscolumn(t_interp), 't_interp needs to be a column after preprocessing.')
@@ -527,50 +539,57 @@ classdef HybridArc
 
             t_before_and_after_jump = this.t(this.is_jump_start | this.is_jump_end);
 
+            % Remove any jump times that are not in the range of 't_in'.
+            is_in_range = t_before_and_after_jump >= t_in(1) & t_before_and_after_jump <= t_in(end);
+            t_before_and_after_jump = t_before_and_after_jump(is_in_range);
+
             % Add jump times and sort the resulting array.
             t_out = sort([t_in_without_jump_times; t_before_and_after_jump]);
         end
-
-        function j = tToJ(this, t)
-            % Map a given value of time to the  Work in progress. 
-            % t_excluding_after_jumps = this.t
-            [unique_t, unique_t_ndxs, ~] = unique(this.t);
-
-            % if t < this.t(1) or t > this.t(end
-            %   j = []
-            %   return
-            % end
-            
-            j = interp1(unique_t, this.j(unique_t_ndxs), t, 'previous');
-        end
+        
+        % function j = tToJ(this, t)
+        %     % Map a given value of time to the  Work in progress. 
+        %     % t_excluding_after_jumps = this.t
+        %     [unique_t, unique_t_ndxs, ~] = unique(this.t);
+        % 
+        %     % if t < this.t(1) or t > this.t(end
+        %     %   j = []
+        %     %   return
+        %     % end
+        % 
+        %     j = interp1(unique_t, this.j(unique_t_ndxs), t, 'previous');
+        % end
 
         function j_out = tToJIncrementingJForRepeatedTValuesAtJumps(this, t_in)
 
             j_out = nan(numel(t_in), 1);
 
-            % We always increment t_ndx by 1, so we initially set it to zero to
-            % allow for the initial increment.
-            t_ndx = 0;
+            t_ndx = 1;
 
             % For each entry in the given array 't_in', index with 'in_and_out_ndx', 
             % we find the index 't_ndx' that 
             for in_and_out_ndx = 1:numel(t_in)
 
-                % Always increment t_ndx by at least one so that if we hit
-                % multiple jumps in a row, t_ndx increases causing j_out to
-                % increase.
-                do_once = t_ndx==0 || this.is_jump_start(t_ndx);
-
                 % Increase t_ndx until this.t(t_ndx) >= t_in(in_and_out_ndx)
-                while do_once || this.t(t_ndx) < t_in(in_and_out_ndx)
+                while this.t(t_ndx) < t_in(in_and_out_ndx)
                     t_ndx = t_ndx + 1;
-                    do_once = false;
                 end
 
-                % Check that
                 assert(this.t(t_ndx) >= t_in(in_and_out_ndx))
 
                 j_out(in_and_out_ndx) = this.j(t_ndx);
+
+                % If t_in(in_and_out_ndx) is the start of a jump, then we
+                % increment t_ndx so that j_out increases. This is important if
+                % there are multiple jumps in a row.
+                if this.t(t_ndx) == t_in(in_and_out_ndx) && this.is_jump_start(t_ndx)
+                    t_ndx = t_ndx + 1;
+                    if numel(this.t) >= t_ndx
+                        assert(this.t(t_ndx-1) == this.t(t_ndx), ...
+                            ['Incrementing t_ndx here caused this.t(t_ndx) to ' ...
+                            'change but it should have the same value.'])
+                    end
+                end
             end
         end
 

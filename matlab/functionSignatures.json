@@ -85,7 +85,7 @@
     },
 "HybridArc.interpolateToArray": 
     { "inputs":
-     [{"name":"hybrid_arc"}, 
+     [{"name":"this"}, 
       {"name":"t_interp", "kind":"required", 
        "type":["real", "vector"], "purpose":"Interpolation time grid."},
       {"name":"InterpMethod", "kind":"namevalue",
@@ -97,6 +97,17 @@
      ], 
      "outputs": [{"name": "x_interp", "type":["real", "array"]}, 
                  {"name": "t_interp", "type":["real", "vector"]}]
+    },
+"HybridArc.interpolateToHybridArc": 
+    { "inputs":
+     [{"name":"this"}, 
+      {"name":"t_interp", "kind":"required", 
+       "type":["real", "vector"], "purpose":"Interpolation time grid."},
+      {"name":"InterpMethod", "kind":"namevalue",
+       "type":"choices={'linear', 'nearest', 'next', 'previous', 'pchip','cubic','makima','spline'}",
+       "purpose":"Interpolation method. Default='linear'."}
+     ], 
+     "outputs": [{"name": "hybrid_arc", "type":"HybridArc"}]
     },
 "HybridArc.evaluateFunction": 
     { "inputs":
