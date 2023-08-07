@@ -784,6 +784,12 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             testCase.assertLegendLabels('Subplot 1', {'Subplot 2', 'A plot', 'A quiver'})
         end
         
+        function testAddLegendEntry_failingTest(testCase)
+            t_grid = linspace(0.5, 1.5, 15);
+            grid_plt = plot(t_grid(:), 0);
+            HybridPlotBuilder().addLegendEntry(grid_plt, 'Interpolation grid');
+        end
+        
         function testLegendsInMultipleFigures(testCase)
             % A single |HybridPlotBuilder| object can be used to add plots and legends to
             % multiple figures. Each legend entry should only appear in the
