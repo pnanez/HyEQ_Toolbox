@@ -2,12 +2,28 @@
 %% Version 3.1
 % Changes in version 3.1.
 % 
+% * Added |HybridArc.interpolateToArray| and |HybridArc.interpolateToHybridArc|.
+% * Added |HybridArc.is_jump_start|, |HybridArc.is_jump_end|,
+% |HybridArc.jump_start_indices|, and |HybridArc.jump_end_indices|. 
+% * Deprecated |HybridArc.jump_indices|.
 % * Added |HybridPlotBuilder.reorderLegendEntries|,
 % |HybridPlotBuilder.circshiftLegendEntries|, |HybridPlotBuilder.legendOptions|. 
 % * Changed behavior of |HybridPlotBuilder| legend options so that the default
 % options are used regardless of options used in current legend. *This means
 % that legend options must be set in the last call to |HybridPlotBuilder.legend|
 % or by calling |HybridPlotBuilder.legendOptions| after all legends are added.*
+% * Added |HybridPlotBuilder.plotTimeDomain| for plotting hybrid time domains.
+% * Added |HybridPlotBuilder.flowMarker| and |HybridPlotBuilder.flowMarkerSize|
+% to control markers drawn at each time step during flows (default is no marker).
+% * Change |HybridSystem| verification so that no error is thrown during inital
+% checks if |C(x0)=0| and |f(x0)| raises an error (similarly, no error is thrown
+% if |D(x0)=0| and |g(x0)| raises an error). 
+% * Improved error checking and messages.
+% * Fix some typos in the documentation (see Issue #88)
+% * Add array preallocation to |HyEQsolver| to speed up computations with many
+% time steps and large state spaces.
+% * Change default |'refine'| setting for |HybridSolverConfig| to |1|. 
+% * See GitHub issues for a list of fixed bugs (in particular, #92.
 
 %% Version 3.0
 % Version 3.0 of the Hybrid Equations Toolbox is a substantial update to 

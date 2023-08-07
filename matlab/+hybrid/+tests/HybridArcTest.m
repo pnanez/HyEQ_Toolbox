@@ -418,36 +418,119 @@ classdef HybridArcTest < matlab.unittest.TestCase
             x_interp_expected = [x1; x1; x2; x2; x3];
             testCase.assertEqual(x_interp, x_interp_expected)
         end
-        
-        function testInterpolateToArray_ValueAtJumpFnc_NaN(testCase)
-            % Jump and end times.
-            T_JUMP = 12.56; T_END = 34;
 
-            % Time steps before and after jump.
-            N_BEFORE = 26; N_AFTER = 10; 
+        function testInterpolateToArray_ValueAtJump_DefaultIsMean(testCase)
+            % Jump time.
+            T_JUMP = 12.56;
 
             % (Constant) x-values before and after jump.
             X_BEFORE = [-2 2]; X_AFTER = [0 10];
             
-            t = [linspace(     0, T_JUMP, N_BEFORE)'; 
-                 linspace(T_JUMP,  T_END, N_AFTER)'];
-            j = [zeros(N_BEFORE, 1); 
-                  ones(N_AFTER, 1)];
-            x = [ones(N_BEFORE,1)*X_BEFORE; 
-                 ones(N_AFTER,1)*X_AFTER];
+            t = [0; T_JUMP; T_JUMP; 34];
+            j = [0;      0;      1;     1];
+            x = [X_BEFORE;X_BEFORE;X_AFTER;X_AFTER];
             sol = HybridArc(t, j, x);
 
-            t_grid = [0; T_JUMP; T_END];
+            t_grid = [0, T_JUMP];
 
-            value_at_jump_fh = @(x_and_gx) NaN(size(x_and_gx, 1), 1);
-            [x_interp, t_interp] = sol.interpolateToArray(t_grid, 'ValueAtJumpFnc', value_at_jump_fh);
+            [x_interp, t_interp] = sol.interpolateToArray(t_grid);
 
-            testCase.assertSize(x_interp, [3 2])
-            testCase.assertSize(t_interp, [3 1])
+            % Time grid is preserved.
+            testCase.assertEqual(t_interp, t_grid')
 
             % Check values
-            x_interp_expected = [X_BEFORE; [NaN NaN]; X_AFTER];
+            x_interp_expected = [X_BEFORE; (X_BEFORE + X_AFTER)/2];
             testCase.assertEqual(x_interp, x_interp_expected)
+        end
+
+        function testInterpolateToArray_ValueAtJump_Both_as_argument(testCase)
+            % Jump time.
+            T_JUMP = 12.56;
+
+            % (Constant) x-values before and after jump.
+            X_BEFORE = [-2 2]; X_AFTER = [0 10];
+            
+            t = [0; T_JUMP; T_JUMP; 34];
+            j = [0;      0;      1;     1];
+            x = [X_BEFORE;X_BEFORE;X_AFTER;X_AFTER];
+            sol = HybridArc(t, j, x);
+
+            t_grid = [0, T_JUMP];
+
+            [x_interp, t_interp] = sol.interpolateToArray(t_grid, 'ValueAtJump', 'Both');
+
+            % Time grid is preserved.
+            testCase.assertEqual(t_interp, [0; T_JUMP; T_JUMP])
+
+            % Check values
+            x_interp_expected = [X_BEFORE; X_BEFORE; X_AFTER];
+            testCase.assertEqual(x_interp, x_interp_expected)
+        end
+
+        function test_preprocess_ValueAtJump_mean(testCase)
+            % (Constant) x-values before and after jump.
+            X_BEFORE = [-2; 2]; X_AFTER = [0; 10];
+            X_and_gX = [X_BEFORE, X_AFTER];
+
+            fh = HybridArc.preprocess_ValueAtJump('mean');
+            value_at_jump = fh(X_and_gX);
+
+            % Check values
+            testCase.assertEqual(value_at_jump, (X_BEFORE+X_AFTER)/2)
+        end
+
+        function test_preprocess_ValueAtJump_nan(testCase)
+            % (Constant) x-values before and after jump.
+            X_BEFORE = [-2; 2]; X_AFTER = [0; 10];
+            X_and_gX = [X_BEFORE, X_AFTER];
+
+            fh = HybridArc.preprocess_ValueAtJump('nan');
+            value_at_jump = fh(X_and_gX);
+
+            % Check values
+            testCase.assertEqual(value_at_jump, NaN(2, 1))
+        end
+
+        function test_preprocess_ValueAtJump_start(testCase)
+            % (Constant) x-values before and after jump.
+            X_BEFORE = [-2; 2]; X_AFTER = [0; 10];
+            X_and_gX = [X_BEFORE, X_AFTER];
+
+            fh = HybridArc.preprocess_ValueAtJump('start');
+            value_at_jump = fh(X_and_gX);
+
+            % Check values
+            testCase.assertEqual(value_at_jump, X_BEFORE)
+        end
+
+        function test_preprocess_ValueAtJump_end(testCase)
+            % (Constant) x-values before and after jump.
+            X_BEFORE = [-2; 2]; X_AFTER = [0; 10];
+            X_and_gX = [X_BEFORE, X_AFTER];
+
+            fh = HybridArc.preprocess_ValueAtJump('end');
+            value_at_jump = fh(X_and_gX);
+
+            % Check values
+            testCase.assertEqual(value_at_jump, X_AFTER)
+        end
+
+        function test_preprocess_ValueAtJump_both(testCase)
+            % (Constant) x-values before and after jump.
+            X_BEFORE = [-2; 2]; X_AFTER = [0; 10];
+
+            fh = HybridArc.preprocess_ValueAtJump('both');
+
+            % Check values
+            testCase.assertEqual(fh([X_BEFORE, X_AFTER]), [X_BEFORE, X_AFTER])
+            testCase.assertEqual(fh([X_BEFORE, X_AFTER, X_BEFORE]), [X_BEFORE, X_AFTER, X_BEFORE])
+        end
+
+        function test_preprocess_ValueAtJump_errorIfBadArgument(testCase)
+            testCase.assertError(@() HybridArc.preprocess_ValueAtJump('Hello'), ...
+                'HybridArc:InvalidArgumentValue');
+            testCase.assertError(@() HybridArc.preprocess_ValueAtJump(struct()), ...
+                'HybridArc:InvalidArgumentValue');
         end
 
         function testInterpolateToArray_InterpolationGridReversed(testCase)
@@ -491,29 +574,64 @@ classdef HybridArcTest < matlab.unittest.TestCase
                     'HybridArc:InterpolationPointOutsideOfTSpan');
         end
 
-        function testInterpolateToArray_ValueAtJumpFnc_WrongSizeOutputFromFH(testCase)
-            % Jump and end times.
-            T_JUMP = 12.56; T_END = 34;
 
-            % Time steps before and after jump.
-            N_BEFORE = 26; N_AFTER = 10; 
-
-            % (Constant) x-values before and after jump.
-            X_BEFORE = [-2 2]; X_AFTER = [0 10];
-            
-            t = [linspace(     0, T_JUMP, N_BEFORE)'; 
-                 linspace(T_JUMP,  T_END, N_AFTER)'];
-            j = [zeros(N_BEFORE, 1); 
-                  ones(N_AFTER, 1)];
-            x = [ones(N_BEFORE,1)*X_BEFORE; 
-                 ones(N_AFTER,1)*X_AFTER];
-            sol = HybridArc(t, j, x);
-
-            t_grid = [0 T_JUMP];
-            value_at_jump_fh = @(x_and_gx) ones(1, 5);
-            call_fh = @() sol.interpolateToArray(t_grid, 'ValueAtJumpFnc', value_at_jump_fh);
-            testCase.assertError(call_fh, 'HybridArc:WrongFunctionHandleOutputSize');
-        end
+        %%% The following two tests check ValueAtJump for function handles, but
+        %%% this is not currently supported.
+        % 
+        % function testInterpolateToArray_ValueAtJump_FunctionHandle(testCase)
+        %     % Jump and end times.
+        %     T_JUMP = 12.56; T_END = 34;
+        % 
+        %     % Time steps before and after jump.
+        %     N_BEFORE = 26; N_AFTER = 10; 
+        % 
+        %     % (Constant) x-values before and after jump.
+        %     X_BEFORE = [-2 2]; X_AFTER = [0 10];
+        % 
+        %     t = [linspace(     0, T_JUMP, N_BEFORE)'; 
+        %          linspace(T_JUMP,  T_END, N_AFTER)'];
+        %     j = [zeros(N_BEFORE, 1); 
+        %           ones(N_AFTER, 1)];
+        %     x = [ones(N_BEFORE,1)*X_BEFORE; 
+        %          ones(N_AFTER,1)*X_AFTER];
+        %     sol = HybridArc(t, j, x);
+        % 
+        %     t_grid = [0; T_JUMP; T_END];
+        % 
+        %     value_at_jump_fh = @(x_and_gx) zeros(size(x_and_gx, 1), 1);
+        %     [x_interp, t_interp] = sol.interpolateToArray(t_grid, 'ValueAtJump', value_at_jump_fh);
+        % 
+        %     testCase.assertSize(x_interp, [3 2])
+        %     testCase.assertSize(t_interp, [3 1])
+        % 
+        %     % Check values
+        %     x_interp_expected = [X_BEFORE; [0 0]; X_AFTER];
+        %     testCase.assertEqual(x_interp, x_interp_expected)
+        % end
+        %
+        % function testInterpolateToArray_ValueAtJump_WrongSizeOutputFromFH(testCase)
+        %     % Jump and end times.
+        %     T_JUMP = 12.56; T_END = 34;
+        % 
+        %     % Time steps before and after jump.
+        %     N_BEFORE = 26; N_AFTER = 10; 
+        % 
+        %     % (Constant) x-values before and after jump.
+        %     X_BEFORE = [-2 2]; X_AFTER = [0 10];
+        % 
+        %     t = [linspace(     0, T_JUMP, N_BEFORE)'; 
+        %          linspace(T_JUMP,  T_END, N_AFTER)'];
+        %     j = [zeros(N_BEFORE, 1); 
+        %           ones(N_AFTER, 1)];
+        %     x = [ones(N_BEFORE,1)*X_BEFORE; 
+        %          ones(N_AFTER,1)*X_AFTER];
+        %     sol = HybridArc(t, j, x);
+        % 
+        %     t_grid = [0 T_JUMP];
+        %     value_at_jump_fh = @(x_and_gx) ones(1, 5);
+        %     call_fh = @() sol.interpolateToArray(t_grid, 'ValueAtJump', value_at_jump_fh);
+        %     testCase.assertError(call_fh, 'HybridArc:WrongFunctionHandleOutputSize');
+        % end
 
         %%% Test interpolateToHybridArc %%%
 

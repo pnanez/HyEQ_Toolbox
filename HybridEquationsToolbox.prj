@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration build-checksum="3943893859" file="C:\Users\pwintz\code\hybrid-toolbox-fork-temp\HybridEquationsToolbox.prj" location="C:\Users\pwintz\code\hybrid-toolbox-fork-temp" name="HybridEquationsToolbox" target="target.toolbox" target-name="Package Toolbox">
+  <configuration build-checksum="3943893859" file="C:\Users\pwintz\code\hybrid-toolbox\HybridEquationsToolbox.prj" location="C:\Users\pwintz\code\hybrid-toolbox" name="HybridEquationsToolbox" target="target.toolbox" target-name="Package Toolbox">
     <param.appname>Hybrid Equations Toolbox</param.appname>
     <param.authnamewatermark>Paul Wintz</param.authnamewatermark>
     <param.email>pwintz@ucsc.edu</param.email>
@@ -7,7 +7,7 @@
     <param.summary />
     <param.description />
     <param.screenshot>${PROJECT_ROOT}\hybrid_toolbox_icon.png</param.screenshot>
-    <param.version>3.0.0.76</param.version>
+    <param.version>3.1.0.00</param.version>
     <param.output>${PROJECT_ROOT}\Hybrid Equations Toolbox.mltbx</param.output>
     <param.products.name />
     <param.products.id />
@@ -27,6 +27,8 @@ configure_development_path.m
 generate_toolbox_icon.m
 rename_variables.sh
 doc/src
+pages/*
+HyEQ_Toolbox.wiki/*
 *_temp.*
 .git*
 % A single file in a subfolder of the toolbox folder:
@@ -241,7 +243,7 @@ experimental/*
     </build-deliverables>
     <workflow />
     <matlab>
-      <root>C:\Program Files\MATLAB\R2021b</root>
+      <root>C:\Program Files\MATLAB\R2023a</root>
       <toolboxes />
     </matlab>
     <platform>

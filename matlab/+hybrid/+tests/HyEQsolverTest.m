@@ -3,7 +3,7 @@ classdef HyEQsolverTest < matlab.unittest.TestCase
     methods (Test)
      
         function testDefaultPriorityIsJumps(testCase)
-            f = @(x) 1e5; % This shouldn't be used.
+            f = @(x) error('This shouldn''t be used.');
             g = @(x) 0; 
             C = @(x) 1;
             D = @(x) 1;
@@ -16,7 +16,7 @@ classdef HyEQsolverTest < matlab.unittest.TestCase
         end
 
         function testContinuousTimeConstantWhenPriorityIsJumps(testCase)
-            f = @(x) 1e5; % This shouldn't be used.
+            f = @(x) error('This shouldn''t be used.');
             g = @(x) 0; 
             C = @(x) 1;
             D = @(x) 1;
@@ -32,7 +32,7 @@ classdef HyEQsolverTest < matlab.unittest.TestCase
 
         function testDiscreteTimeConstantWhenPriorityIsFlows(testCase)
             f = @(x) 0;
-            g = @(x) 23; % This shouldn't be used.
+            g = @(x) error('This shouldn''t be used.');
             C = @(x) 1;
             D = @(x) 1;
             x0 = 1;
@@ -64,14 +64,14 @@ classdef HyEQsolverTest < matlab.unittest.TestCase
         end
 
         function testFlowPriorityFromBoundaryOfC(testCase)
-            x0 = 1.5;
-            tspan = [0, 5];
-            jspan = [0, 1];
-            rule = 2;
             f = @(x) 1;
             g = @(x) 0;
             C = @(x) x <= 1.5;
             D = @(x) 1;
+            x0 = 1.5; % Is on boundary of C.
+            tspan = [0, 5];
+            jspan = [0, 1];
+            rule = 2;% Flow priority
             [t, j, x] = HyEQsolver(f, g, C, D, x0, tspan, jspan, rule);   
             sol = HybridSolution(t, j, x, C, D, tspan, jspan);
 

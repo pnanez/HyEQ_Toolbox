@@ -1,7 +1,8 @@
 classdef HybridArc
 % A numerical representation of a hybrid arc. 
 %
-% See also: HybridSolution, <a href="matlab: showdemo HybridSystem_demo">Demo: How to Implement and Solve a Hybrid System</a>.
+% See also: HybridSolution, <a href="matlab: hybrid.internal.openHelp('HybridArc_demo')">Demo: Hybrid Arcs and Solutions</a>.
+
 
 % Written by Paul K. Wintz, Hybrid Systems Laboratory, UC Santa Cruz. 
 % © 2021-2023. 
@@ -241,49 +242,77 @@ classdef HybridArc
         end
 
         function [x_interp, t_interp] = interpolateToArray(this, t_interp, varargin)
-            % Interpolate a function at each point along the solution.
+            % Generate an array containing the state values interpolated to given time steps.
             % 
-            % Returns a display of the interpolated x-values at t_grid times.
+            % Returns an array 'x_interp' of the interpolated x-values at the given
+            % interpolation times, sometimes with additional points added as
+            % described below. A second (optional) output array 't_interp'
+            % contains the actual values of 't' used in the interpolation. 
             %
             % Required Input Arguments:
-            % * 't_grid': list of times for interpolation or an integer with
-            % value of at least 2 that specifies a number of evenly distributed
-            % interpolation points.
+            % t_interp: Vector of times for interpolation or an integer with
+            %       value of at least 2 that specifies a number of evenly
+            %       distributed interpolation points. If given as a vector, all 
+            %       values in t_interp must within the interval [this.t(1),
+            %       this.t(end)]. If if t_interp is a single integer 'n', then the
+            %       result is equivalent to using 
+            %           t_interp=linspace(this.t(1), this.t(end), n).
+            %
             % Name-value Pair Input Arguments:
-            % * 'InterpMethod': String argument that gives the name of the interpolation method to use. One of
-            % 'spline', 'linear' ... 
+            % 'InterpMethod': String argument that gives the name of the
+            % interpolation method to use. 
+            % The supported values are
+            % * 'linear'
+            % * 'nearest'
+            % * 'next'
+            % * 'previous'
+            % * 'pchip'
+            % * 'cubic'
+            % * 'makima'
+            % * 'spline' 
+            % See <a href="matlab:doc('interp1')">interp1</a> for details.
             % 
-            % linear
-            % nearest
-            % next
-            % previous
-            % pchip
-            % cubic
-            % makima
-            % splineSee <a
-            % href="matlab:doc('interp1')">interp1</a> for details.
-            % 'ValueAtJumpFnc' Function handle argument with 
-            %   Input: x_and_gx -- an array containing x, g(x), g(g(x)) 
-            %       and so on in for each jumps that occur at the
-            %       current interpolation point.
-            %   Output: an array containing zero or more columns that represent the output values to appear in the interpolated array. 
-            % By default, ValueAtJumpFnc outputs a single column that is the
-            % average of [x, g(x), g(g(x)), ...]. 
+            % 'ValueAtJump': A case-insensitive string that determines the
+            % output array entry(s) when an interpolation point is at a jump time. 
+            % The supported values are
+            % * 'mean' (default): Uses the average of the value of x before
+            %           and after the jump (or of each value after multiple
+            %           jumps if multiple jumps occur sequentially). 
+            %           Preserves given interpolation grid. 
+            % * 'nan': Sets the value to a single NaN column vector.
+            %           Preserves given interpolation grid.
+            % * 'start': Use the value before the jump (or before the first
+            %           jump, if there are multiple sequential jumps). 
+            %           Preserves given interpolation grid. 
+            % * 'end': Use the value after the jump (or after the last jump, if there
+            %           are multiple sequential jumps). 
+            %           Preserves given interpolation grid.
+            % * 'both': Use the value after the jump and insert the value
+            %           after the jump. 
+            %           If there are multiple sequential jumps, then the value
+            %           after every jump is included.
+            %           Does *not* preserve the given interpolation grid because
+            %           additional entries are added at jump times.
+            % 
+            % See also: 
+            % HybridArc/interpolateToHybridArc
 
-            % TODO: Add documentation
             ip = inputParser;
             ip.FunctionName = 'HybridArc.interpolateToArray';
             addOptional(ip, 'InterpMethod', 'spline');
             
-            % 'X_and_gX' is a matrix containing---in each column---the value immediately
-            % before the jump, and the values immediately after (one or more)
-            % jumps. The output must be a colu
-            ValueAtJumpFnc_DEFAULT = @(X_and_gX) mean(X_and_gX, 2);
-            addOptional(ip, 'ValueAtJumpFnc', ValueAtJumpFnc_DEFAULT);
+            addOptional(ip, 'ValueAtJump', 'mean');
 
             parse(ip, varargin{:});
             interp_method = ip.Results.InterpMethod;
-            value_at_jump_fnc = ip.Results.ValueAtJumpFnc;
+            
+            % 'value_at_jump_fnc' is a function handle with 
+            %   Input: x_and_gx -- an array containing x, g(x), g(g(x)) 
+            %       and so on, in its columns, for each jumps that occur at the
+            %       current interpolation point.
+            %   Output: an array containing zero or more columns that represent 
+            %           the output values to appear in the interpolated array. 
+            value_at_jump_fnc = this.preprocess_ValueAtJump(ip.Results.ValueAtJump);
             
             % Check that the input t_interp for interpolateToArray and
             % interpolateToHybridArc is well-formed. If it is, then transform it
@@ -397,14 +426,34 @@ classdef HybridArc
         end
 
         function hybrid_arc = interpolateToHybridArc(this, t_interp, varargin)
-            % Generate a new HybridArc object with time steps at the interpolation points given in t_interp.
-            % t_interp must be a nondecreaing vector of values that within the
-            % interval [this.t(1), this.t(end)].
-            % There is an optional name-value argument: 
-            % * "InterpMethod" with possible values...
+            % Generate a new HybridArc object with state values interpolated to given time steps.    
+            %
+            % Required Input Arguments:
+            % t_interp: Vector of nondecreaing times for interpolation or an integer with
+            %       value of at least 2 that specifies a number of evenly
+            %       distributed interpolation points. If given as a vector, all 
+            %       values in t_interp must within the interval [this.t(1),
+            %       this.t(end)]. If if t_interp is a single integer 'n', then the
+            %       result is equivalent to using 
+            %           t_interp=linspace(this.t(1), this.t(end), n).
+            %
+            % Name-value Pair Input Arguments:
+            % 'InterpMethod': String argument that gives the name of the
+            % interpolation method to use. 
+            % The supported values are
+            % * 'linear'
+            % * 'nearest'
+            % * 'next'
+            % * 'previous'
+            % * 'pchip'
+            % * 'cubic'
+            % * 'makima'
+            % * 'spline' 
+            % See <a href="matlab:doc('interp1')">interp1</a> for details.
+            % 
+            % See also: 
+            % HybridArc/interpolateToArray
 
-            % TODO: Add documentation
-            % DONE: Add autocomplete signiture.
             ip = inputParser;
             ip.FunctionName = 'HybridArc.interpolateToHybridArc';
             addOptional(ip, 'InterpMethod', 'spline');
@@ -596,6 +645,58 @@ classdef HybridArc
         % function t = jToT(this, j)
         % 
         % end
+    end
+
+    methods(Static, Access = {?HybridArc, ?matlab.unittest.TestCase})
+
+
+        function value_at_jump_fnc = preprocess_ValueAtJump(value_at_jump_fnc_name)
+            % Take the name of a value_at_jump_fnc_name argument and return a
+            % function handle described as follows:
+            % 
+            % 'value_at_jump_fnc' is a function handle with 
+            %   Input: x_and_gx -- an array containing x, g(x), g(g(x)) 
+            %       and so on, in its columns, for each jumps that occur at the
+            %       current interpolation point.
+            %   Output: an array containing zero or more columns that represent 
+            %           the output values to appear in the interpolated array. 
+
+            % Check type
+            if ~ischar(value_at_jump_fnc_name) && ~isstring(value_at_jump_fnc_name)
+                error('HybridArc:InvalidArgumentValue', ...
+                    ['Unexpected type for ''ValueAtJump'' expected either ' ...
+                    'a string or a function handle. Instead was "%s".'], ...
+                    class(value_at_jump_fnc_name))
+            end
+
+            if strcmpi(value_at_jump_fnc_name, 'mean')
+                % Uses the average of the value of x before and after the jump
+                % (or of each value after multiple jumps if multiple jumps occur
+                % sequentially).
+                value_at_jump_fnc = @(X_and_gX) mean(X_and_gX, 2);
+            elseif strcmpi(value_at_jump_fnc_name, 'nan')
+                % Sets the value to NaN
+                value_at_jump_fnc = @(x_and_gx) NaN(size(x_and_gx, 1), 1);
+            elseif strcmpi(value_at_jump_fnc_name, 'start')
+                % Use the value before the jump (or before the first jump, if
+                % there are multiple sequential jumps). 
+                value_at_jump_fnc = @(x_and_gx) x_and_gx(:, 1);
+            elseif strcmpi(value_at_jump_fnc_name, 'end')
+                % Use the value after the jump (or after the last jump, if there
+                % are multiple sequential jumps). 
+                value_at_jump_fnc = @(x_and_gx) x_and_gx(:, end); 
+            elseif strcmpi(value_at_jump_fnc_name, 'both')
+                % Use the value after the jump and insert the value after the jump. 
+                % If there are multiple sequential jumps, then the value after
+                % every jump is included.
+                value_at_jump_fnc = @(x_and_gx) x_and_gx;
+            else
+                error('HybridArc:InvalidArgumentValue', ...
+                    ['Unexpected value for ''ValueAtJump'' argument. ' ...
+                    'Expected one of "mean", "nan", "start", "end", or "both".' ...
+                    ' Instead was "%s".'], value_at_jump_fnc_name)
+            end
+        end
     end
 
     methods(Hidden)

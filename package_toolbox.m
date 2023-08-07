@@ -4,7 +4,7 @@ function package_toolbox()
 % Before running this script to generate a released toolbox package,
 % update the build number in HybridEquationsToolbox.prj.
 %
-% By Paul Wintz, 2021-2022.
+% By Paul Wintz, 2021-2023.
 
 % 'package_toolbox' is a function instead of script so that it has its own
 % variable workspace (functions don't use the base workspace, they have their

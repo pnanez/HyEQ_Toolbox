@@ -4,6 +4,7 @@
         <tocitem target="html/intro_to_hybrid_systems.html">Introduction to Hybrid Systems</tocitem>
         <tocitem target="html/TOC_matlab.html">The HyEQ MATLAB Library
             <tocitem target="html/HybridSystem_demo.html">Creating and Simulating Hybrid Systems</tocitem>
+            <tocitem target="html/HybridArc_demo.html">Hybrid Arcs and Solutions</tocitem>
             <tocitem target="html/HybridPlotBuilder_demo.html">Plotting Hybrid Arcs</tocitem>
             <tocitem target="html/CompositeHybridSystem_demo.html">Composite Hybrid Systems</tocitem>
             <tocitem target="html/ConvertingLegacyCodeToVersion3_demo.html">Updating Code Designed for v2.04 to Use v3.0 Features.</tocitem>

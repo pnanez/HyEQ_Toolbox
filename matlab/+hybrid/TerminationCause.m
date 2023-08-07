@@ -1,7 +1,7 @@
 classdef TerminationCause
 % Enumeration class of possible causes for why a hybrid solution terminiated.
 %
-% See also: HybridSolution, HybridSystem.
+% See also: HybridSolution/termination_cause, HybridSystem.
 % 
 % Added in HyEQ Toolbox version 3.0 (©2022).
 

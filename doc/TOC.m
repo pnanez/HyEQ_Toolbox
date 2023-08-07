@@ -52,6 +52,8 @@
 % 
 % * <matlab:hybrid.internal.openHelp('HybridSystem_demo') 
 %       Creating and Simulating Hybrid Systems> 
+% * <matlab:hybrid.internal.openHelp('HybridArc_demo') 
+%       Hybrid Arcs and Solutions> 
 % * <matlab:hybrid.internal.openHelp('HybridPlotBuilder_demo') 
 %       Plotting Hybrid Arcs> 
 % * <matlab:hybrid.internal.openHelp('CompositeHybridSystem_demo') 
