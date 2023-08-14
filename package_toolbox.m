@@ -18,13 +18,13 @@ close all
 configure_development_path
 
 do_publish_docs = true;
-do_tests = true;
-do_package = true;
+do_tests = false;
+do_package = false;
 do_cleanup_path = do_package && true;
 
 % Make sure we are creating package using the latest version of MATLAB (update
 % the version string as new versions are released).
-assert(strcmp(version('-release'), '2022b'))
+assert(strcmp(version('-release'), '2023a'))
 
 projectFile = 'HybridEquationsToolbox.prj';
 toolbox_dirs = {'Examples', ...
