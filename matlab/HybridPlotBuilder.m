@@ -859,6 +859,134 @@ classdef HybridPlotBuilder < handle
                 clearvars this
             end
         end
+
+        function this = setAxesArgs(this, varargin)
+            % TODO
+            %
+            % To reset to the default value, call axesArgs([]).
+            %
+            % See also: 
+            this.settings.user_axes_args = varargin;
+            this.last_function_call = 'setAxesArgs';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a
+                % semicolon.
+                clearvars this
+            end
+        end
+
+        function this = addAxesArgs(this, varargin)
+            % TODO
+            %
+            % To reset to the default value, call axesArgs([]).
+            %
+            % See also: 
+            this.settings.axes_builtin_fnc_args = [this.settings.axes_builtin_fnc_args, varargin];
+            this.last_function_call = 'addAxesArgs';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a
+                % semicolon.
+                clearvars this
+            end
+        end
+
+        function this = setPlotArgs(this, varargin)
+            % TODO
+            %
+            % To reset to the default value, call axesArgs([]).
+            %
+            % See also: 
+            this.settings.user_plot_args = varargin;
+            this.last_function_call = 'setPlotArgs';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a
+                % semicolon.
+                clearvars this
+            end
+        end
+
+        function this = setPlotFlowArgs(this, varargin)
+            % TODO
+            %
+            % To reset to the default value, call axesArgs([]).
+            %
+            % See also: 
+            this.settings.user_plot_flow_args = varargin;
+            this.last_function_call = 'setPlotFlowArgs';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a
+                % semicolon.
+                clearvars this
+            end
+        end
+
+        function this = setPlotJumpArgs(this, varargin)
+            % TODO
+            %
+            % To reset to the default value, call axesArgs([]).
+            %
+            % See also: 
+            this.settings.user_plot_jump_args = varargin;
+            this.last_function_call = 'setPlotJumpArgs';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a
+                % semicolon.
+                clearvars this
+            end
+        end
+
+        function this = setPlotJumpStartArgs(this, varargin)
+            % TODO
+            %
+            % To reset to the default value, call axesArgs([]).
+            %
+            % See also: 
+            this.settings.user_plot_jump_start_args = varargin;
+            this.last_function_call = 'setPlotStartArgs';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a
+                % semicolon.
+                clearvars this
+            end
+        end
+
+        function this = setPlotJumpLineArgs(this, varargin)
+            % TODO
+            %
+            % To reset to the default value, call axesArgs([]).
+            %
+            % See also: 
+            this.settings.user_plot_jump_line_args = varargin;
+            this.last_function_call = 'setPlotJumpLineArgs';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a
+                % semicolon.
+                clearvars this
+            end
+        end
+
+        function this = setPlotJumpEndArgs(this, varargin)
+            % TODO
+            %
+            % To reset to the default value, call axesArgs([]).
+            %
+            % See also: 
+            this.settings.user_plot_jump_end_args = varargin;
+            this.last_function_call = 'setPlotJumpEndArgs';
+
+            if nargout == 0
+                % Prevent output if function is not terminated with a
+                % semicolon.
+                clearvars this
+            end
+        end
         
         function this = configurePlots(this, plots_callback)
             % Provide a function handle that is called within each plot (or subplot).
@@ -1211,7 +1339,8 @@ classdef HybridPlotBuilder < handle
                 
                 if i_sp == 1 || this.settings.auto_subplots 
                     if ~is_hold_on_before
-                        % Clear the plot to emulate 'hold off' behavior.
+                        % Plot an invisible point to clear the plot, thereby
+                        % emulating the typical 'hold off' behavior. 
                         this.settings.plot_function_2D(axes_array(i_sp), nan, nan);
                     end
                     hold on
@@ -1300,6 +1429,11 @@ classdef HybridPlotBuilder < handle
                 xlim(axes, plt_data.xlim)
                 ylim(axes, plt_data.ylim)
 
+                % Pass user-defined arguments to "axes". 
+                if ~isempty(this.settings.user_axes_args)
+                    set(axes, this.settings.user_axes_args{:});
+                end
+
                 this.settings.plots_callback(axes, plt_data.state_ndx);
             end
 
@@ -1317,7 +1451,9 @@ classdef HybridPlotBuilder < handle
             if isempty(x)
                return 
             end
-            this.settings.plot_function_2D(ax, x(:,1), x(:,2), flow_args{:})
+            this.settings.plot_function_2D(ax, ...
+                x(:,1), x(:,2), ...
+                flow_args{:})
         end
 
         function plotFlow3D(this, ax, x, flow_args)
@@ -1328,12 +1464,19 @@ classdef HybridPlotBuilder < handle
         end
 
         function plotJump2D(this, ax, x_jump, x_start, x_end, jump_args)
-            % Plot the line from start to end.
-            this.settings.plot_function_2D(ax, x_jump(:,1), x_jump(:,2), jump_args.line{:});
+            % (DO NOT REORDER JUMP COMPONENTS -- effects displayed layer order)
+            % Plot the line from start to end. 
+            this.settings.plot_function_2D(ax, ...
+                x_jump(:,1), x_jump(:,2), ...
+                jump_args.line{:});
             % Plot the start of the jump
-            this.settings.plot_function_2D(ax, x_start(:,1), x_start(:,2), jump_args.start{:});
+            this.settings.plot_function_2D(ax, ...
+                x_start(:,1), x_start(:,2), ...
+                jump_args.start{:});
             % Plot the end of the jump
-            this.settings.plot_function_2D(ax, x_end(:,1), x_end(:,2), jump_args.end{:});
+            this.settings.plot_function_2D(ax, ...
+                x_end(:,1), x_end(:,2), ...
+                jump_args.end{:});
         end
 
         function plotJump3D(this, ax, x_jump, x_before, x_after, jump_args)

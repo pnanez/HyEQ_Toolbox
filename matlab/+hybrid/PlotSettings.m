@@ -20,7 +20,14 @@ classdef PlotSettings < matlab.mixin.Copyable
         
         % Name-value pair options.
         legend_options
-        
+        user_axes_args
+        user_plot_args % All plots
+        user_plot_flow_args % Flow plots
+        user_plot_jump_args % All jump plots
+        user_plot_jump_start_args % Jump start plots
+        user_plot_jump_line_args % Jump line plots
+        user_plot_jump_end_args % Jump end plots
+
         % Flows
         flow_color
         flow_line_width
@@ -76,6 +83,13 @@ classdef PlotSettings < matlab.mixin.Copyable
         DEFAULT_COMPONENT_LEGEND_LABELS = {}; 
         
         DEFAULT_LEGEND_OPTIONS = {};
+        DEFAULT_USER_AXES_ARGS = {};
+        DEFAULT_USER_PLOT_ARGS = {};
+        DEFAULT_USER_PLOT_FLOW_ARGS = {};
+        DEFAULT_USER_PLOT_JUMP_ARGS = {};
+        DEFAULT_USER_PLOT_JUMP_START_ARGS = {};
+        DEFAULT_USER_PLOT_JUMP_LINE_ARGS = {};
+        DEFAULT_USER_PLOT_JUMP_END_ARGS = {};
         
         % Flows
         DEFAULT_FLOW_COLOR = 'blue';
@@ -195,7 +209,9 @@ classdef PlotSettings < matlab.mixin.Copyable
                     'LineWidth', this.flow_line_width, ...
                     'MarkerEdgeColor', color, ...
                     'Marker', this.flow_marker, ...
-                    'MarkerSize', this.flow_marker_size};
+                    'MarkerSize', this.flow_marker_size, ...
+                    this.user_plot_args{:}, ...
+                    this.user_plot_flow_args{:}};
         end
     
         function args = jumpArguments(this)
@@ -208,15 +224,27 @@ classdef PlotSettings < matlab.mixin.Copyable
             else
                 color = this.jump_color;
             end
+            % JUMP LINE ARGUMENTS (Cell array)
             args.line = {'Color', color, ...
                     'LineStyle', this.jump_line_style, ...
-                    'LineWidth', this.jump_line_width};
+                    'LineWidth', this.jump_line_width, ...
+                    this.user_plot_args{:}, ...
+                    this.user_plot_jump_args{:}, ...
+                    this.user_plot_jump_line_args{:}}; %#ok<CCAT> Cell-array concatentation is OK.
+            % JUMP START ARGUMENTS (Cell array)
             args.start = {'MarkerEdgeColor', color, ...
                     'Marker', this.jump_start_marker, ...
-                    'MarkerSize', this.jump_start_marker_size};
+                    'MarkerSize', this.jump_start_marker_size, ...
+                    this.user_plot_args{:}, ...
+                    this.user_plot_jump_args{:}, ...
+                    this.user_plot_jump_start_args{:}}; %#ok<CCAT> Cell-array concatentation is OK.
+            % JUMP END ARGUMENTS (Cell array)
             args.end = {'MarkerEdgeColor', color, ...
                     'Marker', this.jump_end_marker, ...
-                    'MarkerSize', this.jump_end_marker_size};
+                    'MarkerSize', this.jump_end_marker_size, ...
+                    this.user_plot_args{:}, ...
+                    this.user_plot_jump_args{:}, ...
+                    this.user_plot_jump_end_args{:}}; %#ok<CCAT> Cell-array concatentation is OK.
         end
 
         function val = labelArguments(this)
