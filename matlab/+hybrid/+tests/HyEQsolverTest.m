@@ -66,15 +66,20 @@ classdef HyEQsolverTest < matlab.unittest.TestCase
         function testFlowPriorityFromBoundaryOfC(testCase)
             x0 = 1.5;
             tspan = [0, 5];
-            jspan = [0, 5];
+            jspan = [0, 1];
             rule = 2;
-            f = @(x) x;
+            f = @(x) 1;
             g = @(x) 0;
             C = @(x) x <= 1.5;
             D = @(x) 1;
             [t, j, x] = HyEQsolver(f, g, C, D, x0, tspan, jspan, rule);   
-            sol = HybridSolution(t, j, x, C, D, tspan, jspan);         
+            sol = HybridSolution(t, j, x, C, D, tspan, jspan);
+
+            % Check that x does not increase above 1.5.
             testCase.assertLessThanOrEqual(sol.x, 1.500001)
+            % Check that the system jumps when it realizes that it cannot flow
+            % from x=1.5.
+            testCase.assertEqual(sol.j(end), 1);
         end
         
         function testTrivialSolution(testCase)
