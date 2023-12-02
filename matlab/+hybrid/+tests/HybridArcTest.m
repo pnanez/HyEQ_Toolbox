@@ -23,6 +23,15 @@ classdef HybridArcTest < matlab.unittest.TestCase
             testCase.assertEqual(sol.shortest_flow_length, 0.5)
         end
 
+        function testJumpIndices(testCase)
+            t = [0; 0.5; 0.5; 2; 3; 3; 4];
+            j = [0;   0;   1; 1; 1; 2; 2];
+            x = NaN(7, 1); % Not important
+            sol = HybridArc(t, j, x);
+            testCase.assertEqual(sol.jump_start_indices, [2; 5])
+            testCase.assertEqual(sol.jump_end_indices, [3; 6])
+        end
+
         function testInconsistentVectorLengths(testCase)
             % We define vectors that are all the same length...
             t = linspace(0, 12, 3)'; 

@@ -37,7 +37,9 @@ classdef HybridArc
     properties(SetAccess = immutable, Hidden)
         % Column vector containing a 1 at each entry where a jump starts and 0 otherwise.
         is_jump_start
-        jump_indices
+        jump_indices % DEPRECATE.
+        jump_start_indices
+        jump_end_indices
     end
     
     methods
@@ -65,6 +67,9 @@ classdef HybridArc
             else
                 [this.jump_times, ~, this.jump_indices, this.is_jump_start] ...
                                             = hybrid.internal.jumpTimes(t, j);
+                this.jump_start_indices = this.jump_indices;
+                this.jump_end_indices = this.jump_start_indices + 1;
+                assert(all(this.jump_end_indices) <= size(this.j, 1), 'One of the jump_end_indices was larger than the size of this.j');
                 this.total_flow_length = t(end) - t(1);
                 this.jump_count = length(this.jump_times);
                 this.flow_lengths = hybrid.internal.flowLengths(t, j);
