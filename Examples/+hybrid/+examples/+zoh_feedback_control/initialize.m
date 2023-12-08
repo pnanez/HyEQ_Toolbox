@@ -1,4 +1,4 @@
-% Initialization script for Continuous-time Plant example.
+% Initialization script for Continuous-time Plant with ZOH Feedback example.
                                                                  
 % Parameters
 b = 2;

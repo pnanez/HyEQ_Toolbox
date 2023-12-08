@@ -1,4 +1,4 @@
-% Postprocessing script for Continuous-time Plant Example
+% Postprocessing script for Mobile Robot Example
 
 % Read parameters
 maxX = parameters.maxX;

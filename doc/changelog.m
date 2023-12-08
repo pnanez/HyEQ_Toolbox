@@ -15,7 +15,7 @@
 % * Added |HybridPlotBuilder.plotTimeDomain| for plotting hybrid time domains.
 % * Added |HybridPlotBuilder.flowMarker| and |HybridPlotBuilder.flowMarkerSize|
 % to control markers drawn at each time step during flows (default is no marker).
-% * Change |HybridSystem| verification so that no error is thrown during inital
+% * Change |HybridSystem| verification so that no error is thrown during initial
 % checks if |C(x0)=0| and |f(x0)| raises an error (similarly, no error is thrown
 % if |D(x0)=0| and |g(x0)| raises an error). 
 % * Improved error checking and messages.
@@ -23,7 +23,7 @@
 % * Add array preallocation to |HyEQsolver| to speed up computations with many
 % time steps and large state spaces.
 % * Change default |'refine'| setting for |HybridSolverConfig| to |1|. 
-% * See GitHub issues for a list of fixed bugs (in particular, #92.
+% * See GitHub issues for a list of fixed bugs (in particular, issue #92).
 
 %% Version 3.0
 % Version 3.0 of the Hybrid Equations Toolbox is a substantial update to 

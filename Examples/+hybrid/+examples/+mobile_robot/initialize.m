@@ -1,4 +1,4 @@
-% Initialization for Continuous-time Plant Example
+% Initialization script for Mobile Robot Example
                                                                 
 % Initial conditions                                                    
 z0 = [0; 0; 0];   
