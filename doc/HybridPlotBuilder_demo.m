@@ -684,14 +684,92 @@ grid on
 ax = gca;
 ax.YAxisLocation = 'right';
 
-%%
+%% 
 % Plots with multiple subplots can also be configured as described above by
 % calling |subplot(2, 1, 1)| and making the desired modifications, then
 % calling |subplot(2, 1, 2)|, etc., but that approach 
-% is messy and tediuous. Instead, the |configurePlots| function provides a
-% cleaner alternative. A function handle is passed to |configurePlots|,
-% which is then called by |HybridPlotBuilder| within each (sub)plot.
-% The function handle passed to |configurePlots| must take two input
+% is messy and tediuous. Alternatively, you can use |HybridPlotBuilder|
+% functions |setAxesArgs()|, |setPlotArgs()|, |setPlotFlowArgs()|, and
+% |setPlotJumpArgs()| to define additional arguments to be passed to the |axes|
+% function or plotting functions (|plot| or |plot3|).
+% 
+% Here is an example of using setAxesArgs to configure several axes properties.
+hpb = HybridPlotBuilder().titles("Example Axes Properties", "Using Subplots").color('matlab');
+hpb.setAxesArgs(...
+    'TitleHorizontalAlignment', "left", ... 
+    ... Configure Ticks
+    "XTick", sol.jump_times, ...
+    "XTickLabel", {"$t_1$", "$t_2$", "$t_3$", "$t_4$", "$t_5$", "$t_6$", "$t_7$", "$t_8$", "$t_9$", "$t_{10}$"},...
+    'XTickLabelRotation', 45, ...
+    'TickLength', [0.01, 0.1], ... % 1st entry: 2D Tick length. 2nd entry: 3D Tick length
+    ... Configure Grid.
+    'XGrid', 'on', ... 
+    'Layer', 'top', ... % Draw grid lines and ticks over the plot lines.
+    'GridLineStyle', '--', ...
+    'GridAlpha', 0.6, ... 
+    'LineWidth', 1, ...   % Line width for axes and grid lines.
+    ... Configure background and boundary of plot.
+    'Color', [0.9, 0.9, 1], ... % Background color
+    'Box', 'off', ...     % Disable boundary box
+    'XLim', [-1, 18], ...
+    'XAxisLocation', 'origin', ... % Draw axes through the origin.
+    'YAxisLocation', 'origin', ...
+    'Clipping', 'off') % Let plots extend past the boundaries of the axes.
+
+hpb.subplots('on').plotFlows(sol)
+
+%% 
+% There are also some  are some more axes properties that are useful for 3D plots.
+clf
+hpb = HybridPlotBuilder();
+hpb.setAxesArgs(...
+    'BoxStyle', 'full', ... % Draw the front of the box (only in 3D). 
+    'ClippingStyle', 'rectangle', ... % Allow the plot to extend beyond the bounding box.
+    'ZLim', [0, 16], ... % Reduce the z-range so the plot goes above the top of the bounding box.
+    'View', [30 55], ... % Select viewing angle [azimuth elevation]
+    'XDir', 'reverse', ... % Switch the direction of the x-axis
+    'Projection', 'perspective')
+hpb.plotPhase(sol_3D)
+
+%%
+% You can also explicitly set arguments that are passed to the plotting
+% functions. These will override the values defined using |HybridPlotBuilder|
+% functions, such as |flowColor| or |jumpMarker|. The priority of these commands
+% is as follows, with the lowest priority on the left:
+% 
+%   default < other functions < setPlotArgs < setPlotFlowArgs
+%                                           < setPlotJumpArgs < setPlotJumpStartArgs 
+%                                                             < setPlotJumpEndArgs    
+% 
+% You can see a list of available name-value pairs in the Matlab documentation
+% for <matlab:doc('plot') |plot|>.
+clf
+hpb = HybridPlotBuilder();
+% Make all the markers square and black.
+hpb.setPlotArgs('marker', 's', 'MarkerFaceColor', 'black')
+
+% This make jump markers green. This gets overridden by the following commands.
+hpb.setPlotJumpArgs('MarkerFaceColor', 'green')
+
+% Make the start of jump markers white.
+hpb.setPlotJumpStartArgs('MarkerFaceColor', 'white') 
+
+% Make the end of jump markers yellow
+hpb.setPlotJumpEndArgs('MarkerFaceColor', 'yellow') 
+
+% Set flow plot arguments
+hpb.setPlotFlowArgs( ...
+    ... % Use diamonds for flow markers.
+    'Marker', 'diamond', ... 
+    ... % Draw a marker for every tenth flow time step (o/w it is too crowded).
+    'MarkerIndices', 1:10:1000) 
+hpb.subplots('on').plotFlows(sol)
+
+%%
+% For more cases where you want to choose different options for each subplot, we
+% provide the |configurePlots| function. A function handle is passed to
+% |configurePlots|, which is then called by |HybridPlotBuilder| within each
+% (sub)plot. The function handle passed to |configurePlots| must take two input
 % arguments. The first is the axes for the subplot and the second is the index
 % for the state component(s) plotted in the plot. For |plotFlows|, |plotJumps|,
 % and |plotHybrid|, this will be one 
