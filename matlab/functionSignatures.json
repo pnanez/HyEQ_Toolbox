@@ -664,6 +664,102 @@
       ], 
      "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
     },
+"HybridPlotBuilder.setAxesArgs":  
+    { "inputs":
+     [{"name":"this"},
+      {"name":"XLim",  "kind":"namevalue",
+       "type":"numeric"},
+      {"name":"YLim",  "kind":"namevalue",
+       "type":"numeric"},
+      {"name":"ZLim",  "kind":"namevalue",
+       "type":"numeric"},
+      {"name":"XTick",  "kind":"namevalue",
+       "type":"numeric"},
+      {"name":"YTick",  "kind":"namevalue",
+       "type":"numeric"},
+      {"name":"XTickLabel",  "kind":"namevalue",
+       "type":"cell"},
+      {"name":"YTickLabel",  "kind":"namevalue",
+       "type":"cell"},
+      {"name":"XTickRotation",  "kind":"namevalue",
+       "type":"numeric"},
+      {"name":"YTickRotation",  "kind":"namevalue",
+       "type":"numeric"},
+      {"name":"XGrid",  "kind":"namevalue",
+       "type":"choices={'on', 'off'}",
+       "purpose":"Enable/Disable grid in x-direction."},
+      {"name":"YGrid",  "kind":"namevalue",
+       "type":"choices={'on', 'off'}",
+       "purpose":"Enable/Disable grid in y-direction."},
+      {"name":"Box",  "kind":"namevalue",
+       "type":"choices={'on', 'off'}",
+       "purpose":"Enable/Disable Box."},
+      {"name":"XAxisLocation",  "kind":"namevalue",
+       "type":"choices={'top', 'bottom', 'origin'}"},
+      {"name":"YAxisLocation",  "kind":"namevalue",
+       "type":"choices={'left', 'right', 'origin'}"},
+      {"name":"ClippingStyle",  "kind":"namevalue",
+       "type":"choices={'3dbox', 'rectangle'}"},
+      {"name":"Projection",  "kind":"namevalue",
+       "type":"choices={'orthographic', 'perspective'}"}
+     ], 
+     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
+    },
+"HybridPlotBuilder.setPlotArgs":  
+    { "inputs":
+     [{"name":"this"},
+      {"name":"MarkerFaceColor",  "kind":"namevalue",
+       "type":"choices={'red', 'green', 'blue', 'c', 'm', 'y', 'black', 'white', 'none'}"},
+      {"name":"MarkerIndices",  "kind":"namevalue",
+       "type":"numeric"}
+     ], 
+     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
+    },
+"HybridPlotBuilder.setPlotFlowArgs":  
+    { "inputs":
+     [{"name":"this"},
+      {"name":"MarkerFaceColor",  "kind":"namevalue",
+       "type":"choices={'red', 'green', 'blue', 'c', 'm', 'y', 'black', 'white', 'none'}"},
+      {"name":"MarkerIndices",  "kind":"namevalue",
+       "type":"numeric"}
+     ], 
+     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
+    },
+"HybridPlotBuilder.setPlotJumpArgs":  
+    { "inputs":
+     [{"name":"this"},
+      {"name":"MarkerFaceColor",  "kind":"namevalue",
+       "type":"choices={'red', 'green', 'blue', 'c', 'm', 'y', 'black', 'white', 'none'}"},
+      {"name":"MarkerIndices",  "kind":"namevalue",
+       "type":"numeric"}
+     ], 
+     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
+    },
+"HybridPlotBuilder.setPlotJumpStartArgs":  
+    { "inputs":
+     [{"name":"this"},
+      {"name":"MarkerFaceColor",  "kind":"namevalue",
+       "type":"choices={'red', 'green', 'blue', 'c', 'm', 'y', 'black', 'white', 'none'}"},
+      {"name":"MarkerIndices",  "kind":"namevalue",
+       "type":"numeric"}
+     ], 
+     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
+    },
+"HybridPlotBuilder.setPlotJumpEndArgs":  
+    { "inputs":
+     [{"name":"this"},
+      {"name":"MarkerFaceColor",  "kind":"namevalue",
+       "type":"choices={'red', 'green', 'blue', 'c', 'm', 'y', 'black', 'white', 'none'}"},
+      {"name":"MarkerIndices",  "kind":"namevalue",
+       "type":"numeric"}
+     ], 
+     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
+    },
+"HybridPlotBuilder.setPlotJumpLineArgs":  
+    { "inputs":
+     [{"name":"this"}], 
+     "outputs": [{"name": "this", "type":"HybridPlotBuilder"}]
+    },
 "HybridPlotBuilder.configurePlots": 
     { "inputs":
      [{"name":"this"},
