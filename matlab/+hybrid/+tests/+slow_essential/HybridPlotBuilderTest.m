@@ -5,6 +5,8 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         sol_2
         sol_3
         sol_4
+        sol_discrete_only
+        sol_continuous_only
         fig_cleanup
     end
     
@@ -18,6 +20,8 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             this.sol_2 = HybridArc(t, j, [1.2*x, 2.2*x]);
             this.sol_3 = HybridArc(t, j, [1.3*x, 2.3*x, 3.3*x]);
             this.sol_4 = HybridArc(t, j, [1.4*x, 2.4*x, 3.4*x, 4.4*x]);
+            this.sol_discrete_only = HybridArc(zeros(100, 1), (0:99)', x);
+            this.sol_continuous_only = HybridArc((0:99)', zeros(100, 1), x);
         end
     end
     
@@ -807,6 +811,109 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             close()
         end
         
+        function testSetAxesArgs(testCase)
+            pb = HybridPlotBuilder().subplots('on');
+            % Set the x-axis location to the origin.
+            pb.setAxesArgs('XAxisLocation', 'origin')
+            pb.plotFlows(testCase.sol_4)
+            
+            % For each subplot...
+            for i_sp = 1:size(testCase.sol_4.x, 2)
+                sp_ax = subplot(4, 1, 1);
+                % ...check that the x-axis is placed at the origin.
+                testCase.assertEqual(sp_ax.XAxisLocation, 'origin')
+            end
+        end
+        
+        function testSetPlotArgs(testCase)
+            pb = HybridPlotBuilder().subplots('on');
+            % Set the x-axis location to the origin.
+            pb.setPlotArgs('Marker', 's', 'MarkerFaceColor', 'red')
+            pb.plotFlows(testCase.sol_4)
+            
+            % For each subplot...
+            for i_sp = 1:size(testCase.sol_4.x, 2)
+                sp_ax = subplot(4, 1, 1);
+                % ...and for each line in the plot...
+                for child = sp_ax.Children'
+                    % ...check that the marker face colors are red.
+                    testCase.assertEqual(child.MarkerFaceColor, [1 0 0])
+                end
+            end
+        end
+
+        function testSetPlotFlowArgs(testCase)
+            pb = HybridPlotBuilder();
+            % Set a  location to the origin.
+            pb.setPlotArgs('Marker', 's', 'MarkerFaceColor', 'red')
+            pb.setPlotFlowArgs('Marker', 's', 'MarkerFaceColor', 'blue') % <- this one should be used.
+            pb.setPlotJumpArgs('Marker', 's', 'MarkerFaceColor', 'green')
+            
+            % By using a continuous-only solution, we avoid having jumps that
+            % have a different style.
+            pb.plotFlows(testCase.sol_continuous_only)
+            
+            ax = gca();
+            % For each line in the plot...
+            for child = ax.Children'
+                % ...skip if the plot is empty or all nan's, as is the case for the dummy legend entry...
+                if all(isnan(child.XData))
+                    continue
+                end
+                % ...and check that the marker face colors are blue.
+                testCase.assertEqual(child.MarkerFaceColor, [0 0 1])
+            end
+        end
+
+        function testSetPlotJumpArgs(testCase)
+            pb = HybridPlotBuilder();
+            % Set a  location to the origin.
+            pb.setPlotArgs('Marker', 's', 'MarkerFaceColor', 'red')
+            pb.setPlotFlowArgs('Marker', 's', 'MarkerFaceColor', 'blue')
+            pb.setPlotJumpArgs('Marker', 's', 'MarkerFaceColor', 'green') % <- this one should be used.
+            
+            % By using a discrete-only solution, we avoid having flows plotted 
+            % that have a different style.
+            pb.plotFlows(testCase.sol_discrete_only)
+            
+            ax = gca();
+            % For each line in the plot...
+            for child = ax.Children'
+                % ...skip if the plot is empty or all nan's, as is the case for the dummy legend entry...
+                if all(isnan(child.XData))
+                    continue
+                end
+                % ...and check that the marker face colors are green.
+                testCase.assertEqual(child.MarkerFaceColor, [0 1 0])
+            end
+        end
+
+        function testSetPlotJumpStartAndEndArgs(testCase)
+            pb = HybridPlotBuilder();
+            % Set a  location to the origin.
+            pb.setPlotArgs('Marker', 's', 'MarkerFaceColor', 'red')
+            pb.setPlotFlowArgs('MarkerFaceColor', 'blue')
+            pb.setPlotJumpArgs('MarkerFaceColor', 'green')       % <- Overridden, below.
+            pb.setPlotJumpStartArgs('MarkerFaceColor', 'black')  % <- These should be used.
+            pb.setPlotJumpLineArgs('MarkerFaceColor', 'black')   % <- These should be used.
+            pb.setPlotJumpEndArgs('MarkerFaceColor', 'black')    % <- These should be used.
+            
+            % By using a discrete-only solution, we avoid having flows plotted 
+            % that have a different style.
+            pb.plotFlows(testCase.sol_discrete_only)
+            
+            ax = gca();
+            % For each line in the plot...
+            for child = ax.Children'
+                % ...skip if the plot is empty or all nan's, as is the case for the dummy legend entry...
+                if all(isnan(child.XData))
+                    continue
+                end
+                % ...and check that the marker face colors are black.
+                testCase.assertEqual(child.MarkerFaceColor, [0 0 0])
+            end
+        end
+
         function testPlotConfig(testCase)  
             select_ndxs = [1, 3];
             plt_fnc_callback = @(pb) pb.select([1, 3]).plotFlows(testCase.sol_3);
@@ -1073,4 +1180,7 @@ if iscell(possible_cell)
 else
     val = possible_cell;
 end
+
+
 end
+

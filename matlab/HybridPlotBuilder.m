@@ -1453,9 +1453,11 @@ classdef HybridPlotBuilder < handle
                 
                 if i_sp == 1 || this.settings.auto_subplots 
                     if ~is_hold_on_before
-                        % Plot an invisible point to clear the plot, thereby
-                        % emulating the typical 'hold off' behavior. 
-                        this.settings.plot_function_2D(axes_array(i_sp), nan, nan);
+                        % Clear the axes, thereby emulating the typical 'hold off' behavior. 
+                        % Including the 'reset' argument for cla() is important
+                        % because it causes all of the axes properties to be
+                        % deleted, giving us a clean slate.
+                        cla('reset');
                     end
                     hold on
 
