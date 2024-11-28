@@ -14,7 +14,7 @@ function onSimulinkBlockCopy(varargin)
     if strcmp('auto',  get_param(gcs, 'MaxStep'))
         % Create the popup box with a text field
         prompt = {['Enter the maximum step size as a numeric value or variable name. ' ...
-            'This is important to prevent the hybrid solver from missing jumps:']};
+            'It is important to choose a sufficiently small value to prevent the hybrid solver from missing jumps:']};
         dlgtitle = 'Max Step Size';
         dims = [1 45]; % dimensions of the input field
         definput = {'MaxStep'}; % default value in the text field
