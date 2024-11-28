@@ -1648,12 +1648,13 @@ classdef HybridPlotBuilder < handle
                 if isvalid(ax) % Check that figure hasn't been closed.
                     lgd = legend(ax, plots_in_axes);
                     try
-                        set(lgd, 'AutoUpdate','off');
+                        set(lgd, 'AutoUpdate', 'off');
                     catch
                         % Older versions of MATLAB don't automatically update
                         % legends and thus don't have an 'AutoUpdate' option.
                     end
-                    set(lgd, this.settings.legendArguments{:})
+                    hybrid.internal.safe_set('HybridPlotBuilderLegend', ...
+                                    lgd, this.settings.legendArguments{:}) 
                 end
             end
         end

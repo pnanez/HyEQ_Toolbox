@@ -576,7 +576,7 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
         function testExistingLegendIsOverwritten(testCase)
             % Make a legend with non-default settings.
             plot(1, 1)
-            legend({'A plot'}, 'Location', 'south', 'NumColumns', 2)
+            legend({'A plot'}, 'Location', 'south', 'TextColor', 'red')
             hold on
             
             % Create a plot with a legend using HPB. 
@@ -588,7 +588,7 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
             % which had non-default settings.
             ax = gca();
             testCase.assertEqual(ax.Legend.Location, 'northeast');
-            testCase.assertEqual(ax.Legend.NumColumns, 1);
+            testCase.assertEqual(ax.Legend.TextColor, [0, 0, 0]);
 
             % The legend entry added without the HPB is not included in the
             % final legend.
@@ -601,12 +601,16 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
                 .plotFlows(testCase.sol_2);
 
             plt_1 = subplot(2, 1, 1);
-            testCase.assertEqual(plt_1.Legend.NumColumns, 3);
-            testCase.assertEqual(plt_1.Legend.Location, 'best');
-            
             plt_2 = subplot(2, 1, 2);
-            testCase.assertEqual(plt_2.Legend.NumColumns, 3);
+            
+            testCase.assertEqual(plt_1.Legend.Location, 'best');
             testCase.assertEqual(plt_2.Legend.Location, 'best');
+            
+            % "NumColumns" is not a property in Legend objects on R2016b.
+            if isprop(plt_1.Legend, 'NumColumns')
+                testCase.assertEqual(plt_1.Legend.NumColumns, 3);
+                testCase.assertEqual(plt_2.Legend.NumColumns, 3);
+            end
         end
 
         function testLegendOptions(testCase)
@@ -618,11 +622,12 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
 
             % Check that the defaults are used.
             plt_1 = subplot(2, 1, 1);
-            testCase.assertEqual(plt_1.Legend.NumColumns, 1);
-            testCase.assertEqual(plt_1.Legend.Location, 'northeast');
-            
             plt_2 = subplot(2, 1, 2);
-            testCase.assertEqual(plt_2.Legend.NumColumns, 1);
+            if isprop(plt_1.Legend, 'NumColumns')% "NumColumns" is not a property in Legend objects on R2016b.
+                testCase.assertEqual(plt_1.Legend.NumColumns, 1);
+                testCase.assertEqual(plt_2.Legend.NumColumns, 1);
+            end
+            testCase.assertEqual(plt_1.Legend.Location, 'northeast');
             testCase.assertEqual(plt_2.Legend.Location, 'northeast');
 
             % Call legendOptions.
@@ -630,11 +635,13 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
 
             % Check that the given options are used.
             plt_1 = subplot(2, 1, 1);
-            testCase.assertEqual(plt_1.Legend.NumColumns, 3);
-            testCase.assertEqual(plt_1.Legend.Location, 'best');
-            
             plt_2 = subplot(2, 1, 2);
-            testCase.assertEqual(plt_2.Legend.NumColumns, 3);
+            
+            if isprop(plt_1.Legend, 'NumColumns')% "NumColumns" is not a property in Legend objects on R2016b.
+                testCase.assertEqual(plt_1.Legend.NumColumns, 3);
+                testCase.assertEqual(plt_2.Legend.NumColumns, 3);
+            end
+            testCase.assertEqual(plt_1.Legend.Location, 'best');
             testCase.assertEqual(plt_2.Legend.Location, 'best');
 
             % Call legend with options.
@@ -643,11 +650,12 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
 
             % Check that the given options are used.
             plt_1 = subplot(2, 1, 1);
-            testCase.assertEqual(plt_1.Legend.NumColumns, 2);
-            testCase.assertEqual(plt_1.Legend.Location, 'south');
-            
             plt_2 = subplot(2, 1, 2);
-            testCase.assertEqual(plt_2.Legend.NumColumns, 2);
+            if isprop(plt_1.Legend, 'NumColumns')% "NumColumns" is not a property in Legend objects on R2016b.
+                testCase.assertEqual(plt_1.Legend.NumColumns, 2);
+                testCase.assertEqual(plt_2.Legend.NumColumns, 2);
+            end
+            testCase.assertEqual(plt_1.Legend.Location, 'south');
             testCase.assertEqual(plt_2.Legend.Location, 'south');
 
             % Call legend without options.
@@ -656,11 +664,12 @@ classdef HybridPlotBuilderTest < matlab.unittest.TestCase
 
             % Check that the default options are used.
             plt_1 = subplot(2, 1, 1);
-            testCase.assertEqual(plt_1.Legend.NumColumns, 1);
-            testCase.assertEqual(plt_1.Legend.Location, 'northeast');
-            
             plt_2 = subplot(2, 1, 2);
-            testCase.assertEqual(plt_2.Legend.NumColumns, 1);
+            if isprop(plt_1.Legend, 'NumColumns')% "NumColumns" is not a property in Legend objects on R2016b.
+                testCase.assertEqual(plt_1.Legend.NumColumns, 1);
+                testCase.assertEqual(plt_2.Legend.NumColumns, 1);
+            end
+            testCase.assertEqual(plt_1.Legend.Location, 'northeast');
             testCase.assertEqual(plt_2.Legend.Location, 'northeast');
         end
 
