@@ -73,6 +73,12 @@ classdef SubsystemList
         
         function ndx = getIndex(this, subsys_id)
             % subsys_id can be a HybridSubsystem or an integer index.
+
+            % If subsys_id is given as a string, then cast it to a character array.
+            if isa(subsys_id, 'string')
+                subsys_id = char(subsys_id);
+            end
+
             if isa(subsys_id, 'HybridSubsystem')
                 ndx = find(cellfun(@(x)x == subsys_id, this.entries));
             elseif ~isscalar(subsys_id) && ~ischar(subsys_id)
@@ -96,7 +102,7 @@ classdef SubsystemList
                         ndx, this.subsys_n);
                     throwAsCaller(e);
                 end
-            elseif isa(subsys_id, 'string') || ischar(subsys_id)
+            elseif ischar(subsys_id)
                 if isempty(this.names)
                     error('CompositeHybridSystem:NoNamesProvided',...
                         'Cannot reference subsystems by name because names were not provided at construction.')
@@ -111,7 +117,7 @@ classdef SubsystemList
             end
             
             if isempty(ndx)
-                if  ischar(subsys_id) || isa(subsys_id, 'string')
+                if  ischar(subsys_id)
                     arg_str = ['''', subsys_id, ''''];
                 elseif isnumeric(subsys_id)
                     arg_str = num2str(subsys_id);
