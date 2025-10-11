@@ -32,7 +32,7 @@ classdef CompositeHybridSystem < HybridSystem
         % The following properties are private because they might change in
         % future implementations. 
         
-        % Indicies within the composite state of each subsystem's state 
+        % Indices within the composite state of each subsystem's state 
         x_indices % cell (:, :) 
         % Index within the composite state of subsystem1's discrete time.
         j_index % integer array (:, 1) 
@@ -40,8 +40,8 @@ classdef CompositeHybridSystem < HybridSystem
     
     properties(Access = private)
         % Feedback function for each subsystem during flows. 
-        % Each entry must be set to a function handle with a signiture
-        % matching one of the following signitures:
+        % Each entry must be set to a function handle with a signature
+        % matching one of the following signature:
         %    u = kappa_C(x1, x2, ..., xN)
         %    u = kappa_C(x1, x2, ..., xN, t)
         %    u = kappa_C(x1, x2, ..., xN, t, j)
@@ -49,8 +49,8 @@ classdef CompositeHybridSystem < HybridSystem
         kappa_C
         
         % Feedback functions for each subsystem at jumps.
-        % Each entry must be set to a function handle with a signiture
-        % matching one of the following signitures:
+        % Each entry must be set to a function handle with a signature
+        % matching one of the following signature:
         %    u = kappa_D(x1, x2, ..., xN)
         %    u = kappa_D(x1, x2, ..., xN, t)
         %    u = kappa_D(x1, x2, ..., xN, t, j)
@@ -271,7 +271,7 @@ classdef CompositeHybridSystem < HybridSystem
             % Flow set indicator for the composite system.
             
             % The system can only flow if both subsystems are in their
-            % repsective flow sets (priority is honored, if the composite
+            % respective flow sets (priority is honored, if the composite
             % state is in (C union D)).
             C = true; 
             [xs, js] = this.split(x);
@@ -330,7 +330,7 @@ classdef CompositeHybridSystem < HybridSystem
             %
             % See also: HybridSystem.solve.
             
-            % We concatenate the subsystem states and inital j-value to create 
+            % We concatenate the subsystem states and initial j-value to create 
             % the composite state. (The subsystems can jump at separate times, 
             % so track the jumps for each in the last components of the 
             % composite state).
@@ -384,7 +384,7 @@ classdef CompositeHybridSystem < HybridSystem
             sol = this.solve@HybridSystem(x0, tspan, jspan, varargin{:});
 
             if sol.solver_config.hybrid_priority == hybrid.Priority.FLOW
-                msg = {'Using CompositeHybridSystems with FLOW priority is not reccomended. '
+                msg = {'Using CompositeHybridSystems with FLOW priority is not recommended. '
                     'When two subsystems are in their respective jump sets and one of them leaves '
                     'its flow set, then the state of both will jump, violating flow priority.'};
                 warning('CompositeHybridSystem:FlowPriorityNotSupported', '%s', msg{:})
@@ -426,7 +426,7 @@ classdef CompositeHybridSystem < HybridSystem
                 ss_y = NaN(length(t), ss.output_dimension);
                 
                 % Create arrays is_a_ss1_jump_index and is_a_ss2_jump_index,
-                % which contain ones at entry where a jump occured in the
+                % which contain ones at entry where a jump occurred in the
                 % corresponding system.
                 [~, ~, ~, is_jump] = hybrid.internal.jumpTimes(t, ss_j);
                 
@@ -445,7 +445,7 @@ classdef CompositeHybridSystem < HybridSystem
                 
                 % In order to find the hybrid.TerminationCause for the subsystem
                 % solutions, we need to adjust jspan for each so that we only count
-                % jumps in the appropriate subystem. To this end, we calculate the
+                % jumps in the appropriate subsystem. To this end, we calculate the
                 % number of jumps in each subsystem. The results
                 % are subtracted from the end of jspan to create jspan1 and
                 % jspan2.
@@ -475,7 +475,7 @@ classdef CompositeHybridSystem < HybridSystem
             % runtime of computing solutions, so we have taken pains to
             % optimize it. 
             
-            % Save the "indexs" to local variables to speed up reading them.
+            % Save the "index" to local variables to speed up reading them.
             x_ndxs = this.x_indices;
             j_ndxs = this.j_index;
             N = length(x_ndxs);

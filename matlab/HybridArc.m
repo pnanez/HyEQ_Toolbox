@@ -121,7 +121,7 @@ classdef HybridArc
         end
 
         function selected_arc = select(this, ndxs)
-            % Create a new HybridArc with only the selected component indicies.
+            % Create a new HybridArc with only the selected component indices.
             % 
             % ndxs: A vector of positive integers less than or equal to the
             %       dimension of this HybridArc. Repeated values are OK and the 

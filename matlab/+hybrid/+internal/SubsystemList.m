@@ -10,8 +10,8 @@ classdef SubsystemList
     end
     
     methods
-        function obj = SubsystemList(varargin) % no names given1
-            if isa(varargin{1}, 'HybridSubsystem')
+        function obj = SubsystemList(varargin)
+            if isa(varargin{1}, 'HybridSubsystem') % if no names given.
                 subsystems = varargin;
                 names = {};
             elseif isa(varargin{1}, 'string') || ischar(varargin{1}) % if names given

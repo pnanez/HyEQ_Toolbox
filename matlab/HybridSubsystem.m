@@ -101,30 +101,30 @@ classdef (Abstract) HybridSubsystem < handle
         % The flow map 'f' used to compute the evolution of the subsystem during intervals of flow.
         %
         % The flowMap function must be implemented in subclasses with the signature 
-        %   xdot = flowMap(this, x, u, t, j).
-        % The argument names can be changed, but u, t, and j cannot be ommited. 
-        xdot = flowMap(this, x, u, t, j)  
+        %   x_dot = flowMap(this, x, u, t, j).
+        % The argument names can be changed, but u, t, and j cannot be omitted. 
+        x_dot = flowMap(this, x, u, t, j)  
 
         % The jump map 'g' used to compute the evolution of the subsystem at jumps.
         %
         % The jumpMap function must be implemented in subclasses with the signature  
-        %   xplus = jumpMap(this, x, u, t, j).
-        % The argument names can be changed, but u, t, and j cannot be ommited.
-        xplus = jumpMap(this, x, u, t, j)  
+        %   x_plus = jumpMap(this, x, u, t, j).
+        % The argument names can be changed, but u, t, and j cannot be omitted.
+        x_plus = jumpMap(this, x, u, t, j)  
 
         % Indicator function for flow set 'C'. Returns 1 inside 'C' and 0 outside.
         % 
         % The flowSetIndicator function must be implemented in subclasses with the signature 
         %   C = flowSetIndicator(this, x, u, t, j).
-        % The argument names can be changed, but u, t, and j cannot be ommited. 
-        C = flowSetIndicator(this, x, u, t, j) 
+        % The argument names can be changed, but u, t, and j cannot be omitted. 
+        inC = flowSetIndicator(this, x, u, t, j) 
 
         % Indicator function for jump set 'D'. Returns 1 inside 'D' and 0 outside.
         % 
         % The jumpSetIndicator function must be implemented in subclasses with the signature 
         %   D = jumpSetIndicator(this, x, u, t, j).
-        % The argument names can be changed, but u, t, and j cannot be ommited. 
-        D = jumpSetIndicator(this, x, u, t, j)
+        % The argument names can be changed, but u, t, and j cannot be omitted. 
+        inD = jumpSetIndicator(this, x, u, t, j)
     end
     
     methods
@@ -136,7 +136,7 @@ classdef (Abstract) HybridSubsystem < handle
             if isequal(this.flows_output_fnc, this.jumps_output_fnc)
                 y = this.flows_output_fnc(varargin{:});
             else
-                error('Unsupported')
+                error('HybridSubsystem.output(...) is unsupported because the flow output and jump output are not equal.')
             end
         end
 

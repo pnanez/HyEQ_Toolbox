@@ -33,8 +33,8 @@ classdef LinearContinuousSubsystem < HybridSubsystem
             else
                 output = @(x, u) C * x + D * u; 
             end     
-            state_dimension = size(A, 1);
-            input_dimension = size(B, 2);
+            state_dimension  = size(A, 1);
+            input_dimension  = size(B, 2);
             output_dimension = size(C, 1); 
             obj = obj@HybridSubsystem(state_dimension, input_dimension, ...
                                         output_dimension, output);
@@ -45,13 +45,13 @@ classdef LinearContinuousSubsystem < HybridSubsystem
         end
             
         % The jumpMap function must be implemented with the following 
-        % signature (t and j cannot be ommited)
-        function xdot = flowMap(this, x, u, t, j) %#ok<INUSD>
-            xdot = this.A * x + this.B * u;
+        % signature (t and j cannot be omitted)
+        function x_dot = flowMap(this, x, u, t, j) %#ok<INUSD>
+            x_dot = this.A * x + this.B * u;
         end
 
-        function xplus = jumpMap(this, x, u, t, j)  %#ok<INUSD,INUSL>
-            xplus = x;
+        function x_plus = jumpMap(this, x, u, t, j)  %#ok<INUSD,INUSL>
+            x_plus = x;
         end 
 
         function C = flowSetIndicator(this, x, u, t, j)  %#ok<INUSD>

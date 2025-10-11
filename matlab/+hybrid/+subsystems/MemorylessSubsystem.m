@@ -17,12 +17,12 @@ classdef MemorylessSubsystem < HybridSubsystem
     end
     
     methods(Sealed)
-        function xdot = flowMap(this, x, u, t, j) %#ok<INUSD>
-           xdot = []; 
+        function x_dot = flowMap(this, x, u, t, j) %#ok<INUSD>
+           x_dot = []; 
         end
 
-        function xplus = jumpMap(this, x, u, t, j) %#ok<INUSD>
-           xplus = []; 
+        function x_plus = jumpMap(this, x, u, t, j) %#ok<INUSD>
+           x_plus = []; 
         end
 
         % The system always flows.

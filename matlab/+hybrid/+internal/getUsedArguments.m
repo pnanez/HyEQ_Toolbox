@@ -1,7 +1,7 @@
 function is_used = getUsedArguments(fh)
 % GETUSEDARGUMENTS Get a logical vector that indicates which input arguments of
 % the given function handle are used (indicated by a '1') and which are ignored
-% (indicated by a '0'). The functon must be an anonymous function. That is, 
+% (indicated by a '0'). The function must be an anonymous function. That is, 
 % it must be defined using the syntax 
 %   fh = @(x1, x2, ..., xn) <some expression of x1, x2, ..., xn>.
 % rather than being defined as a local function, in a function file, or as a

@@ -143,3 +143,5 @@ $RECYCLE.BIN/
 # Temporary files.
 temp*.m
 *_temp.*
+*.bak
+*.r2014b

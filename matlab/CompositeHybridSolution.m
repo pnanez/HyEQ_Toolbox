@@ -75,7 +75,7 @@ classdef CompositeHybridSolution < HybridSolution
         end
         
         function ndx = end(this,k,n_ndxs)
-           % Define per this Stackoverflow answer: https://stackoverflow.com/a/29378151/6651650
+           % Define per this StackOverflow answer: https://stackoverflow.com/a/29378151/6651650
            % k is the index in the expression using the end syntax
            % n_ndxs is the total number of indices in the expression
 

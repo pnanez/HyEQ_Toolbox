@@ -9,13 +9,7 @@ e = 0.3;
 
 % simulation horizon                                                    
 T = 8;                                                                 
-J = 15;                                                                 
-           
-% Set the behavior of the simulation in the intersection of C and D.                                                  
-% rule = 1 -> priority for jumps                                        
-% rule = 2 -> priority for flows                                        
-% rule = 3 -> no priority, random selection when simultaneous conditions
-rule = 1;                                                               
+J = 15;                                                                                                                             
                                                                         
 % Solver tolerances
 RelTol = 1e-8;

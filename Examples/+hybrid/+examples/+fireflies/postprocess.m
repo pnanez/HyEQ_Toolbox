@@ -13,12 +13,14 @@ subplot(2,1,1)
 hpb = HybridPlotBuilder();
 hpb.color([0 0.447 0.741]).label('$\tau_1$').title('Firefly 1 (Flows)');
 hpb.plotFlows(sol_1)
-grid on                         
+grid on         
+ylim([-0.1, 1.1])                
                                       
 subplot(2,1,2)
 hpb.title('Firefly 1 (Jumps)');
 hpb.plotJumps(sol_1)     
-grid on                                 
+grid on  
+ylim([-0.1, 1.1])                               
                
 %%
 figure(2) % H2 Flows and Jumps        
@@ -27,12 +29,14 @@ subplot(2,1,1)
 hpb = HybridPlotBuilder();
 hpb.color([0.85 0.325 0.098]).label('$\tau_2$').title('Firefly 2 (Flows)');
 hpb.plotFlows(sol_2)
-grid on                         
+grid on     
+ylim([-0.1, 1.1])                    
                                       
 subplot(2,1,2)
 hpb.title('Firefly 2 (Jumps)');
 hpb.plotJumps(sol_2)     
-grid on                                 
+grid on      
+ylim([-0.1, 1.1])                           
                                       
 %%                                  
 figure(3) % H1 and H2, Flows and Jumps
@@ -41,13 +45,15 @@ clf
 subplot(2,1,1)   
 hpb = HybridPlotBuilder();
 hpb.color('matlab').title('Fireflies (Flows)');
-hpb.legend('Firefly 1 ($\tau_1$)').plotFlows(sol_1)
+hpb.legend('Firefly 1 ($\tau_1$)').jumpLineStyle('--').jumpLineWidth(0.4).plotFlows(sol_1)
 hold on
-hpb.legend('Firefly 2 ($\tau_2$)').plotFlows(sol_2)                        
-                                      
+hpb.legend('Firefly 2 ($\tau_2$)').jumpLineStyle(':').jumpLineWidth(1.2).plotFlows(sol_2)                        
+ylim([-0.1, 1.1])
+  
 subplot(2,1,2)
 hpb.color('matlab').title('Fireflies (Jumps)');
-hpb.legend('Firefly 1 ($\tau_1$)').plotJumps(sol_1)
+hpb.legend('Firefly 1 ($\tau_1$)').jumpLineStyle('--').jumpLineWidth(0.4).plotJumps(sol_1)
 hold on
-hpb.legend('Firefly 2 ($\tau_2)$').plotJumps(sol_2)   
-xlim([0, 7])
+hpb.legend('Firefly 2 ($\tau_2)$').jumpLineStyle(':').jumpLineWidth(1.2).plotJumps(sol_2)   
+% xlim([0, 7])
+ylim([-0.1, 1.1])

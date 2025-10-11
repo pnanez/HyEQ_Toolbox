@@ -62,17 +62,14 @@
 % Its output is equal to $1$ if the state belongs to $D$ or equal to $0$ otherwise.
 
 %% Deciding Whether to Use Embedded or External Functions
-% Prior to v3.0, only hybrid systems with embedded function blocks could be used
-% to model systems with inputs, but now external functions can be used for
-% systems with inputs as well. 
-% Thus, embedded vs. external functions are interchangable in terms of the types
+% Hybrid systems with  embedded vs. external functions are interchangable in terms of the types
 % of systems they can model. 
 % There are other benefits and limitations to each, however.
 % 
 % External functions have the benefits that the functions are stored
 % in plaintext |.m| files, so they can be easily tracked with source control
 % managagment software, such as Git. They can also be resused without
-% modification when using the HyEQ MATLAB library. 
+% modification when modeling hybrid systems with the HyEQ MATLAB library. 
 % 
 % Embedded functions, on the other hand, result in the
 % entire Simulink model being self-contained in a single file. 

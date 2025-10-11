@@ -120,7 +120,7 @@ classdef (Abstract) HybridSystem < handle
                     'The second entry of jspan was smaller than the first.');
             end
             if ~isempty(varargin) && isa(varargin{1}, 'HybridSolverConfig')
-                assert(numel(varargin) == 1, ...
+                assert(isscalar(varargin), ...
                     'If a HybridSolverConfig is provided in the 4th argument, then there cannot be any more arguments.')
                 config = varargin{1};
             else
@@ -145,7 +145,7 @@ classdef (Abstract) HybridSystem < handle
                                    config.progressListener);
                         
             % Wrap solution in HybridSolution class (or another class if
-            % the function wrap_solution is overriden).
+            % the function wrap_solution is overridden).
             sol = this.wrap_solution(t, j, x, tspan, jspan, config);
         end
 
@@ -154,7 +154,7 @@ classdef (Abstract) HybridSystem < handle
     methods(Access = protected, Hidden)
         % Override this function to use other wrappers.
         function sol = wrap_solution(this, t, j, x, tspan, jspan, solver_config)   
-            % Create a HybridSolution object from the data (x, t, j) and given simluation parameters.
+            % Create a HybridSolution object from the data (x, t, j) and given simulation parameters.
             xf = x(end, :)';
             try
                 Cf = this.flowSetIndicator_3args(xf, t(end), j(end));
