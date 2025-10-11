@@ -1,0 +1,3 @@
+[submodule "github.pages.io"]
+	path = github.pages.io
+	url = ./github.pages.io/
